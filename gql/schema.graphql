@@ -1,0 +1,17 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Snippet {
+  id: ID
+  title: String
+  content: String
+}
+
+type Query {
+  msSnippet(id: ID!): Snippet
+}
+
+type Mutation {
+}
