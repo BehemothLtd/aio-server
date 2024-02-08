@@ -1,0 +1,14 @@
+type Snippet {
+  id: ID
+  title: String
+  content: String
+}
+
+input SnippetsQuery {
+  titleCont: String
+}
+
+type SnippetsCollection {
+  collection: [Snippet!]
+  metadata: Metadata!
+}

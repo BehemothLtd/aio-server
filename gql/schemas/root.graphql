@@ -1,0 +1,12 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  msSnippet(id: ID!): Snippet
+  msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
+}
+
+type Mutation {
+}

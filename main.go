@@ -2,27 +2,17 @@ package main
 
 import (
 	"aio-server/database"
-	gql "aio-server/gql/resolvers"
+	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
-	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	graphql "github.com/graph-gophers/graphql-go"
-	"github.com/graph-gophers/graphql-go/relay"
-	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
-	"gorm.io/gorm"
 )
 
 func main() {
-	// Load ENV
-	err := godotenv.Load()
-
-	if err != nil {
-		panic("Cant Load .env file")
-	}
+	initializers.LoadEnv()
 
 	// Load DB
 	db := database.InitDb()
@@ -36,36 +26,9 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	log := logrus.New()
-	logger := logger.Logger(log)
+	r.Use(logger.Logger(logrus.New()), gin.Recovery())
 
-	r.Use(logger, gin.Recovery())
-
-	r.POST("/graphql", gophersGraphQLHandler(db))
+	r.POST("/graphql", initializers.GqlHandler(db))
 
 	r.Run()
-}
-
-func gophersGraphQLHandler(db *gorm.DB) gin.HandlerFunc {
-	s, err := getSchema("./gql/schema.graphql")
-	if err != nil {
-		panic(err)
-	}
-
-	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
-	schema := graphql.MustParseSchema(s, &gql.Resolver{Db: db}, opts...)
-	r := &relay.Handler{Schema: schema}
-
-	return func(c *gin.Context) {
-		r.ServeHTTP(c.Writer, c.Request)
-	}
-}
-
-func getSchema(path string) (string, error) {
-	b, err := os.ReadFile(path)
-	if err != nil {
-		return "", err
-	}
-
-	return string(b), nil
 }
