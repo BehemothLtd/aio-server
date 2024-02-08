@@ -1,17 +1,12 @@
-package ms
+package payloads
 
 import (
-	"aio-server/gql/payloads"
 	"aio-server/models"
 	"context"
-
-	"gorm.io/gorm"
 )
 
 type SnippetsResolver struct {
-	Db  *gorm.DB
-	Ctx *context.Context
-	C   *models.SnippetsCollection
+	C *models.SnippetsCollection
 }
 
 func (sr *SnippetsResolver) Collection(ctx context.Context) *[]*SnippetResolver {
@@ -20,16 +15,15 @@ func (sr *SnippetsResolver) Collection(ctx context.Context) *[]*SnippetResolver 
 	r := make([]*SnippetResolver, len(snippets))
 	for i := range snippets {
 		r[i] = &SnippetResolver{
-			Db: sr.Db,
-			M:  snippets[i],
+			Snippet: snippets[i],
 		}
 	}
 
 	return &r
 }
 
-func (sr *SnippetsResolver) Metadata(ctx context.Context) *payloads.MetadataResolver {
-	return &payloads.MetadataResolver{
+func (sr *SnippetsResolver) Metadata(ctx context.Context) *MetadataResolver {
+	return &MetadataResolver{
 		M: sr.C.Metadata,
 	}
 }

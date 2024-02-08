@@ -1,4 +1,4 @@
-package ms
+package payloads
 
 import (
 	"aio-server/models"
@@ -6,24 +6,21 @@ import (
 	"context"
 
 	graphql "github.com/graph-gophers/graphql-go"
-	"gorm.io/gorm"
 )
 
 // SnippetResolver contains the DB and the model for resolving
 type SnippetResolver struct {
-	Db  *gorm.DB
-	Ctx *context.Context
-	M   *models.Snippet
+	Snippet *models.Snippet
 }
 
 func (sr *SnippetResolver) ID(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(sr.M.Id)
+	return helpers.GqlIDP(sr.Snippet.Id)
 }
 
 func (sr *SnippetResolver) Title(ctx context.Context) *string {
-	return &sr.M.Title
+	return &sr.Snippet.Title
 }
 
 func (sr *SnippetResolver) Content(ctx context.Context) *string {
-	return &sr.M.Content
+	return &sr.Snippet.Content
 }
