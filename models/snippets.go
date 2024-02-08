@@ -15,3 +15,7 @@ type Snippet struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
+
+type SnippetsQuery struct {
+	TitleCont string
+}

@@ -9,8 +9,35 @@ type Snippet {
   content: String
 }
 
+input PagyInput {
+  perPage: Int
+  page: Int
+}
+
+input SnippetsQuery {
+  titleCont: String
+}
+
+type SnippetsCollection {
+  collection: [Snippet!]
+  metadata: Metadata!
+}
+
+type Metadata {
+  total: ID 
+  perPage: Int
+  page: Int
+  pages: Int
+  count: Int
+  next: Int
+  prev: Int
+  from: Int
+  to: Int
+}
+
 type Query {
   msSnippet(id: ID!): Snippet
+  msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
 }
 
 type Mutation {
