@@ -6,11 +6,11 @@ import (
 )
 
 type SnippetsResolver struct {
-	C *models.SnippetsCollection
+	SnippetsCollection *models.SnippetsCollection
 }
 
 func (sr *SnippetsResolver) Collection(ctx context.Context) *[]*SnippetResolver {
-	snippets := sr.C.Collection
+	snippets := sr.SnippetsCollection.Collection
 
 	r := make([]*SnippetResolver, len(snippets))
 	for i := range snippets {
@@ -24,6 +24,6 @@ func (sr *SnippetsResolver) Collection(ctx context.Context) *[]*SnippetResolver 
 
 func (sr *SnippetsResolver) Metadata(ctx context.Context) *MetadataResolver {
 	return &MetadataResolver{
-		M: sr.C.Metadata,
+		Metadata: sr.SnippetsCollection.Metadata,
 	}
 }

@@ -53,7 +53,7 @@ func (r *Resolver) MsSnippets(ctx context.Context, args struct {
 	err := repo.ListSnippets(&snippets, &paginationInput, &outputQuery)
 
 	resolver := payloads.SnippetsResolver{
-		C: &models.SnippetsCollection{
+		SnippetsCollection: &models.SnippetsCollection{
 			Collection: snippets,
 			Metadata:   &paginationInput.Metadata,
 		},

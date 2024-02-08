@@ -2,7 +2,7 @@ package main
 
 import (
 	"aio-server/database"
-	"aio-server/gql"
+	gql "aio-server/gql/resolvers"
 	"aio-server/pkg/logger"
 	"os"
 	"time"

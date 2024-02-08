@@ -8,49 +8,49 @@ import (
 )
 
 type MetadataResolver struct {
-	M *models.Metadata
+	Metadata *models.Metadata
 }
 
 func (m *MetadataResolver) Total() *graphql.ID {
-	return helpers.GqlIDP(m.M.Total)
+	return helpers.GqlIDP(m.Metadata.Total)
 }
 
 func (m *MetadataResolver) PerPage() *int32 {
-	r := int32(m.M.PerPage)
+	r := int32(m.Metadata.PerPage)
 	return &r
 }
 
 func (m *MetadataResolver) Page() *int32 {
-	r := int32(m.M.Page)
+	r := int32(m.Metadata.Page)
 	return &r
 }
 
 func (m *MetadataResolver) Pages() *int32 {
-	r := int32(m.M.Pages)
+	r := int32(m.Metadata.Pages)
 	return &r
 }
 
 func (m *MetadataResolver) Count() *int32 {
-	r := int32(m.M.Count)
+	r := int32(m.Metadata.Count)
 	return &r
 }
 
 func (m *MetadataResolver) Next() *int32 {
-	r := int32(m.M.Next)
+	r := int32(m.Metadata.Next)
 	return &r
 }
 
 func (m *MetadataResolver) Prev() *int32 {
-	r := int32(m.M.Prev)
+	r := int32(m.Metadata.Prev)
 	return &r
 }
 
 func (m *MetadataResolver) From() *int32 {
-	r := int32(m.M.From)
+	r := int32(m.Metadata.From)
 	return &r
 }
 
 func (m *MetadataResolver) To() *int32 {
-	r := int32(m.M.To)
+	r := int32(m.Metadata.To)
 	return &r
 }
