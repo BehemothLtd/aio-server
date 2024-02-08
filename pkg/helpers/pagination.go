@@ -1,24 +1,25 @@
 package helpers
 
 import (
+	"aio-server/gql/inputs"
 	"aio-server/models"
 	"math"
 
 	"gorm.io/gorm"
 )
 
-func GeneratePaginationInput(input *models.PagyInput) models.PaginationData {
+func GeneratePaginationInput(input *inputs.PagyInput) models.PaginationData {
 	paginationInput := models.PaginationData{}
 
 	if input != nil {
 		if input.Page != nil {
-			paginationInput.Metadata.Page = *input.Page
+			paginationInput.Metadata.Page = int(*input.Page)
 		} else {
 			paginationInput.Metadata.Page = 1
 		}
 
 		if input.PerPage != nil {
-			paginationInput.Metadata.PerPage = *input.PerPage
+			paginationInput.Metadata.PerPage = int(*input.PerPage)
 		} else {
 			paginationInput.Metadata.PerPage = 10
 		}

@@ -1,49 +1,56 @@
 package payloads
 
 import (
-	"context"
+	"aio-server/models"
+	"aio-server/pkg/helpers"
 
 	graphql "github.com/graph-gophers/graphql-go"
-	"gorm.io/gorm"
 )
 
 type MetadataResolver struct {
-	Db  *gorm.DB
-	Ctx *context.Context
+	M *models.Metadata
 }
 
 func (m *MetadataResolver) Total() *graphql.ID {
-	return nil
+	return helpers.GqlIDP(m.M.Total)
 }
 
 func (m *MetadataResolver) PerPage() *int32 {
-	return nil
+	r := int32(m.M.PerPage)
+	return &r
 }
 
 func (m *MetadataResolver) Page() *int32 {
-	return nil
+	r := int32(m.M.Page)
+	return &r
 }
 
 func (m *MetadataResolver) Pages() *int32 {
-	return nil
+	r := int32(m.M.Pages)
+	return &r
 }
 
 func (m *MetadataResolver) Count() *int32 {
-	return nil
+	r := int32(m.M.Count)
+	return &r
 }
 
 func (m *MetadataResolver) Next() *int32 {
-	return nil
+	r := int32(m.M.Next)
+	return &r
 }
 
 func (m *MetadataResolver) Prev() *int32 {
-	return nil
+	r := int32(m.M.Prev)
+	return &r
 }
 
 func (m *MetadataResolver) From() *int32 {
-	return nil
+	r := int32(m.M.From)
+	return &r
 }
 
 func (m *MetadataResolver) To() *int32 {
-	return nil
+	r := int32(m.M.To)
+	return &r
 }

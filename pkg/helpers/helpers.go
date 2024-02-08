@@ -27,7 +27,11 @@ func GqlIdToInt32(i graphql.ID) (int32, error) {
 // 	return &b
 // }
 
-func GqlIDP(id int32) *graphql.ID {
+type SignedInteger interface {
+	int | int8 | int16 | int32 | int64
+}
+
+func GqlIDP[T SignedInteger](id T) *graphql.ID {
 	if id == 0 {
 		return nil
 	}

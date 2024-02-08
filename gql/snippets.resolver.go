@@ -1,7 +1,7 @@
 package gql
 
 import (
-	"aio-server/database"
+	"aio-server/gql/inputs"
 	"aio-server/gql/payloads/ms"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
@@ -25,7 +25,7 @@ func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) 
 
 	snippet := models.Snippet{}
 
-	repo := repository.NewSnippetRepository(&ctx, database.Db)
+	repo := repository.NewSnippetRepository(&ctx, r.Db)
 	repo.FindSnippetById(&snippet, snippetId)
 
 	s := ms.SnippetResolver{
@@ -38,19 +38,38 @@ func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) 
 }
 
 func (r *Resolver) MsSnippets(ctx context.Context, args struct {
-	Input *PagyInput
-	Query *SnippetQuery
+	Input *inputs.PagyInput
+	Query *inputs.SnippetQueryInput
 }) (*ms.SnippetsResolver, error) {
-	fmt.Printf("ARGS : %+v", args.Input.Page)
+	var snippets []*models.Snippet
 
-	return nil, nil
-}
+	paginationInput := helpers.GeneratePaginationInput(args.Input)
+	fmt.Printf("PAGINATION INPUT: %+v", paginationInput)
 
-type PagyInput struct {
-	PerPage *int32
-	Page    *int32
-}
+	repo := repository.NewSnippetRepository(&ctx, r.Db)
+	fmt.Printf("REPO: %+v", repo)
 
-type SnippetQuery struct {
-	TitleCont *string
+	outputQuery := models.SnippetsQuery{TitleCont: ""}
+	fmt.Printf("QUERY: %+v", outputQuery)
+
+	if args.Query != nil && *args.Query.TitleCont != "" {
+		outputQuery.TitleCont = *args.Query.TitleCont
+	}
+
+	err := repo.ListSnippets(&snippets, &paginationInput, &outputQuery)
+
+	s := ms.SnippetsResolver{
+		Db:  r.Db,
+		Ctx: &ctx,
+		C: &models.SnippetsCollection{
+			Collection: snippets,
+			Metadata:   &paginationInput.Metadata,
+		},
+	}
+
+	if err != nil {
+		return &s, err
+	}
+
+	return &s, nil
 }

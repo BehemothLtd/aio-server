@@ -52,7 +52,8 @@ func gophersGraphQLHandler(db *gorm.DB) gin.HandlerFunc {
 		panic(err)
 	}
 
-	schema := graphql.MustParseSchema(s, &gql.Resolver{Db: db}, graphql.UseStringDescriptions())
+	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
+	schema := graphql.MustParseSchema(s, &gql.Resolver{Db: db}, opts...)
 	r := &relay.Handler{Schema: schema}
 
 	return func(c *gin.Context) {
