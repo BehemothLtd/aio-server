@@ -9,4 +9,5 @@ type Query {
 }
 
 type Mutation {
+  signIn(email: String!, password: String!): Authentication!
 }

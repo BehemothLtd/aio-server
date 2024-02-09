@@ -3,6 +3,7 @@ package repository
 import (
 	"aio-server/models"
 	"context"
+	"errors"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -22,6 +23,14 @@ func (r *Repository) FindUserByEmail(user *models.User, email string) error {
 }
 
 func (r *Repository) AuthUser(email string, password string) (user *models.User, err error) {
+	if email == "" {
+		return nil, errors.New("email is required")
+	}
+
+	if password == "" {
+		return nil, errors.New("password is required")
+	}
+
 	var u models.User
 
 	userFindErr := r.FindUserByEmail(&u, email)
