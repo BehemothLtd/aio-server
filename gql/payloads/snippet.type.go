@@ -3,14 +3,44 @@ package payloads
 import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
+	"aio-server/repository"
 	"context"
+	"errors"
 
 	graphql "github.com/graph-gophers/graphql-go"
+	"gorm.io/gorm"
 )
 
-// SnippetResolver contains the DB and the model for resolving
 type SnippetResolver struct {
+	Ctx  *context.Context
+	Db   *gorm.DB
+	Args struct{ Id graphql.ID }
+
 	Snippet *models.Snippet
+}
+
+func (sr *SnippetResolver) Resolve() error {
+	if sr.Args.Id == "" {
+		return errors.New("invalid Id")
+	}
+
+	snippetId, err := helpers.GqlIdToInt32(sr.Args.Id)
+	if err != nil {
+		return err
+	}
+
+	snippet := models.Snippet{}
+
+	repo := repository.NewSnippetRepository(sr.Ctx, sr.Db)
+	snippetFindErr := repo.FindSnippetById(&snippet, snippetId)
+
+	if snippetFindErr != nil {
+		return snippetFindErr
+	}
+
+	sr.Snippet = &snippet
+
+	return nil
 }
 
 func (sr *SnippetResolver) ID(context.Context) *graphql.ID {
