@@ -1,0 +1,4 @@
+type ResourceModifyErrors {
+  column: String
+  errors: [String]
+}

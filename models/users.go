@@ -20,6 +20,7 @@ type User struct {
 type Authentication struct {
 	Token   string
 	Message string
+	Errors  []*ResourceModifyErrors
 }
 
 type UserClaims struct {

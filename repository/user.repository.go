@@ -23,26 +23,18 @@ func (r *Repository) FindUserByEmail(user *models.User, email string) error {
 }
 
 func (r *Repository) AuthUser(email string, password string) (user *models.User, err error) {
-	if email == "" {
-		return nil, errors.New("email is required")
-	}
-
-	if password == "" {
-		return nil, errors.New("password is required")
-	}
-
 	var u models.User
 
 	userFindErr := r.FindUserByEmail(&u, email)
 
 	if userFindErr != nil {
-		return nil, userFindErr
+		return nil, errors.New("cant find user")
 	}
 
 	comparePwError := bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(password))
 
 	if comparePwError != nil {
-		return nil, comparePwError
+		return nil, errors.New("password is incorrect")
 	}
 
 	return &u, nil

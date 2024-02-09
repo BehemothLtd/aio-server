@@ -13,14 +13,14 @@ type SnippetResolver struct {
 	Snippet *models.Snippet
 }
 
-func (sr *SnippetResolver) ID(ctx context.Context) *graphql.ID {
+func (sr *SnippetResolver) ID(context.Context) *graphql.ID {
 	return helpers.GqlIDP(sr.Snippet.Id)
 }
 
-func (sr *SnippetResolver) Title(ctx context.Context) *string {
+func (sr *SnippetResolver) Title(context.Context) *string {
 	return &sr.Snippet.Title
 }
 
-func (sr *SnippetResolver) Content(ctx context.Context) *string {
+func (sr *SnippetResolver) Content(context.Context) *string {
 	return &sr.Snippet.Content
 }
