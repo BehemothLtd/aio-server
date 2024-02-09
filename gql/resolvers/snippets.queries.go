@@ -34,34 +34,24 @@ func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) 
 	return &s, nil
 }
 
-func (r *Resolver) MsSnippets(ctx context.Context, args struct {
-	Input *inputs.PagyInput
-	Query *inputs.SnippetQueryInput
-}) (*payloads.SnippetsResolver, error) {
+func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.SnippetsResolver, error) {
 	var snippets []*models.Snippet
 
-	// paginationInput := helpers.GeneratePaginationInput(args.Input)
-	paginationInput := args.Input.ToPaginationInput()
+	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 
 	repo := repository.NewSnippetRepository(&ctx, r.Db)
 
-	outputQuery := models.SnippetsQuery{TitleCont: ""}
-
-	if args.Query != nil && args.Query.TitleCont != nil {
-		outputQuery.TitleCont = *args.Query.TitleCont
-	}
-
-	err := repo.ListSnippets(&snippets, &paginationInput, &outputQuery)
+	err := repo.ListSnippets(&snippets, &paginationData, &snippetsQuery)
 
 	resolver := payloads.SnippetsResolver{
 		SnippetsCollection: &models.SnippetsCollection{
 			Collection: snippets,
-			Metadata:   &paginationInput.Metadata,
+			Metadata:   &paginationData.Metadata,
 		},
 	}
 
 	if err != nil {
-		return &resolver, err
+		return nil, err
 	}
 
 	return &resolver, nil
