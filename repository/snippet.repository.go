@@ -23,7 +23,8 @@ func (r *Repository) FindSnippetById(snippet *models.Snippet, id int32) error {
 }
 
 func (r *Repository) ListSnippets(
-	snippets *[]*models.Snippet, paginateData *models.PaginationData,
+	snippets *[]*models.Snippet,
+	paginateData *models.PaginationData,
 	query *models.SnippetsQuery,
 ) error {
 	dbTables := r.db.Model(&models.Snippet{})

@@ -2,6 +2,12 @@ type Snippet {
   id: ID
   title: String
   content: String
+  userId: ID
+  slug: String
+  snippetType: Int
+  favoritesCount: Int
+  createdAt: Time
+  updatedAt: Time
 }
 
 input SnippetsQuery {

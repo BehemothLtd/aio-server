@@ -40,13 +40,14 @@ func (r *Resolver) MsSnippets(ctx context.Context, args struct {
 }) (*payloads.SnippetsResolver, error) {
 	var snippets []*models.Snippet
 
-	paginationInput := helpers.GeneratePaginationInput(args.Input)
+	// paginationInput := helpers.GeneratePaginationInput(args.Input)
+	paginationInput := args.Input.ToPaginationInput()
 
 	repo := repository.NewSnippetRepository(&ctx, r.Db)
 
 	outputQuery := models.SnippetsQuery{TitleCont: ""}
 
-	if args.Query != nil && *args.Query.TitleCont != "" {
+	if args.Query != nil && args.Query.TitleCont != nil {
 		outputQuery.TitleCont = *args.Query.TitleCont
 	}
 
