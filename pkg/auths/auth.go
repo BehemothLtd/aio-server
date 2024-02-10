@@ -2,11 +2,11 @@ package auths
 
 import (
 	"aio-server/database"
+	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	jsonwebtoken "aio-server/pkg/jsonWebToken"
 	"context"
-	"errors"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -14,12 +14,13 @@ import (
 
 func extractBearerToken(header string) (string, error) {
 	if header == "" {
-		return "", errors.New("bad header value given")
+		return "", exceptions.NewUnauthorizedError("Bad header value given")
+
 	}
 
 	jwtToken := strings.Split(header, " ")
 	if len(jwtToken) != 2 {
-		return "", errors.New("incorrectly formatted authorization header")
+		return "", exceptions.NewUnauthorizedError("Incorrectly formatted authorization header")
 	}
 
 	return jwtToken[1], nil
@@ -31,7 +32,7 @@ func parseToken(jwtToken string) (uid int32, err error) {
 	decodedErr := jsonwebtoken.DecodeJwtToken(jwtToken, &userClaim)
 
 	if decodedErr != nil {
-		return 0, errors.New("bad jwt token")
+		return 0, exceptions.NewUnauthorizedError("Bad jwt token")
 	}
 
 	return userClaim.Sub, nil

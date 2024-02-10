@@ -1,10 +1,10 @@
 package gql
 
 import (
+	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"context"
-	"errors"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
@@ -36,7 +36,7 @@ func AuthUserFromCtx(ctx context.Context) (models.User, error) {
 	currentUser := gc.Value(constants.ContextCurrentUser)
 
 	if currentUser == nil {
-		return models.User{}, errors.New("unauthorized")
+		return models.User{}, exceptions.NewUnauthorizedError("unauthorized")
 	}
 
 	return currentUser.(models.User), nil

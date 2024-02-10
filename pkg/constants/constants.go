@@ -9,6 +9,9 @@ const (
 	MaxLongTextLength       = 4294967295
 	DefaultFormErrorMessage = "error happened. Please check your input"
 
-	DefaultNotFoundErrorCode = 404
-	DefaultNotFoundErrorMsg  = "Not Found"
+	NotFoundErrorCode = 404
+	NotFoundErrorMsg  = "Not Found"
+
+	UnauthorizedErrorCode = 401
+	UnauthorizedErrorMsg  = "You need to sign in to perform this action"
 )

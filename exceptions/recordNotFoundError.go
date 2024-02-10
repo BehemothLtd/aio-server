@@ -23,7 +23,7 @@ func (e RecordNotFoundError) Extensions() map[string]interface{} {
 
 func NewRecordNotFoundError() RecordNotFoundError {
 	return RecordNotFoundError{
-		Code:    constants.DefaultNotFoundErrorCode,
-		Message: constants.DefaultNotFoundErrorMsg,
+		Code:    constants.NotFoundErrorCode,
+		Message: constants.NotFoundErrorMsg,
 	}
 }
