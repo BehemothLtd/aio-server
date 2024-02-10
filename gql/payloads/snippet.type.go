@@ -1,6 +1,7 @@
 package payloads
 
 import (
+	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
@@ -35,7 +36,7 @@ func (sr *SnippetResolver) Resolve() error {
 	snippetFindErr := repo.FindSnippetById(&snippet, snippetId)
 
 	if snippetFindErr != nil {
-		return snippetFindErr
+		return exceptions.NewRecordNotFoundError()
 	}
 
 	sr.Snippet = &snippet
