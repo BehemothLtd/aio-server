@@ -4,6 +4,8 @@ schema {
 }
 
 type Query {
+  selfInfo: User!
+
   msSnippet(id: ID!): Snippet
   msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
 }
