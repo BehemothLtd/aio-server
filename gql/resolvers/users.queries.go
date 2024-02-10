@@ -2,11 +2,12 @@ package gql
 
 import (
 	"aio-server/gql/payloads"
+	"aio-server/pkg/auths"
 	"context"
 )
 
 func (r *Resolver) SelfInfo(ctx context.Context) (*payloads.UserResolver, error) {
-	user, err := AuthUserFromCtx(ctx)
+	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
 		return nil, err
