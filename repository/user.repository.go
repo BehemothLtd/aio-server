@@ -34,7 +34,7 @@ func (r *Repository) AuthUser(email string, password string) (user *models.User,
 	comparePwError := bcrypt.CompareHashAndPassword([]byte(u.EncryptedPassword), []byte(password))
 
 	if comparePwError != nil {
-		return nil, errors.New("password is incorrect")
+		return nil, errors.New("email or password is incorrect")
 	}
 
 	return &u, nil

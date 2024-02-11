@@ -1,6 +1,7 @@
 package services
 
 import (
+	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
@@ -18,65 +19,74 @@ type AuthService struct {
 	Result *models.Authentication
 }
 
-func (a *AuthService) Execute() {
-	a.validate()
+func (a *AuthService) Execute() error {
+	validationErr := a.validate()
 
-	if len(a.Result.Errors) > 0 {
-		return
+	if validationErr != nil {
+		return validationErr
 	}
 
-	user := a.findUser()
-	if user != nil {
-		token := a.genarateToken(user)
+	user, userErr := a.findUser()
 
-		if token != nil {
-			a.Result.Token = *token
-			a.Result.Message = "Successfully Signed In"
-		}
+	if userErr != nil {
+		return userErr
 	}
+
+	token := a.generateToken(user)
+
+	if token != nil {
+		a.Result.Token = *token
+		a.Result.Message = "Successfully Signed In"
+	}
+
+	return nil
 }
 
-func (a *AuthService) validate() {
+func (a *AuthService) validate() error {
+	exception := exceptions.NewUnprocessableContentError(nil)
+
 	if a.Email == "" {
-		a.Result.Errors = append(a.Result.Errors, &models.ResourceModifyErrors{
-			Column: "email",
-			Errors: []string{"Email cant be empty"},
+		exception.AddError(exceptions.ResourceModifyErrors{
+			Field:  "email",
+			Errors: []string{"Cant be empty"},
 		})
 	}
 
 	if a.Password == "" {
-		a.Result.Errors = append(a.Result.Errors, &models.ResourceModifyErrors{
-			Column: "email",
-			Errors: []string{"Password cant be empty"},
+		exception.AddError(exceptions.ResourceModifyErrors{
+			Field:  "password",
+			Errors: []string{"Cant be empty"},
 		})
 	}
+
+	if len(exception.Errors) > 0 {
+		return exception
+	}
+
+	return nil
 }
 
-func (a *AuthService) findUser() *models.User {
+func (a *AuthService) findUser() (*models.User, error) {
+	exception := exceptions.NewUnprocessableContentError(nil)
+
 	repo := repository.NewUserRepository(a.Ctx, a.Db)
 
 	user, err := repo.AuthUser(a.Email, a.Password)
+
 	if err != nil {
-		a.Result.Errors = append(a.Result.Errors, &models.ResourceModifyErrors{
-			Column: "base",
+		exception.AddError(exceptions.ResourceModifyErrors{
+			Field:  "base",
 			Errors: []string{err.Error()},
 		})
 
-		return nil
+		return nil, exception
 	}
 
-	return user
+	return user, nil
 }
 
-func (a *AuthService) genarateToken(user *models.User) *string {
-	token, err := helpers.GenerateJwtToken(user.GenerateJwtClaims())
-
-	if err != nil {
-		a.Result.Errors = append(a.Result.Errors, &models.ResourceModifyErrors{
-			Column: "base",
-			Errors: []string{"error with decode password"},
-		})
-	}
+func (a *AuthService) generateToken(user *models.User) *string {
+	token, _ := helpers.GenerateJwtToken(user.GenerateJwtClaims())
 
 	return &token
 }

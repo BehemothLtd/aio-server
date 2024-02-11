@@ -17,4 +17,7 @@ const (
 
 	UnauthorizedErrorCode = 401
 	UnauthorizedErrorMsg  = "You need to sign in to perform this action"
+
+	UnprocessableContentErrorCode = 422
+	UnprocessableContentErrorMsg  = "Please check your input"
 )

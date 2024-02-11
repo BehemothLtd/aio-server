@@ -17,12 +17,14 @@ func (r *Resolver) SignIn(ctx context.Context, args struct {
 		Password: args.Password,
 		Ctx:      &ctx,
 		Db:       database.Db,
-		Result: &models.Authentication{
-			Errors: []*models.ResourceModifyErrors{},
-		},
+		Result:   &models.Authentication{},
 	}
 
-	service.Execute()
+	err := service.Execute()
+
+	if err != nil {
+		return nil, err
+	}
 
 	return &payloads.SignInResolver{
 		Auth: service.Result,
