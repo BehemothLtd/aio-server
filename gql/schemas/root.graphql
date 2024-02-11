@@ -8,7 +8,7 @@ type Query {
 
   msSnippet(id: ID!): Snippet
   msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
-  # msSnippetFavorite(id: ID!): Snippet!
+  msSnippetFavorite(id: ID!): SnippetFavorite!
 }
 
 type Mutation {

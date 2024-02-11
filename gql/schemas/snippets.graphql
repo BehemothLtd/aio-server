@@ -19,3 +19,7 @@ type SnippetsCollection {
   collection: [Snippet!]
   metadata: Metadata!
 }
+
+type SnippetFavorite {
+  favorited: Boolean!
+}
