@@ -12,7 +12,7 @@ type Snippet struct {
 	Slug           string
 	SnippetType    int
 	FavoritesCount int
-	FavoritedUsers []*User `gorm:"many2many:snippets_favorites"`
+	FavoritedUsers []User `gorm:"many2many:snippets_favorites"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }

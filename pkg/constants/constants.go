@@ -9,6 +9,9 @@ const (
 	MaxLongTextLength       = 4294967295
 	DefaultFormErrorMessage = "error happened. Please check your input"
 
+	BadRequestErrorCode = 400
+	BadRequestErrorMsg  = "Bad Request"
+
 	NotFoundErrorCode = 404
 	NotFoundErrorMsg  = "Not Found"
 

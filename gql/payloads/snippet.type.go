@@ -3,10 +3,11 @@ package payloads
 import (
 	"aio-server/exceptions"
 	"aio-server/models"
+	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
-	"errors"
+	"slices"
 
 	graphql "github.com/graph-gophers/graphql-go"
 	"gorm.io/gorm"
@@ -22,7 +23,7 @@ type SnippetResolver struct {
 
 func (sr *SnippetResolver) Resolve() error {
 	if sr.Args.Id == "" {
-		return errors.New("invalid Id")
+		return exceptions.NewBadRequestError("Invalid Id")
 	}
 
 	snippetId, err := helpers.GqlIdToInt32(sr.Args.Id)
@@ -86,4 +87,16 @@ func (sr *SnippetResolver) UpdatedAt(context.Context) *graphql.Time {
 	updatedAt := graphql.Time{Time: sr.Snippet.UpdatedAt}
 
 	return &updatedAt
+}
+
+func (sr *SnippetResolver) Favorited(ctx context.Context) bool {
+	user, err := auths.AuthUserFromCtx(ctx)
+
+	if err != nil {
+		return false
+	}
+
+	favorited := slices.ContainsFunc(sr.Snippet.FavoritedUsers, func(u models.User) bool { return u.Id == user.Id })
+
+	return favorited
 }
