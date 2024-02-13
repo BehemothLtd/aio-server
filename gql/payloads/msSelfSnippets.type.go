@@ -26,7 +26,7 @@ func (mssr *MsSelfSnippetsResolver) Resolve() error {
 	user, err := auths.AuthUserFromCtx(*mssr.Ctx)
 
 	if err != nil {
-		return exceptions.NewUnauthorizedError(nil)
+		return exceptions.NewUnauthorizedError("")
 	}
 
 	snippetsQuery, paginationData := mssr.Args.ToPaginationDataAndSnippetsQuery()

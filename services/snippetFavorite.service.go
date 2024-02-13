@@ -63,7 +63,7 @@ func (sfs *SnippetFavoriteService) validate() error {
 	user, err := auths.AuthUserFromCtx(*sfs.Ctx)
 
 	if err != nil {
-		return exceptions.NewUnauthorizedError(nil)
+		return exceptions.NewUnauthorizedError("")
 	}
 
 	sfs.user = user

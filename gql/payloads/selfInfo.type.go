@@ -22,7 +22,7 @@ func (sir *SelfInfoResolver) Resolve() error {
 	user, err := auths.AuthUserFromCtx(*sir.Ctx)
 
 	if err != nil {
-		return exceptions.NewUnauthorizedError(nil)
+		return exceptions.NewUnauthorizedError("")
 	}
 
 	sir.User = &user
@@ -38,7 +38,7 @@ func (sir *SelfInfoResolver) Email(context.Context) *string {
 	return &sir.User.Email
 }
 
-func (sir *SelfInfoResolver) AvatarsUrl(context.Context) *string {
+func (sir *SelfInfoResolver) AvatarURL(context.Context) *string {
 	return &sir.User.AvatarURL
 }
 

@@ -21,13 +21,13 @@ func (e UnauthorizedError) Extensions() map[string]interface{} {
 	}
 }
 
-func NewUnauthorizedError(message *string) UnauthorizedError {
+func NewUnauthorizedError(message string) UnauthorizedError {
 	var returnMessage string
 
-	if message == nil {
+	if message == "" {
 		returnMessage = constants.UnauthorizedErrorMsg
 	} else {
-		returnMessage = *message
+		returnMessage = message
 	}
 
 	return UnauthorizedError{
