@@ -8,12 +8,12 @@ type Query {
 
   msSnippet(id: ID!): Snippet
   msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
-  msSnippetFavorite(id: ID!): SnippetFavorite!
   msSelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
 }
 
 type Mutation {
   signIn(email: String!, password: String!): Authentication!
+  msSnippetFavorite(id: ID!): SnippetFavorite!
 }
 
 scalar Time
