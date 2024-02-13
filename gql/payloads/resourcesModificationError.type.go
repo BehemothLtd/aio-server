@@ -1,16 +1,16 @@
 package payloads
 
 import (
-	"aio-server/models"
+	"aio-server/exceptions"
 	"context"
 )
 
 type ResourceModifyErrorResolver struct {
-	Error *models.ResourceModifyErrors
+	Error *exceptions.ResourceModifyErrors
 }
 
 func (rmer *ResourceModifyErrorResolver) Column(context.Context) *string {
-	return &rmer.Error.Column
+	return &rmer.Error.Field
 }
 
 func (rmer *ResourceModifyErrorResolver) Errors(context.Context) *[]*string {

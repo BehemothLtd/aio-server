@@ -36,7 +36,7 @@ func (mssr *MsSelfSnippetsResolver) Resolve() error {
 	fetchErr := repo.ListSnippetsByUser(&snippets, &paginationData, &snippetsQuery, &user)
 
 	if fetchErr != nil {
-		return exceptions.NewUnprocessableContentError(nil)
+		return exceptions.NewUnprocessableContentError(nil, nil)
 	}
 
 	mssr.Collection = mssr.FromSnippets(snippets)

@@ -67,3 +67,15 @@ func (r *Repository) ofUser(userId int32) func(db *gorm.DB) *gorm.DB {
 		return db.Where(gorm.Expr(`user_id = ?`, userId))
 	}
 }
+
+func (r *Repository) CreateSnippet(snippet *models.Snippet) error {
+	dbTables := r.db.Table("snippets")
+
+	return dbTables.Create(&snippet).Error
+}
+
+func (r *Repository) UpdateSnippet(snippet *models.Snippet) error {
+	dbTables := r.db.Model(&snippet)
+
+	return dbTables.Updates(&snippet).Error
+}

@@ -2,6 +2,14 @@ package inputs
 
 import "aio-server/models"
 
+// For create/update
+type MsSnippetInput struct {
+	Title       *string
+	Content     *string
+	SnippetType *int32 // we have to use int32 OR float32 for input struct
+}
+
+// For List
 type MsSnippetsInput struct {
 	Input *PagyInput
 	Query *SnippetQueryInput

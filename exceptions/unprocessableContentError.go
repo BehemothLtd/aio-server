@@ -28,7 +28,7 @@ func (e UnprocessableContentError) Extensions() map[string]interface{} {
 	}
 }
 
-func NewUnprocessableContentError(message *string) *UnprocessableContentError {
+func NewUnprocessableContentError(message *string, errors *[]ResourceModifyErrors) *UnprocessableContentError {
 	var returnMessage string
 
 	if message == nil {
@@ -40,7 +40,7 @@ func NewUnprocessableContentError(message *string) *UnprocessableContentError {
 	return &UnprocessableContentError{
 		Code:    constants.UnprocessableContentErrorCode,
 		Message: returnMessage,
-		Errors:  []ResourceModifyErrors{},
+		Errors:  *errors,
 	}
 }
 

@@ -23,3 +23,13 @@ type SnippetsCollection {
 type SnippetFavorite {
   favorited: Boolean!
 }
+
+type SnippetModification {
+  snippet: Snippet!
+}
+
+input SnippetInput {
+  title: String
+  content: String
+  snippetType: Int
+}
