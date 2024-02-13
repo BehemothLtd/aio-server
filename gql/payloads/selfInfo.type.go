@@ -1,7 +1,9 @@
 package payloads
 
 import (
+	"aio-server/exceptions"
 	"aio-server/models"
+	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
 	"context"
 
@@ -16,12 +18,20 @@ type SelfInfoResolver struct {
 	User *models.User
 }
 
-func (ur *SelfInfoResolver) Resolve() error {
+func (sir *SelfInfoResolver) Resolve() error {
+	user, err := auths.AuthUserFromCtx(*sir.Ctx)
+
+	if err != nil {
+		return exceptions.NewUnauthorizedError("")
+	}
+
+	sir.User = &user
+
 	return nil
 }
 
-func (ur *SelfInfoResolver) ID(context.Context) *graphql.ID {
-	return helpers.GqlIDP(ur.User.Id)
+func (sir *SelfInfoResolver) ID(context.Context) *graphql.ID {
+	return helpers.GqlIDP(sir.User.Id)
 }
 
 func (ur *SelfInfoResolver) Email(context.Context) *string {
