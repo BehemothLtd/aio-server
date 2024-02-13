@@ -16,7 +16,7 @@ type SelfSnippetsResolver struct {
 	Db   *gorm.DB
 	Args inputs.MsSnippetsInput
 
-	Collection *[]*SnippetResolver
+	Collection *[]*MsSnippetResolver
 	Metadata   *MetadataResolver
 }
 
@@ -45,10 +45,10 @@ func (ssr *SelfSnippetsResolver) Resolve() error {
 	return nil
 }
 
-func (sr *SelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*SnippetResolver {
-	r := make([]*SnippetResolver, len(snippets))
+func (sr *SelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+	r := make([]*MsSnippetResolver, len(snippets))
 	for i := range snippets {
-		r[i] = &SnippetResolver{
+		r[i] = &MsSnippetResolver{
 			Snippet: snippets[i],
 		}
 	}

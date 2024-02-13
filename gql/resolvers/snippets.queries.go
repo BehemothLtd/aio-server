@@ -8,8 +8,8 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
-func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*payloads.SnippetResolver, error) {
-	resolver := payloads.SnippetResolver{
+func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*payloads.MsSnippetResolver, error) {
+	resolver := payloads.MsSnippetResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,

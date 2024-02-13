@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type SnippetResolver struct {
+type MsSnippetResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args struct{ Id graphql.ID }
@@ -21,7 +21,7 @@ type SnippetResolver struct {
 	Snippet *models.Snippet
 }
 
-func (sr *SnippetResolver) Resolve() error {
+func (sr *MsSnippetResolver) Resolve() error {
 	if sr.Args.Id == "" {
 		return exceptions.NewBadRequestError("Invalid Id")
 	}
@@ -45,51 +45,51 @@ func (sr *SnippetResolver) Resolve() error {
 	return nil
 }
 
-func (sr *SnippetResolver) ID(context.Context) *graphql.ID {
+func (sr *MsSnippetResolver) ID(context.Context) *graphql.ID {
 	return helpers.GqlIDP(sr.Snippet.Id)
 }
 
-func (sr *SnippetResolver) Title(context.Context) *string {
+func (sr *MsSnippetResolver) Title(context.Context) *string {
 	return &sr.Snippet.Title
 }
 
-func (sr *SnippetResolver) Content(context.Context) *string {
+func (sr *MsSnippetResolver) Content(context.Context) *string {
 	return &sr.Snippet.Content
 }
 
-func (sr *SnippetResolver) UserId(context.Context) *graphql.ID {
+func (sr *MsSnippetResolver) UserId(context.Context) *graphql.ID {
 	return helpers.GqlIDP(sr.Snippet.UserId)
 }
 
-func (sr *SnippetResolver) Slug(context.Context) *string {
+func (sr *MsSnippetResolver) Slug(context.Context) *string {
 	return &sr.Snippet.Slug
 }
 
-func (sr *SnippetResolver) SnippetType(context.Context) *int32 {
+func (sr *MsSnippetResolver) SnippetType(context.Context) *int32 {
 	snippetType := int32(sr.Snippet.SnippetType)
 
 	return &snippetType
 }
 
-func (sr *SnippetResolver) FavoritesCount(context.Context) *int32 {
+func (sr *MsSnippetResolver) FavoritesCount(context.Context) *int32 {
 	favoritesCount := int32(sr.Snippet.FavoritesCount)
 
 	return &favoritesCount
 }
 
-func (sr *SnippetResolver) CreatedAt(context.Context) *graphql.Time {
+func (sr *MsSnippetResolver) CreatedAt(context.Context) *graphql.Time {
 	createdAt := graphql.Time{Time: sr.Snippet.CreatedAt}
 
 	return &createdAt
 }
 
-func (sr *SnippetResolver) UpdatedAt(context.Context) *graphql.Time {
+func (sr *MsSnippetResolver) UpdatedAt(context.Context) *graphql.Time {
 	updatedAt := graphql.Time{Time: sr.Snippet.UpdatedAt}
 
 	return &updatedAt
 }
 
-func (sr *SnippetResolver) Favorited(ctx context.Context) bool {
+func (sr *MsSnippetResolver) Favorited(ctx context.Context) bool {
 	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
