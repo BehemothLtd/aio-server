@@ -24,8 +24,8 @@ func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) 
 	return &resolver, nil
 }
 
-func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.SnippetsResolver, error) {
-	resolver := payloads.SnippetsResolver{
+func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.MsSnippetsResolver, error) {
+	resolver := payloads.MsSnippetsResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,
@@ -40,8 +40,8 @@ func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) 
 	return &resolver, nil
 }
 
-func (r *Resolver) MsSelfSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.MsSelfSnippetsResolver, error) {
-	resolver := payloads.MsSelfSnippetsResolver{
+func (r *Resolver) MsSelfSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.MsSelfMsSnippetsResolver, error) {
+	resolver := payloads.MsSelfMsSnippetsResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,

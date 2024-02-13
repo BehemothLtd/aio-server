@@ -9,12 +9,12 @@ type ResourceModifyErrorResolver struct {
 	Error *models.ResourceModifyErrors
 }
 
-func (r *ResourceModifyErrorResolver) Column(context.Context) *string {
-	return &r.Error.Column
+func (rmer *ResourceModifyErrorResolver) Column(context.Context) *string {
+	return &rmer.Error.Column
 }
 
-func (r *ResourceModifyErrorResolver) Errors(context.Context) *[]*string {
-	errors := r.Error.Errors
+func (rmer *ResourceModifyErrorResolver) Errors(context.Context) *[]*string {
+	errors := rmer.Error.Errors
 
 	result := make([]*string, len(errors))
 

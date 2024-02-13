@@ -16,11 +16,11 @@ type MsSnippetFavoriteResolver struct {
 	Favorited bool
 }
 
-func (sfr *MsSnippetFavoriteResolver) Resolve() error {
+func (msfr *MsSnippetFavoriteResolver) Resolve() error {
 	service := services.SnippetFavoriteService{
-		Ctx:  sfr.Ctx,
-		Db:   sfr.Db,
-		Args: sfr.Args,
+		Ctx:  msfr.Ctx,
+		Db:   msfr.Db,
+		Args: msfr.Args,
 	}
 
 	err := service.Execute()
@@ -29,7 +29,7 @@ func (sfr *MsSnippetFavoriteResolver) Resolve() error {
 		return err
 	}
 
-	sfr.Favorited = *service.Result
+	msfr.Favorited = *service.Result
 
 	return nil
 }

@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type MsSelfSnippetsResolver struct {
+type MsSelfMsSnippetsResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args inputs.MsSnippetsInput
@@ -20,18 +20,18 @@ type MsSelfSnippetsResolver struct {
 	Metadata   *MetadataResolver
 }
 
-func (ssr *MsSelfSnippetsResolver) Resolve() error {
+func (mssr *MsSelfMsSnippetsResolver) Resolve() error {
 	var snippets []*models.Snippet
 
-	user, err := auths.AuthUserFromCtx(*ssr.Ctx)
+	user, err := auths.AuthUserFromCtx(*mssr.Ctx)
 
 	if err != nil {
 		return exceptions.NewUnauthorizedError("")
 	}
 
-	snippetsQuery, paginationData := ssr.Args.ToPaginationDataAndSnippetsQuery()
+	snippetsQuery, paginationData := mssr.Args.ToPaginationDataAndSnippetsQuery()
 
-	repo := repository.NewSnippetRepository(ssr.Ctx, ssr.Db)
+	repo := repository.NewSnippetRepository(mssr.Ctx, mssr.Db)
 
 	fetchErr := repo.ListSnippetsByUser(&snippets, &paginationData, &snippetsQuery, &user)
 
@@ -39,13 +39,13 @@ func (ssr *MsSelfSnippetsResolver) Resolve() error {
 		return exceptions.NewUnprocessableContentError(nil)
 	}
 
-	ssr.Collection = ssr.FromSnippets(snippets)
-	ssr.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
+	mssr.Collection = mssr.FromSnippets(snippets)
+	mssr.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
 
 	return nil
 }
 
-func (sr *MsSelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+func (sr *MsSelfMsSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
 	r := make([]*MsSnippetResolver, len(snippets))
 	for i := range snippets {
 		r[i] = &MsSnippetResolver{

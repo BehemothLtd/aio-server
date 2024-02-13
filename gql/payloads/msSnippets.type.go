@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type SnippetsResolver struct {
+type MsSnippetsResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args inputs.MsSnippetsInput
@@ -18,7 +18,7 @@ type SnippetsResolver struct {
 	Metadata   *MetadataResolver
 }
 
-func (sr *SnippetsResolver) Resolve() error {
+func (sr *MsSnippetsResolver) Resolve() error {
 	var snippets []*models.Snippet
 	snippetsQuery, paginationData := sr.Args.ToPaginationDataAndSnippetsQuery()
 
@@ -36,7 +36,7 @@ func (sr *SnippetsResolver) Resolve() error {
 	return nil
 }
 
-func (sr *SnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+func (sr *MsSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
 	r := make([]*MsSnippetResolver, len(snippets))
 	for i := range snippets {
 		r[i] = &MsSnippetResolver{
