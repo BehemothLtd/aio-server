@@ -22,7 +22,7 @@ func (sir *SelfInfoResolver) Resolve() error {
 	user, err := auths.AuthUserFromCtx(*sir.Ctx)
 
 	if err != nil {
-		return exceptions.NewUnauthorizedError("")
+		return exceptions.NewUnauthorizedError(nil)
 	}
 
 	sir.User = &user
@@ -34,18 +34,18 @@ func (sir *SelfInfoResolver) ID(context.Context) *graphql.ID {
 	return helpers.GqlIDP(sir.User.Id)
 }
 
-func (ur *SelfInfoResolver) Email(context.Context) *string {
-	return &ur.User.Email
+func (sir *SelfInfoResolver) Email(context.Context) *string {
+	return &sir.User.Email
 }
 
-func (ur *SelfInfoResolver) AvatarUrl(context.Context) *string {
-	return &ur.User.AvatarURL
+func (sir *SelfInfoResolver) AvatarsUrl(context.Context) *string {
+	return &sir.User.AvatarURL
 }
 
-func (ur *SelfInfoResolver) FullName(context.Context) *string {
-	return &ur.User.FullName
+func (sir *SelfInfoResolver) FullName(context.Context) *string {
+	return &sir.User.FullName
 }
 
-func (ur *SelfInfoResolver) Name(context.Context) *string {
-	return &ur.User.Name
+func (sir *SelfInfoResolver) Name(context.Context) *string {
+	return &sir.User.Name
 }

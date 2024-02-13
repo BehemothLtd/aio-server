@@ -18,15 +18,6 @@ func GqlIdToInt32(i graphql.ID) (int32, error) {
 	return int32(r), nil
 }
 
-// func int32P(i uint) *int32 {
-// 	r := int32(i)
-// 	return &r
-// }
-
-// func boolP(b bool) *bool {
-// 	return &b
-// }
-
 type SignedInteger interface {
 	int | int8 | int16 | int32 | int64
 }

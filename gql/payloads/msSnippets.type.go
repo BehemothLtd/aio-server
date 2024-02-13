@@ -18,11 +18,11 @@ type MsSnippetsResolver struct {
 	Metadata   *MetadataResolver
 }
 
-func (sr *MsSnippetsResolver) Resolve() error {
+func (msr *MsSnippetsResolver) Resolve() error {
 	var snippets []*models.Snippet
-	snippetsQuery, paginationData := sr.Args.ToPaginationDataAndSnippetsQuery()
+	snippetsQuery, paginationData := msr.Args.ToPaginationDataAndSnippetsQuery()
 
-	repo := repository.NewSnippetRepository(sr.Ctx, sr.Db)
+	repo := repository.NewSnippetRepository(msr.Ctx, msr.Db)
 
 	err := repo.ListSnippets(&snippets, &paginationData, &snippetsQuery)
 
@@ -30,13 +30,13 @@ func (sr *MsSnippetsResolver) Resolve() error {
 		return err
 	}
 
-	sr.Collection = sr.FromSnippets(snippets)
-	sr.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
+	msr.Collection = msr.FromSnippets(snippets)
+	msr.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
 
 	return nil
 }
 
-func (sr *MsSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+func (msr *MsSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
 	r := make([]*MsSnippetResolver, len(snippets))
 	for i := range snippets {
 		r[i] = &MsSnippetResolver{

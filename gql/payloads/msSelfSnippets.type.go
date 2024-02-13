@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type MsSelfMsSnippetsResolver struct {
+type MsSelfSnippetsResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args inputs.MsSnippetsInput
@@ -20,13 +20,13 @@ type MsSelfMsSnippetsResolver struct {
 	Metadata   *MetadataResolver
 }
 
-func (mssr *MsSelfMsSnippetsResolver) Resolve() error {
+func (mssr *MsSelfSnippetsResolver) Resolve() error {
 	var snippets []*models.Snippet
 
 	user, err := auths.AuthUserFromCtx(*mssr.Ctx)
 
 	if err != nil {
-		return exceptions.NewUnauthorizedError("")
+		return exceptions.NewUnauthorizedError(nil)
 	}
 
 	snippetsQuery, paginationData := mssr.Args.ToPaginationDataAndSnippetsQuery()
@@ -45,7 +45,7 @@ func (mssr *MsSelfMsSnippetsResolver) Resolve() error {
 	return nil
 }
 
-func (sr *MsSelfMsSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+func (mssr *MsSelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
 	r := make([]*MsSnippetResolver, len(snippets))
 	for i := range snippets {
 		r[i] = &MsSnippetResolver{
