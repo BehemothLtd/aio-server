@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type SnippetFavoriteResolver struct {
+type MsSnippetFavoriteResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args struct{ Id graphql.ID }
@@ -16,7 +16,7 @@ type SnippetFavoriteResolver struct {
 	Favorited bool
 }
 
-func (sfr *SnippetFavoriteResolver) Resolve() error {
+func (sfr *MsSnippetFavoriteResolver) Resolve() error {
 	service := services.SnippetFavoriteService{
 		Ctx:  sfr.Ctx,
 		Db:   sfr.Db,

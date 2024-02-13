@@ -7,8 +7,8 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
-func (r *Resolver) MsSnippetFavorite(ctx context.Context, args struct{ Id graphql.ID }) (*payloads.SnippetFavoriteResolver, error) {
-	resolver := payloads.SnippetFavoriteResolver{
+func (r *Resolver) MsSnippetFavorite(ctx context.Context, args struct{ Id graphql.ID }) (*payloads.MsSnippetFavoriteResolver, error) {
+	resolver := payloads.MsSnippetFavoriteResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,

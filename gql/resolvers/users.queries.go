@@ -6,14 +6,14 @@ import (
 	"context"
 )
 
-func (r *Resolver) SelfInfo(ctx context.Context) (*payloads.UserResolver, error) {
+func (r *Resolver) SelfInfo(ctx context.Context) (*payloads.SelfInfoResolver, error) {
 	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
 		return nil, err
 	}
 
-	resolver := payloads.UserResolver{
+	resolver := payloads.SelfInfoResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		User: &user,
