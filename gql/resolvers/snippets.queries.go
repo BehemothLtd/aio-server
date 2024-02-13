@@ -40,8 +40,8 @@ func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) 
 	return &resolver, nil
 }
 
-func (r *Resolver) MsSelfSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.SelfSnippetsResolver, error) {
-	resolver := payloads.SelfSnippetsResolver{
+func (r *Resolver) MsSelfSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.MsSelfSnippetsResolver, error) {
+	resolver := payloads.MsSelfSnippetsResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,

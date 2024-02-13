@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type SelfSnippetsResolver struct {
+type MsSelfSnippetsResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args inputs.MsSnippetsInput
@@ -20,7 +20,7 @@ type SelfSnippetsResolver struct {
 	Metadata   *MetadataResolver
 }
 
-func (ssr *SelfSnippetsResolver) Resolve() error {
+func (ssr *MsSelfSnippetsResolver) Resolve() error {
 	var snippets []*models.Snippet
 
 	user, err := auths.AuthUserFromCtx(*ssr.Ctx)
@@ -45,7 +45,7 @@ func (ssr *SelfSnippetsResolver) Resolve() error {
 	return nil
 }
 
-func (sr *SelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+func (sr *MsSelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
 	r := make([]*MsSnippetResolver, len(snippets))
 	for i := range snippets {
 		r[i] = &MsSnippetResolver{
