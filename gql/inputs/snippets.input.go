@@ -6,7 +6,7 @@ import "aio-server/models"
 type MsSnippetInput struct {
 	Title       *string
 	Content     *string
-	SnippetType *int32 // we have to use int32 OR float32 for input struct
+	SnippetType *int32 // we have to use int32 OR float32 for input struct because Graphql ASKED FOR IT
 }
 
 // For List
