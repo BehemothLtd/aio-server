@@ -1,4 +1,0 @@
-type Authentication {
-  token: String
-  message: String
-}

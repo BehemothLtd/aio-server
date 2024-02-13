@@ -36,6 +36,22 @@ func (r *Repository) ListSnippets(
 	).Order("id desc").Find(&snippets).Error
 }
 
+func (r *Repository) ListSnippetsByUser(
+	snippets *[]*models.Snippet,
+	paginateData *models.PaginationData,
+	query *models.SnippetsQuery,
+	user *models.User,
+) error {
+	dbTables := r.db.Model(&models.Snippet{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Preload("FavoritedUsers").Scopes(
+			r.ofUser(user.Id),
+			r.titleLike(query.TitleCont),
+		), paginateData),
+	).Order("id desc").Find(&snippets).Error
+}
+
 func (r *Repository) titleLike(titleLike string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if titleLike == "" || titleLike == "null" {
@@ -43,5 +59,11 @@ func (r *Repository) titleLike(titleLike string) func(db *gorm.DB) *gorm.DB {
 		} else {
 			return db.Where(gorm.Expr(`lower(snippets.title) LIKE ?`, strings.ToLower("%"+titleLike+"%")))
 		}
+	}
+}
+
+func (r *Repository) ofUser(userId int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where(gorm.Expr(`user_id = ?`, userId))
 	}
 }

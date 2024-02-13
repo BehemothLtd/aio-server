@@ -1,3 +1,8 @@
+type Authentication {
+  token: String
+  message: String
+}
+
 type User {
   id: ID
   email: String
