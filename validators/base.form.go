@@ -10,7 +10,6 @@ type Form struct {
 	Attributes []FieldAttributeInterface
 	Errors     []exceptions.ResourceModifyErrors
 	Repo       *repository.Repository
-	Valid      bool
 }
 
 func (form *Form) AddAttributes(attributes ...FieldAttributeInterface) {
@@ -27,7 +26,7 @@ func (form *Form) FindAttrByCode(attributeCode string) FieldAttributeInterface {
 	}
 }
 
-func (form *Form) SummaryErrors() *Form {
+func (form *Form) SummaryErrors() {
 	for _, attribute := range form.Attributes {
 		attributeErr := attribute.GetErrors()
 		attributeErrors := attributeErr.Errors
@@ -36,10 +35,4 @@ func (form *Form) SummaryErrors() *Form {
 			form.Errors = append(form.Errors, attributeErr)
 		}
 	}
-
-	if len(form.Errors) > 0 {
-		form.Valid = false
-	}
-
-	return form
 }

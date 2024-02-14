@@ -55,17 +55,11 @@ func (sus *SnippetUpdateService) Execute() (*models.Snippet, error) {
 		&snippet,
 	)
 
-	form.Validate()
+	formErr := form.Save()
 
-	if form.Valid {
-		updateErr := form.Update()
-
-		if updateErr != nil {
-			return nil, updateErr
-		}
-
-		return &snippet, nil
-	} else {
-		return nil, exceptions.NewUnprocessableContentError(nil, &form.Errors)
+	if formErr != nil {
+		return nil, formErr
 	}
+
+	return &snippet, nil
 }

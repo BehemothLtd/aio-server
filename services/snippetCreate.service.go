@@ -35,16 +35,10 @@ func (scs *SnippetCreateService) Execute() (*models.Snippet, error) {
 		&snippet,
 	)
 
-	form.Validate()
+	formErr := form.Save()
 
-	if form.Valid {
-		createErr := form.Create()
-
-		if createErr != nil {
-			return nil, createErr
-		}
-	} else {
-		return nil, exceptions.NewUnprocessableContentError(nil, &form.Errors)
+	if formErr != nil {
+		return nil, formErr
 	}
 
 	return &snippet, nil
