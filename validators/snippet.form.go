@@ -57,8 +57,16 @@ func (form *SnippetForm) Validate() {
 	form.SummaryErrors()
 }
 
+func (form *SnippetForm) Create() error {
+	return form.Repo.CreateSnippet(form.Snippet)
+}
+
+func (form *SnippetForm) Update() error {
+	return form.Repo.UpdateSnippet(form.Snippet)
+}
+
 func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
-	trueInput := input.ToFormInput()
+	formInput := input.ToFormInput()
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -66,34 +74,26 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 				Name: "Title",
 				Code: "title",
 			},
-			Value: trueInput.Title,
+			Value: formInput.Title,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Content",
 				Code: "content",
 			},
-			Value: trueInput.Content,
+			Value: formInput.Content,
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
 				Name: "Snippet Type",
 				Code: "snippetType",
 			},
-			Value:     trueInput.SnippetType,
+			Value:     formInput.SnippetType,
 			AllowZero: false,
 		},
 	)
 
-	form.Snippet.Title = trueInput.Title
-	form.Snippet.Content = trueInput.Content
-	form.Snippet.SnippetType = int(trueInput.SnippetType)
-}
-
-func (form *SnippetForm) Create() error {
-	return form.Repo.CreateSnippet(form.Snippet)
-}
-
-func (form *SnippetForm) Update() error {
-	return form.Repo.UpdateSnippet(form.Snippet)
+	form.Snippet.Title = formInput.Title
+	form.Snippet.Content = formInput.Content
+	form.Snippet.SnippetType = int(formInput.SnippetType)
 }

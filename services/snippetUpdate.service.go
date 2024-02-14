@@ -55,9 +55,7 @@ func (sus *SnippetUpdateService) Execute() (*models.Snippet, error) {
 		&snippet,
 	)
 
-	print("ejkwlqjeklwqjeklwqjeklwqjekl")
 	form.Validate()
-	print("222222")
 
 	if form.Valid {
 		updateErr := form.Update()

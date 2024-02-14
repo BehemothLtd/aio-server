@@ -27,7 +27,6 @@ func (attribute *IntAttribute[T]) GetErrors() exceptions.ResourceModifyErrors {
 func (attribute *IntAttribute[T]) ValidateRequired() {
 	// because Zero-Value of int is 0
 	if attribute.Value == 0 {
-		fmt.Printf("allow zero %+v", attribute.AllowZero)
 		if !attribute.AllowZero {
 			attribute.AddError("is required")
 		}

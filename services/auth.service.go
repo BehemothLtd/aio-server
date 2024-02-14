@@ -6,7 +6,6 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -23,7 +22,6 @@ type AuthService struct {
 func (a *AuthService) Execute() error {
 	validationErr := a.validate()
 
-	fmt.Printf("111111")
 	if validationErr != nil {
 		return validationErr
 	}
