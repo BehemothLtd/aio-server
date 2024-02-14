@@ -1,9 +1,7 @@
 package gql
 
 import (
-	"aio-server/database"
 	"aio-server/gql/payloads"
-	"aio-server/models"
 	"aio-server/services"
 	"context"
 )
@@ -16,8 +14,7 @@ func (r *Resolver) SignIn(ctx context.Context, args struct {
 		Email:    args.Email,
 		Password: args.Password,
 		Ctx:      &ctx,
-		Db:       database.Db,
-		Result:   &models.Authentication{},
+		Db:       r.Db,
 	}
 
 	err := service.Execute()
@@ -27,6 +24,6 @@ func (r *Resolver) SignIn(ctx context.Context, args struct {
 	}
 
 	return &payloads.SignInResolver{
-		Auth: service.Result,
+		Token: service.Token,
 	}, nil
 }

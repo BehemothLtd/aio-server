@@ -13,10 +13,8 @@ type Form struct {
 	Valid      bool
 }
 
-func (form *Form) AddAttributes(attributes ...FieldAttributeInterface) *Form {
+func (form *Form) AddAttributes(attributes ...FieldAttributeInterface) {
 	form.Attributes = append(form.Attributes, attributes...)
-
-	return form
 }
 
 func (form *Form) FindAttrByCode(attributeCode string) FieldAttributeInterface {

@@ -37,10 +37,16 @@ func NewUnprocessableContentError(message *string, errors *[]ResourceModifyError
 		returnMessage = *message
 	}
 
+	initErrs := []ResourceModifyErrors{}
+
+	if errors != nil {
+		initErrs = *errors
+	}
+
 	return &UnprocessableContentError{
 		Code:    constants.UnprocessableContentErrorCode,
 		Message: returnMessage,
-		Errors:  *errors,
+		Errors:  initErrs,
 	}
 }
 

@@ -13,8 +13,10 @@ type Query {
 
 type Mutation {
   signIn(email: String!, password: String!): Authentication!
+
   msSnippetFavorite(id: ID!): SnippetFavorite!
   msSnippetCreate(input: SnippetInput!): SnippetModification!
+  msSnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
 }
 
 scalar Time

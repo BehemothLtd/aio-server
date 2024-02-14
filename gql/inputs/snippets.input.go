@@ -9,6 +9,40 @@ type MsSnippetInput struct {
 	SnippetType *int32 // we have to use int32 OR float32 for input struct because Graphql ASKED FOR IT
 }
 
+func (msi *MsSnippetInput) ToFormInput() struct {
+	Title       string
+	Content     string
+	SnippetType int32
+} {
+	result := struct {
+		Title       string
+		Content     string
+		SnippetType int32
+	}{}
+
+	if msi != nil {
+		if msi.Title == nil {
+			result.Title = ""
+		} else {
+			result.Title = *msi.Title
+		}
+
+		if msi.Content == nil {
+			result.Content = ""
+		} else {
+			result.Content = *msi.Content
+		}
+
+		if msi.SnippetType == nil {
+			result.SnippetType = 0
+		} else {
+			result.SnippetType = *msi.SnippetType
+		}
+	}
+
+	return result
+}
+
 // For List
 type MsSnippetsInput struct {
 	Input *PagyInput

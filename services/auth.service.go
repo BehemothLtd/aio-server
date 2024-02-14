@@ -6,6 +6,7 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -16,16 +17,16 @@ type AuthService struct {
 	Ctx      *context.Context
 	Db       *gorm.DB
 
-	Result *models.Authentication
+	Token *string
 }
 
 func (a *AuthService) Execute() error {
 	validationErr := a.validate()
 
+	fmt.Printf("111111")
 	if validationErr != nil {
 		return validationErr
 	}
-
 	user, userErr := a.findUser()
 
 	if userErr != nil {
@@ -35,8 +36,7 @@ func (a *AuthService) Execute() error {
 	token := a.generateToken(user)
 
 	if token != nil {
-		a.Result.Token = *token
-		a.Result.Message = "Successfully Signed In"
+		a.Token = token
 	}
 
 	return nil

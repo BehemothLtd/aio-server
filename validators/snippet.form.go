@@ -9,7 +9,6 @@ import (
 
 type SnippetForm struct {
 	Form
-	Input   *inputs.MsSnippetInput
 	Snippet *models.Snippet
 }
 
@@ -19,36 +18,10 @@ func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.Repo
 			Valid: true,
 			Repo:  repo,
 		},
-		Input:   input,
 		Snippet: snippet,
 	}
 
-	form.AddAttributes(
-		&StringAttribute{
-			FieldAttribute: FieldAttribute{
-				Name: "Title",
-				Code: "title",
-			},
-			Value: *input.Title,
-		},
-		&StringAttribute{
-			FieldAttribute: FieldAttribute{
-				Name: "Content",
-				Code: "content",
-			},
-			Value: *input.Content,
-		},
-		&IntAttribute[int32]{
-			FieldAttribute: FieldAttribute{
-				Name: "Snippet Type",
-				Code: "snippetType",
-			},
-			Value:     *input.SnippetType,
-			AllowZero: false,
-		},
-	)
-
-	form.assignSnippet()
+	form.assignAttributes(input)
 
 	return form
 }
@@ -84,10 +57,37 @@ func (form *SnippetForm) Validate() {
 	form.SummaryErrors()
 }
 
-func (form *SnippetForm) assignSnippet() {
-	form.Snippet.Title = *form.Input.Title
-	form.Snippet.Content = *form.Input.Content
-	form.Snippet.SnippetType = int(*form.Input.SnippetType)
+func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
+	trueInput := input.ToFormInput()
+
+	form.AddAttributes(
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Title",
+				Code: "title",
+			},
+			Value: trueInput.Title,
+		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Content",
+				Code: "content",
+			},
+			Value: trueInput.Content,
+		},
+		&IntAttribute[int32]{
+			FieldAttribute: FieldAttribute{
+				Name: "Snippet Type",
+				Code: "snippetType",
+			},
+			Value:     trueInput.SnippetType,
+			AllowZero: false,
+		},
+	)
+
+	form.Snippet.Title = trueInput.Title
+	form.Snippet.Content = trueInput.Content
+	form.Snippet.SnippetType = int(trueInput.SnippetType)
 }
 
 func (form *SnippetForm) Create() error {

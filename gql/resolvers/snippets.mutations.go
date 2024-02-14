@@ -43,3 +43,22 @@ func (r *Resolver) MsSnippetCreate(ctx context.Context, args struct {
 
 	return &resolver, nil
 }
+
+func (r *Resolver) MsSnippetUpdate(ctx context.Context, args struct {
+	Id    graphql.ID
+	Input inputs.MsSnippetInput
+}) (*payloads.MsSnippetUpdateResolver, error) {
+	resolver := payloads.MsSnippetUpdateResolver{
+		Ctx:  &ctx,
+		Db:   r.Db,
+		Args: args,
+	}
+
+	err := resolver.Resolve()
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &resolver, nil
+}

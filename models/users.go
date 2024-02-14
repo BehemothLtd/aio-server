@@ -17,11 +17,6 @@ type User struct {
 	FavoritedSnippets []*Snippet `gorm:"many2many:snippets_favorites"`
 }
 
-type Authentication struct {
-	Token   string
-	Message string
-}
-
 type UserClaims struct {
 	Sub int32
 	jwt.RegisteredClaims
