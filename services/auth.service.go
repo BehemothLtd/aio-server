@@ -69,7 +69,7 @@ func (a *AuthService) findUser() (*models.User, error) {
 
 	repo := repository.NewUserRepository(a.Ctx, a.Db)
 
-	user, err := repo.AuthUser(a.Email, a.Password)
+	user, err := repo.Auth(a.Email, a.Password)
 
 	if err != nil {
 		exception.AddError(exceptions.ResourceModifyErrors{

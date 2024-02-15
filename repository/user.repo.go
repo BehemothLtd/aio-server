@@ -9,23 +9,31 @@ import (
 	"gorm.io/gorm"
 )
 
+// UserRepository handles operations related to users.
+type UserRepository struct {
+	Repository
+}
+
+// NewUserRepository initializes a new UserRepository instance.
 func NewUserRepository(c *context.Context, db *gorm.DB) *Repository {
 	return &Repository{
 		db: db,
-		c:  c,
+		ctx:  c,
 	}
 }
 
-func (r *Repository) FindUserByEmail(user *models.User, email string) error {
+// FindByEmail finds a user by their email.
+func (r *Repository) FindByEmail(user *models.User, email string) error {
 	dbTables := r.db.Table("users")
 
 	return dbTables.Where("email = ?", email).First(&user).Error
 }
 
-func (r *Repository) AuthUser(email string, password string) (user *models.User, err error) {
+// Auth authenticates a user by their email and password.
+func (r *Repository) Auth(email string, password string) (user *models.User, err error) {
 	var u models.User
 
-	userFindErr := r.FindUserByEmail(&u, email)
+	userFindErr := r.FindByEmail(&u, email)
 
 	if userFindErr != nil {
 		return nil, errors.New("cant find user")
@@ -38,10 +46,4 @@ func (r *Repository) AuthUser(email string, password string) (user *models.User,
 	}
 
 	return &u, nil
-}
-
-func (r *Repository) FindUserById(user *models.User, uid any) error {
-	dbTables := r.db.Table("users")
-
-	return dbTables.First(&user, uid).Error
 }

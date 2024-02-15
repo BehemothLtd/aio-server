@@ -8,14 +8,23 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewFavoriteSnippetRepository(c *context.Context, db *gorm.DB) *Repository {
-	return &Repository{
-		db: db,
-		c:  c,
+// SnippetFavoriteRepository handles operations related to snippetFavorites.
+type SnippetFavoriteRepository struct {
+	Repository
+}
+
+// NewSnippetRepository initializes a new NewSnippetFavoriteRepository instance.
+func NewSnippetFavoriteRepository(c *context.Context, db *gorm.DB) *SnippetFavoriteRepository {
+	return &SnippetFavoriteRepository{
+		Repository: Repository{
+			db: db,
+			ctx: c,
+		},
 	}
 }
 
-func (r *Repository) FindByUserAndSnippet(
+// FindByUserAndSnippet finds snippetFavorite record by it User and Snippet
+func (r *SnippetFavoriteRepository) FindByUserAndSnippet(
 	snippetFavorited *models.SnippetsFavorite,
 ) (favoritedRec *models.SnippetsFavorite, err error) {
 	dbTables := r.db.Table("snippets_favorites")
@@ -29,10 +38,8 @@ func (r *Repository) FindByUserAndSnippet(
 	return favoritedRec, nil
 }
 
-func (r *Repository) ToggleFavoriteSnippet(
-	snippet *models.Snippet,
-	user *models.User,
-) (favorited bool, err error) {
+// Toggle toggles a snippet favorite.
+func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (favorited bool, err error) {
 	dbTables := r.db.Table("snippets_favorites")
 
 	snippetFavorited := models.SnippetsFavorite{UserId: user.Id, SnippetId: snippet.Id}
@@ -52,14 +59,13 @@ func (r *Repository) ToggleFavoriteSnippet(
 		}
 
 		return false, nil
-	} else {
-		// Not Found -> create -> favorited
-		createResult := dbTables.Create(&snippetFavorited)
-
-		if createResult.Error != nil {
-			return false, createResult.Error
-		}
-
-		return true, nil
 	}
+
+	// Not Found -> create -> favorited
+	createResult := dbTables.Create(&snippetFavorited)
+	if createResult.Error != nil {
+		return false, createResult.Error
+	}
+
+	return true, nil
 }

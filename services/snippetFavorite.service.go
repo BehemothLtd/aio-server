@@ -31,14 +31,14 @@ func (sfs *SnippetFavoriteService) Execute() error {
 	}
 
 	snippetRepo := repository.NewSnippetRepository(sfs.Ctx, sfs.Db)
-	snippetErr := snippetRepo.FindSnippetById(&sfs.snippet, sfs.snippet.Id)
+	snippetErr := snippetRepo.FindById(&sfs.snippet, sfs.snippet.Id)
 
 	if snippetErr != nil {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	favoriteSnippetRepo := repository.NewFavoriteSnippetRepository(sfs.Ctx, sfs.Db)
-	favorited, toggleFavoriteErr := favoriteSnippetRepo.ToggleFavoriteSnippet(&sfs.snippet, &sfs.user)
+	favoriteSnippetRepo := repository.NewSnippetFavoriteRepository(sfs.Ctx, sfs.Db)
+	favorited, toggleFavoriteErr := favoriteSnippetRepo.Toggle(&sfs.snippet, &sfs.user)
 
 	if toggleFavoriteErr != nil {
 		return exceptions.NewUnprocessableContentError("Unable to perform this action", nil)

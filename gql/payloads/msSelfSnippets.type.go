@@ -33,7 +33,7 @@ func (mssr *MsSelfSnippetsResolver) Resolve() error {
 
 	repo := repository.NewSnippetRepository(mssr.Ctx, mssr.Db)
 
-	fetchErr := repo.ListSnippetsByUser(&snippets, &paginationData, &snippetsQuery, &user)
+	fetchErr := repo.ListByUser(&snippets, &paginationData, &snippetsQuery, &user)
 
 	if fetchErr != nil {
 		return exceptions.NewUnprocessableContentError("", nil)

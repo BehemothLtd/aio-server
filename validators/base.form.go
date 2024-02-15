@@ -2,14 +2,12 @@ package validators
 
 import (
 	"aio-server/exceptions"
-	"aio-server/repository"
 	"slices"
 )
 
 type Form struct {
 	Attributes []FieldAttributeInterface
 	Errors     []exceptions.ResourceModifyErrors
-	Repo       *repository.Repository
 }
 
 func (form *Form) AddAttributes(attributes ...FieldAttributeInterface) {

@@ -32,7 +32,7 @@ func (msr *MsSnippetResolver) Resolve() error {
 
 	snippet := models.Snippet{}
 	repo := repository.NewSnippetRepository(msr.Ctx, msr.Db)
-	err = repo.FindSnippetById(&snippet, snippetId)
+	err = repo.FindById(&snippet, snippetId)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

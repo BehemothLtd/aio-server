@@ -8,5 +8,5 @@ import (
 
 type Repository struct {
 	db *gorm.DB
-	c  *context.Context
+	ctx  *context.Context
 }

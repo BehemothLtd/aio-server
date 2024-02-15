@@ -39,11 +39,6 @@ func (sir *SelfInfoResolver) Email(context.Context) *string {
 	return &sir.User.Email
 }
 
-// AvatarURL returns the avatar URL of the user.
-func (sir *SelfInfoResolver) AvatarURL(context.Context) *string {
-	return &sir.User.AvatarURL
-}
-
 // FullName returns the full name of the user.
 func (sir *SelfInfoResolver) FullName(context.Context) *string {
 	return &sir.User.FullName

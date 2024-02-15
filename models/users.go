@@ -10,7 +10,6 @@ type User struct {
 	Id                int32
 	Email             string
 	EncryptedPassword string
-	AvatarURL         string
 	FullName          string
 	LockVersion       int
 	Name              string

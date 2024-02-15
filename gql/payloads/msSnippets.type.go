@@ -25,7 +25,7 @@ func (msr *MsSnippetsResolver) Resolve() error {
 
 	repo := repository.NewSnippetRepository(msr.Ctx, msr.Db)
 
-	err := repo.ListSnippets(&snippets, &paginationData, &snippetsQuery)
+	err := repo.List(&snippets, &paginationData, &snippetsQuery)
 	if err != nil {
 		return err
 	}

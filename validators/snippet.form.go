@@ -13,15 +13,17 @@ type SnippetForm struct {
 	Form
 	Input   *inputs.MsSnippetInput
 	Snippet *models.Snippet
+	Repo *repository.SnippetRepository
 }
 
-func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.Repository, snippet *models.Snippet) SnippetForm {
+func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.SnippetRepository, snippet *models.Snippet) SnippetForm {
 	form := SnippetForm{
 		Form: Form{
-			Repo: repo,
+
 		},
 		Input:   input,
 		Snippet: snippet,
+		Repo: repo,
 	}
 
 	form.assignAttributes(input)
@@ -41,10 +43,10 @@ func (form *SnippetForm) Save() error {
 	if form.Snippet.Id == 0 {
 		// Create
 		form.Snippet.Slug = helpers.NewUUID()
-		saveErr = form.Repo.CreateSnippet(form.Snippet)
+		saveErr = form.Repo.Create(form.Snippet)
 	} else {
 		// Update
-		saveErr = form.Repo.UpdateSnippet(form.Snippet)
+		saveErr = form.Repo.Update(form.Snippet)
 	}
 
 	return saveErr
