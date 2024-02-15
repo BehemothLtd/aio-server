@@ -3,7 +3,9 @@ package helpers
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
+	"github.com/google/uuid"
 	graphql "github.com/graph-gophers/graphql-go"
 	"github.com/pkg/errors"
 )
@@ -29,4 +31,13 @@ func GqlIDP[T SignedInteger](id T) *graphql.ID {
 
 	r := graphql.ID(fmt.Sprint(id))
 	return &r
+}
+
+func NewUUID() string {
+	newUUID := uuid.New().String()
+
+	idSplitted := strings.Split(newUUID, "-")
+	idJoined := strings.Join(idSplitted[:], "")
+
+	return idJoined
 }

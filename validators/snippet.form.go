@@ -5,6 +5,7 @@ import (
 	"aio-server/gql/inputs"
 	"aio-server/models"
 	"aio-server/pkg/constants"
+	"aio-server/pkg/helpers"
 	"aio-server/repository"
 )
 
@@ -39,6 +40,7 @@ func (form *SnippetForm) Save() error {
 
 	if form.Snippet.Id == 0 {
 		// Create
+		form.Snippet.Slug = helpers.NewUUID()
 		saveErr = form.Repo.CreateSnippet(form.Snippet)
 	} else {
 		// Update
