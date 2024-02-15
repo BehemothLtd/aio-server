@@ -7,7 +7,6 @@ const (
 
 	MaxStringLength         = 255
 	MaxLongTextLength       = 4294967295
-	DefaultFormErrorMessage = "error happened. Please check your input"
 
 	BadRequestErrorCode = 400
 	BadRequestErrorMsg  = "Bad Request"

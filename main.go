@@ -1,6 +1,7 @@
 package main
 
 import (
+	"aio-server/controllers"
 	"aio-server/database"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/initializers"
@@ -30,6 +31,7 @@ func main() {
 	r.Use(logger.Logger(logrus.New()), gin.Recovery())
 
 	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/graphql", initializers.GqlHandler(db))
+	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/uploads", controllers.UploadHandler)
 
 	r.Run()
 }
