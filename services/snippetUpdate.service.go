@@ -14,6 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// SnippetUpdateService handles the updation of snippets.
 type SnippetUpdateService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
@@ -23,9 +24,10 @@ type SnippetUpdateService struct {
 	}
 }
 
+// Execute updates an existed snippet.
 func (sus *SnippetUpdateService) Execute() (*models.Snippet, error) {
+	// Authenticate the user
 	user, err := auths.AuthUserFromCtx(*sus.Ctx)
-
 	if err != nil {
 		return nil, exceptions.NewUnauthorizedError("")
 	}

@@ -12,43 +12,40 @@ import (
 	"gorm.io/gorm"
 )
 
+// SnippetFavoriteService handles favoriting and unfavoriting snippets.
 type SnippetFavoriteService struct {
-	Ctx  *context.Context
-	Db   *gorm.DB
-	Args struct{ Id graphql.ID }
-
-	user    models.User
+	Ctx    *context.Context
+	Db     *gorm.DB
+	Args   struct{ Id graphql.ID }
+	user   models.User
 	snippet models.Snippet
-
 	Result *bool
 }
 
+// Execute performs the favoriting or unfavoriting action.
 func (sfs *SnippetFavoriteService) Execute() error {
-	validationErr := sfs.validate()
-
-	if validationErr != nil {
-		return validationErr
+	if err := sfs.validate(); err != nil {
+		return err
 	}
 
+	// Retrieve the snippet
 	snippetRepo := repository.NewSnippetRepository(sfs.Ctx, sfs.Db)
-	snippetErr := snippetRepo.FindById(&sfs.snippet, sfs.snippet.Id)
-
-	if snippetErr != nil {
+	if err := snippetRepo.FindById(&sfs.snippet, sfs.snippet.Id); err != nil {
 		return exceptions.NewRecordNotFoundError()
 	}
 
+	// Toggle favorite status
 	favoriteSnippetRepo := repository.NewSnippetFavoriteRepository(sfs.Ctx, sfs.Db)
-	favorited, toggleFavoriteErr := favoriteSnippetRepo.Toggle(&sfs.snippet, &sfs.user)
-
-	if toggleFavoriteErr != nil {
+	favorited, err := favoriteSnippetRepo.Toggle(&sfs.snippet, &sfs.user)
+	if err != nil {
 		return exceptions.NewUnprocessableContentError("Unable to perform this action", nil)
 	}
 
 	sfs.Result = &favorited
-
 	return nil
 }
 
+// validate validates the input and retrieves the user information.
 func (sfs *SnippetFavoriteService) validate() error {
 	if sfs.Args.Id == "" {
 		return exceptions.NewBadRequestError("Invalid Id")
@@ -59,8 +56,8 @@ func (sfs *SnippetFavoriteService) validate() error {
 		return exceptions.NewBadRequestError("Invalid Id")
 	}
 
+	// Authenticate user
 	user, err := auths.AuthUserFromCtx(*sfs.Ctx)
-
 	if err != nil {
 		return exceptions.NewUnauthorizedError("")
 	}
@@ -69,6 +66,5 @@ func (sfs *SnippetFavoriteService) validate() error {
 	sfs.snippet = models.Snippet{
 		Id: snippetId,
 	}
-
 	return nil
 }
