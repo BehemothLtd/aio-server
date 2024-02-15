@@ -11,18 +11,19 @@ import (
 	"gorm.io/gorm"
 )
 
+// GqlHandler returns a Gin middleware that handles GraphQL requests.
 func GqlHandler(db *gorm.DB) gin.HandlerFunc {
-	s, err := getSchema()
+	schema, err := getSchema()
 	if err != nil {
-		panic(err)
+		log.Fatalf("failed to get schema: %v", err)
 	}
 
 	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
-	schema := graphql.MustParseSchema(s, &gql.Resolver{Db: db}, opts...)
-	r := &relay.Handler{Schema: schema}
+	gqlSchema := graphql.MustParseSchema(schema, &gql.Resolver{Db: db}, opts...)
+	handler := &relay.Handler{Schema: gqlSchema}
 
 	return func(c *gin.Context) {
-		r.ServeHTTP(c.Writer, c.Request)
+		handler.ServeHTTP(c.Writer, c.Request)
 	}
 }
 
@@ -30,17 +31,20 @@ func getSchema() (string, error) {
 	schemaPath := "./gql/schemas/"
 	entries, err := os.ReadDir(schemaPath)
 	if err != nil {
-		log.Fatal(err)
+		return "", err
 	}
 
-	schemaString := ""
+	var schemaContent []byte
 
-	for _, e := range entries {
-		filePath := schemaPath + e.Name()
-		fileContent, _ := os.ReadFile(filePath)
-
-		schemaString += string(fileContent)
+	for _, entry := range entries {
+		filePath := schemaPath + entry.Name()
+		content, err := os.ReadFile(filePath)
+		if err != nil {
+			log.Printf("failed to read file %s: %v", filePath, err)
+			continue
+		}
+		schemaContent = append(schemaContent, content...)
 	}
 
-	return schemaString, nil
+	return string(schemaContent), nil
 }

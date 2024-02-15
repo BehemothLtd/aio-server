@@ -81,16 +81,16 @@ func (form *SnippetForm) validate() error {
 	form.SummaryErrors()
 
 	if form.Errors != nil {
-		return exceptions.NewUnprocessableContentError(nil, &form.Errors)
+		return exceptions.NewUnprocessableContentError("", form.Errors)
 	} else {
 		return nil
 	}
 }
 
 func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
-	title := input.GetTitle()
-	content := input.GetContent()
-	snippetType := input.GetSnippetType()
+	title := helpers.GetStringOrDefault(input.Title)
+	content := helpers.GetStringOrDefault(input.Content)
+	snippetType := helpers.GetInt32OrDefault(input.SnippetType)
 
 	form.AddAttributes(
 		&StringAttribute{

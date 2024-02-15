@@ -6,13 +6,11 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"os"
 	"time"
 
-	"mime/multipart"
-
 	"cloud.google.com/go/storage"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,20 +22,16 @@ type Uploader struct {
 
 type ClientUploader struct {
 	cl         *storage.Client
-	projectID  string
 	bucketName string
 	uploadPath string
 }
 
 func (u *Uploader) Upload() (*string, error) {
-	_, signedIn := u.Ctx.Get(constants.ContextCurrentUser)
-
-	if !signedIn {
+	if _, signedIn := u.Ctx.Get(constants.ContextCurrentUser); !signedIn {
 		return nil, errors.New("Unauthorized")
 	}
 
 	file, err := u.Ctx.FormFile("file")
-
 	if err != nil {
 		return nil, err
 	}
@@ -45,68 +39,65 @@ func (u *Uploader) Upload() (*string, error) {
 	fileName := NewUUID() + file.Filename
 
 	if u.Local {
-		uploadDst := os.Getenv("UPLOAD_LOCALLY_PATH") + fileName
-
-		err := u.Ctx.SaveUploadedFile(file, uploadDst)
-
-		if err != nil {
-			return nil, err
-		}
-
-		return &uploadDst, nil
-	} else {
-		bucketName := os.Getenv("GCS_BUCKET_NAME")
-		projectId := os.Getenv("GCS_PROJECT_ID")
-		gcsAccountService := os.Getenv("GCS_ACCOUNT_SERVICE")
-
-		if bucketName == "" || projectId == "" || gcsAccountService == "" {
-			return nil, errors.New("Invalid Setting for Upload")
-		}
-
-		os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", gcsAccountService)
-		client, err := storage.NewClient(context.Background())
-		if err != nil {
-			return nil, err
-		}
-
-		uploadClient := &ClientUploader{
-			cl:         client,
-			bucketName: bucketName,
-			projectID:  projectId,
-			uploadPath: u.UploadPath,
-		}
-
-		blobFile, err := file.Open()
-		if err != nil {
-			return nil, err
-		}
-
-		err = uploadClient.UploadFile(blobFile, fileName)
-		if err != nil {
-
-			return nil, err
-		}
-
-		filePublicUrl := "https://storage.googleapis.com/" + bucketName + "/" + fileName
-
-		return &filePublicUrl, nil
+		return u.uploadLocally(file, fileName)
 	}
+	return u.uploadToGCS(file, fileName)
+}
+
+func (u *Uploader) uploadLocally(file *multipart.FileHeader, fileName string) (*string, error) {
+	uploadDst := os.Getenv("UPLOAD_LOCALLY_PATH") + fileName
+	err := u.Ctx.SaveUploadedFile(file, uploadDst)
+	if err != nil {
+		return nil, err
+	}
+	return &uploadDst, nil
+}
+
+func (u *Uploader) uploadToGCS(file *multipart.FileHeader, fileName string) (*string, error) {
+	bucketName := os.Getenv("GCS_BUCKET_NAME")
+	projectId := os.Getenv("GCS_PROJECT_ID")
+	gcsAccountService := os.Getenv("GCS_ACCOUNT_SERVICE")
+
+	if bucketName == "" || projectId == "" || gcsAccountService == "" {
+		return nil, errors.New("Invalid Setting for Upload")
+	}
+
+	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", gcsAccountService)
+	client, err := storage.NewClient(context.Background())
+	if err != nil {
+		return nil, err
+	}
+
+	uploadClient := &ClientUploader{
+		cl:         client,
+		bucketName: bucketName,
+		uploadPath: u.UploadPath,
+	}
+
+	blobFile, err := file.Open()
+	if err != nil {
+		return nil, err
+	}
+	defer blobFile.Close()
+
+	err = uploadClient.UploadFile(blobFile, fileName)
+	if err != nil {
+		return nil, err
+	}
+
+	filePublicUrl := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, fileName)
+	return &filePublicUrl, nil
 }
 
 func (c *ClientUploader) UploadFile(file multipart.File, object string) error {
-	ctx := context.Background()
-
-	ctx, cancel := context.WithTimeout(ctx, time.Second*50)
+	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 
-	// Upload an object with storage.Writer.
 	wc := c.cl.Bucket(c.bucketName).Object(c.uploadPath + object).NewWriter(ctx)
+	defer wc.Close()
+
 	if _, err := io.Copy(wc, file); err != nil {
 		return fmt.Errorf("io.Copy: %v", err)
 	}
-	if err := wc.Close(); err != nil {
-		return fmt.Errorf("Writer.Close: %v", err)
-	}
-
 	return nil
 }

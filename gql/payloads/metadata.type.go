@@ -7,50 +7,52 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
+// MetadataResolver resolves the fields of the Metadata type.
 type MetadataResolver struct {
 	Metadata *models.Metadata
 }
 
+// Total returns the total value of Metadata as a graphql.ID pointer.
 func (mr *MetadataResolver) Total() *graphql.ID {
-	return helpers.GqlIDP(mr.Metadata.Total)
+	return helpers.IDPointer(*helpers.GqlIDP(mr.Metadata.Total))
 }
 
+// PerPage returns the per page value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) PerPage() *int32 {
-	r := int32(mr.Metadata.PerPage)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.PerPage))
 }
 
+// Page returns the page value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) Page() *int32 {
-	r := int32(mr.Metadata.Page)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.Page))
 }
 
+// Pages returns the pages value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) Pages() *int32 {
-	r := int32(mr.Metadata.Pages)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.Pages))
 }
 
+// Count returns the count value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) Count() *int32 {
-	r := int32(mr.Metadata.Count)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.Count))
 }
 
+// Next returns the next value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) Next() *int32 {
-	r := int32(mr.Metadata.Next)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.Next))
 }
 
+// Prev returns the prev value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) Prev() *int32 {
-	r := int32(mr.Metadata.Prev)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.Prev))
 }
 
+// From returns the from value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) From() *int32 {
-	r := int32(mr.Metadata.From)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.From))
 }
 
+// To returns the to value of Metadata as an int32 pointer.
 func (mr *MetadataResolver) To() *int32 {
-	r := int32(mr.Metadata.To)
-	return &r
+	return helpers.Int32Pointer(int32(mr.Metadata.To))
 }

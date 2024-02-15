@@ -5,21 +5,24 @@ import (
 	"context"
 )
 
+// ResourceModifyErrorResolver resolves errors encountered during resource modification.
 type ResourceModifyErrorResolver struct {
 	Error *exceptions.ResourceModifyErrors
 }
 
-func (rmer *ResourceModifyErrorResolver) Column(context.Context) *string {
+// Column returns the column associated with the error.
+func (rmer *ResourceModifyErrorResolver) Column(ctx context.Context) *string {
 	return &rmer.Error.Field
 }
 
-func (rmer *ResourceModifyErrorResolver) Errors(context.Context) *[]*string {
+// Errors returns a list of errors encountered during resource modification.
+func (rmer *ResourceModifyErrorResolver) Errors(ctx context.Context) *[]*string {
 	errors := rmer.Error.Errors
 
 	result := make([]*string, len(errors))
 
-	for i := range errors {
-		result[i] = &errors[i]
+	for i, err := range errors {
+		result[i] = &err
 	}
 
 	return &result
