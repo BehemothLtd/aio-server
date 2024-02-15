@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"aio-server/pkg/constants"
+	"errors"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -12,6 +14,12 @@ type Uploader struct {
 }
 
 func (u *Uploader) Upload() (*string, error) {
+	_, signedIn := u.Ctx.Get(constants.ContextCurrentUser)
+
+	if !signedIn {
+		return nil, errors.New("Unauthorized")
+	}
+
 	file, err := u.Ctx.FormFile("file")
 
 	if err != nil {
