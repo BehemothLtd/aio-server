@@ -8,19 +8,20 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-func GenerateJwtToken(claims jwt.Claims) (token string, err error) {
-	var t *jwt.Token = jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+// GenerateJwtToken generates a JWT token based on the provided claims.
+func GenerateJwtToken(claims jwt.Claims) (string, error) {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	token, err = t.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
-
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET_KEY")))
 	if err != nil {
 		return "", err
 	}
 
-	return token, nil
+	return tokenString, nil
 }
 
-func DecodeJwtToken(tokenString string, userClaim *models.UserClaims) (err error) {
+// DecodeJwtToken decodes and validates a JWT token and populates the user claims.
+func DecodeJwtToken(tokenString string, userClaim *models.UserClaims) error {
 	token, err := jwt.ParseWithClaims(tokenString, userClaim, func(token *jwt.Token) (interface{}, error) {
 		return []byte(os.Getenv("JWT_SECRET_KEY")), nil
 	})
@@ -28,7 +29,6 @@ func DecodeJwtToken(tokenString string, userClaim *models.UserClaims) (err error
 		return err
 	}
 
-	// check token validity, for example token might have been expired
 	if !token.Valid {
 		return errors.New("invalid token")
 	}

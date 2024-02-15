@@ -2,20 +2,20 @@ package inputs
 
 import "aio-server/models"
 
-// For List
+// MsSnippetsInput represents input for querying snippets collection.
 type MsSnippetsInput struct {
 	Input *PagyInput
 	Query *SnippetQueryInput
 }
 
+// ToPaginationDataAndSnippetsQuery converts MsSnippetsInput to models.SnippetsQuery and models.PaginationData.
 func (msi *MsSnippetsInput) ToPaginationDataAndSnippetsQuery() (models.SnippetsQuery, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
 
-	outputQuery := models.SnippetsQuery{TitleCont: ""}
-
+	var titleCont string
 	if msi.Query != nil && msi.Query.TitleCont != nil {
-		outputQuery.TitleCont = *msi.Query.TitleCont
+		titleCont = *msi.Query.TitleCont
 	}
 
-	return outputQuery, paginationData
+	return models.SnippetsQuery{TitleCont: titleCont}, paginationData
 }

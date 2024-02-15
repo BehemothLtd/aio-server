@@ -8,14 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
+// MsSnippetFavoriteResolver resolves the favoriting of a snippet.
 type MsSnippetFavoriteResolver struct {
-	Ctx  *context.Context
-	Db   *gorm.DB
-	Args struct{ Id graphql.ID }
-
+	Ctx       *context.Context
+	Db        *gorm.DB
+	Args      struct{ Id graphql.ID }
 	Favorited bool
 }
 
+// Resolve executes the snippet favorite service.
 func (msfr *MsSnippetFavoriteResolver) Resolve() error {
 	service := services.SnippetFavoriteService{
 		Ctx:  msfr.Ctx,
@@ -24,12 +25,10 @@ func (msfr *MsSnippetFavoriteResolver) Resolve() error {
 	}
 
 	err := service.Execute()
-
 	if err != nil {
 		return err
 	}
 
 	msfr.Favorited = *service.Result
-
 	return nil
 }

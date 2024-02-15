@@ -9,15 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
+// MsSnippetsResolver resolves the querying of snippets collection.
 type MsSnippetsResolver struct {
-	Ctx  *context.Context
-	Db   *gorm.DB
-	Args inputs.MsSnippetsInput
-
+	Ctx        *context.Context
+	Db         *gorm.DB
+	Args       inputs.MsSnippetsInput
 	Collection *[]*MsSnippetResolver
 	Metadata   *MetadataResolver
 }
 
+// Resolve executes the snippet listing service and prepares the result for GraphQL.
 func (msr *MsSnippetsResolver) Resolve() error {
 	var snippets []*models.Snippet
 	snippetsQuery, paginationData := msr.Args.ToPaginationDataAndSnippetsQuery()
@@ -25,24 +26,21 @@ func (msr *MsSnippetsResolver) Resolve() error {
 	repo := repository.NewSnippetRepository(msr.Ctx, msr.Db)
 
 	err := repo.ListSnippets(&snippets, &paginationData, &snippetsQuery)
-
 	if err != nil {
 		return err
 	}
 
-	msr.Collection = msr.FromSnippets(snippets)
+	msr.Collection = msr.fromSnippets(snippets)
 	msr.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
 
 	return nil
 }
 
-func (msr *MsSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
-	r := make([]*MsSnippetResolver, len(snippets))
-	for i := range snippets {
-		r[i] = &MsSnippetResolver{
-			Snippet: snippets[i],
-		}
+// fromSnippets converts models.Snippet slice to []*MsSnippetResolver.
+func (msr *MsSnippetsResolver) fromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
+	resolvers := make([]*MsSnippetResolver, len(snippets))
+	for i, s := range snippets {
+		resolvers[i] = &MsSnippetResolver{Snippet: s}
 	}
-
-	return &r
+	return &resolvers
 }

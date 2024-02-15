@@ -14,10 +14,9 @@ import (
 )
 
 type MsSnippetResolver struct {
-	Ctx  *context.Context
-	Db   *gorm.DB
-	Args struct{ Id graphql.ID }
-
+	Ctx     *context.Context
+	Db      *gorm.DB
+	Args    struct{ Id graphql.ID }
 	Snippet *models.Snippet
 }
 
@@ -32,12 +31,14 @@ func (msr *MsSnippetResolver) Resolve() error {
 	}
 
 	snippet := models.Snippet{}
-
 	repo := repository.NewSnippetRepository(msr.Ctx, msr.Db)
-	snippetFindErr := repo.FindSnippetById(&snippet, snippetId)
+	err = repo.FindSnippetById(&snippet, snippetId)
 
-	if snippetFindErr != nil {
-		return exceptions.NewRecordNotFoundError()
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return exceptions.NewRecordNotFoundError()
+		}
+		return err
 	}
 
 	msr.Snippet = &snippet
@@ -45,48 +46,40 @@ func (msr *MsSnippetResolver) Resolve() error {
 	return nil
 }
 
-func (msr *MsSnippetResolver) ID(context.Context) *graphql.ID {
+func (msr *MsSnippetResolver) ID(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(msr.Snippet.Id)
 }
 
-func (msr *MsSnippetResolver) Title(context.Context) *string {
+func (msr *MsSnippetResolver) Title(ctx context.Context) *string {
 	return &msr.Snippet.Title
 }
 
-func (msr *MsSnippetResolver) Content(context.Context) *string {
+func (msr *MsSnippetResolver) Content(ctx context.Context) *string {
 	return &msr.Snippet.Content
 }
 
-func (msr *MsSnippetResolver) UserId(context.Context) *graphql.ID {
+func (msr *MsSnippetResolver) UserId(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(msr.Snippet.UserId)
 }
 
-func (msr *MsSnippetResolver) Slug(context.Context) *string {
+func (msr *MsSnippetResolver) Slug(ctx context.Context) *string {
 	return &msr.Snippet.Slug
 }
 
-func (msr *MsSnippetResolver) SnippetType(context.Context) *int32 {
-	snippetType := int32(msr.Snippet.SnippetType)
-
-	return &snippetType
+func (msr *MsSnippetResolver) SnippetType(ctx context.Context) *int32 {
+	return helpers.Int32Pointer(int32(msr.Snippet.SnippetType))
 }
 
-func (msr *MsSnippetResolver) FavoritesCount(context.Context) *int32 {
-	favoritesCount := int32(msr.Snippet.FavoritesCount)
-
-	return &favoritesCount
+func (msr *MsSnippetResolver) FavoritesCount(ctx context.Context) *int32 {
+	return helpers.Int32Pointer(int32(msr.Snippet.FavoritesCount))
 }
 
-func (msr *MsSnippetResolver) CreatedAt(context.Context) *graphql.Time {
-	createdAt := graphql.Time{Time: msr.Snippet.CreatedAt}
-
-	return &createdAt
+func (msr *MsSnippetResolver) CreatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(msr.Snippet.CreatedAt)
 }
 
-func (msr *MsSnippetResolver) UpdatedAt(context.Context) *graphql.Time {
-	updatedAt := graphql.Time{Time: msr.Snippet.UpdatedAt}
-
-	return &updatedAt
+func (msr *MsSnippetResolver) UpdatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(msr.Snippet.UpdatedAt)
 }
 
 func (msr *MsSnippetResolver) Favorited(ctx context.Context) bool {
@@ -97,6 +90,5 @@ func (msr *MsSnippetResolver) Favorited(ctx context.Context) bool {
 	}
 
 	favorited := slices.ContainsFunc(msr.Snippet.FavoritedUsers, func(u models.User) bool { return u.Id == user.Id })
-
 	return favorited
 }

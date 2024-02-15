@@ -41,7 +41,7 @@ func (a *AuthService) Execute() error {
 }
 
 func (a *AuthService) validate() error {
-	exception := exceptions.NewUnprocessableContentError(nil, nil)
+	exception := exceptions.NewUnprocessableContentError("", nil)
 
 	if a.Email == "" {
 		exception.AddError(exceptions.ResourceModifyErrors{
@@ -65,7 +65,7 @@ func (a *AuthService) validate() error {
 }
 
 func (a *AuthService) findUser() (*models.User, error) {
-	exception := exceptions.NewUnprocessableContentError(nil, nil)
+	exception := exceptions.NewUnprocessableContentError("", nil)
 
 	repo := repository.NewUserRepository(a.Ctx, a.Db)
 

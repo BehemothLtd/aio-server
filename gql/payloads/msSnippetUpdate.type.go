@@ -10,17 +10,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// MsSnippetUpdateResolver resolves the updating of a snippet.
 type MsSnippetUpdateResolver struct {
-	Ctx  *context.Context
-	Db   *gorm.DB
-	Args struct {
+	Ctx   *context.Context
+	Db    *gorm.DB
+	Args  struct {
 		Id    graphql.ID
 		Input inputs.MsSnippetInput
 	}
-
-	model *models.Snippet
+	Model *models.Snippet
 }
 
+// Resolve executes the snippet update service.
 func (msc *MsSnippetUpdateResolver) Resolve() error {
 	service := services.SnippetUpdateService{
 		Ctx:  msc.Ctx,
@@ -31,15 +32,15 @@ func (msc *MsSnippetUpdateResolver) Resolve() error {
 
 	if err != nil {
 		return err
-	} else {
-		msc.model = snippet
-
-		return nil
 	}
+
+	msc.Model = snippet
+	return nil
 }
 
+// Snippet returns the updated snippet.
 func (msc *MsSnippetUpdateResolver) Snippet() *MsSnippetResolver {
 	return &MsSnippetResolver{
-		Snippet: msc.model,
+		Snippet: msc.Model,
 	}
 }

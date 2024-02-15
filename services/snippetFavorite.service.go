@@ -41,8 +41,7 @@ func (sfs *SnippetFavoriteService) Execute() error {
 	favorited, toggleFavoriteErr := favoriteSnippetRepo.ToggleFavoriteSnippet(&sfs.snippet, &sfs.user)
 
 	if toggleFavoriteErr != nil {
-		message := "Unable to perform this action"
-		return exceptions.NewUnprocessableContentError(&message, nil)
+		return exceptions.NewUnprocessableContentError("Unable to perform this action", nil)
 	}
 
 	sfs.Result = &favorited

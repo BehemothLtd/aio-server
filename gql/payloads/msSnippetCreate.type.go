@@ -9,14 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// MsSnippetCreateResolver resolves the creation of a snippet.
 type MsSnippetCreateResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args struct{ Input inputs.MsSnippetInput }
+	Args struct {
+		Input inputs.MsSnippetInput
+	}
 
-	model *models.Snippet
+	Model *models.Snippet
 }
 
+// Resolve executes the snippet creation service.
 func (msc *MsSnippetCreateResolver) Resolve() error {
 	service := services.SnippetCreateService{
 		Ctx:  msc.Ctx,
@@ -27,15 +31,15 @@ func (msc *MsSnippetCreateResolver) Resolve() error {
 
 	if err != nil {
 		return err
-	} else {
-		msc.model = snippet
-
-		return nil
 	}
+
+	msc.Model = snippet
+	return nil
 }
 
+// Snippet returns the created snippet.
 func (msc *MsSnippetCreateResolver) Snippet() *MsSnippetResolver {
 	return &MsSnippetResolver{
-		Snippet: msc.model,
+		Snippet: msc.Model,
 	}
 }

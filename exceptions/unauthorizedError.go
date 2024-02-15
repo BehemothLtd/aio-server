@@ -5,33 +5,34 @@ import (
 	"fmt"
 )
 
+// UnauthorizedError represents an unauthorized access error.
 type UnauthorizedError struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
 }
 
-func (e UnauthorizedError) Error() string {
+// Error returns the error message.
+func (e *UnauthorizedError) Error() string {
 	return fmt.Sprintf("error [%d]: %s", e.Code, e.Message)
 }
 
-func (e UnauthorizedError) Extensions() map[string]interface{} {
+// Extensions returns additional data associated with the error.
+func (e *UnauthorizedError) Extensions() map[string]interface{} {
 	return map[string]interface{}{
 		"code":    e.Code,
 		"message": e.Message,
 	}
 }
 
-func NewUnauthorizedError(message string) UnauthorizedError {
-	var returnMessage string
-
+// NewUnauthorizedError creates a new UnauthorizedError instance with the provided message.
+// If the message is empty, it uses the default error message.
+func NewUnauthorizedError(message string) *UnauthorizedError {
 	if message == "" {
-		returnMessage = constants.UnauthorizedErrorMsg
-	} else {
-		returnMessage = message
+		message = constants.UnauthorizedErrorMsg
 	}
 
-	return UnauthorizedError{
+	return &UnauthorizedError{
 		Code:    constants.UnauthorizedErrorCode,
-		Message: returnMessage,
+		Message: message,
 	}
 }
