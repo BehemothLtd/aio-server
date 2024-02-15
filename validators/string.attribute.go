@@ -5,15 +5,18 @@ import (
 	"fmt"
 )
 
+// StringAttribute represents a string attribute validator.
 type StringAttribute struct {
 	FieldAttribute
 	Value string
 }
 
+// GetCode returns the code of the string attribute.
 func (attribute *StringAttribute) GetCode() string {
 	return attribute.Code
 }
 
+// GetErrors returns the errors of the string attribute.
 func (attribute *StringAttribute) GetErrors() exceptions.ResourceModifyErrors {
 	return exceptions.ResourceModifyErrors{
 		Field:  attribute.Code,
@@ -21,16 +24,19 @@ func (attribute *StringAttribute) GetErrors() exceptions.ResourceModifyErrors {
 	}
 }
 
+// ValidateRequired validates if the string attribute is required.
 func (attribute *StringAttribute) ValidateRequired() {
 	if attribute.Value == "" {
 		attribute.AddError("is required")
 	}
 }
 
+// AddError adds an error to the string attribute.
 func (attribute *StringAttribute) AddError(message string) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 
+// ValidateLimit validates the length limits of the string attribute.
 func (attribute *StringAttribute) ValidateLimit(min *int, max *int64) {
 	value := attribute.Value
 

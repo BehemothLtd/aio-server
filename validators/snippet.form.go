@@ -9,49 +9,39 @@ import (
 	"aio-server/repository"
 )
 
+// SnippetForm represents a validator for snippet input.
 type SnippetForm struct {
 	Form
 	Input   *inputs.MsSnippetInput
 	Snippet *models.Snippet
-	Repo *repository.SnippetRepository
+	Repo    *repository.SnippetRepository
 }
 
+// NewSnippetFormValidator creates a new SnippetForm validator.
 func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.SnippetRepository, snippet *models.Snippet) SnippetForm {
 	form := SnippetForm{
-		Form: Form{
-
-		},
+		Form:    Form{},
 		Input:   input,
 		Snippet: snippet,
-		Repo: repo,
+		Repo:    repo,
 	}
-
 	form.assignAttributes(input)
-
 	return form
 }
 
+// Save saves the snippet after validation.
 func (form *SnippetForm) Save() error {
-	validationErr := form.validate()
-
-	if validationErr != nil {
+	if validationErr := form.validate(); validationErr != nil {
 		return validationErr
 	}
-
-	var saveErr error
-
 	if form.Snippet.Id == 0 {
-		// Create
 		form.Snippet.Slug = helpers.NewUUID()
-		saveErr = form.Repo.Create(form.Snippet)
-	} else {
-		// Update
-		saveErr = form.Repo.Update(form.Snippet)
+		return form.Repo.Create(form.Snippet)
 	}
-
-	return saveErr
+	return form.Repo.Update(form.Snippet)
 }
 
+// validate validates the snippet form.
 func (form *SnippetForm) validate() error {
 	title := form.FindAttrByCode("title")
 	if title != nil {
@@ -84,11 +74,11 @@ func (form *SnippetForm) validate() error {
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
-	} else {
-		return nil
 	}
+	return nil
 }
 
+// assignAttributes assigns attributes to the snippet form.
 func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
