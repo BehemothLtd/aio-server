@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS snippet_favorites;
+-- DROP TABLE IF EXISTS snippet_favorites;

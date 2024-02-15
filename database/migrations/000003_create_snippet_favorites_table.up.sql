@@ -2,7 +2,7 @@
 SET time_zone = '+07:00';
 -- Name: snippet_favorites; Type: TABLE; Schema: public; Owner: -
 
-CREATE TABLE `snippets_favorites` (
+CREATE TABLE IF NOT EXISTS `snippets_favorites` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `snippet_id` bigint NOT NULL,
   `user_id` bigint NOT NULL,

@@ -1,7 +1,7 @@
 -- Set timezone
 SET time_zone = '+07:00';
 -- Name: snippets; Type: TABLE; Schema: public; Owner: -
-CREATE TABLE `snippets` (
+CREATE TABLE IF NOT EXISTS `snippets` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
