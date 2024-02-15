@@ -24,12 +24,6 @@ migrate create -ext sql -dir database/migrations -seq create_users_table
 make db.migrate
 ```
 
-# Graphql generate command
-
-```bash
-make graphql.generate
-```
-
 # Install dependencies
 
 ```
