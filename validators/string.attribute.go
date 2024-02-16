@@ -1,7 +1,6 @@
 package validators
 
 import (
-	"aio-server/exceptions"
 	"fmt"
 )
 
@@ -17,11 +16,8 @@ func (attribute *StringAttribute) GetCode() string {
 }
 
 // GetErrors returns the errors of the string attribute.
-func (attribute *StringAttribute) GetErrors() exceptions.ResourceModifyErrors {
-	return exceptions.ResourceModifyErrors{
-		Field:  attribute.Code,
-		Errors: attribute.Errors,
-	}
+func (attribute *StringAttribute) GetErrors() []string {
+	return attribute.Errors
 }
 
 // ValidateRequired validates if the string attribute is required.

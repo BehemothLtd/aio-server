@@ -1,7 +1,6 @@
 package validators
 
 import (
-	"aio-server/exceptions"
 	"fmt"
 
 	"golang.org/x/exp/constraints"
@@ -19,11 +18,8 @@ func (attribute *IntAttribute[T]) GetCode() string {
 }
 
 // GetErrors returns the errors associated with the attribute.
-func (attribute *IntAttribute[T]) GetErrors() exceptions.ResourceModifyErrors {
-	return exceptions.ResourceModifyErrors{
-		Field:  attribute.Code,
-		Errors: attribute.Errors,
-	}
+func (attribute *IntAttribute[T]) GetErrors() []string {
+	return attribute.Errors
 }
 
 // ValidateRequired validates if the attribute is required.

@@ -1,7 +1,6 @@
 package validators
 
 import (
-	"aio-server/exceptions"
 	"fmt"
 )
 
@@ -16,7 +15,7 @@ type FieldAttribute struct {
 type FieldAttributeInterface interface {
 	AddError(message string)
 	GetCode() string
-	GetErrors() exceptions.ResourceModifyErrors
+	GetErrors() []string
 	ValidateRequired()
 	ValidateLimit(min *int, max *int64)
 }

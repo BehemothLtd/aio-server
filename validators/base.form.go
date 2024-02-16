@@ -8,7 +8,7 @@ import (
 // Form represents a form with attributes and errors.
 type Form struct {
 	Attributes []FieldAttributeInterface
-	Errors     []exceptions.ResourceModifyErrors
+	Errors     exceptions.ResourceModificationError
 }
 
 // AddAttributes adds attributes to the form.
@@ -29,10 +29,15 @@ func (form *Form) FindAttrByCode(attributeCode string) FieldAttributeInterface {
 
 // SummaryErrors summarizes errors in the form.
 func (form *Form) SummaryErrors() {
+	err := exceptions.NewUnprocessableContentError("", nil)
+
 	for _, attribute := range form.Attributes {
 		attributeErr := attribute.GetErrors()
-		if len(attributeErr.Errors) > 0 {
-			form.Errors = append(form.Errors, attributeErr)
+
+		if len(attributeErr) > 0 {
+			err.AddError(attribute.GetCode(), attributeErr)
 		}
 	}
+
+	form.Errors = err.Errors
 }
