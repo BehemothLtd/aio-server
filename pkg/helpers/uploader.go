@@ -78,12 +78,21 @@ func (u *Uploader) uploadToGCS(file *multipart.FileHeader, fileName string) (*st
 	if err != nil {
 		return nil, err
 	}
+
 	defer blobFile.Close()
 
 	err = uploadClient.UploadFile(blobFile, fileName)
 	if err != nil {
 		return nil, err
 	}
+
+	// Delete func
+	// ctx := context.Background()
+	// o := uploadClient.cl.Bucket(bucketName).Object("1zl3o6a0ifkrkwixgsclre3vr8c3")
+	// ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+ 	// defer cancel()
+
+	// o.Delete(ctx)
 
 	filePublicUrl := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, fileName)
 	return &filePublicUrl, nil
