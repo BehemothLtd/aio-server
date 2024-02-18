@@ -6,6 +6,9 @@ schema {
 type Query {
   selfInfo: User!
 
+  # User group queries
+  mmUserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
+
   msSnippet(id: ID!): Snippet!
   msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   msSelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
