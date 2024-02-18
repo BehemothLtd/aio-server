@@ -24,7 +24,7 @@ func generateIV(blockSize int) ([]byte, error) {
 // Convert string into exact [32]byte but return []byte for Encryption use
 // of Secure AES-256-CBC Encryption and Decryption
 func StringTo32Bytes(input string) []byte {
-	// Hash the input string using SHA-256.
+	// Hash the input string using SHA-256. This will make sure output of [32]bytes
 	sum := sha256.Sum256([]byte(input))
 	sumStr := string(sum[:])
 	return []byte(sumStr)
