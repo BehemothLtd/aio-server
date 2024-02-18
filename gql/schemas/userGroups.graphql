@@ -1,0 +1,15 @@
+type UserGroup {
+  id: ID
+  title: String
+  createdAt: Time
+  updatedAt: Time
+}
+
+input UserGroupsQuery {
+  titleCont: String
+}
+
+type UserGroupCollection {
+  collection: [UserGroup!]
+  metadata: Metadata!
+}
