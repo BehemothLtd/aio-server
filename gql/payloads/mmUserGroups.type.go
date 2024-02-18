@@ -18,25 +18,25 @@ type MmUserGroupsResolver struct {
 	Metadata   *MetadataResolver
 }
 
-func (mug *MmUserGroupsResolver) Resolve() error {
+func (mugr *MmUserGroupsResolver) Resolve() error {
 	var userGroups []*models.UserGroup
-	userGroupsQuery, paginationData := mug.Args.ToPaginationDataAndUserGroupsQuery()
+	userGroupsQuery, paginationData := mugr.Args.ToPaginationDataAndUserGroupsQuery()
 
-	repo := repository.NewUserGroupRepository(mug.Ctx, mug.Db)
+	repo := repository.NewUserGroupRepository(mugr.Ctx, mugr.Db)
 
 	err := repo.List(&userGroups, &paginationData, &userGroupsQuery)
 	if err != nil {
 		return err
 	}
 
-	mug.Collection = mug.fromUserGroups(userGroups)
-	mug.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
+	mugr.Collection = mugr.fromUserGroups(userGroups)
+	mugr.Metadata = &MetadataResolver{Metadata: &paginationData.Metadata}
 
 	return nil
 }
 
-// fromUserGroups converts models.UserGroup slice to []*MmUserGroupsResolver.
-func (mug *MmUserGroupsResolver) fromUserGroups(userGroups []*models.UserGroup) *[]*MmUserGroupResolver {
+// fromUserGroups converts models.UserGroup slice to []*MmUserGroupResolver.
+func (mugr *MmUserGroupsResolver) fromUserGroups(userGroups []*models.UserGroup) *[]*MmUserGroupResolver {
 	resolvers := make([]*MmUserGroupResolver, len(userGroups))
 	for i, s := range userGroups {
 		resolvers[i] = &MmUserGroupResolver{UserGroup: s}

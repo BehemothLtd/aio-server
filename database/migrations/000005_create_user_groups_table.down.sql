@@ -1,2 +1,1 @@
--- DROP TABLE IF EXISTS users;
--- we'll use existed `users` table
+-- DROP TABLE IF EXISTS user_groups;

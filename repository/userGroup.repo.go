@@ -17,7 +17,7 @@ type UserGroupRepository struct {
 func NewUserGroupRepository(c *context.Context, db *gorm.DB) *UserGroupRepository {
 	return &UserGroupRepository{
 		Repository: Repository{
-			db: db,
+			db:  db,
 			ctx: c,
 		},
 	}

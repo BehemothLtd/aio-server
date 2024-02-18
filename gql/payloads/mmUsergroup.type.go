@@ -1,13 +1,9 @@
 package payloads
 
 import (
-	// "aio-server/exceptions"
 	"aio-server/models"
-	// "aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
-	// "aio-server/repository"
 	"context"
-	// "slices"
 
 	graphql "github.com/graph-gophers/graphql-go"
 	"gorm.io/gorm"
@@ -20,18 +16,18 @@ type MmUserGroupResolver struct {
 	UserGroup *models.UserGroup
 }
 
-func (mug *MmUserGroupResolver) ID(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(mug.UserGroup.Id)
+func (mugr *MmUserGroupResolver) ID(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(mugr.UserGroup.Id)
 }
 
-func (msr *MmUserGroupResolver) Title(ctx context.Context) *string {
-	return &msr.UserGroup.Title
+func (mugr *MmUserGroupResolver) Title(ctx context.Context) *string {
+	return &mugr.UserGroup.Title
 }
 
-func (msr *MmUserGroupResolver) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(msr.UserGroup.CreatedAt)
+func (mugr *MmUserGroupResolver) CreatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(mugr.UserGroup.CreatedAt)
 }
 
-func (msr *MmUserGroupResolver) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(msr.UserGroup.UpdatedAt)
+func (mugr *MmUserGroupResolver) UpdatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(mugr.UserGroup.UpdatedAt)
 }
