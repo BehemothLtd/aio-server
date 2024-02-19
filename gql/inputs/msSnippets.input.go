@@ -5,7 +5,7 @@ import "aio-server/models"
 // MsSnippetsInput represents input for querying snippets collection.
 type MsSnippetsInput struct {
 	Input *PagyInput
-	Query *SnippetQueryInput
+	Query *MsSnippetQueryInput
 }
 
 // ToPaginationDataAndSnippetsQuery converts MsSnippetsInput to models.SnippetsQuery and models.PaginationData.

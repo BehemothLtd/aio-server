@@ -5,7 +5,7 @@ import "aio-server/models"
 // MmUserGroupsInput represents input for querying user groups collection.
 type MmUserGroupsInput struct {
 	Input *PagyInput
-	Query *UserGroupQueryInput
+	Query *MmUserGroupQueryInput
 }
 
 // ToPaginationDataAndUserGroupsQuery converts MmUserGroupsInput to models.UserGroupsQuery and models.PaginationData.
