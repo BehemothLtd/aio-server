@@ -8,3 +8,9 @@ type User {
   fullName: String
   name: String
 }
+
+type UserPrivateInfo {
+  id: ID
+  email: String
+  fullName: String
+}
