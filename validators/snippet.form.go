@@ -12,7 +12,7 @@ import (
 // SnippetForm represents a validator for snippet input.
 type SnippetForm struct {
 	Form
-	Input   *inputs.MsSnippetInput
+	inputs.MsSnippetInput
 	Snippet *models.Snippet
 	Repo    *repository.SnippetRepository
 }
@@ -20,10 +20,10 @@ type SnippetForm struct {
 // NewSnippetFormValidator creates a new SnippetForm validator.
 func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.SnippetRepository, snippet *models.Snippet) SnippetForm {
 	form := SnippetForm{
-		Form:    Form{},
-		Input:   input,
-		Snippet: snippet,
-		Repo:    repo,
+		Form:           Form{},
+		MsSnippetInput: *input,
+		Snippet:        snippet,
+		Repo:           repo,
 	}
 	form.assignAttributes(input)
 
@@ -36,10 +36,10 @@ func (form *SnippetForm) Save() error {
 		return validationErr
 	}
 
-	passkey := helpers.GetStringOrDefault(form.Input.Passkey)
+	passkey := helpers.GetStringOrDefault(form.Passkey)
 
 	if passkey != "" {
-		err := form.Snippet.EncryptContent(*form.Input.Passkey)
+		err := form.Snippet.EncryptContent(*form.Passkey)
 
 		if err != nil {
 			return err
@@ -164,7 +164,7 @@ func (form *SnippetForm) validateSnippetPrivateContent() {
 func (form *SnippetForm) validateLockVersion() {
 	newRecord := form.Snippet.Id == 0
 	currentLockVersion := form.Snippet.LockVersion
-	newLockVersion := helpers.GetInt32OrDefault(form.Input.LockVersion) + 1
+	newLockVersion := helpers.GetInt32OrDefault(form.LockVersion) + 1
 	formAttribute := form.FindAttrByCode("lockVersion")
 
 	min := 0
@@ -175,7 +175,7 @@ func (form *SnippetForm) validateLockVersion() {
 	}
 
 	if currentLockVersion >= newLockVersion {
-		formAttribute.AddError("invalid value. Attempted to update stale object")
+		formAttribute.AddError("Attempted to update stale object")
 	}
 
 	form.Snippet.LockVersion = newLockVersion
