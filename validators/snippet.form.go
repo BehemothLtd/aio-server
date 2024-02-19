@@ -139,39 +139,33 @@ func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 
 func (form *SnippetForm) validateTitle() *SnippetForm {
 	title := form.FindAttrByCode("title")
-	if title != nil {
-		minTitleLength := 5
-		maxTitleLength := int64(constants.MaxStringLength)
+	minTitleLength := 5
+	maxTitleLength := int64(constants.MaxStringLength)
 
-		title.ValidateRequired()
-		title.ValidateLimit(&minTitleLength, &maxTitleLength)
-	}
+	title.ValidateRequired()
+	title.ValidateLimit(&minTitleLength, &maxTitleLength)
 
 	return form
 }
 
 func (form *SnippetForm) validateContent() *SnippetForm {
 	content := form.FindAttrByCode("content")
-	if content != nil {
-		minContentLength := 10
-		maxContentLength := int64(constants.MaxLongTextLength)
+	minContentLength := 10
+	maxContentLength := int64(constants.MaxLongTextLength)
 
-		content.ValidateRequired()
-		content.ValidateLimit(&minContentLength, &maxContentLength)
-	}
+	content.ValidateRequired()
+	content.ValidateLimit(&minContentLength, &maxContentLength)
 
 	return form
 }
 
 func (form *SnippetForm) validateSnippetType() *SnippetForm {
 	snippetType := form.FindAttrByCode("snippetType")
-	if snippetType != nil {
-		minSnippetType := 1
-		maxSnippetType := int64(2)
+	minSnippetType := 1
+	maxSnippetType := int64(2)
 
-		snippetType.ValidateRequired()
-		snippetType.ValidateLimit(&minSnippetType, &maxSnippetType)
-	}
+	snippetType.ValidateRequired()
+	snippetType.ValidateLimit(&minSnippetType, &maxSnippetType)
 
 	return form
 }
