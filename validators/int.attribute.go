@@ -22,16 +22,16 @@ func (attribute *IntAttribute[T]) GetErrors() []string {
 	return attribute.Errors
 }
 
+// AddError adds an error message to the attribute.
+func (attribute *IntAttribute[T]) AddError(message string) {
+	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
+}
+
 // ValidateRequired validates if the attribute is required.
 func (attribute *IntAttribute[T]) ValidateRequired() {
 	if attribute.Value == 0 && !attribute.AllowZero {
 		attribute.AddError("is required")
 	}
-}
-
-// AddError adds an error message to the attribute.
-func (attribute *IntAttribute[T]) AddError(message string) {
-	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 
 // ValidateLimit validates if the attribute value is within the specified limits.

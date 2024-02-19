@@ -26,6 +26,7 @@ func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.Snip
 		Repo:    repo,
 	}
 	form.assignAttributes(input)
+
 	return form
 }
 
@@ -35,10 +36,14 @@ func (form *SnippetForm) Save() error {
 		return validationErr
 	}
 
-	err := form.Snippet.EncryptContent(*form.Input.Passkey)
+	passkey := helpers.GetStringOrDefault(form.Input.Passkey)
 
-	if err != nil {
-		return err
+	if passkey != "" {
+		err := form.Snippet.EncryptContent(*form.Input.Passkey)
+
+		if err != nil {
+			return err
+		}
 	}
 
 	if form.Snippet.Id == 0 {
@@ -78,11 +83,13 @@ func (form *SnippetForm) validate() error {
 	}
 
 	form.validateSnippetPrivateContent()
+	form.validateLockVersion()
 	form.SummaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
 	}
+
 	return nil
 }
 
@@ -91,7 +98,8 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
 	snippetType := helpers.GetInt32OrDefault(input.SnippetType)
-	Passkey := helpers.GetStringOrDefault(input.Passkey)
+	passkey := helpers.GetStringOrDefault(input.Passkey)
+	lockVersion := helpers.GetInt32OrDefault(input.LockVersion)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -119,9 +127,16 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Pass Key",
-				Code: "Passkey",
+				Code: "passkey",
 			},
-			Value: Passkey,
+			Value: passkey,
+		},
+		&IntAttribute[int32]{
+			FieldAttribute: FieldAttribute{
+				Name: "Lock Version",
+				Code: "lockVersion",
+			},
+			Value: lockVersion,
 		},
 	)
 
@@ -144,4 +159,24 @@ func (form *SnippetForm) validateSnippetPrivateContent() {
 	} else {
 		return
 	}
+}
+
+func (form *SnippetForm) validateLockVersion() {
+	newRecord := form.Snippet.Id == 0
+	currentLockVersion := form.Snippet.LockVersion
+	newLockVersion := helpers.GetInt32OrDefault(form.Input.LockVersion) + 1
+	formAttribute := form.FindAttrByCode("lockVersion")
+
+	min := 0
+	formAttribute.ValidateLimit(&min, nil)
+
+	if newRecord {
+		return
+	}
+
+	if currentLockVersion >= newLockVersion {
+		formAttribute.AddError("invalid value. Attempted to update stale object")
+	}
+
+	form.Snippet.LockVersion = newLockVersion
 }

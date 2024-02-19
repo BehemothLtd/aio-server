@@ -34,4 +34,5 @@ input SnippetInput {
   content: String
   snippetType: Int
   passkey: String
+  lockVersion: Int
 }

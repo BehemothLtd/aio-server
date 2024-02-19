@@ -7,6 +7,7 @@ import (
 // StringAttribute represents a string attribute validator.
 type StringAttribute struct {
 	FieldAttribute
+
 	Value string
 }
 

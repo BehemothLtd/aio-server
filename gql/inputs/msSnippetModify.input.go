@@ -6,4 +6,5 @@ type MsSnippetInput struct {
 	Content     *string
 	SnippetType *int32 // Use int32 or float32 as required by Graphql
 	Passkey     *string
+	LockVersion *int32
 }
