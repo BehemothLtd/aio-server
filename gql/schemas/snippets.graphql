@@ -32,4 +32,5 @@ input SnippetInput {
   title: String
   content: String
   snippetType: Int
+  passKey: String
 }

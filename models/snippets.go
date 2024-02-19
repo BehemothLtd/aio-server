@@ -1,6 +1,9 @@
 package models
 
 import (
+	"aio-server/exceptions"
+	"aio-server/pkg/cryption"
+	"fmt"
 	"time"
 )
 
@@ -24,4 +27,19 @@ type SnippetsQuery struct {
 type SnippetsCollection struct {
 	Collection []*Snippet
 	Metadata   *Metadata
+}
+
+func (s *Snippet) EncryptContent(passKey string) error {
+	if s.SnippetType == 1 {
+		return nil
+	}
+
+	encryptedContent, err := cryption.Encrypt(s.Content, cryption.StringTo32Bytes(passKey))
+
+	if err != nil {
+		return exceptions.NewUnprocessableContentError(fmt.Sprintf("Unable to encrypt content %s", err.Error()), nil)
+	}
+
+	s.Content = encryptedContent
+	return nil
 }

@@ -31,6 +31,10 @@ func (form *Form) FindAttrByCode(attributeCode string) FieldAttributeInterface {
 func (form *Form) SummaryErrors() {
 	err := exceptions.NewUnprocessableContentError("", nil)
 
+	if form.Errors != nil {
+		err.Errors = form.Errors
+	}
+
 	for _, attribute := range form.Attributes {
 		attributeErr := attribute.GetErrors()
 

@@ -16,6 +16,8 @@ type FieldAttributeInterface interface {
 	AddError(message string)
 	GetCode() string
 	GetErrors() []string
+
+	// Validators
 	ValidateRequired()
 	ValidateLimit(min *int, max *int64)
 }

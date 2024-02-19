@@ -34,6 +34,13 @@ func (form *SnippetForm) Save() error {
 	if validationErr := form.validate(); validationErr != nil {
 		return validationErr
 	}
+
+	err := form.Snippet.EncryptContent(*form.Input.PassKey)
+
+	if err != nil {
+		return err
+	}
+
 	if form.Snippet.Id == 0 {
 		form.Snippet.Slug = helpers.NewUUID()
 		return form.Repo.Create(form.Snippet)
@@ -70,6 +77,7 @@ func (form *SnippetForm) validate() error {
 		snippetType.ValidateLimit(&minSnippetType, &maxSnippetType)
 	}
 
+	form.validateSnippetPrivateContent()
 	form.SummaryErrors()
 
 	if form.Errors != nil {
@@ -83,6 +91,7 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
 	snippetType := helpers.GetInt32OrDefault(input.SnippetType)
+	passKey := helpers.GetStringOrDefault(input.PassKey)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -107,9 +116,32 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 			Value:     snippetType,
 			AllowZero: false,
 		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Pass Key",
+				Code: "passKey",
+			},
+			Value: passKey,
+		},
 	)
 
 	form.Snippet.Title = title
 	form.Snippet.Content = content
 	form.Snippet.SnippetType = int(snippetType)
+}
+
+func (form *SnippetForm) validateSnippetPrivateContent() {
+	snippetType := form.Snippet.SnippetType
+	passKeyAttr := form.FindAttrByCode("passKey")
+
+	if snippetType == 2 {
+		// Private
+		passKeyAttr.ValidateRequired()
+
+		min := 8
+		max := int64(32)
+		passKeyAttr.ValidateLimit(&min, &max)
+	} else {
+		return
+	}
 }

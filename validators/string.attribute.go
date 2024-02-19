@@ -20,16 +20,16 @@ func (attribute *StringAttribute) GetErrors() []string {
 	return attribute.Errors
 }
 
+// AddError adds an error to the string attribute.
+func (attribute *StringAttribute) AddError(message string) {
+	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
+}
+
 // ValidateRequired validates if the string attribute is required.
 func (attribute *StringAttribute) ValidateRequired() {
 	if attribute.Value == "" {
 		attribute.AddError("is required")
 	}
-}
-
-// AddError adds an error to the string attribute.
-func (attribute *StringAttribute) AddError(message string) {
-	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 
 // ValidateLimit validates the length limits of the string attribute.
