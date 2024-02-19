@@ -35,7 +35,7 @@ func (form *SnippetForm) Save() error {
 		return validationErr
 	}
 
-	err := form.Snippet.EncryptContent(*form.Input.PassKey)
+	err := form.Snippet.EncryptContent(*form.Input.Passkey)
 
 	if err != nil {
 		return err
@@ -91,7 +91,7 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
 	snippetType := helpers.GetInt32OrDefault(input.SnippetType)
-	passKey := helpers.GetStringOrDefault(input.PassKey)
+	Passkey := helpers.GetStringOrDefault(input.Passkey)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -119,9 +119,9 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Pass Key",
-				Code: "passKey",
+				Code: "Passkey",
 			},
-			Value: passKey,
+			Value: Passkey,
 		},
 	)
 
@@ -132,15 +132,15 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 
 func (form *SnippetForm) validateSnippetPrivateContent() {
 	snippetType := form.Snippet.SnippetType
-	passKeyAttr := form.FindAttrByCode("passKey")
+	PasskeyAttr := form.FindAttrByCode("Passkey")
 
 	if snippetType == 2 {
 		// Private
-		passKeyAttr.ValidateRequired()
+		PasskeyAttr.ValidateRequired()
 
 		min := 8
 		max := int64(32)
-		passKeyAttr.ValidateLimit(&min, &max)
+		PasskeyAttr.ValidateLimit(&min, &max)
 	} else {
 		return
 	}

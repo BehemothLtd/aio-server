@@ -12,6 +12,7 @@ type Query {
   msSnippet(id: ID!): Snippet!
   msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   msSelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
+  msSnippetDecryptContent(id: ID!, Passkey: String!): String
 }
 
 type Mutation {

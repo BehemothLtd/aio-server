@@ -29,12 +29,12 @@ type SnippetsCollection struct {
 	Metadata   *Metadata
 }
 
-func (s *Snippet) EncryptContent(passKey string) error {
+func (s *Snippet) EncryptContent(Passkey string) error {
 	if s.SnippetType == 1 {
 		return nil
 	}
 
-	encryptedContent, err := cryption.Encrypt(s.Content, cryption.StringTo32Bytes(passKey))
+	encryptedContent, err := cryption.Encrypt(s.Content, cryption.StringTo32Bytes(Passkey))
 
 	if err != nil {
 		return exceptions.NewUnprocessableContentError(fmt.Sprintf("Unable to encrypt content %s", err.Error()), nil)
@@ -42,4 +42,18 @@ func (s *Snippet) EncryptContent(passKey string) error {
 
 	s.Content = encryptedContent
 	return nil
+}
+
+func (s *Snippet) DecryptContent(Passkey string) (*string, error) {
+	if s.SnippetType == 1 {
+		return nil, nil
+	}
+
+	decryptedContent, err := cryption.Decrypt(s.Content, cryption.StringTo32Bytes(Passkey))
+
+	if err != nil {
+		return nil, exceptions.NewUnprocessableContentError("Incorrect Passkey", nil)
+	}
+
+	return &decryptedContent, nil
 }

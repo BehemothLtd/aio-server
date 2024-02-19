@@ -52,3 +52,17 @@ func (r *Resolver) MsSelfSnippets(ctx context.Context, args inputs.MsSnippetsInp
 
 	return &resolver, nil
 }
+
+func (r *Resolver) MsSnippetDecryptContent(ctx context.Context, args inputs.MsSnippetDecryptContentInput) (*string, error) {
+	resolver := payloads.MsSnippetDecryptContentResolver{
+		Ctx:  &ctx,
+		Db:   r.Db,
+		Args: args,
+	}
+
+	if decryptedContent, err := resolver.Resolve(); err != nil {
+		return nil, err
+	} else {
+		return decryptedContent, err
+	}
+}
