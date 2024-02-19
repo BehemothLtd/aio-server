@@ -28,7 +28,7 @@ func (form *Form) FindAttrByCode(attributeCode string) FieldAttributeInterface {
 }
 
 // SummaryErrors summarizes errors in the form.
-func (form *Form) SummaryErrors() {
+func (form *Form) summaryErrors() {
 	err := exceptions.NewUnprocessableContentError("", nil)
 
 	if form.Errors != nil {

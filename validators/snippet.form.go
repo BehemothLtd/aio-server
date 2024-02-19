@@ -55,36 +55,12 @@ func (form *SnippetForm) Save() error {
 
 // validate validates the snippet form.
 func (form *SnippetForm) validate() error {
-	title := form.FindAttrByCode("title")
-	if title != nil {
-		minTitleLength := 5
-		maxTitleLength := int64(constants.MaxStringLength)
-
-		title.ValidateRequired()
-		title.ValidateLimit(&minTitleLength, &maxTitleLength)
-	}
-
-	content := form.FindAttrByCode("content")
-	if content != nil {
-		minContentLength := 10
-		maxContentLength := int64(constants.MaxLongTextLength)
-
-		content.ValidateRequired()
-		content.ValidateLimit(&minContentLength, &maxContentLength)
-	}
-
-	snippetType := form.FindAttrByCode("snippetType")
-	if snippetType != nil {
-		minSnippetType := 1
-		maxSnippetType := int64(2)
-
-		snippetType.ValidateRequired()
-		snippetType.ValidateLimit(&minSnippetType, &maxSnippetType)
-	}
-
-	form.validateSnippetPrivateContent()
-	form.validateLockVersion()
-	form.SummaryErrors()
+	form.validateTitle().
+		validateContent().
+		validateSnippetType().
+		validateSnippetPrivateContent().
+		validateLockVersion().
+		summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -145,38 +121,77 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
 	form.Snippet.SnippetType = int(snippetType)
 }
 
-func (form *SnippetForm) validateSnippetPrivateContent() {
+func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 	snippetType := form.Snippet.SnippetType
 	PasskeyAttr := form.FindAttrByCode("Passkey")
 
-	if snippetType == 2 {
+	if snippetType == 2 && PasskeyAttr != nil {
 		// Private
 		PasskeyAttr.ValidateRequired()
 
 		min := 8
 		max := int64(32)
 		PasskeyAttr.ValidateLimit(&min, &max)
-	} else {
-		return
 	}
+
+	return form
 }
 
-func (form *SnippetForm) validateLockVersion() {
+func (form *SnippetForm) validateTitle() *SnippetForm {
+	title := form.FindAttrByCode("title")
+	if title != nil {
+		minTitleLength := 5
+		maxTitleLength := int64(constants.MaxStringLength)
+
+		title.ValidateRequired()
+		title.ValidateLimit(&minTitleLength, &maxTitleLength)
+	}
+
+	return form
+}
+
+func (form *SnippetForm) validateContent() *SnippetForm {
+	content := form.FindAttrByCode("content")
+	if content != nil {
+		minContentLength := 10
+		maxContentLength := int64(constants.MaxLongTextLength)
+
+		content.ValidateRequired()
+		content.ValidateLimit(&minContentLength, &maxContentLength)
+	}
+
+	return form
+}
+
+func (form *SnippetForm) validateSnippetType() *SnippetForm {
+	snippetType := form.FindAttrByCode("snippetType")
+	if snippetType != nil {
+		minSnippetType := 1
+		maxSnippetType := int64(2)
+
+		snippetType.ValidateRequired()
+		snippetType.ValidateLimit(&minSnippetType, &maxSnippetType)
+	}
+
+	return form
+}
+
+func (form *SnippetForm) validateLockVersion() *SnippetForm {
 	newRecord := form.Snippet.Id == 0
 	currentLockVersion := form.Snippet.LockVersion
 	newLockVersion := helpers.GetInt32OrDefault(form.LockVersion) + 1
 	formAttribute := form.FindAttrByCode("lockVersion")
 
-	min := 0
+	min := int(currentLockVersion)
 	formAttribute.ValidateLimit(&min, nil)
 
 	if newRecord {
-		return
+		return form
 	}
 
 	if currentLockVersion >= newLockVersion {
 		formAttribute.AddError("Attempted to update stale object")
 	}
 
-	form.Snippet.LockVersion = newLockVersion
+	return form
 }

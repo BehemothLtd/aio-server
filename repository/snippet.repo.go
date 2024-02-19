@@ -17,7 +17,7 @@ type SnippetRepository struct {
 func NewSnippetRepository(c *context.Context, db *gorm.DB) *SnippetRepository {
 	return &SnippetRepository{
 		Repository: Repository{
-			db: db,
+			db:  db,
 			ctx: c,
 		},
 	}
@@ -87,5 +87,7 @@ func (r *SnippetRepository) Create(snippet *models.Snippet) error {
 
 // Update updates an existing snippet.
 func (r *SnippetRepository) Update(snippet *models.Snippet) error {
+	snippet.LockVersion += 1
+
 	return r.db.Table("snippets").Omit("FavoritedUsers", "FavoritesCount").Updates(&snippet).Error
 }
