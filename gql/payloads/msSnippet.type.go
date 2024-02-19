@@ -82,6 +82,10 @@ func (msr *MsSnippetResolver) UpdatedAt(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(msr.Snippet.UpdatedAt)
 }
 
+func (msr *MsSnippetResolver) LockVersion(ctx context.Context) int32 {
+	return msr.Snippet.LockVersion
+}
+
 func (msr *MsSnippetResolver) Favorited(ctx context.Context) bool {
 	user, err := auths.AuthUserFromCtx(ctx)
 

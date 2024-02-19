@@ -9,6 +9,7 @@ type Snippet {
   favorited: Boolean!
   createdAt: Time
   updatedAt: Time
+  lockVersion: Int!
 }
 
 input SnippetsQuery {

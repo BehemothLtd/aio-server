@@ -18,6 +18,7 @@ type Snippet struct {
 	FavoritedUsers []User `gorm:"many2many:snippets_favorites"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
+	LockVersion    int32 `gorm:"not null;autoIncrement;default:0"`
 }
 
 type SnippetsQuery struct {
