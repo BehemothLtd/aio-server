@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// MsSnippet resolves the query for retrieving a single snippet.
+// Snippet resolves the query for retrieving a single snippet.
 func (r *Resolver) Snippet(ctx context.Context, args msInputs.SnippetInput) (*globalTypes.SnippetType, error) {
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError("Invalid Id")

@@ -48,3 +48,10 @@ func (r *UserGroupRepository) titleLike(titleLike string) func(db *gorm.DB) *gor
 		}
 	}
 }
+
+// FindById finds a userGroup by its ID.
+func (r *UserGroupRepository) FindById(userGroup *models.UserGroup, id int32) error {
+	dbTables := r.db.Model(&models.UserGroup{})
+
+	return dbTables.First(&userGroup, id).Error
+}
