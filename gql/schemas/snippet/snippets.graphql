@@ -12,30 +12,16 @@ type Snippet {
   lockVersion: Int!
 }
 
-type MsSnippet {
-  id: ID
-  title: String
-  content: String
-  userId: ID
-  slug: String
-  snippetType: Int
-  favoritesCount: Int
-  favorited: Boolean!
-  createdAt: Time
-  updatedAt: Time
-  lockVersion: Int!
-}
-
 input SnippetsQuery {
   titleCont: String
 }
 
 type SnippetsCollection {
-  collection: [MsSnippet!]
+  collection: [Snippet!]
   metadata: Metadata!
 }
 
-type MsSnippetFavorite {
+type SnippetFavorite {
   favorited: Boolean!
 }
 

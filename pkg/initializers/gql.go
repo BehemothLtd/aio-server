@@ -11,14 +11,29 @@ import (
 	"gorm.io/gorm"
 )
 
-// GqlHandler returns a Gin middleware that handles GraphQL requests.
+// SnippetGqlHandler returns a Gin middleware that handles GraphQL requests.
 func SnippetGqlHandler(db *gorm.DB) gin.HandlerFunc {
-	schema, err := getSchema("./gql/schemas/snippet/")
+	schema, err := fetchSchema("./gql/schemas/snippet/")
 
 	if err != nil {
 		log.Fatalf("failed to get schema: %v", err)
 	}
 
+	return ginSchemaHandler(schema, db)
+}
+
+// InsightGqlHandler returns a Gin middleware that handles GraphQL requests.
+func InsightGqlHandler(db *gorm.DB) gin.HandlerFunc {
+	schema, err := fetchSchema("./gql/schemas/insight/")
+
+	if err != nil {
+		log.Fatalf("failed to get schema: %v", err)
+	}
+
+	return ginSchemaHandler(schema, db)
+}
+
+func ginSchemaHandler(schema string, db *gorm.DB) gin.HandlerFunc {
 	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
 	gqlSchema := graphql.MustParseSchema(schema, &snippetResolvers.Resolver{Db: db}, opts...)
 	handler := &relay.Handler{Schema: gqlSchema}
@@ -28,7 +43,7 @@ func SnippetGqlHandler(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func getSchema(schemaPath string) (string, error) {
+func fetchSchema(schemaPath string) (string, error) {
 	entries, err := os.ReadDir(schemaPath)
 	if err != nil {
 		return "", err
