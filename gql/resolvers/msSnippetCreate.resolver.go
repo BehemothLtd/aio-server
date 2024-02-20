@@ -9,7 +9,7 @@ import (
 )
 
 // MsSnippetCreate resolves the mutation for creating a snippet.
-func (r *Resolver) MsSnippetCreate(ctx context.Context, args inputs.MsSnippetModificationInput) (*msTypes.MsSnippetCreatedType, error) {
+func (r *Resolver) MsSnippetCreate(ctx context.Context, args inputs.MsSnippetCreateInput) (*msTypes.MsSnippetCreatedType, error) {
 	service := services.SnippetCreateService{
 		Ctx:  &ctx,
 		Db:   r.Db,

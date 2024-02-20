@@ -1,9 +1,5 @@
 package inputs
 
-type MsSnippetModificationInput struct {
-	Input MsSnippetFormInput
-}
-
 // MsSnippetFormInput represents input for creating or updating a snippet.
 type MsSnippetFormInput struct {
 	Title       *string

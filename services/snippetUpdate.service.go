@@ -10,7 +10,6 @@ import (
 	"aio-server/validators"
 	"context"
 
-	graphql "github.com/graph-gophers/graphql-go"
 	"gorm.io/gorm"
 )
 
@@ -18,10 +17,7 @@ import (
 type SnippetUpdateService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args struct {
-		Id    graphql.ID
-		Input inputs.MsSnippetFormInput
-	}
+	Args inputs.MsSnippetUpdateInput
 }
 
 // Execute updates an existed snippet.

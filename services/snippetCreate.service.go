@@ -16,7 +16,7 @@ import (
 type SnippetCreateService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args inputs.MsSnippetModificationInput
+	Args inputs.MsSnippetCreateInput
 }
 
 // Execute creates a new snippet.
