@@ -1,0 +1,16 @@
+type SignIn {
+  token: String
+}
+
+type User {
+  id: ID
+  email: String
+  fullName: String
+  name: String
+}
+
+type UserPrivateInfo {
+  id: ID
+  email: String
+  fullName: String
+}

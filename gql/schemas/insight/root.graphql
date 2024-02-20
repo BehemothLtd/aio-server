@@ -1,0 +1,14 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
+  UserGroup(id: ID!): UserGroup!
+}
+
+type Mutation {
+}
+
+scalar Time
