@@ -8,23 +8,6 @@ import (
 	graphql "github.com/graph-gophers/graphql-go"
 )
 
-// MsSnippetFavorite resolves the mutation for favoriting a snippet.
-func (r *Resolver) MsSnippetFavorite(ctx context.Context, args struct {
-	Id graphql.ID
-}) (*payloads.MsSnippetFavoriteResolver, error) {
-	resolver := payloads.MsSnippetFavoriteResolver{
-		Ctx:  &ctx,
-		Db:   r.Db,
-		Args: args,
-	}
-
-	if err := resolver.Resolve(); err != nil {
-		return nil, err
-	}
-
-	return &resolver, nil
-}
-
 // MsSnippetCreate resolves the mutation for creating a snippet.
 func (r *Resolver) MsSnippetCreate(ctx context.Context, args struct {
 	Input inputs.MsSnippetInput

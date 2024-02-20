@@ -35,7 +35,7 @@ type SnippetsCollection {
   metadata: Metadata!
 }
 
-type SnippetFavorite {
+type MsSnippetFavorite {
   favorited: Boolean!
 }
 
