@@ -1,15 +1,13 @@
-package gql
+package resolvers
 
 import (
-	"aio-server/gql/payloads"
+	"aio-server/gql/gqlTypes"
+	"aio-server/gql/inputs"
 	"aio-server/services"
 	"context"
 )
 
-func (r *Resolver) SignIn(ctx context.Context, args struct {
-	Email    string
-	Password string
-}) (*payloads.SignInResolver, error) {
+func (r *Resolver) SignIn(ctx context.Context, args inputs.SignInInput) (*gqlTypes.SignInType, error) {
 	service := services.AuthService{
 		Email:    args.Email,
 		Password: args.Password,
@@ -23,7 +21,7 @@ func (r *Resolver) SignIn(ctx context.Context, args struct {
 		return nil, err
 	}
 
-	return &payloads.SignInResolver{
+	return &gqlTypes.SignInType{
 		Token: service.Token,
 	}, nil
 }

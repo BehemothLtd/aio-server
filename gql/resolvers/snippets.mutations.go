@@ -1,4 +1,4 @@
-package gql
+package resolvers
 
 import (
 	"aio-server/gql/inputs"

@@ -1,4 +1,4 @@
-package gql
+package resolvers
 
 import (
 	"gorm.io/gorm"
