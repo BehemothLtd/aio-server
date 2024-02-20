@@ -8,7 +8,7 @@ import (
 	"context"
 )
 
-// MsSnippetUpdate resolves the mutation for updating a snippet.
+// SnippetUpdate resolves the mutation for updating a snippet.
 func (r *Resolver) SnippetUpdate(ctx context.Context, args msInputs.SnippetUpdateInput) (*snippetTypes.SnippetUpdatedType, error) {
 	service := msServices.SnippetUpdateService{
 		Ctx:  &ctx,

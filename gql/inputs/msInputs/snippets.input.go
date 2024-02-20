@@ -5,13 +5,13 @@ import (
 	"aio-server/models"
 )
 
-// MsSnippetsInput represents input for querying snippets collection.
+// SnippetsInput represents input for querying snippets collection.
 type SnippetsInput struct {
 	Input *globalInputs.PagyInput
 	Query *SnippetQueryInput
 }
 
-// ToPaginationDataAndSnippetsQuery converts MsSnippetsInput to models.SnippetsQuery and models.PaginationData.
+// ToPaginationDataAndSnippetsQuery converts SnippetsInput to models.SnippetsQuery and models.PaginationData.
 func (msi *SnippetsInput) ToPaginationDataAndSnippetsQuery() (models.SnippetsQuery, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
 

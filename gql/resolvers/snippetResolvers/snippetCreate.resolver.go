@@ -8,7 +8,7 @@ import (
 	"context"
 )
 
-// MsSnippetCreate resolves the mutation for creating a snippet.
+// SnippetCreate resolves the mutation for creating a snippet.
 func (r *Resolver) SnippetCreate(ctx context.Context, args msInputs.SnippetCreateInput) (*snippetTypes.SnippetCreatedType, error) {
 	service := msServices.SnippetCreateService{
 		Ctx:  &ctx,

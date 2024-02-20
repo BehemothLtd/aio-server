@@ -7,7 +7,7 @@ import (
 	"context"
 )
 
-// MsSnippetFavorite resolves the mutation for favoriting a snippet.
+// SnippetFavorite resolves the mutation for favoriting a snippet.
 func (r *Resolver) SnippetFavorite(ctx context.Context, args msInputs.SnippetFavoriteInput) (*snippetTypes.SnippetFavoriteType, error) {
 	service := services.SnippetFavoriteService{
 		Ctx:  &ctx,

@@ -11,7 +11,7 @@ import (
 	"context"
 )
 
-// MsSelfSnippets resolves the query for retrieving self-owned snippets.
+// SelfSnippets resolves the query for retrieving self-owned snippets.
 func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*snippetTypes.SnippetsType, error) {
 	var snippets []*models.Snippet
 
