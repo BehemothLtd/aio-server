@@ -2,7 +2,7 @@ package payloads
 
 import (
 	"aio-server/exceptions"
-	"aio-server/gql/gqlTypes"
+	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
@@ -12,13 +12,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type MsSnippetResolver struct {
+type MsSnippetType struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args struct{ Id graphql.ID }
 }
 
-func (msr *MsSnippetResolver) Resolve() (*gqlTypes.SnippetResolver, error) {
+func (msr *MsSnippetType) Resolve() (*globalTypes.SnippetType, error) {
 	if msr.Args.Id == "" {
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
@@ -39,5 +39,5 @@ func (msr *MsSnippetResolver) Resolve() (*gqlTypes.SnippetResolver, error) {
 		return nil, err
 	}
 
-	return &gqlTypes.SnippetResolver{Snippet: &snippet}, nil
+	return &globalTypes.SnippetType{Snippet: &snippet}, nil
 }

@@ -1,13 +1,13 @@
 package resolvers
 
 import (
-	"aio-server/gql/gqlTypes"
+	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs"
 	"aio-server/services"
 	"context"
 )
 
-func (r *Resolver) SignIn(ctx context.Context, args inputs.SignInInput) (*gqlTypes.SignInType, error) {
+func (r *Resolver) SignIn(ctx context.Context, args inputs.SignInInput) (*globalTypes.SignInType, error) {
 	service := services.AuthService{
 		Email:    args.Email,
 		Password: args.Password,
@@ -21,7 +21,7 @@ func (r *Resolver) SignIn(ctx context.Context, args inputs.SignInInput) (*gqlTyp
 		return nil, err
 	}
 
-	return &gqlTypes.SignInType{
+	return &globalTypes.SignInType{
 		Token: service.Token,
 	}, nil
 }

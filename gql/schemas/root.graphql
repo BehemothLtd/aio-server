@@ -20,7 +20,7 @@ type Mutation {
 
   msSnippetFavorite(id: ID!): MsSnippetFavorite!
   msSnippetCreate(input: SnippetInput!): SnippetModification!
-  msSnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
+  msSnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification
 }
 
 scalar Time

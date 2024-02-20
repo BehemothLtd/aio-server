@@ -1,7 +1,7 @@
 package resolvers
 
 import (
-	"aio-server/gql/gqlTypes"
+	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs"
 	"aio-server/gql/payloads"
 	"context"
@@ -10,22 +10,22 @@ import (
 )
 
 // MsSnippet resolves the query for retrieving a single snippet.
-func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*gqlTypes.SnippetResolver, error) {
-	resolver := payloads.MsSnippetResolver{
+func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*globalTypes.SnippetType, error) {
+	resolver := payloads.MsSnippetType{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,
 	}
 
-	if snippetResolver, err := resolver.Resolve(); err != nil {
+	if SnippetType, err := resolver.Resolve(); err != nil {
 		return nil, err
 	} else {
-		return snippetResolver, nil
+		return SnippetType, nil
 	}
 }
 
 type SnippetsCollection struct {
-	Collection *[]*gqlTypes.SnippetResolver
+	Collection *[]*globalTypes.SnippetType
 	Metadata   *payloads.MetadataResolver
 }
 
