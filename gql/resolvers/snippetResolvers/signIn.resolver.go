@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
@@ -7,7 +7,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) MsSignIn(ctx context.Context, args msInputs.SignInInput) (*globalTypes.SignInType, error) {
+func (r *Resolver) SignIn(ctx context.Context, args msInputs.SignInInput) (*globalTypes.SignInType, error) {
 	service := services.AuthService{
 		Email:    args.Email,
 		Password: args.Password,

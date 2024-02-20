@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/gql/gqlTypes/msTypes"
@@ -8,7 +8,7 @@ import (
 )
 
 // MsSnippetFavorite resolves the mutation for favoriting a snippet.
-func (r *Resolver) MsSnippetFavorite(ctx context.Context, args msInputs.SnippetFavoriteInput) (*msTypes.MsSnippetFavoriteType, error) {
+func (r *Resolver) SnippetFavorite(ctx context.Context, args msInputs.SnippetFavoriteInput) (*msTypes.MsSnippetFavoriteType, error) {
 	service := services.SnippetFavoriteService{
 		Ctx:  &ctx,
 		Db:   r.Db,

@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/exceptions"
@@ -12,7 +12,7 @@ import (
 )
 
 // MsSelfSnippets resolves the query for retrieving self-owned snippets.
-func (r *Resolver) MsSelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
+func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
 	var snippets []*models.Snippet
 
 	user, err := auths.AuthUserFromCtx(ctx)

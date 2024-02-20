@@ -1,0 +1,23 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  SelfInfo: UserPrivateInfo!
+
+  Snippet(id: ID!): MsSnippet!
+  Snippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
+  SelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
+  SnippetDecryptContent(id: ID!, Passkey: String!): String
+}
+
+type Mutation {
+  SignIn(email: String!, password: String!): SignIn!
+
+  SnippetFavorite(id: ID!): MsSnippetFavorite!
+  SnippetCreate(input: SnippetInput!): SnippetModification!
+  SnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
+}
+
+scalar Time

@@ -1,7 +1,7 @@
 package initializers
 
 import (
-	gql "aio-server/gql/resolvers"
+	"aio-server/gql/resolvers/snippetResolvers"
 	"log"
 	"os"
 
@@ -13,13 +13,14 @@ import (
 
 // GqlHandler returns a Gin middleware that handles GraphQL requests.
 func SnippetGqlHandler(db *gorm.DB) gin.HandlerFunc {
-	schema, err := getSchema("./gql/schemas/ms/")
+	schema, err := getSchema("./gql/schemas/snippet/")
+
 	if err != nil {
 		log.Fatalf("failed to get schema: %v", err)
 	}
 
 	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
-	gqlSchema := graphql.MustParseSchema(schema, &gql.Resolver{Db: db}, opts...)
+	gqlSchema := graphql.MustParseSchema(schema, &snippetResolvers.Resolver{Db: db}, opts...)
 	handler := &relay.Handler{Schema: gqlSchema}
 
 	return func(c *gin.Context) {

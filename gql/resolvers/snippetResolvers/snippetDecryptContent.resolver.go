@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/gql/inputs/msInputs"
@@ -6,7 +6,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) MsSnippetDecryptContent(ctx context.Context, args msInputs.SnippetDecryptContentInput) (*string, error) {
+func (r *Resolver) SnippetDecryptContent(ctx context.Context, args msInputs.SnippetDecryptContentInput) (*string, error) {
 	service := msServices.SnippetDecryptService{
 		Ctx:  &ctx,
 		Db:   r.Db,

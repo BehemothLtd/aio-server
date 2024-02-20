@@ -1,0 +1,16 @@
+input PagyInput {
+  perPage: Int
+  page: Int
+}
+
+type Metadata {
+  total: ID
+  perPage: Int
+  page: Int
+  pages: Int
+  count: Int
+  next: Int
+  prev: Int
+  from: Int
+  to: Int
+}

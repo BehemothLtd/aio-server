@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/exceptions"
@@ -8,7 +8,7 @@ import (
 )
 
 // SelfInfo resolves the query for retrieving self information.
-func (r *Resolver) MsSelfInfo(ctx context.Context) (*globalTypes.UserType, error) {
+func (r *Resolver) SelfInfo(ctx context.Context) (*globalTypes.UserType, error) {
 	user, err := auths.AuthUserFromCtx(ctx)
 	if err != nil {
 		return nil, exceptions.NewUnauthorizedError("")

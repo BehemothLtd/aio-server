@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
@@ -8,9 +8,9 @@ import (
 	"context"
 )
 
-// MsSnippetUpdate resolves the mutation for updating a snippet.
-func (r *Resolver) MsSnippetUpdate(ctx context.Context, args msInputs.SnippetUpdateInput) (*msTypes.MsSnippetUpdatedType, error) {
-	service := msServices.SnippetUpdateService{
+// MsSnippetCreate resolves the mutation for creating a snippet.
+func (r *Resolver) SnippetCreate(ctx context.Context, args msInputs.SnippetCreateInput) (*msTypes.MsSnippetCreatedType, error) {
+	service := msServices.SnippetCreateService{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,
@@ -19,7 +19,7 @@ func (r *Resolver) MsSnippetUpdate(ctx context.Context, args msInputs.SnippetUpd
 	if snippet, err := service.Execute(); err != nil {
 		return nil, err
 	} else {
-		return &msTypes.MsSnippetUpdatedType{
+		return &msTypes.MsSnippetCreatedType{
 			Snippet: &globalTypes.SnippetType{
 				Snippet: snippet,
 			},

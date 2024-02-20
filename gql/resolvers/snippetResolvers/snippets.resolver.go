@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
@@ -10,7 +10,7 @@ import (
 )
 
 // MsSnippets resolves the query for retrieving a collection of snippets.
-func (r *Resolver) MsSnippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
+func (r *Resolver) Snippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
 	var snippets []*models.Snippet
 	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 

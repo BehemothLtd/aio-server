@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"gorm.io/gorm"

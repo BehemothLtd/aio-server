@@ -1,4 +1,4 @@
-package resolvers
+package snippetResolvers
 
 import (
 	"aio-server/exceptions"
@@ -13,7 +13,7 @@ import (
 )
 
 // MsSnippet resolves the query for retrieving a single snippet.
-func (r *Resolver) MsSnippet(ctx context.Context, args msInputs.SnippetInput) (*globalTypes.SnippetType, error) {
+func (r *Resolver) Snippet(ctx context.Context, args msInputs.SnippetInput) (*globalTypes.SnippetType, error) {
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
