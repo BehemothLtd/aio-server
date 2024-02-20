@@ -2,7 +2,7 @@ package validators
 
 import (
 	"aio-server/exceptions"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
@@ -12,18 +12,22 @@ import (
 // SnippetForm represents a validator for snippet input.
 type SnippetForm struct {
 	Form
-	inputs.MsSnippetFormInput
+	msInputs.SnippetFormInput
 	Snippet *models.Snippet
 	Repo    *repository.SnippetRepository
 }
 
 // NewSnippetFormValidator creates a new SnippetForm validator.
-func NewSnippetFormValidator(input *inputs.MsSnippetFormInput, repo *repository.SnippetRepository, snippet *models.Snippet) SnippetForm {
+func NewSnippetFormValidator(
+	input *msInputs.SnippetFormInput,
+	repo *repository.SnippetRepository,
+	snippet *models.Snippet,
+) SnippetForm {
 	form := SnippetForm{
-		Form:               Form{},
-		MsSnippetFormInput: *input,
-		Snippet:            snippet,
-		Repo:               repo,
+		Form:             Form{},
+		SnippetFormInput: *input,
+		Snippet:          snippet,
+		Repo:             repo,
 	}
 	form.assignAttributes(input)
 
@@ -70,7 +74,7 @@ func (form *SnippetForm) validate() error {
 }
 
 // assignAttributes assigns attributes to the snippet form.
-func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetFormInput) {
+func (form *SnippetForm) assignAttributes(input *msInputs.SnippetFormInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
 	snippetType := helpers.GetInt32OrDefault(input.SnippetType)

@@ -3,14 +3,14 @@ package resolvers
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/msTypes"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/repository"
 	"context"
 )
 
 // MsSnippets resolves the query for retrieving a collection of snippets.
-func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*msTypes.MsSnippetsType, error) {
+func (r *Resolver) MsSnippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
 	var snippets []*models.Snippet
 	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 

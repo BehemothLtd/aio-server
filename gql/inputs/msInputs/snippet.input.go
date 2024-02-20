@@ -1,7 +1,7 @@
-package inputs
+package msInputs
 
 import graphql "github.com/graph-gophers/graphql-go"
 
-type MsSnippetInput struct {
+type SnippetInput struct {
 	Id graphql.ID
 }

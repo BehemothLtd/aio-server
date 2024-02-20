@@ -1,10 +1,13 @@
 package inputs
 
-import "aio-server/models"
+import (
+	"aio-server/gql/inputs/globalInputs"
+	"aio-server/models"
+)
 
 // MmUserGroupsInput represents input for querying user groups collection.
 type MmUserGroupsInput struct {
-	Input *PagyInput
+	Input *globalInputs.PagyInput
 	Query *MmUserGroupQueryInput
 }
 

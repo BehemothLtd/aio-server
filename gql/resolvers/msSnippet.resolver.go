@@ -3,7 +3,7 @@ package resolvers
 import (
 	"aio-server/exceptions"
 	"aio-server/gql/gqlTypes/globalTypes"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
@@ -13,7 +13,7 @@ import (
 )
 
 // MsSnippet resolves the query for retrieving a single snippet.
-func (r *Resolver) MsSnippet(ctx context.Context, args inputs.MsSnippetInput) (*globalTypes.SnippetType, error) {
+func (r *Resolver) MsSnippet(ctx context.Context, args msInputs.SnippetInput) (*globalTypes.SnippetType, error) {
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}

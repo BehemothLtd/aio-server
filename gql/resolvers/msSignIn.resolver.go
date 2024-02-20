@@ -2,12 +2,12 @@ package resolvers
 
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/services"
 	"context"
 )
 
-func (r *Resolver) SignIn(ctx context.Context, args inputs.SignInInput) (*globalTypes.SignInType, error) {
+func (r *Resolver) MsSignIn(ctx context.Context, args msInputs.SignInInput) (*globalTypes.SignInType, error) {
 	service := services.AuthService{
 		Email:    args.Email,
 		Password: args.Password,

@@ -1,15 +1,18 @@
-package inputs
+package msInputs
 
-import "aio-server/models"
+import (
+	"aio-server/gql/inputs/globalInputs"
+	"aio-server/models"
+)
 
 // MsSnippetsInput represents input for querying snippets collection.
-type MsSnippetsInput struct {
-	Input *PagyInput
-	Query *MsSnippetQueryInput
+type SnippetsInput struct {
+	Input *globalInputs.PagyInput
+	Query *SnippetQueryInput
 }
 
 // ToPaginationDataAndSnippetsQuery converts MsSnippetsInput to models.SnippetsQuery and models.PaginationData.
-func (msi *MsSnippetsInput) ToPaginationDataAndSnippetsQuery() (models.SnippetsQuery, models.PaginationData) {
+func (msi *SnippetsInput) ToPaginationDataAndSnippetsQuery() (models.SnippetsQuery, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
 
 	var titleCont string

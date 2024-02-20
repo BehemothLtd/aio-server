@@ -3,14 +3,14 @@ package resolvers
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/msTypes"
-	"aio-server/gql/inputs"
-	"aio-server/services"
+	"aio-server/gql/inputs/msInputs"
+	"aio-server/services/msServices"
 	"context"
 )
 
 // MsSnippetCreate resolves the mutation for creating a snippet.
-func (r *Resolver) MsSnippetCreate(ctx context.Context, args inputs.MsSnippetCreateInput) (*msTypes.MsSnippetCreatedType, error) {
-	service := services.SnippetCreateService{
+func (r *Resolver) MsSnippetCreate(ctx context.Context, args msInputs.SnippetCreateInput) (*msTypes.MsSnippetCreatedType, error) {
+	service := msServices.SnippetCreateService{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,

@@ -1,4 +1,4 @@
-package inputs
+package msInputs
 
 type SignInInput struct {
 	Email    string

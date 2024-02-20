@@ -1,8 +1,8 @@
-package services
+package msServices
 
 import (
 	"aio-server/exceptions"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
@@ -17,7 +17,7 @@ import (
 type SnippetUpdateService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args inputs.MsSnippetUpdateInput
+	Args msInputs.SnippetUpdateInput
 }
 
 // Execute updates an existed snippet.

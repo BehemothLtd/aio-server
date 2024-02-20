@@ -7,7 +7,7 @@ type Query {
   msSelfInfo: UserPrivateInfo!
 
   # User group queries
-  mmUserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
+  # mmUserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
 
   msSnippet(id: ID!): MsSnippet!
   msSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
@@ -16,7 +16,7 @@ type Query {
 }
 
 type Mutation {
-  signIn(email: String!, password: String!): Authentication!
+  msSignIn(email: String!, password: String!): SignIn!
 
   msSnippetFavorite(id: ID!): MsSnippetFavorite!
   msSnippetCreate(input: SnippetInput!): SnippetModification!

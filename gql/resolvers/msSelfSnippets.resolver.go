@@ -4,7 +4,7 @@ import (
 	"aio-server/exceptions"
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/msTypes"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/repository"
@@ -12,7 +12,7 @@ import (
 )
 
 // MsSelfSnippets resolves the query for retrieving self-owned snippets.
-func (r *Resolver) MsSelfSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*msTypes.MsSnippetsType, error) {
+func (r *Resolver) MsSelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
 	var snippets []*models.Snippet
 
 	user, err := auths.AuthUserFromCtx(ctx)

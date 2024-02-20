@@ -1,8 +1,8 @@
-package services
+package msServices
 
 import (
 	"aio-server/exceptions"
-	"aio-server/gql/inputs"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/repository"
@@ -16,7 +16,7 @@ import (
 type SnippetCreateService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args inputs.MsSnippetCreateInput
+	Args msInputs.SnippetCreateInput
 }
 
 // Execute creates a new snippet.

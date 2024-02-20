@@ -1,4 +1,4 @@
-package inputs
+package globalInputs
 
 import (
 	"aio-server/models"
