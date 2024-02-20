@@ -123,9 +123,9 @@ func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetFormInput) {
 
 func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 	snippetType := form.Snippet.SnippetType
-	PasskeyAttr := form.FindAttrByCode("Passkey")
+	PasskeyAttr := form.FindAttrByCode("passkey")
 
-	if snippetType == 2 && PasskeyAttr != nil {
+	if snippetType == 2 {
 		// Private
 		PasskeyAttr.ValidateRequired()
 
