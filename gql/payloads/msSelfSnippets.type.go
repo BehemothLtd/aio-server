@@ -2,6 +2,7 @@ package payloads
 
 import (
 	"aio-server/exceptions"
+	"aio-server/gql/gqlTypes"
 	"aio-server/gql/inputs"
 	"aio-server/models"
 	"aio-server/pkg/auths"
@@ -16,7 +17,7 @@ type MsSelfSnippetsResolver struct {
 	Db   *gorm.DB
 	Args inputs.MsSnippetsInput
 
-	Collection *[]*MsSnippetResolver
+	Collection *[]*gqlTypes.SnippetResolver
 	Metadata   *MetadataResolver
 }
 
@@ -45,10 +46,10 @@ func (mssr *MsSelfSnippetsResolver) Resolve() error {
 	return nil
 }
 
-func (mssr *MsSelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*MsSnippetResolver {
-	r := make([]*MsSnippetResolver, len(snippets))
+func (mssr *MsSelfSnippetsResolver) FromSnippets(snippets []*models.Snippet) *[]*gqlTypes.SnippetResolver {
+	r := make([]*gqlTypes.SnippetResolver, len(snippets))
 	for i := range snippets {
-		r[i] = &MsSnippetResolver{
+		r[i] = &gqlTypes.SnippetResolver{
 			Snippet: snippets[i],
 		}
 	}

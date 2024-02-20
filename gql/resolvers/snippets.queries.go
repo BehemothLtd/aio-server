@@ -1,6 +1,7 @@
 package gql
 
 import (
+	"aio-server/gql/gqlTypes"
 	"aio-server/gql/inputs"
 	"aio-server/gql/payloads"
 	"context"
@@ -9,33 +10,41 @@ import (
 )
 
 // MsSnippet resolves the query for retrieving a single snippet.
-func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*payloads.MsSnippetResolver, error) {
+func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*gqlTypes.SnippetResolver, error) {
 	resolver := payloads.MsSnippetResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,
 	}
 
-	if err := resolver.Resolve(); err != nil {
+	if snippetResolver, err := resolver.Resolve(); err != nil {
 		return nil, err
+	} else {
+		return snippetResolver, nil
 	}
+}
 
-	return &resolver, nil
+type SnippetsCollection struct {
+	Collection *[]*gqlTypes.SnippetResolver
+	Metadata   *payloads.MetadataResolver
 }
 
 // MsSnippets resolves the query for retrieving a collection of snippets.
-func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*payloads.MsSnippetsResolver, error) {
+func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) (*SnippetsCollection, error) {
 	resolver := payloads.MsSnippetsResolver{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,
 	}
 
-	if err := resolver.Resolve(); err != nil {
+	if collectionResolver, metadataResolver, err := resolver.Resolve(); err != nil {
 		return nil, err
+	} else {
+		return &SnippetsCollection{
+			Collection: collectionResolver,
+			Metadata:   metadataResolver,
+		}, nil
 	}
-
-	return &resolver, nil
 }
 
 // MsSelfSnippets resolves the query for retrieving self-owned snippets.

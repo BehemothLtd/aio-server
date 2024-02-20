@@ -1,6 +1,7 @@
 package payloads
 
 import (
+	"aio-server/gql/gqlTypes"
 	"aio-server/gql/inputs"
 	"aio-server/models"
 	"aio-server/services"
@@ -38,8 +39,8 @@ func (msc *MsSnippetCreateResolver) Resolve() error {
 }
 
 // Snippet returns the created snippet.
-func (msc *MsSnippetCreateResolver) Snippet() *MsSnippetResolver {
-	return &MsSnippetResolver{
+func (msc *MsSnippetCreateResolver) Snippet() *gqlTypes.SnippetResolver {
+	return &gqlTypes.SnippetResolver{
 		Snippet: msc.Model,
 	}
 }

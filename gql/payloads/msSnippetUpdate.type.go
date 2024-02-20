@@ -1,6 +1,7 @@
 package payloads
 
 import (
+	"aio-server/gql/gqlTypes"
 	"aio-server/gql/inputs"
 	"aio-server/models"
 	"aio-server/services"
@@ -12,9 +13,9 @@ import (
 
 // MsSnippetUpdateResolver resolves the updating of a snippet.
 type MsSnippetUpdateResolver struct {
-	Ctx   *context.Context
-	Db    *gorm.DB
-	Args  struct {
+	Ctx  *context.Context
+	Db   *gorm.DB
+	Args struct {
 		Id    graphql.ID
 		Input inputs.MsSnippetInput
 	}
@@ -39,8 +40,8 @@ func (msc *MsSnippetUpdateResolver) Resolve() error {
 }
 
 // Snippet returns the updated snippet.
-func (msc *MsSnippetUpdateResolver) Snippet() *MsSnippetResolver {
-	return &MsSnippetResolver{
+func (msc *MsSnippetUpdateResolver) Snippet() *gqlTypes.SnippetResolver {
+	return &gqlTypes.SnippetResolver{
 		Snippet: msc.Model,
 	}
 }
