@@ -20,7 +20,7 @@ type SnippetUpdateService struct {
 	Db   *gorm.DB
 	Args struct {
 		Id    graphql.ID
-		Input inputs.MsSnippetInput
+		Input inputs.MsSnippetFormInput
 	}
 }
 

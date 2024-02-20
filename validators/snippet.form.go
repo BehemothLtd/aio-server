@@ -12,18 +12,18 @@ import (
 // SnippetForm represents a validator for snippet input.
 type SnippetForm struct {
 	Form
-	inputs.MsSnippetInput
+	inputs.MsSnippetFormInput
 	Snippet *models.Snippet
 	Repo    *repository.SnippetRepository
 }
 
 // NewSnippetFormValidator creates a new SnippetForm validator.
-func NewSnippetFormValidator(input *inputs.MsSnippetInput, repo *repository.SnippetRepository, snippet *models.Snippet) SnippetForm {
+func NewSnippetFormValidator(input *inputs.MsSnippetFormInput, repo *repository.SnippetRepository, snippet *models.Snippet) SnippetForm {
 	form := SnippetForm{
-		Form:           Form{},
-		MsSnippetInput: *input,
-		Snippet:        snippet,
-		Repo:           repo,
+		Form:               Form{},
+		MsSnippetFormInput: *input,
+		Snippet:            snippet,
+		Repo:               repo,
 	}
 	form.assignAttributes(input)
 
@@ -70,7 +70,7 @@ func (form *SnippetForm) validate() error {
 }
 
 // assignAttributes assigns attributes to the snippet form.
-func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetInput) {
+func (form *SnippetForm) assignAttributes(input *inputs.MsSnippetFormInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
 	snippetType := helpers.GetInt32OrDefault(input.SnippetType)

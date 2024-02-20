@@ -1,11 +1,11 @@
 package inputs
 
 type MsSnippetModificationInput struct {
-	Input MsSnippetInput
+	Input MsSnippetFormInput
 }
 
-// MsSnippetInput represents input for creating or updating a snippet.
-type MsSnippetInput struct {
+// MsSnippetFormInput represents input for creating or updating a snippet.
+type MsSnippetFormInput struct {
 	Title       *string
 	Content     *string
 	SnippetType *int32 // Use int32 or float32 as required by Graphql

@@ -15,7 +15,7 @@ type MsSnippetCreateResolver struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
 	Args struct {
-		Input inputs.MsSnippetInput
+		Input inputs.MsSnippetFormInput
 	}
 
 	Model *models.Snippet
