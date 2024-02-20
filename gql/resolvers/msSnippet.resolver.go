@@ -1,24 +1,38 @@
 package resolvers
 
 import (
+	"aio-server/exceptions"
 	"aio-server/gql/gqlTypes/globalTypes"
-	"aio-server/gql/payloads"
+	"aio-server/gql/inputs"
+	"aio-server/models"
+	"aio-server/pkg/helpers"
+	"aio-server/repository"
 	"context"
 
-	graphql "github.com/graph-gophers/graphql-go"
+	"gorm.io/gorm"
 )
 
 // MsSnippet resolves the query for retrieving a single snippet.
-func (r *Resolver) MsSnippet(ctx context.Context, args struct{ Id graphql.ID }) (*globalTypes.SnippetType, error) {
-	resolver := payloads.MsSnippetType{
-		Ctx:  &ctx,
-		Db:   r.Db,
-		Args: args,
+func (r *Resolver) MsSnippet(ctx context.Context, args inputs.MsSnippetInput) (*globalTypes.SnippetType, error) {
+	if args.Id == "" {
+		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
 
-	if SnippetType, err := resolver.Resolve(); err != nil {
+	snippetId, err := helpers.GqlIdToInt32(args.Id)
+	if err != nil {
 		return nil, err
-	} else {
-		return SnippetType, nil
 	}
+
+	snippet := models.Snippet{}
+	repo := repository.NewSnippetRepository(&ctx, r.Db)
+	err = repo.FindById(&snippet, snippetId)
+
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, exceptions.NewRecordNotFoundError()
+		}
+		return nil, err
+	}
+
+	return &globalTypes.SnippetType{Snippet: &snippet}, nil
 }
