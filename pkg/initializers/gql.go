@@ -12,8 +12,8 @@ import (
 )
 
 // GqlHandler returns a Gin middleware that handles GraphQL requests.
-func GqlHandler(db *gorm.DB) gin.HandlerFunc {
-	schema, err := getSchema()
+func SnippetGqlHandler(db *gorm.DB) gin.HandlerFunc {
+	schema, err := getSchema("./gql/schemas/ms/")
 	if err != nil {
 		log.Fatalf("failed to get schema: %v", err)
 	}
@@ -27,8 +27,7 @@ func GqlHandler(db *gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func getSchema() (string, error) {
-	schemaPath := "./gql/schemas/"
+func getSchema(schemaPath string) (string, error) {
 	entries, err := os.ReadDir(schemaPath)
 	if err != nil {
 		return "", err

@@ -22,7 +22,7 @@ func main() {
 	r.Use(initializers.CorsConfig())
 	r.Use(logger.Logger(logrus.New()), gin.Recovery())
 
-	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/graphql", initializers.GqlHandler(db))
+	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/msGraphql", initializers.SnippetGqlHandler(db))
 	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/uploads", controllers.UploadHandler)
 
 	r.Run()
