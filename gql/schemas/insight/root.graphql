@@ -4,7 +4,7 @@ schema {
 }
 
 type Query {
-  mmUserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
+  UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
 }
 
 type Mutation {

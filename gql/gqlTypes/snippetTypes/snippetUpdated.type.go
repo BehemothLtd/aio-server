@@ -1,7 +1,7 @@
-package msTypes
+package snippetTypes
 
 import "aio-server/gql/gqlTypes/globalTypes"
 
-type MsSnippetUpdatedType struct {
+type SnippetUpdatedType struct {
 	Snippet *globalTypes.SnippetType
 }

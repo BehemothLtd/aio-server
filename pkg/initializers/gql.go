@@ -1,6 +1,7 @@
 package initializers
 
 import (
+	"aio-server/gql/resolvers/insightResolvers"
 	"aio-server/gql/resolvers/snippetResolvers"
 	"log"
 	"os"
@@ -18,8 +19,10 @@ func SnippetGqlHandler(db *gorm.DB) gin.HandlerFunc {
 	if err != nil {
 		log.Fatalf("failed to get schema: %v", err)
 	}
+	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
+	gqlSchema := graphql.MustParseSchema(schema, &snippetResolvers.Resolver{Db: db}, opts...)
 
-	return ginSchemaHandler(schema, db)
+	return ginSchemaHandler(schema, db, gqlSchema)
 }
 
 // InsightGqlHandler returns a Gin middleware that handles GraphQL requests.
@@ -30,12 +33,13 @@ func InsightGqlHandler(db *gorm.DB) gin.HandlerFunc {
 		log.Fatalf("failed to get schema: %v", err)
 	}
 
-	return ginSchemaHandler(schema, db)
+	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
+	gqlSchema := graphql.MustParseSchema(schema, &insightResolvers.Resolver{Db: db}, opts...)
+
+	return ginSchemaHandler(schema, db, gqlSchema)
 }
 
-func ginSchemaHandler(schema string, db *gorm.DB) gin.HandlerFunc {
-	opts := []graphql.SchemaOpt{graphql.UseStringDescriptions(), graphql.UseFieldResolvers()}
-	gqlSchema := graphql.MustParseSchema(schema, &snippetResolvers.Resolver{Db: db}, opts...)
+func ginSchemaHandler(schema string, db *gorm.DB, gqlSchema *graphql.Schema) gin.HandlerFunc {
 	handler := &relay.Handler{Schema: gqlSchema}
 
 	return func(c *gin.Context) {

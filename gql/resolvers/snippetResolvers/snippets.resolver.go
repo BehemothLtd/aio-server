@@ -2,15 +2,15 @@ package snippetResolvers
 
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
-	"aio-server/gql/gqlTypes/msTypes"
+	"aio-server/gql/gqlTypes/snippetTypes"
 	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/repository"
 	"context"
 )
 
-// MsSnippets resolves the query for retrieving a collection of snippets.
-func (r *Resolver) Snippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
+// Snippets resolves the query for retrieving a collection of snippets.
+func (r *Resolver) Snippets(ctx context.Context, args msInputs.SnippetsInput) (*snippetTypes.SnippetsType, error) {
 	var snippets []*models.Snippet
 	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 
@@ -21,7 +21,7 @@ func (r *Resolver) Snippets(ctx context.Context, args msInputs.SnippetsInput) (*
 		return nil, err
 	}
 
-	return &msTypes.MsSnippetsType{
+	return &snippetTypes.SnippetsType{
 		Collection: r.SnippetSliceToTypes(snippets),
 		Metadata: &globalTypes.MetadataType{
 			Metadata: &paginationData.Metadata,

@@ -1,10 +1,10 @@
-package msTypes
+package snippetTypes
 
 import (
 	"aio-server/gql/gqlTypes/globalTypes"
 )
 
-type MsSnippetsType struct {
+type SnippetsType struct {
 	Collection *[]*globalTypes.SnippetType
 	Metadata   *globalTypes.MetadataType
 }

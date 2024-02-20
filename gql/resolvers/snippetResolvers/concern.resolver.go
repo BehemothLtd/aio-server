@@ -5,7 +5,7 @@ import (
 	"aio-server/models"
 )
 
-// fromSnippets converts models.Snippet slice to []*MsSnippetType.
+// SnippetSliceToTypes converts models.Snippet slice to []*MsSnippetType.
 func (r *Resolver) SnippetSliceToTypes(snippets []*models.Snippet) *[]*globalTypes.SnippetType {
 	resolvers := make([]*globalTypes.SnippetType, len(snippets))
 	for i, s := range snippets {

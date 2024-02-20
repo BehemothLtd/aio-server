@@ -3,7 +3,7 @@ package snippetResolvers
 import (
 	"aio-server/exceptions"
 	"aio-server/gql/gqlTypes/globalTypes"
-	"aio-server/gql/gqlTypes/msTypes"
+	snippetTypes "aio-server/gql/gqlTypes/snippetTypes"
 	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/auths"
@@ -12,7 +12,7 @@ import (
 )
 
 // MsSelfSnippets resolves the query for retrieving self-owned snippets.
-func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*msTypes.MsSnippetsType, error) {
+func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*snippetTypes.SnippetsType, error) {
 	var snippets []*models.Snippet
 
 	user, err := auths.AuthUserFromCtx(ctx)
@@ -31,7 +31,7 @@ func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput
 		return nil, exceptions.NewBadRequestError("")
 	}
 
-	return &msTypes.MsSnippetsType{
+	return &snippetTypes.SnippetsType{
 		Collection: r.SnippetSliceToTypes(snippets),
 		Metadata: &globalTypes.MetadataType{
 			Metadata: &paginationData.Metadata,

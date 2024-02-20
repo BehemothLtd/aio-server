@@ -23,7 +23,7 @@ func main() {
 	r.Use(logger.Logger(logrus.New()), gin.Recovery())
 
 	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/snippetGql", initializers.SnippetGqlHandler(db))
-	// r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/insightGql", initializers.InsightGqlHandler(db))
+	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/insightGql", initializers.InsightGqlHandler(db))
 
 	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/uploads", controllers.UploadHandler)
 
