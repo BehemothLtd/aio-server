@@ -22,7 +22,7 @@ func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) 
 	}
 
 	return &msTypes.MsSnippetsType{
-		Collection: fromSnippets(snippets),
+		Collection: r.SnippetSliceToTypes(snippets),
 		Metadata: &globalTypes.MetadataType{
 			Metadata: &paginationData.Metadata,
 		},
@@ -30,7 +30,7 @@ func (r *Resolver) MsSnippets(ctx context.Context, args inputs.MsSnippetsInput) 
 }
 
 // fromSnippets converts models.Snippet slice to []*MsSnippetType.
-func fromSnippets(snippets []*models.Snippet) *[]*globalTypes.SnippetType {
+func (r *Resolver) SnippetSliceToTypes(snippets []*models.Snippet) *[]*globalTypes.SnippetType {
 	resolvers := make([]*globalTypes.SnippetType, len(snippets))
 	for i, s := range snippets {
 		resolvers[i] = &globalTypes.SnippetType{Snippet: s}
