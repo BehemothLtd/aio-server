@@ -4,7 +4,7 @@ package msInputs
 type SnippetFormInput struct {
 	Title       *string
 	Content     *string
-	SnippetType *int32 // Use int32 or float32 as required by Graphql
+	SnippetType *string
 	Passkey     *string
 	LockVersion *int32
 }

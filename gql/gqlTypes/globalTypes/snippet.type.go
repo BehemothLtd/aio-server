@@ -38,8 +38,10 @@ func (sr *SnippetType) Slug(ctx context.Context) *string {
 	return &sr.Snippet.Slug
 }
 
-func (sr *SnippetType) SnippetType(ctx context.Context) *int32 {
-	return helpers.Int32Pointer(int32(sr.Snippet.SnippetType))
+func (sr *SnippetType) SnippetType(ctx context.Context) *string {
+	value := sr.Snippet.SnippetType.String()
+
+	return &value
 }
 
 func (sr *SnippetType) FavoritesCount(ctx context.Context) *int32 {

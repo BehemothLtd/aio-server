@@ -1,12 +1,14 @@
 package validators
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"slices"
 )
 
 // SnippetForm represents a validator for snippet input.
@@ -77,7 +79,7 @@ func (form *SnippetForm) validate() error {
 func (form *SnippetForm) assignAttributes(input *msInputs.SnippetFormInput) {
 	title := helpers.GetStringOrDefault(input.Title)
 	content := helpers.GetStringOrDefault(input.Content)
-	snippetType := helpers.GetInt32OrDefault(input.SnippetType)
+	snippetType := helpers.GetStringOrDefault(input.SnippetType)
 	passkey := helpers.GetStringOrDefault(input.Passkey)
 	lockVersion := helpers.GetInt32OrDefault(input.LockVersion)
 
@@ -96,13 +98,12 @@ func (form *SnippetForm) assignAttributes(input *msInputs.SnippetFormInput) {
 			},
 			Value: content,
 		},
-		&IntAttribute[int32]{
+		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Snippet Type",
 				Code: "snippetType",
 			},
-			Value:     snippetType,
-			AllowZero: false,
+			Value: snippetType,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -122,14 +123,14 @@ func (form *SnippetForm) assignAttributes(input *msInputs.SnippetFormInput) {
 
 	form.Snippet.Title = title
 	form.Snippet.Content = content
-	form.Snippet.SnippetType = int(snippetType)
+	form.Snippet.SnippetType = enums.SnippetType(snippetType)
 }
 
 func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 	snippetType := form.Snippet.SnippetType
 	PasskeyAttr := form.FindAttrByCode("passkey")
 
-	if snippetType == 2 {
+	if snippetType == enums.SnippetTypePrivate {
 		// Private
 		PasskeyAttr.ValidateRequired()
 
@@ -165,12 +166,14 @@ func (form *SnippetForm) validateContent() *SnippetForm {
 
 func (form *SnippetForm) validateSnippetType() *SnippetForm {
 	snippetType := form.FindAttrByCode("snippetType")
-	minSnippetType := 1
-	maxSnippetType := int64(2)
 
 	snippetType.ValidateRequired()
-	snippetType.ValidateLimit(&minSnippetType, &maxSnippetType)
 
+	availableSnippetTypes := []string{string(enums.SnippetTypePublic), string(enums.SnippetTypePrivate)}
+
+	if !slices.Contains(availableSnippetTypes, *form.SnippetType) {
+		snippetType.AddError("Invalid Snippet Type")
+	}
 	return form
 }
 

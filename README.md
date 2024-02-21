@@ -26,7 +26,15 @@ make db.migrate
 
 # Install dependencies
 
+Install `go-enum`
+
+```bash
+curl -fsSL "https://github.com/abice/go-enum/releases/download/v0.6.0/go-enum_$(uname -s)_$(uname -m)" -o go-enum
+
+chmod +x go-enum (Not required maybe)
 ```
+
+```bash
 go mod tidy
 ```
 
@@ -34,4 +42,10 @@ go mod tidy
 
 ```bash
 go run main.go
+```
+
+## Enum generator
+
+```bash
+./go-enum --sqlint --marshal -f ./enums/{path_to_enum_file}
 ```
