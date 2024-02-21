@@ -5,8 +5,8 @@ const (
 	GinContextKey       = "AIOContextKey"
 	ContextCurrentUser  = "CurrentUser"
 
-	MaxStringLength         = 255
-	MaxLongTextLength       = 4294967295
+	MaxStringLength   = 255
+	MaxLongTextLength = 4294967295
 
 	BadRequestErrorCode = 400
 	BadRequestErrorMsg  = "Bad Request"

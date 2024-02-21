@@ -4,6 +4,7 @@ import (
 	"aio-server/models"
 	"context"
 	"errors"
+	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -17,9 +18,16 @@ type UserRepository struct {
 // NewUserRepository initializes a new UserRepository instance.
 func NewUserRepository(c *context.Context, db *gorm.DB) *Repository {
 	return &Repository{
-		db: db,
-		ctx:  c,
+		db:  db,
+		ctx: c,
 	}
+}
+
+func (r *Repository) FindById(user *models.User, id int32) error {
+	dbTables := r.db.Table("users")
+	fmt.Printf("ID: %+v", id)
+
+	return dbTables.First(&user, id).Error
 }
 
 // FindByEmail finds a user by their email.

@@ -6,6 +6,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	jsonwebtoken "aio-server/pkg/jsonWebToken"
+	"aio-server/repository"
 	"context"
 	"fmt"
 	"strings"
@@ -51,9 +52,9 @@ func JwtTokenCheck(c *gin.Context) {
 	if parseError == nil {
 		var user models.User
 
-		result := database.Db.Table("users").First(&user, uid)
+		repo := repository.NewUserRepository(nil, database.Db)
 
-		if result.Error == nil {
+		if err := repo.FindById(&user, int32(uid)); err == nil {
 			c.Set(constants.ContextCurrentUser, user)
 		}
 	}
