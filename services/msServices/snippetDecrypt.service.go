@@ -1,6 +1,7 @@
 package msServices
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
@@ -66,7 +67,7 @@ func (sds *SnippetDecryptService) validate() error {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	if sds.snippet.SnippetType == 1 {
+	if sds.snippet.SnippetType == enums.SnippetTypePublic {
 		return exceptions.NewUnprocessableContentError("Unable to perform this action", nil)
 	}
 

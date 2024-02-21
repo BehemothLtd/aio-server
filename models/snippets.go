@@ -1,6 +1,7 @@
 package models
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/pkg/cryption"
 	"fmt"
@@ -13,9 +14,9 @@ type Snippet struct {
 	Content        string `gorm:"not null;type:longtext;default:null"`
 	UserId         int32  `gorm:"not null;type:bigint;default:null"`
 	Slug           string
-	SnippetType    int    `gorm:"not null;default:1"`
-	FavoritesCount int    `gorm:"not null;default:0"`
-	FavoritedUsers []User `gorm:"many2many:snippets_favorites"`
+	SnippetType    enums.SnippetType `gorm:"not null;"`
+	FavoritesCount int               `gorm:"not null;default:0"`
+	FavoritedUsers []User            `gorm:"many2many:snippets_favorites"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	LockVersion    int32 `gorm:"not null;autoIncrement;default:0"`
@@ -31,7 +32,7 @@ type SnippetsCollection struct {
 }
 
 func (s *Snippet) EncryptContent(Passkey string) error {
-	if s.SnippetType == 1 {
+	if s.SnippetType == enums.SnippetTypePublic {
 		return nil
 	}
 
@@ -46,7 +47,7 @@ func (s *Snippet) EncryptContent(Passkey string) error {
 }
 
 func (s *Snippet) DecryptContent(Passkey string) (*string, error) {
-	if s.SnippetType == 1 {
+	if s.SnippetType == enums.SnippetTypePublic {
 		return nil, nil
 	}
 

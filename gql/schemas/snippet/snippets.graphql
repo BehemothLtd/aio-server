@@ -4,7 +4,7 @@ type Snippet {
   content: String
   userId: ID
   slug: String
-  snippetType: Int
+  snippetType: String
   favoritesCount: Int
   favorited: Boolean!
   createdAt: Time
@@ -32,7 +32,7 @@ type SnippetModification {
 input SnippetInput {
   title: String
   content: String
-  snippetType: Int
+  snippetType: String
   passkey: String
   lockVersion: Int
 }
