@@ -6,6 +6,7 @@ schema {
 type Query {
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
+  User(id: ID!): User!
 }
 
 type Mutation {

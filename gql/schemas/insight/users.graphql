@@ -1,0 +1,17 @@
+type User {
+  id: ID
+  email: String
+  fullName: String
+  name: String
+}
+
+type UserPrivateInfo {
+  id: ID
+  email: String
+  name: String
+}
+
+type UserCollection {
+  collection: [User!]
+  metadata: Metadata!
+}
