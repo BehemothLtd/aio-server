@@ -5,10 +5,10 @@ type User {
   name: String
 }
 
-input UserQuery {
+type UserPrivateInfo {
   id: ID
   email: String
-  fullName: String
+  name: String
 }
 
 type UserCollection {
