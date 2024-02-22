@@ -1,0 +1,17 @@
+type User {
+  id: ID
+  email: String
+  fullName: String
+  name: String
+}
+
+input UserQuery {
+  id: ID
+  email: String
+  fullName: String
+}
+
+type UserCollection {
+  collection: [User!]
+  metadata: Metadata!
+}
