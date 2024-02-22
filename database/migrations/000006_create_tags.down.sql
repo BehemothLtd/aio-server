@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS tags;
+-- we'll use existed `tags` table

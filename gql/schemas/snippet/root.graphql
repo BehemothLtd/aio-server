@@ -18,6 +18,8 @@ type Mutation {
   SnippetFavorite(id: ID!): SnippetFavorite!
   SnippetCreate(input: SnippetInput!): SnippetModification!
   SnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
+
+  TagCreate(input: TagInput!): TagModification!
 }
 
 scalar Time
