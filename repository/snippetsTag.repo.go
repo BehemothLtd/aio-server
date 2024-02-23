@@ -29,6 +29,12 @@ func (str *SnippetsTagRepository) FindBySnippetAndTag(snippetsTag *models.Snippe
 	return dbTable.Where("snippet_id = ? AND tag_id = ?", snippetsTag.SnippetId, snippetsTag.TagId).First(&snippetsTag).Error
 }
 
+// Create creates a new tag.
 func (str *SnippetsTagRepository) Create(snippetsTag *models.SnippetsTag) error {
 	return str.db.Table("snippets_tags").Create(&snippetsTag).Error
+}
+
+// Delete deletes a existed tag.
+func (str *SnippetsTagRepository) Delete(snippetsTag *models.SnippetsTag) error {
+	return str.db.Table("snippets_tags").Delete(&snippetsTag).Error
 }

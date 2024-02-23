@@ -19,6 +19,7 @@ type Mutation {
   SnippetCreate(input: SnippetInput!): SnippetModification!
   SnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
   SnippetAddTag(id: ID!, tagId: ID!): Boolean!
+  SnippetRemoveTag(id: ID!, tagId: ID!): Boolean!
 
   TagCreate(input: TagInput!): TagModification!
   TagUpdate(id: ID!, input: TagInput!): TagModification!
