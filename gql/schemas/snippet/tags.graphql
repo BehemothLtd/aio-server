@@ -3,6 +3,7 @@ type Tag {
   name: String
   lockVersion: Int!
   self: Boolean!
+  numberOfUsage: Int!
 }
 
 type TagModification {

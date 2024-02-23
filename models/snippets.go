@@ -17,6 +17,7 @@ type Snippet struct {
 	SnippetType    enums.SnippetType `gorm:"not null;"`
 	FavoritesCount int               `gorm:"not null;default:0"`
 	FavoritedUsers []User            `gorm:"many2many:snippets_favorites"`
+	Tags           []*Tag            `gorm:"many2many:snippets_tags;"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	LockVersion    int32 `gorm:"not null;autoIncrement;default:0"`

@@ -65,13 +65,13 @@ func (x *SnippetType) UnmarshalText(text []byte) error {
 var errSnippetTypeNilPtr = errors.New("value pointer is nil") // one per type for package clashes
 
 var sqlIntSnippetTypeMap = map[int64]SnippetType{
-	1: SnippetTypePublic,
-	2: SnippetTypePrivate,
+	0: SnippetTypePublic,
+	1: SnippetTypePrivate,
 }
 
 var sqlIntSnippetTypeValue = map[SnippetType]int64{
-	SnippetTypePublic:  1,
-	SnippetTypePrivate: 2,
+	SnippetTypePublic:  0,
+	SnippetTypePrivate: 1,
 }
 
 func lookupSqlIntSnippetType(val int64) (SnippetType, error) {

@@ -25,17 +25,23 @@ func (tt *TagType) Name(ctx context.Context) *string {
 	return &tt.Tag.Name
 }
 
-func (st *TagType) Self(ctx context.Context) bool {
+func (tt *TagType) Self(ctx context.Context) bool {
 	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
 		return false
 	}
 
-	selfTag := st.Tag.UserId == user.Id
+	selfTag := tt.Tag.UserId == user.Id
 	return selfTag
 }
 
-func (st *TagType) LockVersion(ctx context.Context) int32 {
-	return st.Tag.LockVersion
+func (tt *TagType) LockVersion(ctx context.Context) int32 {
+	return tt.Tag.LockVersion
+}
+
+func (tt *TagType) NumberOfUsage(ctx context.Context) int32 {
+	count := len(tt.Tag.Snippets)
+
+	return int32(count)
 }

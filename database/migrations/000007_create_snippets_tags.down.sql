@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS snippets_tags;
+-- we'll use existed `snippets_tags` table

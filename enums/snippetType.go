@@ -3,8 +3,8 @@ package enums
 
 /*
 ENUM(
-public = 1
-private = 2
+public = 0
+private = 1
 )
 */
 type SnippetType string
