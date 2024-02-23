@@ -46,7 +46,9 @@ func (form *TagForm) Save() error {
 
 // validate validates the snippet form.
 func (form *TagForm) validate() error {
-	form.validateName().summaryErrors()
+	form.validateName().
+		validateLockVersion().
+		summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -58,6 +60,7 @@ func (form *TagForm) validate() error {
 // assignAttributes assigns attributes to the tag form.
 func (form *TagForm) assignAttributes(input *msInputs.TagFormInput) {
 	name := helpers.GetStringOrDefault(input.Name)
+	lockVersion := helpers.GetInt32OrDefault(input.LockVersion)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -66,6 +69,13 @@ func (form *TagForm) assignAttributes(input *msInputs.TagFormInput) {
 				Code: "name",
 			},
 			Value: name,
+		},
+		&IntAttribute[int32]{
+			FieldAttribute: FieldAttribute{
+				Name: "Lock Version",
+				Code: "lockVersion",
+			},
+			Value: lockVersion,
 		},
 	)
 
@@ -81,11 +91,33 @@ func (form *TagForm) validateName() *TagForm {
 	name.ValidateRequired()
 	name.ValidateLimit(&minNameLength, &maxNameLength)
 
-	presentedTag := models.Tag{}
-	if err := form.Repo.FindByName(&presentedTag, *form.Name); err == nil {
-		if presentedTag.Id != 0 {
-			name.AddError("is used.")
+	if form.Name != nil {
+		presentedTag := models.Tag{}
+		if err := form.Repo.FindByName(&presentedTag, *form.Name); err == nil {
+			if presentedTag.Id != 0 && presentedTag.Id != form.Tag.Id {
+				name.AddError("is used.")
+			}
 		}
+	}
+
+	return form
+}
+
+func (form *TagForm) validateLockVersion() *TagForm {
+	newRecord := form.Tag.Id == 0
+	currentLockVersion := form.Tag.LockVersion
+	newLockVersion := helpers.GetInt32OrDefault(form.LockVersion) + 1
+	formAttribute := form.FindAttrByCode("lockVersion")
+
+	min := int(currentLockVersion)
+	formAttribute.ValidateLimit(&min, nil)
+
+	if newRecord {
+		return form
+	}
+
+	if currentLockVersion >= newLockVersion {
+		formAttribute.AddError("Attempted to update stale object")
 	}
 
 	return form

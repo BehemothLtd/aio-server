@@ -21,6 +21,13 @@ func NewTagRepository(c *context.Context, db *gorm.DB) *TagRepository {
 	}
 }
 
+// FindById finds a snippet by its ID.
+func (r *TagRepository) FindById(tag *models.Tag, id int32) error {
+	dbTables := r.db.Model(&models.Tag{})
+
+	return dbTables.First(&tag, id).Error
+}
+
 // Create creates a new tag.
 func (tr *TagRepository) Create(tag *models.Tag) error {
 	return tr.db.Table("tags").Create(&tag).Error

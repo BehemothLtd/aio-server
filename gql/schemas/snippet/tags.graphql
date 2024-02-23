@@ -1,6 +1,7 @@
 type Tag {
   id: ID
   name: String
+  lockVersion: Int!
 }
 
 type TagModification {
@@ -9,4 +10,5 @@ type TagModification {
 
 input TagInput {
   name: String
+  lockVersion: Int
 }

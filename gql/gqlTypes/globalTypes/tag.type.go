@@ -23,3 +23,7 @@ func (tt *TagType) ID(ctx context.Context) *graphql.ID {
 func (tt *TagType) Name(ctx context.Context) *string {
 	return &tt.Tag.Name
 }
+
+func (st *TagType) LockVersion(ctx context.Context) int32 {
+	return st.Tag.LockVersion
+}
