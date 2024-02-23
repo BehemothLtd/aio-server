@@ -1,0 +1,12 @@
+type Tag {
+  id: ID
+  name: String
+}
+
+type TagModification {
+  tag: Tag!
+}
+
+input TagInput {
+  name: String
+}
