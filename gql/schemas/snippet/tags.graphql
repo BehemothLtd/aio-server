@@ -2,6 +2,7 @@ type Tag {
   id: ID
   name: String
   lockVersion: Int!
+  self: Boolean!
 }
 
 type TagModification {
@@ -11,4 +12,13 @@ type TagModification {
 input TagInput {
   name: String
   lockVersion: Int
+}
+
+input TagsQuery {
+  nameCont: String
+}
+
+type TagsCollection {
+  collection: [Tag!]
+  metadata: Metadata!
 }

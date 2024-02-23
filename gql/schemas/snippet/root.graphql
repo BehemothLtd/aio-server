@@ -21,6 +21,8 @@ type Mutation {
 
   TagCreate(input: TagInput!): TagModification!
   TagUpdate(id: ID!, input: TagInput!): TagModification!
+  Tag(id: ID!): Tag!
+  Tags(input: PagyInput, query: TagsQuery): TagsCollection!
 }
 
 scalar Time

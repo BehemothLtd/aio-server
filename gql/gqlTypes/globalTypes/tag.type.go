@@ -2,6 +2,7 @@ package globalTypes
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
 	"context"
 
@@ -22,6 +23,17 @@ func (tt *TagType) ID(ctx context.Context) *graphql.ID {
 
 func (tt *TagType) Name(ctx context.Context) *string {
 	return &tt.Tag.Name
+}
+
+func (st *TagType) Self(ctx context.Context) bool {
+	user, err := auths.AuthUserFromCtx(ctx)
+
+	if err != nil {
+		return false
+	}
+
+	selfTag := st.Tag.UserId == user.Id
+	return selfTag
 }
 
 func (st *TagType) LockVersion(ctx context.Context) int32 {

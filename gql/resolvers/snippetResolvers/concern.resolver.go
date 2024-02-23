@@ -13,3 +13,12 @@ func (r *Resolver) SnippetSliceToTypes(snippets []*models.Snippet) *[]*globalTyp
 	}
 	return &resolvers
 }
+
+// TagSliceToTypes converts models.Tag slice to []*TagType.
+func (r *Resolver) TagSliceToTypes(tags []*models.Tag) *[]*globalTypes.TagType {
+	resolvers := make([]*globalTypes.TagType, len(tags))
+	for i, t := range tags {
+		resolvers[i] = &globalTypes.TagType{Tag: t}
+	}
+	return &resolvers
+}

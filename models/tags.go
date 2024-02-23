@@ -10,3 +10,7 @@ type Tag struct {
 	UpdatedAt   time.Time
 	LockVersion int32 `gorm:"not null;autoIncrement;default:0"`
 }
+
+type TagsQuery struct {
+	NameCont string
+}
