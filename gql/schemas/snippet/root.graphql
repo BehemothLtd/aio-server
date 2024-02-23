@@ -10,6 +10,9 @@ type Query {
   Snippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   SelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   SnippetDecryptContent(id: ID!, Passkey: String!): String
+
+  Tag(id: ID!): Tag!
+  Tags(input: PagyInput, query: TagsQuery): TagsCollection!
 }
 
 type Mutation {
@@ -23,8 +26,7 @@ type Mutation {
 
   TagCreate(input: TagInput!): TagModification!
   TagUpdate(id: ID!, input: TagInput!): TagModification!
-  Tag(id: ID!): Tag!
-  Tags(input: PagyInput, query: TagsQuery): TagsCollection!
+  TagDelete(id: ID!): String
 }
 
 scalar Time

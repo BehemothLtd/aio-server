@@ -68,6 +68,25 @@ func (tr *TagRepository) Update(tag *models.Tag) error {
 	return tr.db.Table("tags").Updates(&tag).Error
 }
 
+// Delete deltes an existed tag
+func (tr *TagRepository) Delete(tag *models.Tag) error {
+	err := tr.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Delete(&tag).Error; err != nil {
+			// return any error will rollback
+			return err
+		}
+
+		if err := tx.Delete(&models.SnippetsTag{}, "tag_id = ?", tag.Id).Error; err != nil {
+			return err
+		}
+
+		// return nil will commit the whole transaction
+		return nil
+	})
+
+	return err
+}
+
 // FindByEmail finds a user by its email.
 func (tr *TagRepository) FindByName(tag *models.Tag, name string) error {
 	dbTables := tr.db.Model(&models.Tag{})
