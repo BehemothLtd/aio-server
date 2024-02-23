@@ -4,7 +4,6 @@ import (
 	"aio-server/models"
 	"context"
 	"errors"
-	"fmt"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -23,9 +22,9 @@ func NewUserRepository(c *context.Context, db *gorm.DB) *Repository {
 	}
 }
 
+// FindById finds a user by their id.
 func (r *Repository) FindById(user *models.User, id int32) error {
 	dbTables := r.db.Table("users")
-	fmt.Printf("ID: %+v", id)
 
 	return dbTables.First(&user, id).Error
 }

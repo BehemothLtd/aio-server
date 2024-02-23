@@ -6,3 +6,7 @@ type Tag {
 type TagModification {
   tag: Tag!
 }
+
+input TagInput {
+  name: String
+}

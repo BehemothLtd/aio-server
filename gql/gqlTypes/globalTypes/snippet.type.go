@@ -18,55 +18,55 @@ type SnippetType struct {
 	Snippet *models.Snippet
 }
 
-func (sr *SnippetType) ID(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(sr.Snippet.Id)
+func (st *SnippetType) ID(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(st.Snippet.Id)
 }
 
-func (sr *SnippetType) Title(ctx context.Context) *string {
-	return &sr.Snippet.Title
+func (st *SnippetType) Title(ctx context.Context) *string {
+	return &st.Snippet.Title
 }
 
-func (sr *SnippetType) Content(ctx context.Context) *string {
-	return &sr.Snippet.Content
+func (st *SnippetType) Content(ctx context.Context) *string {
+	return &st.Snippet.Content
 }
 
-func (sr *SnippetType) UserId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(sr.Snippet.UserId)
+func (st *SnippetType) UserId(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(st.Snippet.UserId)
 }
 
-func (sr *SnippetType) Slug(ctx context.Context) *string {
-	return &sr.Snippet.Slug
+func (st *SnippetType) Slug(ctx context.Context) *string {
+	return &st.Snippet.Slug
 }
 
-func (sr *SnippetType) SnippetType(ctx context.Context) *string {
-	value := sr.Snippet.SnippetType.String()
+func (st *SnippetType) SnippetType(ctx context.Context) *string {
+	value := st.Snippet.SnippetType.String()
 
 	return &value
 }
 
-func (sr *SnippetType) FavoritesCount(ctx context.Context) *int32 {
-	return helpers.Int32Pointer(int32(sr.Snippet.FavoritesCount))
+func (st *SnippetType) FavoritesCount(ctx context.Context) *int32 {
+	return helpers.Int32Pointer(int32(st.Snippet.FavoritesCount))
 }
 
-func (sr *SnippetType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(sr.Snippet.CreatedAt)
+func (st *SnippetType) CreatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(st.Snippet.CreatedAt)
 }
 
-func (sr *SnippetType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(sr.Snippet.UpdatedAt)
+func (st *SnippetType) UpdatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(st.Snippet.UpdatedAt)
 }
 
-func (sr *SnippetType) LockVersion(ctx context.Context) int32 {
-	return sr.Snippet.LockVersion
+func (st *SnippetType) LockVersion(ctx context.Context) int32 {
+	return st.Snippet.LockVersion
 }
 
-func (sr *SnippetType) Favorited(ctx context.Context) bool {
+func (st *SnippetType) Favorited(ctx context.Context) bool {
 	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
 		return false
 	}
 
-	favorited := slices.ContainsFunc(sr.Snippet.FavoritedUsers, func(u models.User) bool { return u.Id == user.Id })
+	favorited := slices.ContainsFunc(st.Snippet.FavoritedUsers, func(u models.User) bool { return u.Id == user.Id })
 	return favorited
 }
