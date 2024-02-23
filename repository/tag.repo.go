@@ -23,14 +23,14 @@ func NewTagRepository(c *context.Context, db *gorm.DB) *TagRepository {
 	}
 }
 
-// FindById finds a snippet by its ID.
+// FindById finds a tag by its ID.
 func (r *TagRepository) FindById(tag *models.Tag, id int32) error {
 	dbTables := r.db.Model(&models.Tag{})
 
 	return dbTables.Preload("Snippets").First(&tag, id).Error
 }
 
-// List retrieves a list of snippets based on provided pagination data and query.
+// List retrieves a list of tags based on provided pagination data and query.
 func (r *TagRepository) List(
 	tags *[]*models.Tag,
 	paginateData *models.PaginationData,
@@ -45,7 +45,12 @@ func (r *TagRepository) List(
 	).Order("id desc").Find(&tags).Error
 }
 
-// nameLike returns a function that filters snippets by title.
+// ListAll retrieves a list of tags order by name
+func (r *TagRepository) ListAll(tags *[]*models.Tag) error {
+	return r.db.Order("name ASC").Find(&tags).Error
+}
+
+// nameLike returns a function that filters tags by title.
 func (r *TagRepository) nameLike(nameLike string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if nameLike == "" || nameLike == "null" {
@@ -68,7 +73,7 @@ func (tr *TagRepository) Update(tag *models.Tag) error {
 	return tr.db.Table("tags").Updates(&tag).Error
 }
 
-// Delete deltes an existed tag
+// Delete deletes an existed tag
 func (tr *TagRepository) Delete(tag *models.Tag) error {
 	err := tr.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Delete(&tag).Error; err != nil {

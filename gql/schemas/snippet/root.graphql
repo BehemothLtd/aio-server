@@ -13,6 +13,7 @@ type Query {
 
   Tag(id: ID!): Tag!
   Tags(input: PagyInput, query: TagsQuery): TagsCollection!
+  TagsAll(): [TagForSelection!]
 }
 
 type Mutation {

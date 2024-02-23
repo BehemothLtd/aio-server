@@ -23,3 +23,8 @@ type TagsCollection {
   collection: [Tag!]
   metadata: Metadata!
 }
+
+type TagForSelection {
+  id: ID
+  name: String
+}
