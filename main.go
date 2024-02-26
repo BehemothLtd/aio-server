@@ -3,11 +3,9 @@ package main
 import (
 	"aio-server/controllers"
 	"aio-server/database"
-	"aio-server/enums"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -28,8 +26,6 @@ func main() {
 	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/insightGql", initializers.InsightGqlHandler(db))
 
 	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/uploads", controllers.UploadHandler)
-
-	fmt.Println("Public snippet:", enums.SnippetType("private"))
 
 	r.Run()
 }

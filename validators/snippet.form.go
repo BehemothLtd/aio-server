@@ -8,7 +8,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"slices"
 )
 
 // SnippetForm represents a validator for snippet input.
@@ -169,10 +168,10 @@ func (form *SnippetForm) validateSnippetType() *SnippetForm {
 
 	snippetType.ValidateRequired()
 
-	availableSnippetTypes := []string{string(enums.SnippetTypePublic), string(enums.SnippetTypePrivate)}
+	snippetTypeValue := enums.SnippetType(*form.SnippetType)
 
-	if !slices.Contains(availableSnippetTypes, *form.SnippetType) {
-		snippetType.AddError("Invalid Snippet Type")
+	if !snippetTypeValue.IsValid() {
+		snippetType.AddError("is invalid")
 	}
 	return form
 }
