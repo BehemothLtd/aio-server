@@ -10,6 +10,7 @@ type Query {
 }
 
 type Mutation {
+  SignIn(email: String!, password: String!): SignIn!
 }
 
 scalar Time
