@@ -14,7 +14,7 @@ func (r *Resolver) Snippets(ctx context.Context, args msInputs.SnippetsInput) (*
 	var snippets []*models.Snippet
 	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 
-	repo := repository.NewSnippetRepository(&ctx, r.Db)
+	repo := repository.NewSnippetRepository(&ctx, r.Db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins"))
 
 	err := repo.List(&snippets, &paginationData, &snippetsQuery)
 	if err != nil {

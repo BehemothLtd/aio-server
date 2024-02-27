@@ -27,7 +27,7 @@ func NewSnippetRepository(c *context.Context, db *gorm.DB) *SnippetRepository {
 func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
 	dbTables := r.db.Model(&models.Snippet{})
 
-	return dbTables.Preload("FavoritedUsers").Preload("Pins").First(&snippet, id).Error
+	return dbTables.First(&snippet, id).Error
 }
 
 // List retrieves a list of snippets based on provided pagination data and query.
@@ -36,10 +36,9 @@ func (r *SnippetRepository) List(
 	paginateData *models.PaginationData,
 	query *models.SnippetsQuery,
 ) error {
-	dbTables := r.db.Model(&models.Snippet{})
 
-	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Preload("FavoritedUsers").Preload("Pins").Scopes(
+	return r.db.Scopes(
+		helpers.Paginate(r.db.Scopes(
 			r.titleLike(query.TitleCont),
 		), paginateData),
 	).Order("id desc").Find(&snippets).Error
@@ -52,10 +51,8 @@ func (r *SnippetRepository) ListByUser(
 	query *models.SnippetsQuery,
 	user *models.User,
 ) error {
-	dbTables := r.db.Model(&models.Snippet{})
-
-	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Preload("FavoritedUsers").Preload("Pins").Scopes(
+	return r.db.Scopes(
+		helpers.Paginate(r.db.Scopes(
 			r.ofUser(user.Id),
 			r.titleLike(query.TitleCont),
 		), paginateData),

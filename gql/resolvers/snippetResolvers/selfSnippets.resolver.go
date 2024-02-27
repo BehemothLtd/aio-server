@@ -23,7 +23,7 @@ func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput
 
 	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 
-	repo := repository.NewSnippetRepository(&ctx, r.Db)
+	repo := repository.NewSnippetRepository(&ctx, r.Db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins"))
 
 	fetchErr := repo.ListByUser(&snippets, &paginationData, &snippetsQuery, &user)
 
