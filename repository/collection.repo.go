@@ -4,7 +4,6 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
-	"strings"
 
 	"gorm.io/gorm"
 )
@@ -27,22 +26,14 @@ func (r *CollectionRepository) List(
 	collections *[]*models.Collection,
 	paginateData *models.PaginationData,
 	query *models.CollectionQuery,
+	user *models.User,
 ) error {
 	dbTables := r.db.Model(&models.Collection{})
 
 	return dbTables.Scopes(
 		helpers.Paginate(dbTables.Scopes(
-			r.titleLike(query.TitleCont),
+			r.ofParent("user_id", user.Id),
+			r.stringLike("collections", "title", query.TitleCont),
 		), paginateData),
 	).Order("id desc").Find(&collections).Error
-}
-
-func (r *CollectionRepository) titleLike(titleLike string) func(db *gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		if titleLike == "" || titleLike == "null" {
-			return db
-		} else {
-			return db.Where(gorm.Expr(`lower(collections.title) LIKE ?`, strings.ToLower("%"+titleLike+"%")))
-		}
-	}
 }
