@@ -22,7 +22,7 @@ func (r *Resolver) Tags(ctx context.Context, args msInputs.TagsInput) (*snippetT
 	var tags []*models.Tag
 	tagsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
 
-	repo := repository.NewTagRepository(&ctx, r.Db)
+	repo := repository.NewTagRepository(&ctx, r.Db.Preload("Snippets"))
 
 	err := repo.List(&tags, &paginationData, &tagsQuery)
 	if err != nil {

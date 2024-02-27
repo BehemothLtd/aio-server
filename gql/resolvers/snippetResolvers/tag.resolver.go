@@ -33,7 +33,7 @@ func (r *Resolver) Tag(ctx context.Context, args msInputs.TagInput) (*globalType
 		Id: tagId,
 	}
 
-	repo := repository.NewTagRepository(&ctx, r.Db)
+	repo := repository.NewTagRepository(&ctx, r.Db.Preload("Snippets"))
 	err = repo.FindById(&tag, tagId)
 
 	if err != nil {

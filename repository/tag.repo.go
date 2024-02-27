@@ -27,7 +27,7 @@ func NewTagRepository(c *context.Context, db *gorm.DB) *TagRepository {
 func (r *TagRepository) FindById(tag *models.Tag, id int32) error {
 	dbTables := r.db.Model(&models.Tag{})
 
-	return dbTables.Preload("Snippets").First(&tag, id).Error
+	return dbTables.First(&tag, id).Error
 }
 
 // List retrieves a list of tags based on provided pagination data and query.
@@ -36,7 +36,7 @@ func (r *TagRepository) List(
 	paginateData *models.PaginationData,
 	query *models.TagsQuery,
 ) error {
-	dbTables := r.db.Model(&models.Tag{}).Preload("Snippets")
+	dbTables := r.db.Model(&models.Tag{})
 
 	return dbTables.Scopes(
 		helpers.Paginate(dbTables.Scopes(
