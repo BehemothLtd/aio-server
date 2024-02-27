@@ -17,13 +17,13 @@ type SnippetFavoriteRepository struct {
 func NewSnippetFavoriteRepository(c *context.Context, db *gorm.DB) *SnippetFavoriteRepository {
 	return &SnippetFavoriteRepository{
 		Repository: Repository{
-			db: db,
+			db:  db,
 			ctx: c,
 		},
 	}
 }
 
-// FindByUserAndSnippet finds snippetFavorite record by it User and Snippet
+// FindByUserAndSnippet finds snippetFavorite record by its User and Snippet
 func (r *SnippetFavoriteRepository) FindByUserAndSnippet(
 	snippetFavorited *models.SnippetsFavorite,
 ) (favoritedRec *models.SnippetsFavorite, err error) {

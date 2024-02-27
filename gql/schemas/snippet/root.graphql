@@ -13,21 +13,28 @@ type Query {
 
   Tag(id: ID!): Tag!
   Tags(input: PagyInput, query: TagsQuery): TagsCollection!
-  TagsAll(): [TagForSelection!]
+  TagsAll: [TagForSelection!]
 }
 
 type Mutation {
   SignIn(email: String!, password: String!): SignIn!
 
+  # Snippets
   SnippetFavorite(id: ID!): SnippetFavorite!
   SnippetCreate(input: SnippetInput!): SnippetModification!
   SnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
+
+  # SnippetsTags
   SnippetAddTag(id: ID!, tagId: ID!): Boolean!
   SnippetRemoveTag(id: ID!, tagId: ID!): Boolean!
 
+  # Tags
   TagCreate(input: TagInput!): TagModification!
   TagUpdate(id: ID!, input: TagInput!): TagModification!
   TagDelete(id: ID!): String
+
+  # Pins
+  SnippetPin(id: ID!): Boolean
 }
 
 scalar Time

@@ -1,25 +1,26 @@
-package services
+package msServices
 
 import (
 	"aio-server/exceptions"
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
 
-	graphql "github.com/graph-gophers/graphql-go"
 	"gorm.io/gorm"
 )
 
 // SnippetFavoriteService handles favoriting and unfavoriting snippets.
 type SnippetFavoriteService struct {
-	Ctx    *context.Context
-	Db     *gorm.DB
-	Args   struct{ Id graphql.ID }
-	user   models.User
+	Ctx  *context.Context
+	Db   *gorm.DB
+	Args msInputs.SnippetFavoriteInput
+
+	user    models.User
 	snippet models.Snippet
-	Result *bool
+	Result  *bool
 }
 
 // Execute performs the favoriting or unfavoriting action.
