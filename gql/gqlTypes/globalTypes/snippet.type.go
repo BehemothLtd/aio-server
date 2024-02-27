@@ -70,3 +70,14 @@ func (st *SnippetType) Favorited(ctx context.Context) bool {
 	favorited := slices.ContainsFunc(st.Snippet.FavoritedUsers, func(u models.User) bool { return u.Id == user.Id })
 	return favorited
 }
+
+func (st *SnippetType) Pinned(ctx context.Context) bool {
+	user, err := auths.AuthUserFromCtx(ctx)
+
+	if err != nil {
+		return false
+	}
+
+	pinned := slices.ContainsFunc(st.Snippet.Pins, func(p models.Pin) bool { return p.UserId == user.Id })
+	return pinned
+}

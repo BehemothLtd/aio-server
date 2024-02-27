@@ -27,7 +27,7 @@ func NewSnippetRepository(c *context.Context, db *gorm.DB) *SnippetRepository {
 func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
 	dbTables := r.db.Model(&models.Snippet{})
 
-	return dbTables.Preload("FavoritedUsers").First(&snippet, id).Error
+	return dbTables.Preload("FavoritedUsers").Preload("Pins").First(&snippet, id).Error
 }
 
 // List retrieves a list of snippets based on provided pagination data and query.
@@ -39,7 +39,7 @@ func (r *SnippetRepository) List(
 	dbTables := r.db.Model(&models.Snippet{})
 
 	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Preload("FavoritedUsers").Scopes(
+		helpers.Paginate(dbTables.Preload("FavoritedUsers").Preload("Pins").Scopes(
 			r.titleLike(query.TitleCont),
 		), paginateData),
 	).Order("id desc").Find(&snippets).Error
@@ -55,7 +55,7 @@ func (r *SnippetRepository) ListByUser(
 	dbTables := r.db.Model(&models.Snippet{})
 
 	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Preload("FavoritedUsers").Scopes(
+		helpers.Paginate(dbTables.Preload("FavoritedUsers").Preload("Pins").Scopes(
 			r.ofUser(user.Id),
 			r.titleLike(query.TitleCont),
 		), paginateData),
@@ -89,5 +89,5 @@ func (r *SnippetRepository) Create(snippet *models.Snippet) error {
 func (r *SnippetRepository) Update(snippet *models.Snippet) error {
 	snippet.LockVersion += 1
 
-	return r.db.Table("snippets").Omit("FavoritedUsers", "FavoritesCount").Updates(&snippet).Error
+	return r.db.Table("snippets").Omit("FavoritedUsers", "FavoritesCount", "Pins").Updates(&snippet).Error
 }

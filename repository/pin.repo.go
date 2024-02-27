@@ -44,7 +44,7 @@ func (r *PinRepository) Toggle(snippet models.Snippet, user models.User) (result
 
 	pinned := models.Pin{
 		ParentType: 1,
-		ParentId:   snippet.Id,
+		ParentID:   snippet.Id,
 		UserId:     user.Id,
 	}
 
