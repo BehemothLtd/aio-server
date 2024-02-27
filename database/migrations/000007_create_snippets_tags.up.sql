@@ -14,4 +14,4 @@ CREATE TABLE IF NOT EXISTS `snippets_tags` (
   UNIQUE KEY `index_snippets_tags_on_snippet_id_and_tag_id` (`snippet_id`,`tag_id`),
   KEY `index_snippets_tags_on_snippet_id` (`snippet_id`),
   KEY `index_snippets_tags_on_tag_id` (`tag_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

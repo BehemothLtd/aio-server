@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS pins;
+-- we'll use existed `snippets_tags` table
