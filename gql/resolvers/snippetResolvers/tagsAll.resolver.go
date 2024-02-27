@@ -18,7 +18,7 @@ func (r *Resolver) TagsAll(ctx context.Context) (*[]*globalTypes.TagType, error)
 	}
 
 	tags := []*models.Tag{}
-	repo := repository.NewTagRepository(&ctx, r.Db)
+	repo := repository.NewTagRepository(&ctx, r.Db.Preload("Snippets"))
 
 	if err := repo.ListAll(&tags); err != nil {
 		return nil, exceptions.NewBadRequestError(fmt.Sprintf("Error happened %s", err.Error()))
