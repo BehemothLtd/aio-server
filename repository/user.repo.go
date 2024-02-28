@@ -29,6 +29,13 @@ func (r *Repository) FindById(user *models.User, id int32) error {
 	return dbTables.First(&user, id).Error
 }
 
+// FindByIdWithGroups finds a user by their id.
+func (r *Repository) FindByIdWithGroups(user *models.User, id int32) error {
+	dbTables := r.db.Model(&models.User{}).Joins("UserGroups")
+
+	return dbTables.First(&user, id).Error
+}
+
 // FindByEmail finds a user by their email.
 func (r *Repository) FindByEmail(user *models.User, email string) error {
 	dbTables := r.db.Table("users")

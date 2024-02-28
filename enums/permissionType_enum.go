@@ -74,6 +74,8 @@ const (
 	PermissionTargetTypeAll PermissionTargetType = "all"
 	// PermissionTargetTypeUsers is a PermissionTargetType of type users.
 	PermissionTargetTypeUsers PermissionTargetType = "users"
+	// PermissionTargetTypeUserGroups is a PermissionTargetType of type userGroups.
+	PermissionTargetTypeUserGroups PermissionTargetType = "userGroups"
 	// PermissionTargetTypeProjects is a PermissionTargetType of type projects.
 	PermissionTargetTypeProjects PermissionTargetType = "projects"
 	// PermissionTargetTypeProjectIssues is a PermissionTargetType of type project_issues.
@@ -97,6 +99,7 @@ func (x PermissionTargetType) IsValid() bool {
 var _PermissionTargetTypeValue = map[string]PermissionTargetType{
 	"all":            PermissionTargetTypeAll,
 	"users":          PermissionTargetTypeUsers,
+	"userGroups":     PermissionTargetTypeUserGroups,
 	"projects":       PermissionTargetTypeProjects,
 	"project_issues": PermissionTargetTypeProjectIssues,
 }

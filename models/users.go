@@ -13,7 +13,8 @@ type User struct {
 	FullName          string
 	LockVersion       int
 	Name              string
-	FavoritedSnippets []*Snippet `gorm:"many2many:snippets_favorites"`
+	FavoritedSnippets []*Snippet   `gorm:"many2many:snippets_favorites"`
+	UserGroups        []*UserGroup `gorm:"many2many:users_user_groups"`
 }
 
 type UserClaims struct {

@@ -7,6 +7,7 @@ import (
 type UserGroup struct {
 	Id        int32  `gorm:"not null;autoIncrement"`
 	Title     string `gorm:"not null;type:varchar(255);default:null"`
+	Users     []User `gorm:"many2many:users_user_groups"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

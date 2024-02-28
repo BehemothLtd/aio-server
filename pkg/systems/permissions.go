@@ -2,12 +2,18 @@ package systems
 
 import (
 	"aio-server/enums"
-	"aio-server/models"
+	"slices"
 )
+
+type Permission struct {
+	Id     int
+	Target enums.PermissionTargetType
+	Action enums.PermissionActionType
+}
 
 // Define a package-level variable for the permissions.
 // Although not a constant, treat this as immutable.
-var defaultPermissions = []models.Permission{
+var defaultPermissions = []Permission{
 	{Id: 999, Target: enums.PermissionTargetTypeAll, Action: enums.PermissionActionTypeAll},
 
 	{Id: 1, Target: enums.PermissionTargetTypeUsers, Action: enums.PermissionActionTypeRead},
@@ -20,7 +26,18 @@ var defaultPermissions = []models.Permission{
 
 // GetPermissions returns a copy of the default permissions slice.
 // This prevents the original slice from being modified.
-func GetPermissions() []models.Permission {
+func GetPermissions() []Permission {
 	// Optionally, return a deep copy if the structs contain slice maps, or other pointers.
-	return append([]models.Permission(nil), defaultPermissions...)
+	return append([]Permission(nil), defaultPermissions...)
+}
+
+// FindPermissionById retrieve the permission record
+func FindPermissionById(id int) *Permission {
+	allPermissions := GetPermissions()
+
+	if foundIdx := slices.IndexFunc(allPermissions, func(p Permission) bool { return p.Id == id }); foundIdx != -1 {
+		return &allPermissions[foundIdx]
+	} else {
+		return nil
+	}
 }
