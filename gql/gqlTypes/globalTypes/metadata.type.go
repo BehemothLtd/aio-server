@@ -14,7 +14,7 @@ type MetadataType struct {
 
 // Total returns the total value of Metadata as a graphql.ID pointer.
 func (mt *MetadataType) Total() *graphql.ID {
-	return helpers.IDPointer(*helpers.GqlIDP(mt.Metadata.Total))
+	return helpers.IDPointer(helpers.GqlIDValue(mt.Metadata.Total))
 }
 
 // PerPage returns the per page value of Metadata as an int32 pointer.

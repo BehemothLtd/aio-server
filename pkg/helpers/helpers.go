@@ -34,6 +34,10 @@ func GqlIDP[T SignedInteger](id T) *graphql.ID {
 	return &r
 }
 
+func GqlIDValue[T SignedInteger](id T) graphql.ID {
+	return graphql.ID(fmt.Sprint(id))
+}
+
 func NewUUID() string {
 	newUUID := uuid.New().String()
 
