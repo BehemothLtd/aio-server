@@ -9,6 +9,10 @@ type Query {
   Snippet(id: ID!): Snippet!
   Snippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   SelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
+  SelfPinnedSnippets(
+    input: PagyInput
+    query: SnippetsQuery
+  ): SnippetsCollection!
   SnippetDecryptContent(id: ID!, Passkey: String!): String
 
   Tag(id: ID!): Tag!
