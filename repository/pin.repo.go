@@ -13,7 +13,7 @@ type PinRepository struct {
 	Repository
 }
 
-// New PinRepository initializes a new PinRepository instance.
+// NewPinRepository initializes a new PinRepository instance.
 func NewPinRepository(c *context.Context, db *gorm.DB) *PinRepository {
 	return &PinRepository{
 		Repository: Repository{

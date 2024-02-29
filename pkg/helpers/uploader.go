@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"aio-server/database"
+	"aio-server/models"
 	"aio-server/pkg/constants"
 	"context"
 	"errors"
@@ -26,7 +28,12 @@ type ClientUploader struct {
 	uploadPath string
 }
 
-func (u *Uploader) Upload() (*string, error) {
+type UploadedBlob struct {
+	Url string `json:"url"`
+	Key string `json:"key"`
+}
+
+func (u *Uploader) Upload() (*UploadedBlob, error) {
 	if _, signedIn := u.Ctx.Get(constants.ContextCurrentUser); !signedIn {
 		return nil, errors.New("Unauthorized")
 	}
@@ -36,30 +43,45 @@ func (u *Uploader) Upload() (*string, error) {
 		return nil, err
 	}
 
-	fileName := NewUUID() + file.Filename
+	filename := file.Filename
 
 	if u.Local {
-		return u.uploadLocally(file, fileName)
+		return u.uploadLocally(file, filename)
 	}
-	return u.uploadToGCS(file, fileName)
+	return u.uploadToGCS(file, filename)
 }
 
-func (u *Uploader) uploadLocally(file *multipart.FileHeader, fileName string) (*string, error) {
-	uploadDst := os.Getenv("UPLOAD_LOCALLY_PATH") + fileName
+func (u *Uploader) uploadLocally(file *multipart.FileHeader, fileName string) (*UploadedBlob, error) {
+	blobKey := NewUUID()
+
+	uploadDst := os.Getenv("UPLOAD_LOCALLY_PATH") + blobKey
 	err := u.Ctx.SaveUploadedFile(file, uploadDst)
 	if err != nil {
 		return nil, err
 	}
-	return &uploadDst, nil
+
+	newBlob := models.AttachmentBlob{
+		Key:      blobKey,
+		Filename: fileName,
+	}
+
+	if err := database.Db.Create(&newBlob); err != nil {
+		return &UploadedBlob{
+			Url: uploadDst,
+			Key: newBlob.Key,
+		}, nil
+	} else {
+		return nil, err.Error
+	}
 }
 
-func (u *Uploader) uploadToGCS(file *multipart.FileHeader, fileName string) (*string, error) {
+func (u *Uploader) uploadToGCS(file *multipart.FileHeader, fileName string) (*UploadedBlob, error) {
 	bucketName := os.Getenv("GCS_BUCKET_NAME")
 	projectId := os.Getenv("GCS_PROJECT_ID")
 	gcsAccountService := os.Getenv("GCS_ACCOUNT_SERVICE")
 
 	if bucketName == "" || projectId == "" || gcsAccountService == "" {
-		return nil, errors.New("Invalid Setting for Upload")
+		return nil, errors.New("invalid Setting for Upload")
 	}
 
 	os.Setenv("GOOGLE_APPLICATION_CREDENTIALS", gcsAccountService)
@@ -80,22 +102,31 @@ func (u *Uploader) uploadToGCS(file *multipart.FileHeader, fileName string) (*st
 	}
 
 	defer blobFile.Close()
+	blobKey := NewUUID()
 
-	err = uploadClient.UploadFile(blobFile, fileName)
+	err = uploadClient.UploadFile(blobFile, blobKey)
 	if err != nil {
 		return nil, err
 	}
 
-	// Delete func
-	// ctx := context.Background()
-	// o := uploadClient.cl.Bucket(bucketName).Object("1zl3o6a0ifkrkwixgsclre3vr8c3")
-	// ctx, cancel := context.WithTimeout(ctx, time.Second*10)
- 	// defer cancel()
+	newBlob := models.AttachmentBlob{
+		Key:      blobKey,
+		Filename: fileName,
+	}
 
-	// o.Delete(ctx)
+	if err := database.Db.Create(&newBlob); err != nil {
+		uploadClient.DeleteFile(blobKey)
 
-	filePublicUrl := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, fileName)
-	return &filePublicUrl, nil
+		return nil, err.Error
+	} else {
+		filePublicUrl := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, newBlob.Key)
+
+		return &UploadedBlob{
+			Url: filePublicUrl,
+			Key: newBlob.Key,
+		}, nil
+	}
+
 }
 
 func (c *ClientUploader) UploadFile(file multipart.File, object string) error {
@@ -109,4 +140,13 @@ func (c *ClientUploader) UploadFile(file multipart.File, object string) error {
 		return fmt.Errorf("io.Copy: %v", err)
 	}
 	return nil
+}
+
+func (c *ClientUploader) DeleteFile(key string) {
+	ctx := context.Background()
+	o := c.cl.Bucket(c.bucketName).Object(key)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*10)
+	defer cancel()
+
+	o.Delete(ctx)
 }

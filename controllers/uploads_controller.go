@@ -4,14 +4,15 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"aio-server/pkg/helpers"
+
+	"github.com/gin-gonic/gin"
 )
 
 func UploadHandler(c *gin.Context) {
 	uploader := createUploader(c)
 
-	uploadedUrl, err := uploader.Upload()
+	uploaded, err := uploader.Upload()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -21,8 +22,9 @@ func UploadHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"url": uploadedUrl,
+		"data": uploaded,
 	})
+
 }
 
 func createUploader(c *gin.Context) *helpers.Uploader {
