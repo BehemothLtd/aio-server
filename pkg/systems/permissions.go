@@ -86,9 +86,7 @@ func (p Permission) IsAuthorizedForTargetAndAction(target string, action string)
 func AuthUserToAction(ctx context.Context, db gorm.DB, user models.User, target string, action string) bool {
 	permissions := FetchUserPermissions(ctx, db, user)
 
-	if foundIdx := slices.IndexFunc(permissions, func(p Permission) bool { return p.IsAuthorizedForTargetAndAction(target, action) }); foundIdx != -1 {
-		return true
-	} else {
-		return false
-	}
+	foundIdx := slices.IndexFunc(permissions, func(p Permission) bool { return p.IsAuthorizedForTargetAndAction(target, action) })
+
+	return foundIdx != -1
 }
