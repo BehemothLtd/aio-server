@@ -23,9 +23,9 @@ func (r *Resolver) User(ctx context.Context, args insightInputs.UserInput) (*glo
 		return nil, err
 	}
 
-	user := models.User{}
+	user := models.User{Id: userId}
 	repo := repository.NewUserRepository(&ctx, r.Db)
-	err = repo.FindById(&user, userId)
+	err = repo.Find(&user)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

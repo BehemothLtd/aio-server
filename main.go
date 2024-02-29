@@ -22,10 +22,10 @@ func main() {
 	r.Use(initializers.CorsConfig())
 	r.Use(logger.Logger(logrus.New()), gin.Recovery())
 
-	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/snippetGql", initializers.SnippetGqlHandler(db))
-	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/insightGql", initializers.InsightGqlHandler(db))
+	r.POST("/snippetGql", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), initializers.SnippetGqlHandler(db))
+	r.POST("/insightGql", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), initializers.InsightGqlHandler(db))
 
-	r.Use(auths.JwtTokenCheck, auths.GinContextToContextMiddleware()).POST("/uploads", controllers.UploadHandler)
+	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 
 	r.Run()
 }

@@ -16,7 +16,7 @@ type PermissionActionType string
 ENUM(
 all
 users
-userGroups
+user_groups
 projects
 project_issues
 )

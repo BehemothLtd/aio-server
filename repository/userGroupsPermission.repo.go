@@ -21,12 +21,16 @@ func NewUserGroupsPermissionRepository(c *context.Context, db *gorm.DB) *UserGro
 	}
 }
 
-// ListAllByUserGroup retrives a list of records based on provided UserGroup
-func (r *UserGroupsPermissionRepository) ListAllByUserGroup(
-	userGroup models.UserGroup,
-	userGroupsPermissions *[]models.UserGroupsPermission,
+// ListAllByUser retrives a list of records based on provided User
+func (r *UserGroupsPermissionRepository) ListAllByUser(
+	user models.User,
+	permissionIds *[]int,
 ) error {
-	dbTables := r.db.Model(&models.UserGroupsPermission{})
+	usersUserGroupTable := r.db.Model(&models.UsersUserGroup{})
+	mainTable := r.db.Model(&models.UserGroupsPermission{})
 
-	return dbTables.Where("user_group_id = ? AND active = 1", userGroup.Id).Find(&userGroupsPermissions).Error
+	return mainTable.Select("DISTINCT permission_id").Where(
+		"user_group_id IN (?) AND active = 1",
+		usersUserGroupTable.Select("user_group_id").Where("user_id = ?", user.Id),
+	).Find(&permissionIds).Error
 }
