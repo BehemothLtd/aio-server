@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS authorizations;
+-- we'll use existed `authorizations` table

@@ -1,7 +1,7 @@
 -- Set timezone
 SET time_zone = '+07:00';
 
--- Name: tags; Type: TABLE; Schema: public; Owner: -
+-- Name: pins; Type: TABLE; Schema: public; Owner: -
 
 CREATE TABLE IF NOT EXISTS `pins` (
   `id` bigint NOT NULL AUTO_INCREMENT,

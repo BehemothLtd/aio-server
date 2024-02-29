@@ -50,11 +50,11 @@ func JwtTokenCheck(c *gin.Context) {
 	uid, parseError := parseToken(jwtToken)
 
 	if parseError == nil {
-		var user models.User
+		user := models.User{Id: uid}
 
 		repo := repository.NewUserRepository(nil, database.Db)
 
-		if err := repo.FindById(&user, int32(uid)); err == nil {
+		if err := repo.Find(&user); err == nil {
 			c.Set(constants.ContextCurrentUser, user)
 		}
 	}

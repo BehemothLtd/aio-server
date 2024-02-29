@@ -22,11 +22,11 @@ func NewUserRepository(c *context.Context, db *gorm.DB) *Repository {
 	}
 }
 
-// FindById finds a user by their id.
-func (r *Repository) FindById(user *models.User, id int32) error {
+// Find finds a user by their attribute.
+func (r *Repository) Find(user *models.User) error {
 	dbTables := r.db.Table("users")
 
-	return dbTables.First(&user, id).Error
+	return dbTables.First(&user).Error
 }
 
 // FindByEmail finds a user by their email.

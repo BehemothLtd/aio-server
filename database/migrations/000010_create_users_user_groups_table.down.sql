@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS users_user_groups;
+-- we'll use existed `users_user_groups` table
