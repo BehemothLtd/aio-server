@@ -24,10 +24,6 @@ type Snippet struct {
 	LockVersion    int32 `gorm:"not null;autoIncrement;default:0"`
 }
 
-type SnippetsQuery struct {
-	TitleCont string
-}
-
 type SnippetsCollection struct {
 	Collection []*Snippet
 	Metadata   *Metadata

@@ -3,20 +3,21 @@ package msInputs
 import (
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
+	"strings"
 )
 
 // SnippetsInput represents input for querying snippets collection.
 type SnippetsInput struct {
 	Input *globalInputs.PagyInput
-	Query *SnippetQueryInput
+	Query *SnippetsQueryInput
 }
 
 // ToPaginationDataAndQuery converts SnippetsInput to models.SnippetsQuery and models.PaginationData.
-func (msi *SnippetsInput) ToPaginationDataAndQuery() (SnippetQueryInput, models.PaginationData) {
+func (msi *SnippetsInput) ToPaginationDataAndQuery() (SnippetsQueryInput, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
-	query := SnippetQueryInput{}
+	query := SnippetsQueryInput{}
 
-	if msi.Query != nil && msi.Query.TitleCont != nil {
+	if msi.Query != nil && msi.Query.TitleCont != nil && strings.TrimSpace(*msi.Query.TitleCont) != "" {
 		query.TitleCont = msi.Query.TitleCont
 	}
 

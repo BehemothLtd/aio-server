@@ -35,7 +35,7 @@ func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
 func (r *SnippetRepository) List(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query msInputs.SnippetQueryInput,
+	query msInputs.SnippetsQueryInput,
 ) error {
 
 	return r.db.Scopes(
@@ -49,7 +49,7 @@ func (r *SnippetRepository) List(
 func (r *SnippetRepository) ListByUser(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query msInputs.SnippetQueryInput,
+	query msInputs.SnippetsQueryInput,
 	user *models.User,
 ) error {
 	return r.db.Scopes(
@@ -64,7 +64,7 @@ func (r *SnippetRepository) ListByUser(
 func (r *SnippetRepository) ListByUserPinned(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query msInputs.SnippetQueryInput,
+	query msInputs.SnippetsQueryInput,
 	user *models.User,
 ) error {
 	snippetsDb := r.db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins")
