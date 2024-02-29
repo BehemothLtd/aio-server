@@ -36,3 +36,8 @@ func (sir *UserType) FullName(context.Context) *string {
 func (sir *UserType) Name(context.Context) *string {
 	return &sir.User.Name
 }
+
+// LockVersion returns the lock version of the user.
+func (sir *UserType) LockVersion(context.Context) int32 {
+	return sir.User.LockVersion
+}

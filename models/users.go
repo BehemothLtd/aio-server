@@ -11,7 +11,7 @@ type User struct {
 	Email             string
 	EncryptedPassword string
 	FullName          string
-	LockVersion       int
+	LockVersion       int32
 	Name              string
 	FavoritedSnippets []*Snippet `gorm:"many2many:snippets_favorites"`
 }
