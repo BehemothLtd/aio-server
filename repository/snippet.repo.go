@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -34,7 +35,7 @@ func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
 func (r *SnippetRepository) List(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query *models.SnippetsQuery,
+	query msInputs.SnippetQueryInput,
 ) error {
 
 	return r.db.Scopes(
@@ -48,7 +49,7 @@ func (r *SnippetRepository) List(
 func (r *SnippetRepository) ListByUser(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query *models.SnippetsQuery,
+	query msInputs.SnippetQueryInput,
 	user *models.User,
 ) error {
 	return r.db.Scopes(
@@ -63,7 +64,7 @@ func (r *SnippetRepository) ListByUser(
 func (r *SnippetRepository) ListByUserPinned(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query *models.SnippetsQuery,
+	query msInputs.SnippetQueryInput,
 	user *models.User,
 ) error {
 	snippetsDb := r.db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins")
@@ -77,12 +78,12 @@ func (r *SnippetRepository) ListByUserPinned(
 }
 
 // titleLike returns a function that filters snippets by title.
-func (r *SnippetRepository) titleLike(titleLike string) func(db *gorm.DB) *gorm.DB {
+func (r *SnippetRepository) titleLike(titleLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if titleLike == "" || titleLike == "null" {
+		if titleLike == nil {
 			return db
 		} else {
-			return db.Where(gorm.Expr(`lower(snippets.title) LIKE ?`, strings.ToLower("%"+titleLike+"%")))
+			return db.Where(gorm.Expr(`lower(snippets.title) LIKE ?`, strings.ToLower("%"+*titleLike+"%")))
 		}
 	}
 }

@@ -21,11 +21,11 @@ func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput
 		return nil, exceptions.NewUnauthorizedError("")
 	}
 
-	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
+	snippetsQuery, paginationData := args.ToPaginationDataAndQuery()
 
 	repo := repository.NewSnippetRepository(&ctx, r.Db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins"))
 
-	fetchErr := repo.ListByUser(&snippets, &paginationData, &snippetsQuery, &user)
+	fetchErr := repo.ListByUser(&snippets, &paginationData, snippetsQuery, &user)
 
 	if fetchErr != nil {
 		return nil, exceptions.NewBadRequestError("")

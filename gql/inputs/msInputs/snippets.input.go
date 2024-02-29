@@ -11,14 +11,14 @@ type SnippetsInput struct {
 	Query *SnippetQueryInput
 }
 
-// ToPaginationDataAndSnippetsQuery converts SnippetsInput to models.SnippetsQuery and models.PaginationData.
-func (msi *SnippetsInput) ToPaginationDataAndSnippetsQuery() (models.SnippetsQuery, models.PaginationData) {
+// ToPaginationDataAndQuery converts SnippetsInput to models.SnippetsQuery and models.PaginationData.
+func (msi *SnippetsInput) ToPaginationDataAndQuery() (SnippetQueryInput, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
+	query := SnippetQueryInput{}
 
-	var titleCont string
 	if msi.Query != nil && msi.Query.TitleCont != nil {
-		titleCont = *msi.Query.TitleCont
+		query.TitleCont = msi.Query.TitleCont
 	}
 
-	return models.SnippetsQuery{TitleCont: titleCont}, paginationData
+	return query, paginationData
 }

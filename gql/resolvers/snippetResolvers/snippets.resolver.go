@@ -12,11 +12,11 @@ import (
 // Snippets resolves the query for retrieving a collection of snippets.
 func (r *Resolver) Snippets(ctx context.Context, args msInputs.SnippetsInput) (*snippetTypes.SnippetsType, error) {
 	var snippets []*models.Snippet
-	snippetsQuery, paginationData := args.ToPaginationDataAndSnippetsQuery()
+	snippetsQuery, paginationData := args.ToPaginationDataAndQuery()
 
 	repo := repository.NewSnippetRepository(&ctx, r.Db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins"))
 
-	err := repo.List(&snippets, &paginationData, &snippetsQuery)
+	err := repo.List(&snippets, &paginationData, snippetsQuery)
 	if err != nil {
 		return nil, err
 	}
