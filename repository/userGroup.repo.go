@@ -55,10 +55,3 @@ func (r *UserGroupRepository) FindById(userGroup *models.UserGroup, id int32) er
 
 	return dbTables.First(&userGroup, id).Error
 }
-
-// // FetchAllGroupsOfAnUser
-// func (r *UserGroupRepository) FindAllByUser(userGroups *[]models.UserGroup, userId int32) error {
-// 	dbTables := r.db.Model(&models.UserGroup{})
-
-// 	return dbTables.Joins("users_user_groups", r.db.Where(&models.UsersUserGroup{UserId: userId})).Find(&userGroups).Error
-// }
