@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS attachment_blobs;
+-- we'll use existed `attachment_blobs` table
