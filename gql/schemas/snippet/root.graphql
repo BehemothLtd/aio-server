@@ -8,7 +8,7 @@ type Query {
 
   Snippet(id: ID!): Snippet!
   Snippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
-  SelfSnippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
+  SelfSnippets(input: PagyInput, query: SelfSnippetsQuery): SnippetsCollection!
   SelfPinnedSnippets(
     input: PagyInput
     query: SnippetsQuery

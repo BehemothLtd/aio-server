@@ -17,6 +17,11 @@ input SnippetsQuery {
   titleCont: String
 }
 
+input SelfSnippetsQuery {
+  titleCont: String
+  snippetType: String
+}
+
 type SnippetsCollection {
   collection: [Snippet!]
   metadata: Metadata!

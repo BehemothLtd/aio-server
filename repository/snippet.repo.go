@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/enums"
 	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
@@ -49,13 +50,14 @@ func (r *SnippetRepository) List(
 func (r *SnippetRepository) ListByUser(
 	snippets *[]*models.Snippet,
 	paginateData *models.PaginationData,
-	query msInputs.SnippetsQueryInput,
+	query msInputs.SelfSnippetsQueryInput,
 	user *models.User,
 ) error {
 	return r.db.Scopes(
 		helpers.Paginate(r.db.Scopes(
 			r.ofUser(user.Id),
 			r.titleLike(query.TitleCont),
+			r.snippetTypeEq(query.SnippetType),
 		), paginateData),
 	).Order("id desc").Find(&snippets).Error
 }
@@ -84,6 +86,19 @@ func (r *SnippetRepository) titleLike(titleLike *string) func(db *gorm.DB) *gorm
 			return db
 		} else {
 			return db.Where(gorm.Expr(`lower(snippets.title) LIKE ?`, strings.ToLower("%"+*titleLike+"%")))
+		}
+	}
+}
+
+// snippetTypeEq returns a function that filters snippets by title.
+func (r *SnippetRepository) snippetTypeEq(snippetTypeEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if snippetTypeEq == nil {
+			return db
+		} else {
+			snippetTypeEqInInt, _ := enums.ParseSnippetType(*snippetTypeEq)
+
+			return db.Where(gorm.Expr(`snippets.snippet_type = ?`, snippetTypeEqInInt))
 		}
 	}
 }

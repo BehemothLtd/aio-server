@@ -12,7 +12,7 @@ import (
 )
 
 // SelfSnippets resolves the query for retrieving self-owned snippets.
-func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SnippetsInput) (*snippetTypes.SnippetsType, error) {
+func (r *Resolver) SelfSnippets(ctx context.Context, args msInputs.SelfSnippetsInput) (*snippetTypes.SnippetsType, error) {
 	var snippets []*models.Snippet
 
 	user, err := auths.AuthUserFromCtx(ctx)
