@@ -21,7 +21,7 @@ type User struct {
 	CompanyLevelId    *int32
 	Address           *string
 	Phone             *string
-	Timing            string
+	SlackId           *string
 }
 
 type UserClaims struct {

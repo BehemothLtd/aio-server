@@ -1,34 +1,35 @@
 package insightServices
 
 import (
-	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/repository"
+	"aio-server/validators"
 
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )
 
 type SelfsUpdateProfileService struct {
-	Ctx *context.Context
-	Db  *gorm.DB
-
+	Ctx  *context.Context
+	Db   *gorm.DB
 	Args insightInputs.SelfsUpdateProfileInput
 	User *models.User
+
+	repo *repository.UserRepository
 }
 
 func (sups *SelfsUpdateProfileService) Execute() error {
-	// TODO
-	sups.validate()
+	sups.repo = repository.NewUserRepository(sups.Ctx, sups.Db)
+	form := validators.NewUserProfileFormValidator(
+		&sups.Args.Input,
+		sups.repo,
+		sups.User,
+	)
 
-	return nil
-}
-
-func (sups *SelfsUpdateProfileService) validate() error {
-	exception := exceptions.NewUnprocessableContentError("", nil)
-
-	if len(exception.Errors) > 0 {
-		return exception
+	if err := form.Save(); err != nil {
+		return err
 	}
+
 	return nil
 }

@@ -22,7 +22,9 @@ func (r *Resolver) SelfsUpdateProfile(ctx context.Context, args insightInputs.Se
 		Args: args,
 		User: &user,
 	}
-	service.Execute()
+	if err := service.Execute(); err != nil {
+		return nil, err
+	}
 
 	return &globalTypes.UserUpdatedType{User: &globalTypes.UserType{User: &user}}, nil
 }
