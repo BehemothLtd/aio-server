@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -34,7 +35,7 @@ func (r *TagRepository) FindById(tag *models.Tag, id int32) error {
 func (r *TagRepository) List(
 	tags *[]*models.Tag,
 	paginateData *models.PaginationData,
-	query *models.TagsQuery,
+	query msInputs.TagsQueryInput,
 ) error {
 	dbTables := r.db.Model(&models.Tag{})
 
@@ -51,12 +52,12 @@ func (r *TagRepository) ListAll(tags *[]*models.Tag) error {
 }
 
 // nameLike returns a function that filters tags by title.
-func (r *TagRepository) nameLike(nameLike string) func(db *gorm.DB) *gorm.DB {
+func (r *TagRepository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if nameLike == "" || nameLike == "null" {
+		if nameLike == nil {
 			return db
 		} else {
-			return db.Where(gorm.Expr(`lower(tags.name) LIKE ?`, strings.ToLower("%"+nameLike+"%")))
+			return db.Where(gorm.Expr(`lower(tags.name) LIKE ?`, strings.ToLower("%"+*nameLike+"%")))
 		}
 	}
 }
