@@ -24,11 +24,6 @@ type Snippet struct {
 	LockVersion    int32 `gorm:"not null;autoIncrement;default:0"`
 }
 
-type SnippetsCollection struct {
-	Collection []*Snippet
-	Metadata   *Metadata
-}
-
 func (s *Snippet) EncryptContent(Passkey string) error {
 	if s.SnippetType == enums.SnippetTypePublic {
 		return nil

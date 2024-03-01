@@ -17,11 +17,11 @@ func (r *Resolver) UserGroups(ctx context.Context, args insightInputs.UserGroups
 	}
 
 	var userGroups []*models.UserGroup
-	userGroupsQuery, paginationData := args.ToPaginationDataAndUserGroupsQuery()
+	userGroupsQuery, paginationData := args.ToPaginationDataAndQuery()
 
 	repo := repository.NewUserGroupRepository(&ctx, r.Db)
 
-	err := repo.List(&userGroups, &paginationData, &userGroupsQuery)
+	err := repo.List(&userGroups, &paginationData, userGroupsQuery)
 	if err != nil {
 		return nil, err
 	}

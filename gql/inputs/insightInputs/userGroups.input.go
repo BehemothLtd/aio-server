@@ -8,17 +8,17 @@ import (
 // UserGroupsInput represents input for querying user groups collection.
 type UserGroupsInput struct {
 	Input *globalInputs.PagyInput
-	Query *UserGroupQueryInput
+	Query *UserGroupsQueryInput
 }
 
-// ToPaginationDataAndUserGroupsQuery converts MmUserGroupsInputUserGroupsInput to models.UserGroupsQuery and models.PaginationData.
-func (ugi *UserGroupsInput) ToPaginationDataAndUserGroupsQuery() (models.UserGroupsQuery, models.PaginationData) {
+// ToPaginationDataAndUserGroupsQuery converts MmUserGroupsInputUserGroupsInput to UserGroupsQueryInput and models.PaginationData.
+func (ugi *UserGroupsInput) ToPaginationDataAndQuery() (UserGroupsQueryInput, models.PaginationData) {
 	paginationData := ugi.Input.ToPaginationInput()
+	query := UserGroupsQueryInput{}
 
-	var titleCont string
 	if ugi.Query != nil && ugi.Query.TitleCont != nil {
-		titleCont = *ugi.Query.TitleCont
+		query.TitleCont = ugi.Query.TitleCont
 	}
 
-	return models.UserGroupsQuery{TitleCont: titleCont}, paginationData
+	return query, paginationData
 }

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -27,7 +28,7 @@ func NewUserGroupRepository(c *context.Context, db *gorm.DB) *UserGroupRepositor
 func (r *UserGroupRepository) List(
 	userGroups *[]*models.UserGroup,
 	paginateData *models.PaginationData,
-	query *models.UserGroupsQuery,
+	query insightInputs.UserGroupsQueryInput,
 ) error {
 	dbTables := r.db.Model(&models.UserGroup{})
 
@@ -39,12 +40,12 @@ func (r *UserGroupRepository) List(
 }
 
 // titleLike returns a function that filters user groups by title.
-func (r *UserGroupRepository) titleLike(titleLike string) func(db *gorm.DB) *gorm.DB {
+func (r *UserGroupRepository) titleLike(titleLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if titleLike == "" || titleLike == "null" {
+		if titleLike == nil {
 			return db
 		} else {
-			return db.Where(gorm.Expr(`lower(user_groups.title) LIKE ?`, strings.ToLower("%"+titleLike+"%")))
+			return db.Where(gorm.Expr(`lower(user_groups.title) LIKE ?`, strings.ToLower("%"+*titleLike+"%")))
 		}
 	}
 }

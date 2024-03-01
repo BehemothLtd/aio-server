@@ -12,12 +12,3 @@ type UserGroup struct {
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 }
-
-type UserGroupsQuery struct {
-	TitleCont string
-}
-
-type UserGroupCollection struct {
-	Collection []*UserGroup
-	Metadata   *Metadata
-}
