@@ -15,6 +15,13 @@ type User struct {
 	Name              string
 	FavoritedSnippets []*Snippet   `gorm:"many2many:snippets_favorites"`
 	UserGroups        []*UserGroup `gorm:"many2many:users_user_groups"`
+	About             string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	CompanyLevelId    *int32
+	Address           *string
+	Phone             *string
+	SlackId           *string
 }
 
 type UserClaims struct {

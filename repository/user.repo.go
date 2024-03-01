@@ -15,29 +15,31 @@ type UserRepository struct {
 }
 
 // NewUserRepository initializes a new UserRepository instance.
-func NewUserRepository(c *context.Context, db *gorm.DB) *Repository {
-	return &Repository{
-		db:  db,
-		ctx: c,
+func NewUserRepository(c *context.Context, db *gorm.DB) *UserRepository {
+	return &UserRepository{
+		Repository: Repository{
+			db:  db,
+			ctx: c,
+		},
 	}
 }
 
 // Find finds a user by their attribute.
-func (r *Repository) Find(user *models.User) error {
+func (r *UserRepository) Find(user *models.User) error {
 	dbTables := r.db.Table("users")
 
 	return dbTables.First(&user).Error
 }
 
 // FindByEmail finds a user by their email.
-func (r *Repository) FindByEmail(user *models.User, email string) error {
+func (r *UserRepository) FindByEmail(user *models.User, email string) error {
 	dbTables := r.db.Table("users")
 
 	return dbTables.Where("email = ?", email).First(&user).Error
 }
 
 // Auth authenticates a user by their email and password.
-func (r *Repository) Auth(email string, password string) (user *models.User, err error) {
+func (r *UserRepository) Auth(email string, password string) (user *models.User, err error) {
 	var u models.User
 
 	userFindErr := r.FindByEmail(&u, email)
@@ -53,4 +55,9 @@ func (r *Repository) Auth(email string, password string) (user *models.User, err
 	}
 
 	return &u, nil
+}
+
+// Update updates an user by its assigned attributes
+func (r *UserRepository) Update(user *models.User) error {
+	return r.db.Model(&user).Updates(&user).Error
 }
