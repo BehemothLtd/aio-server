@@ -37,6 +37,7 @@ func NewUserProfileFormValidator(
 func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFormInput) {
 	about := helpers.GetStringOrDefault(input.About)
 	slackId := helpers.GetStringOrDefault(input.SlackId)
+	gender := helpers.GetStringOrDefault(input.Gender)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -53,6 +54,7 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFo
 			},
 			Value: about,
 		},
+		&
 	)
 
 	form.User.About = about
