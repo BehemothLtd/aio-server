@@ -11,6 +11,8 @@ type Query {
 
 type Mutation {
   SignIn(email: String!, password: String!): SignIn!
+
+  SelfsUpdateProfile(input: SelfsUpdateProfileInput!): SelfsUpdateProfileRes!
 }
 
 scalar Time
