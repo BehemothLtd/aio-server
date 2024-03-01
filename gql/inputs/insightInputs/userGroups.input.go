@@ -3,6 +3,7 @@ package insightInputs
 import (
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
+	"strings"
 )
 
 // UserGroupsInput represents input for querying user groups collection.
@@ -16,7 +17,7 @@ func (ugi *UserGroupsInput) ToPaginationDataAndQuery() (UserGroupsQueryInput, mo
 	paginationData := ugi.Input.ToPaginationInput()
 	query := UserGroupsQueryInput{}
 
-	if ugi.Query != nil && ugi.Query.TitleCont != nil {
+	if ugi.Query != nil && ugi.Query.TitleCont != nil && strings.TrimSpace(*ugi.Query.TitleCont) != "" {
 		query.TitleCont = ugi.Query.TitleCont
 	}
 
