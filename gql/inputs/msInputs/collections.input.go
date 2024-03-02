@@ -3,6 +3,7 @@ package msInputs
 import (
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
+	"strings"
 )
 
 type CollectionsInput struct {
@@ -10,13 +11,13 @@ type CollectionsInput struct {
 	Query *CollectionQueryInput
 }
 
-func (msi *CollectionsInput) ToPaginationDataAndCollectionQuery() (models.CollectionQuery, models.PaginationData) {
+func (msi *CollectionsInput) ToPaginationDataAndCollectionQuery() (CollectionQueryInput, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
+	query := CollectionQueryInput{}
 
-	var titleCont string
-	if msi.Query != nil && msi.Query.TitleCont != nil {
-		titleCont = *msi.Query.TitleCont
+	if msi.Query != nil && msi.Query.TitleCont != nil && strings.TrimSpace(*msi.Query.TitleCont) != "" {
+		query.TitleCont = msi.Query.TitleCont
 	}
 
-	return models.CollectionQuery{TitleCont: titleCont}, paginationData
+	return query, paginationData
 }

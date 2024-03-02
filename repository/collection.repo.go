@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -25,7 +26,7 @@ func NewCollectionRepository(c *context.Context, db *gorm.DB) *CollectionReposit
 func (r *CollectionRepository) List(
 	collections *[]*models.Collection,
 	paginateData *models.PaginationData,
-	query *models.CollectionQuery,
+	query msInputs.CollectionQueryInput,
 	user *models.User,
 ) error {
 	dbTables := r.db.Model(&models.Collection{})
@@ -33,7 +34,7 @@ func (r *CollectionRepository) List(
 	return dbTables.Scopes(
 		helpers.Paginate(dbTables.Scopes(
 			r.ofParent("user_id", user.Id),
-			r.stringLike("collections", "title", query.TitleCont),
+			r.stringLike("collections", "title", *query.TitleCont),
 		), paginateData),
 	).Order("id desc").Find(&collections).Error
 }

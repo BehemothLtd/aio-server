@@ -25,10 +25,10 @@ func (r *Resolver) Collections(ctx context.Context, args msInputs.CollectionsInp
 
 	repo := repository.NewCollectionRepository(&ctx, r.Db)
 
-	fetchErr := repo.List(&collections, &paginationData, &collectionQuery, &user)
+	fetchErr := repo.List(&collections, &paginationData, collectionQuery, &user)
 
 	if fetchErr != nil {
-		return nil, exceptions.NewBadRequestError("")
+		return nil, fetchErr
 	}
 
 	return &snippetTypes.CollectionsType{

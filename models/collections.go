@@ -17,7 +17,3 @@ type CollectionsCollection struct {
 	Collection []*Collection
 	Metadata   *Metadata
 }
-
-type CollectionQuery struct {
-	TitleCont string
-}
