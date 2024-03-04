@@ -21,6 +21,8 @@ type SelfsUpdateProfileService struct {
 
 func (sups *SelfsUpdateProfileService) Execute() error {
 	sups.repo = repository.NewUserRepository(sups.Ctx, sups.Db)
+	sups.repo.FindWithAvatar(sups.User)
+
 	form := validators.NewUserProfileFormValidator(
 		&sups.Args.Input,
 		sups.repo,

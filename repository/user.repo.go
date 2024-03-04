@@ -28,7 +28,14 @@ func NewUserRepository(c *context.Context, db *gorm.DB) *UserRepository {
 func (r *UserRepository) Find(user *models.User) error {
 	dbTables := r.db.Table("users")
 
-	return dbTables.First(&user).Error
+	return dbTables.Where(&user).First(&user).Error
+}
+
+// Find finds a user by their attribute.
+func (r *UserRepository) FindWithAvatar(user *models.User) error {
+	dbTables := r.db.Table("users").Preload("Avatar.AttachmentBlob")
+
+	return dbTables.Where("id = ?", user.Id).First(&user).Error
 }
 
 // FindByEmail finds a user by their email.
@@ -59,5 +66,6 @@ func (r *UserRepository) Auth(email string, password string) (user *models.User,
 
 // Update updates an user by its assigned attributes
 func (r *UserRepository) Update(user *models.User) error {
-	return r.db.Model(&user).Updates(&user).Error
+	// TODO: handle NULL value save into DB
+	return r.db.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
 }

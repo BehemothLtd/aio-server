@@ -13,7 +13,7 @@ type User {
   companyLevelId: ID
   state: String
   address: String
-  birthday: String
+  birthday: Time
   gender: String
   phone: String
   timingActiveAt: Time
@@ -56,4 +56,6 @@ type SelfsUpdateProfile {
   gender: String
   phone: String
   slackId: String
+  birthday: Time
+  address: String
 }

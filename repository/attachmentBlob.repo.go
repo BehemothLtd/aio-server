@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/models"
 	"context"
 
 	"gorm.io/gorm"
@@ -18,4 +19,11 @@ func NewAttachmentBlobRepository(c *context.Context, db *gorm.DB) *AttachmentBlo
 			ctx: c,
 		},
 	}
+}
+
+// Find find blob record by its attributes
+func (r *AttachmentBlobRepository) Find(blob *models.AttachmentBlob) error {
+	dbTables := r.db.Table("attachment_blobs")
+
+	return dbTables.Where(&blob).First(&blob).Error
 }
