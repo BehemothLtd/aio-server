@@ -91,7 +91,11 @@ func (ut *UserType) TimingDeactiveAt(context.Context) *graphql.Time {
 
 // Gender returns the Gender of the user.
 func (ut *UserType) Gender(context.Context) *string {
-	// TODO
+	if ut.User.Gender != nil {
+		gender := ut.User.Gender.String()
+		return &gender
+	}
+
 	return nil
 }
 
@@ -109,6 +113,5 @@ func (ut *UserType) State(context.Context) *string {
 
 // SlackId returns the SlackId of the user.
 func (ut *UserType) SlackId(context.Context) *string {
-	// TODO
-	return nil
+	return ut.User.SlackId
 }

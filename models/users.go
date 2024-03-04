@@ -1,6 +1,7 @@
 package models
 
 import (
+	"aio-server/enums"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -22,6 +23,7 @@ type User struct {
 	Address           *string
 	Phone             *string
 	SlackId           *string
+	Gender            *enums.UserGenderType
 }
 
 type UserClaims struct {

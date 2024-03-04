@@ -1,13 +1,13 @@
 package validators
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 )
 
 type UserProfileForm struct {
@@ -52,9 +52,15 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFo
 				Name: "SlackId",
 				Code: "slackId",
 			},
-			Value: about,
+			Value: slackId,
 		},
-		&
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Gender",
+				Code: "gender",
+			},
+			Value: gender,
+		},
 	)
 
 	form.User.About = about
@@ -71,16 +77,37 @@ func (form *UserProfileForm) Save() error {
 
 // validate validates the snippet form.
 func (form *UserProfileForm) validate() error {
-	form.validateAbout().
-		validateSlackId().
-		summaryErrors()
+	form.validateAbout().validateSlackId().validateGender().summaryErrors()
 
-	fmt.Printf("FORM ERROR %+v", form.Errors)
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
 	}
 
 	return nil
+}
+
+func (form *UserProfileForm) assignGender(gender string) {
+	if genderValue, err := enums.ParseUserGenderType(gender); err != nil {
+		form.User.Gender = nil
+	} else {
+		form.User.Gender = &genderValue
+	}
+}
+
+func (form *UserProfileForm) validateGender() *UserProfileForm {
+	if form.Gender != nil {
+		gender := form.FindAttrByCode("gender")
+
+		genderValue := enums.UserGenderType(*form.Gender)
+
+		if genderValue.IsValid() {
+			form.assignGender(*form.Gender)
+		} else {
+			gender.AddError("is invalid")
+		}
+	}
+
+	return form
 }
 
 func (form *UserProfileForm) validateAbout() *UserProfileForm {
