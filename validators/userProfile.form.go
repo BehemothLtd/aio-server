@@ -8,6 +8,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"time"
 )
 
 type UserProfileForm struct {
@@ -38,6 +39,9 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFo
 	about := helpers.GetStringOrDefault(input.About)
 	slackId := helpers.GetStringOrDefault(input.SlackId)
 	gender := helpers.GetStringOrDefault(input.Gender)
+	birthday := helpers.GetStringOrDefault(input.Birthday)
+	phone := helpers.GetStringOrDefault(input.Phone)
+	address := helpers.GetStringOrDefault(input.Address)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -61,15 +65,44 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFo
 			},
 			Value: gender,
 		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Birthday",
+				Code: "birthday",
+			},
+			Value: birthday,
+		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Phone",
+				Code: "phone",
+			},
+			Value: phone,
+		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "Address",
+				Code: "address",
+			},
+			Value: address,
+		},
 	)
-
-	form.User.About = about
-	form.User.SlackId = &slackId
 }
 
 func (form *UserProfileForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
+	} else {
+		if form.About != nil {
+			form.User.About = form.About
+		}
+		if form.SlackId != nil {
+			form.User.SlackId = form.SlackId
+		}
+		form.User.Phone = form.Phone
+		if form.Address != nil {
+			form.User.Address = form.Address
+		}
 	}
 
 	return form.Repo.Update(form.User)
@@ -77,21 +110,19 @@ func (form *UserProfileForm) Save() error {
 
 // validate validates the snippet form.
 func (form *UserProfileForm) validate() error {
-	form.validateAbout().validateSlackId().validateGender().summaryErrors()
+	form.validateAbout().
+		validateSlackId().
+		validateGender().
+		validateBirthday().
+		validatePhone().
+		validateAddress().
+		summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
 	}
 
 	return nil
-}
-
-func (form *UserProfileForm) assignGender(gender string) {
-	if genderValue, err := enums.ParseUserGenderType(gender); err != nil {
-		form.User.Gender = nil
-	} else {
-		form.User.Gender = &genderValue
-	}
 }
 
 func (form *UserProfileForm) validateGender() *UserProfileForm {
@@ -101,9 +132,22 @@ func (form *UserProfileForm) validateGender() *UserProfileForm {
 		genderValue := enums.UserGenderType(*form.Gender)
 
 		if genderValue.IsValid() {
-			form.assignGender(*form.Gender)
+			form.User.Gender = &genderValue
 		} else {
 			gender.AddError("is invalid")
+		}
+	}
+
+	return form
+}
+
+func (form *UserProfileForm) validateBirthday() *UserProfileForm {
+	if form.Birthday != nil {
+		if birthday, error := time.Parse(time.DateOnly, *form.Birthday); error != nil {
+			birthdayField := form.FindAttrByCode("birthday")
+			birthdayField.AddError("is invalid date")
+		} else {
+			form.User.Birthday = birthday
 		}
 	}
 
@@ -126,6 +170,30 @@ func (form *UserProfileForm) validateSlackId() *UserProfileForm {
 
 	slackId.ValidateRequired()
 	slackId.ValidateLimit(&minLength, &maxLength)
+
+	return form
+}
+
+func (form *UserProfileForm) validatePhone() *UserProfileForm {
+	if form.Phone != nil {
+		phone := form.FindAttrByCode("phone")
+		minLength := 10
+		maxLength := int64(13)
+
+		phone.ValidateLimit(&minLength, &maxLength)
+	}
+
+	return form
+}
+
+func (form *UserProfileForm) validateAddress() *UserProfileForm {
+	if form.Address != nil {
+		address := form.FindAttrByCode("address")
+		minLength := 20
+		maxLength := int64(constants.MaxLongTextLength)
+
+		address.ValidateLimit(&minLength, &maxLength)
+	}
 
 	return form
 }

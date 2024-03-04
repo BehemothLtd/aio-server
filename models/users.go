@@ -16,7 +16,7 @@ type User struct {
 	Name              string
 	FavoritedSnippets []*Snippet   `gorm:"many2many:snippets_favorites"`
 	UserGroups        []*UserGroup `gorm:"many2many:users_user_groups"`
-	About             string
+	About             *string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
 	CompanyLevelId    *int32
@@ -24,6 +24,7 @@ type User struct {
 	Phone             *string
 	SlackId           *string
 	Gender            *enums.UserGenderType
+	Birthday          time.Time
 }
 
 type UserClaims struct {
