@@ -18,6 +18,8 @@ type Query {
   Tag(id: ID!): Tag!
   Tags(input: PagyInput, query: TagsQuery): TagsCollection!
   TagsAll: [TagForSelection!]
+
+  Collections(input: PagyInput, query: CollectionQuery): CollectionsCollection!
 }
 
 type Mutation {

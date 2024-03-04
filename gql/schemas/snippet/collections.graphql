@@ -1,0 +1,17 @@
+type Collection {
+  id: ID
+  title: String
+  userId: ID
+  createdAt: Time
+  updatedAt: Time
+  lockVersion: Int!
+}
+
+input CollectionQuery {
+  titleCont: String
+}
+
+type CollectionsCollection {
+  collection: [Collection!]
+  metadata: Metadata!
+}
