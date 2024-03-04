@@ -32,6 +32,13 @@ func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
 	return dbTables.First(&snippet, id).Error
 }
 
+// FindBySlug finds a snippet by its Slug
+func (r *SnippetRepository) FindBySlug(snippet *models.Snippet, slug string) error {
+	dbTables := r.db.Model(&models.Snippet{})
+
+	return dbTables.Where("slug = ?", slug).First(&snippet).Error
+}
+
 // List retrieves a list of snippets based on provided pagination data and query.
 func (r *SnippetRepository) List(
 	snippets *[]*models.Snippet,

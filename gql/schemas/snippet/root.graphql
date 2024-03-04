@@ -6,7 +6,7 @@ schema {
 type Query {
   SelfInfo: UserPrivateInfo!
 
-  Snippet(id: ID!): Snippet!
+  Snippet(slug: String!): Snippet!
   Snippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   SelfSnippets(input: PagyInput, query: SelfSnippetsQuery): SnippetsCollection!
   SelfPinnedSnippets(
