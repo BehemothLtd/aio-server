@@ -204,20 +204,25 @@ func (form *UserProfileForm) validateAddress() *UserProfileForm {
 
 func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
 	if form.AvatarKey != nil {
-		blob := models.AttachmentBlob{Key: *form.AvatarKey}
+		if *form.AvatarKey != "" {
+			blob := models.AttachmentBlob{Key: *form.AvatarKey}
 
-		repo := repository.NewAttachmentBlobRepository(nil, database.Db)
-		if err := repo.Find(&blob); err != nil {
+			repo := repository.NewAttachmentBlobRepository(nil, database.Db)
+			if err := repo.Find(&blob); err != nil {
+				avatar := form.FindAttrByCode("avatarKey")
+				avatar.AddError("is invalid")
+			} else {
+				if form.User.Avatar == nil {
+					form.User.Avatar = &models.Attachment{
+						AttachmentBlob: &blob,
+					}
+				} else {
+					form.User.Avatar.AttachmentBlob = &blob
+				}
+			}
+		} else {
 			avatar := form.FindAttrByCode("avatarKey")
 			avatar.AddError("is invalid")
-		} else {
-			form.User.Avatar = models.Attachment{
-				Id:               form.User.Avatar.AttachmentBlobId,
-				AttachmentBlobId: blob.Id,
-				OwnerID:          form.User.Id,
-				OwnerType:        "users",
-			}
-			// .AttachmentBlobId = blob.Id
 		}
 	}
 	return form

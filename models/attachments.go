@@ -11,7 +11,7 @@ type Attachment struct {
 	OwnerID          int32 `gorm:"column:owner_id"`
 	OwnerType        string
 	AttachmentBlobId int32
-	AttachmentBlob   AttachmentBlob
+	AttachmentBlob   *AttachmentBlob
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
