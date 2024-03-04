@@ -16,6 +16,7 @@ type User struct {
 	Name              string
 	FavoritedSnippets []*Snippet   `gorm:"many2many:snippets_favorites"`
 	UserGroups        []*UserGroup `gorm:"many2many:users_user_groups"`
+	Avatar            Attachment   `gorm:"polymorphic:Owner;"`
 	About             *string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time

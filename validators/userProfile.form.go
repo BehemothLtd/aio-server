@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/database"
 	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
@@ -42,6 +43,7 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFo
 	birthday := helpers.GetStringOrDefault(input.Birthday)
 	phone := helpers.GetStringOrDefault(input.Phone)
 	address := helpers.GetStringOrDefault(input.Address)
+	avatarKey := helpers.GetStringOrDefault(input.AvatarKey)
 
 	form.AddAttributes(
 		&StringAttribute{
@@ -86,6 +88,13 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFo
 			},
 			Value: address,
 		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Name: "AvatarKey",
+				Code: "avatarKey",
+			},
+			Value: avatarKey,
+		},
 	)
 }
 
@@ -93,16 +102,10 @@ func (form *UserProfileForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	} else {
-		if form.About != nil {
-			form.User.About = form.About
-		}
-		if form.SlackId != nil {
-			form.User.SlackId = form.SlackId
-		}
+		form.User.About = form.About
+		form.User.SlackId = form.SlackId
 		form.User.Phone = form.Phone
-		if form.Address != nil {
-			form.User.Address = form.Address
-		}
+		form.User.Address = form.Address
 	}
 
 	return form.Repo.Update(form.User)
@@ -116,6 +119,7 @@ func (form *UserProfileForm) validate() error {
 		validateBirthday().
 		validatePhone().
 		validateAddress().
+		validateAvatarKey().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -195,5 +199,26 @@ func (form *UserProfileForm) validateAddress() *UserProfileForm {
 		address.ValidateLimit(&minLength, &maxLength)
 	}
 
+	return form
+}
+
+func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
+	if form.AvatarKey != nil {
+		blob := models.AttachmentBlob{Key: *form.AvatarKey}
+
+		repo := repository.NewAttachmentBlobRepository(nil, database.Db)
+		if err := repo.Find(&blob); err != nil {
+			avatar := form.FindAttrByCode("avatarKey")
+			avatar.AddError("is invalid")
+		} else {
+			form.User.Avatar = models.Attachment{
+				Id:               form.User.Avatar.AttachmentBlobId,
+				AttachmentBlobId: blob.Id,
+				OwnerID:          form.User.Id,
+				OwnerType:        "users",
+			}
+			// .AttachmentBlobId = blob.Id
+		}
+	}
 	return form
 }

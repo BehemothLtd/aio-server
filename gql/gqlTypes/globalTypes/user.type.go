@@ -48,8 +48,8 @@ func (ut *UserType) About(context.Context) *string {
 
 // AvatarURL returns the AvatarURL of the user.
 func (ut *UserType) AvatarUrl(context.Context) *string {
-	// TODO
-	return nil
+	url := ut.User.Avatar.Url()
+	return &url
 }
 
 // CreatedAt returns the CreatedAt of the user.
