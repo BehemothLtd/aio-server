@@ -35,29 +35,26 @@ func NewUserPasswordFormValidator(
 }
 
 func (form *UserPasswordForm) assignAttributes(input *insightInputs.SelfUpdatePasswordFormInput) {
-	currentPassword := helpers.GetStringOrDefault(&form.CurrentPassword)
-	password := helpers.GetStringOrDefault(&form.Password)
-	passwordConfirmation := helpers.GetStringOrDefault(&form.PasswordConfirmation)
+	currentPassword := helpers.GetStringOrDefault(&input.CurrentPassword)
+	password := helpers.GetStringOrDefault(&input.Password)
+	passwordConfirmation := helpers.GetStringOrDefault(&input.PasswordConfirmation)
 
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Current Password",
-				Code: "CurrentPassword",
+				Code: "currentPassword",
 			},
 			Value: currentPassword,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Password",
-				Code: "Password",
+				Code: "password",
 			},
 			Value: password,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Password Confirmation",
-				Code: "PasswordConfirmation",
+				Code: "passwordConfirmation",
 			},
 			Value: passwordConfirmation,
 		},
@@ -73,7 +70,7 @@ func (form *UserPasswordForm) Save() error {
 		} else {
 			form.User.EncryptedPassword = string(password)
 
-			return form.Repo.Update(form.User)
+			return form.Repo.Update(form.User, []string{"EncryptedPassword"})
 		}
 	}
 }
@@ -91,7 +88,7 @@ func (form *UserPasswordForm) validate() error {
 }
 
 func (form *UserPasswordForm) validatePassword() *UserPasswordForm {
-	passwordField := form.FindAttrByCode("CurrentPassword")
+	passwordField := form.FindAttrByCode("currentPassword")
 
 	passwordField.ValidateRequired()
 
@@ -103,8 +100,8 @@ func (form *UserPasswordForm) validatePassword() *UserPasswordForm {
 }
 
 func (form *UserPasswordForm) validateNewPassword() *UserPasswordForm {
-	newPasswordField := form.FindAttrByCode("Password")
-	newPasswordConfirmationField := form.FindAttrByCode("PasswordConfirmation")
+	newPasswordField := form.FindAttrByCode("password")
+	newPasswordConfirmationField := form.FindAttrByCode("passwordConfirmation")
 
 	min := 8
 	max := int64(20)

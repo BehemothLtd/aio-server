@@ -65,7 +65,7 @@ func (r *UserRepository) Auth(email string, password string) (user *models.User,
 }
 
 // Update updates an user by its assigned attributes
-func (r *UserRepository) Update(user *models.User) error {
+func (r *UserRepository) Update(user *models.User, fields []string) error {
 	// TODO: handle NULL value save into DB
-	return r.db.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
+	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
 }

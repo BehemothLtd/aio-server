@@ -48,49 +48,42 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfUpdateFor
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "About",
 				Code: "about",
 			},
 			Value: about,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "SlackId",
 				Code: "slackId",
 			},
 			Value: slackId,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Gender",
 				Code: "gender",
 			},
 			Value: gender,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Birthday",
 				Code: "birthday",
 			},
 			Value: birthday,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Phone",
 				Code: "phone",
 			},
 			Value: phone,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "Address",
 				Code: "address",
 			},
 			Value: address,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "AvatarKey",
 				Code: "avatarKey",
 			},
 			Value: avatarKey,
@@ -108,7 +101,7 @@ func (form *UserProfileForm) Save() error {
 		form.User.Address = form.Address
 	}
 
-	return form.Repo.Update(form.User)
+	return form.Repo.Update(form.User, []string{"FullName", "Phone", "Birthday", "SlackId", "About", "Address", "Gender", "Avatar"})
 }
 
 // validate validates the snippet form.
