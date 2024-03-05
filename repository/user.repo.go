@@ -1,9 +1,12 @@
 package repository
 
 import (
+	"aio-server/enums"
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"context"
 	"errors"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -47,9 +50,9 @@ func (r *UserRepository) FindByEmail(user *models.User, email string) error {
 
 // Auth authenticates a user by their email and password.
 func (r *UserRepository) Auth(email string, password string) (user *models.User, err error) {
-	var u models.User
+	u := models.User{Email: email, State: "active"}
 
-	userFindErr := r.FindByEmail(&u, email)
+	userFindErr := r.Find(&u)
 
 	if userFindErr != nil {
 		return nil, errors.New("cant find user")
@@ -68,4 +71,75 @@ func (r *UserRepository) Auth(email string, password string) (user *models.User,
 func (r *UserRepository) Update(user *models.User, fields []string) error {
 	// TODO: handle NULL value save into DB
 	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
+}
+func (r *Repository) List(
+	users *[]*models.User,
+	paginateData *models.PaginationData,
+	query *models.UsersQuery,
+) error {
+	dbTables := r.db.Model(&models.User{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Scopes(
+			r.nameLike(query.NameCont),
+			r.fullNameLike(query.FullNameCont),
+			r.emailLike(query.EmailCont),
+			r.slackIdLike(query.SlackIdCont),
+			r.stateEq(query.StateEq),
+		), paginateData),
+	).Order("id desc").Find(&users).Error
+}
+
+func (r *Repository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if nameLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(users.name) LIKE ?`, strings.ToLower("%"+*nameLike+"%")))
+		}
+	}
+}
+
+func (r *Repository) fullNameLike(fullNameLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if fullNameLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(users.full_name) LIKE ?`, strings.ToLower("%"+*fullNameLike+"%")))
+		}
+	}
+}
+
+func (r *Repository) emailLike(emailLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if emailLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(users.email) LIKE ?`, strings.ToLower("%"+*emailLike+"%")))
+		}
+	}
+}
+
+func (r *Repository) slackIdLike(slackIdLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if slackIdLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(users.name) LIKE ?`, strings.ToLower("%"+*slackIdLike+"%")))
+		}
+	}
+}
+
+func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if stateEq == nil {
+			return db
+		} else {
+			stateInInt, err := enums.ParseUserState(*stateEq)
+			if err != nil {
+				return db
+			}
+			return db.Where(gorm.Expr(`users.state = ?`, stateInInt))
+		}
+	}
 }

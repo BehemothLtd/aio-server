@@ -23,10 +23,10 @@ type User struct {
 	CompanyLevelId    *int32
 	Address           *string
 	Phone             *string
-	SlackId           *string
 	Gender            *enums.UserGenderType
 	Birthday          time.Time
-	Timing            *UserTiming
+	SlackId           string
+	State             enums.UserState
 }
 
 type UserClaims struct {
@@ -42,4 +42,12 @@ func (user *User) GenerateJwtClaims() (claims jwt.Claims) {
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
+}
+
+type UsersQuery struct {
+	NameCont     *string
+	FullNameCont *string
+	EmailCont    *string
+	SlackIdCont  *string
+	StateEq      *string
 }

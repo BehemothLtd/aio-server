@@ -125,3 +125,13 @@ func (ut *UserType) State(context.Context) *string {
 func (ut *UserType) SlackId(context.Context) *string {
 	return ut.User.SlackId
 }
+
+func (ut *UserType) SlackId(context.Context) *string {
+	return &ut.User.SlackId
+}
+
+func (ut *UserType) State(context.Context) *string {
+	value := ut.User.State.String()
+
+	return &value
+}
