@@ -1,9 +1,5 @@
 package validators
 
-import (
-	"fmt"
-)
-
 // FieldAttribute represents a field attribute with its name, code, and errors.
 type FieldAttribute struct {
 	Name   string
@@ -24,5 +20,5 @@ type FieldAttributeInterface interface {
 
 // ValidationMessage returns a formatted validation message.
 func ValidationMessage(column string, message string) string {
-	return fmt.Sprintf("%s %s", column, message)
+	return message
 }
