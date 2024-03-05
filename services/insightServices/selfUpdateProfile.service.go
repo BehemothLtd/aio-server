@@ -10,22 +10,20 @@ import (
 	"gorm.io/gorm"
 )
 
-type SelfsUpdateProfileService struct {
+type SelfUpdateProfileService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args insightInputs.SelfsUpdateProfileInput
+	Args insightInputs.SelfUpdateProfileInput
 	User *models.User
-
-	repo *repository.UserRepository
 }
 
-func (sups *SelfsUpdateProfileService) Execute() error {
-	sups.repo = repository.NewUserRepository(sups.Ctx, sups.Db)
-	sups.repo.FindWithAvatar(sups.User)
+func (sups *SelfUpdateProfileService) Execute() error {
+	repo := repository.NewUserRepository(sups.Ctx, sups.Db)
+	repo.FindWithAvatar(sups.User)
 
 	form := validators.NewUserProfileFormValidator(
 		&sups.Args.Input,
-		sups.repo,
+		repo,
 		sups.User,
 	)
 

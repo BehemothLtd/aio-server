@@ -1,6 +1,6 @@
 package insightInputs
 
-type SelfsUpdateFormInput struct {
+type SelfUpdateFormInput struct {
 	FullName  *string
 	Phone     *string
 	Birthday  *string

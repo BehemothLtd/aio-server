@@ -31,7 +31,7 @@ func (r *UserRepository) Find(user *models.User) error {
 	return dbTables.Where(&user).First(&user).Error
 }
 
-// Find finds a user by their attribute.
+// FindWithAvatar finds an user includes his avatar data
 func (r *UserRepository) FindWithAvatar(user *models.User) error {
 	dbTables := r.db.Table("users").Preload("Avatar.AttachmentBlob")
 
