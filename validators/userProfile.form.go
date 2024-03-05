@@ -14,29 +14,29 @@ import (
 
 type UserProfileForm struct {
 	Form
-	insightInputs.SelfsUpdateFormInput
+	insightInputs.SelfUpdateFormInput
 	User *models.User
 	Repo *repository.UserRepository
 }
 
 // NewUserProfileFormValidator creates a new UserProfileForm validator.
 func NewUserProfileFormValidator(
-	input *insightInputs.SelfsUpdateFormInput,
+	input *insightInputs.SelfUpdateFormInput,
 	repo *repository.UserRepository,
 	user *models.User,
 ) UserProfileForm {
 	form := UserProfileForm{
-		Form:                 Form{},
-		SelfsUpdateFormInput: *input,
-		User:                 user,
-		Repo:                 repo,
+		Form:                Form{},
+		SelfUpdateFormInput: *input,
+		User:                user,
+		Repo:                repo,
 	}
 	form.assignAttributes(input)
 
 	return form
 }
 
-func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfsUpdateFormInput) {
+func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfUpdateFormInput) {
 	about := helpers.GetStringOrDefault(input.About)
 	slackId := helpers.GetStringOrDefault(input.SlackId)
 	gender := helpers.GetStringOrDefault(input.Gender)

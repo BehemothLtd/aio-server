@@ -31,7 +31,7 @@ type UserCollection {
   metadata: Metadata!
 }
 
-input SelfsUpdateProfileInput {
+input SelfUpdateProfileInput {
   about: String
   avatarKey: String
   slackId: String
@@ -41,11 +41,11 @@ input SelfsUpdateProfileInput {
   phone: String
 }
 
-type SelfsUpdateProfileRes {
-  user: SelfsUpdateProfile
+type SelfUpdateProfileRes {
+  user: SelfUpdateProfile
 }
 
-type SelfsUpdateProfile {
+type SelfUpdateProfile {
   id: ID
   email: String
   fullName: String
@@ -58,4 +58,10 @@ type SelfsUpdateProfile {
   slackId: String
   birthday: Time
   address: String
+}
+
+input SelfUpdatePassword {
+  currentPassword: String!
+  password: String!
+  passwordConfirmation: String!
 }
