@@ -26,7 +26,10 @@ func NewUserProfileFormValidator(
 	user *models.User,
 ) UserProfileForm {
 	form := UserProfileForm{
-		Form:                Form{},
+		Form: Form{
+			SkipAttributes: []string{"AvatarKey"},
+			UpdateMap:      map[string]interface{}{},
+		},
 		SelfUpdateFormInput: *input,
 		User:                user,
 		Repo:                repo,
@@ -49,49 +52,49 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfUpdateFor
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "About",
-				Code: "about",
+				Code: "About",
 			},
 			Value: about,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Name: "SlackId",
-				Code: "slackId",
+				Name: "Slack Id",
+				Code: "SlackId",
 			},
 			Value: slackId,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Gender",
-				Code: "gender",
+				Code: "Gender",
 			},
 			Value: gender,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Birthday",
-				Code: "birthday",
+				Code: "Birthday",
 			},
 			Value: birthday,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Phone",
-				Code: "phone",
+				Code: "Phone",
 			},
 			Value: phone,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "Address",
-				Code: "address",
+				Code: "Address",
 			},
 			Value: address,
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
 				Name: "AvatarKey",
-				Code: "avatarKey",
+				Code: "AvatarKey",
 			},
 			Value: avatarKey,
 		},
@@ -101,14 +104,9 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfUpdateFor
 func (form *UserProfileForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
-	} else {
-		form.User.About = form.About
-		form.User.SlackId = form.SlackId
-		form.User.Phone = form.Phone
-		form.User.Address = form.Address
 	}
 
-	return form.Repo.Update(form.User)
+	return form.Repo.UpdateFields(form.User, form.UpdateMap)
 }
 
 // validate validates the snippet form.
@@ -131,13 +129,11 @@ func (form *UserProfileForm) validate() error {
 
 func (form *UserProfileForm) validateGender() *UserProfileForm {
 	if form.Gender != nil {
-		gender := form.FindAttrByCode("gender")
+		gender := form.FindAttrByCode("Gender")
 
 		genderValue := enums.UserGenderType(*form.Gender)
 
-		if genderValue.IsValid() {
-			form.User.Gender = &genderValue
-		} else {
+		if !genderValue.IsValid() {
 			gender.AddError("is invalid")
 		}
 	}
@@ -147,11 +143,9 @@ func (form *UserProfileForm) validateGender() *UserProfileForm {
 
 func (form *UserProfileForm) validateBirthday() *UserProfileForm {
 	if form.Birthday != nil {
-		if birthday, error := time.Parse(time.DateOnly, *form.Birthday); error != nil {
-			birthdayField := form.FindAttrByCode("birthday")
+		if _, error := time.Parse(time.DateOnly, *form.Birthday); error != nil {
+			birthdayField := form.FindAttrByCode("Birthday")
 			birthdayField.AddError("is invalid date")
-		} else {
-			form.User.Birthday = birthday
 		}
 	}
 
@@ -159,7 +153,7 @@ func (form *UserProfileForm) validateBirthday() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateAbout() *UserProfileForm {
-	about := form.FindAttrByCode("about")
+	about := form.FindAttrByCode("About")
 	maxTitleLength := int64(constants.MaxLongTextLength)
 
 	about.ValidateLimit(nil, &maxTitleLength)
@@ -168,7 +162,7 @@ func (form *UserProfileForm) validateAbout() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateSlackId() *UserProfileForm {
-	slackId := form.FindAttrByCode("slackId")
+	slackId := form.FindAttrByCode("SlackId")
 	minLength := 11
 	maxLength := int64(constants.MaxStringLength)
 
@@ -180,7 +174,7 @@ func (form *UserProfileForm) validateSlackId() *UserProfileForm {
 
 func (form *UserProfileForm) validatePhone() *UserProfileForm {
 	if form.Phone != nil {
-		phone := form.FindAttrByCode("phone")
+		phone := form.FindAttrByCode("Phone")
 		minLength := 10
 		maxLength := int64(13)
 
@@ -192,7 +186,7 @@ func (form *UserProfileForm) validatePhone() *UserProfileForm {
 
 func (form *UserProfileForm) validateAddress() *UserProfileForm {
 	if form.Address != nil {
-		address := form.FindAttrByCode("address")
+		address := form.FindAttrByCode("Address")
 		minLength := 20
 		maxLength := int64(constants.MaxLongTextLength)
 
@@ -209,7 +203,7 @@ func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
 
 			repo := repository.NewAttachmentBlobRepository(nil, database.Db)
 			if err := repo.Find(&blob); err != nil {
-				avatar := form.FindAttrByCode("avatarKey")
+				avatar := form.FindAttrByCode("AvatarKey")
 				avatar.AddError("is invalid")
 			} else {
 				if form.User.Avatar == nil {
@@ -221,7 +215,7 @@ func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
 				}
 			}
 		} else {
-			avatar := form.FindAttrByCode("avatarKey")
+			avatar := form.FindAttrByCode("AvatarKey")
 			avatar.AddError("is invalid")
 		}
 	}

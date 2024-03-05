@@ -22,6 +22,11 @@ func (attribute *IntAttribute[T]) GetErrors() []string {
 	return attribute.Errors
 }
 
+// GetValue returns the value of attribute
+func (attribute *IntAttribute[T]) GetValue() interface{} {
+	return attribute.Value
+}
+
 // AddError adds an error message to the attribute.
 func (attribute *IntAttribute[T]) AddError(message string) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))

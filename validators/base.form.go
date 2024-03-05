@@ -9,6 +9,9 @@ import (
 type Form struct {
 	Attributes []FieldAttributeInterface
 	Errors     exceptions.ResourceModificationError
+
+	SkipAttributes []string
+	UpdateMap      map[string]interface{}
 }
 
 // AddAttributes adds attributes to the form.
@@ -40,8 +43,16 @@ func (form *Form) summaryErrors() {
 
 		if len(attributeErr) > 0 {
 			err.AddError(attribute.GetCode(), attributeErr)
+		} else {
+			if !slices.ContainsFunc(form.SkipAttributes, func(attrCode string) bool { return attrCode == attribute.GetCode() }) {
+				form.AddFieldToUpdateMap(attribute)
+			}
 		}
 	}
 
 	form.Errors = err.Errors
+}
+
+func (form *Form) AddFieldToUpdateMap(attribute FieldAttributeInterface) {
+	form.UpdateMap[attribute.GetCode()] = attribute.GetValue()
 }

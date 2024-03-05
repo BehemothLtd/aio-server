@@ -69,3 +69,7 @@ func (r *UserRepository) Update(user *models.User) error {
 	// TODO: handle NULL value save into DB
 	return r.db.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
 }
+
+func (r *UserRepository) UpdateFields(user *models.User, fields map[string]interface{}) error {
+	return r.db.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Updates(fields).Error
+}

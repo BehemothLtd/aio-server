@@ -21,6 +21,11 @@ func (attribute *StringAttribute) GetErrors() []string {
 	return attribute.Errors
 }
 
+// GetValue returns the value of attribute
+func (attribute *StringAttribute) GetValue() interface{} {
+	return attribute.Value
+}
+
 // AddError adds an error to the string attribute.
 func (attribute *StringAttribute) AddError(message string) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))

@@ -16,6 +16,7 @@ type FieldAttributeInterface interface {
 	AddError(message string)
 	GetCode() string
 	GetErrors() []string
+	GetValue() interface{}
 
 	// Validators
 	ValidateRequired()
