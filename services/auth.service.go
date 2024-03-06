@@ -53,6 +53,7 @@ func (a *AuthService) validate() error {
 func (a *AuthService) findUser() (*models.User, error) {
 	repo := repository.NewUserRepository(a.Ctx, a.Db)
 	user, err := repo.Auth(a.Email, a.Password)
+
 	if err != nil {
 		return nil, exceptions.NewUnprocessableContentError("base", exceptions.ResourceModificationError{
 			"base": {"User Or Password is incorrect"},

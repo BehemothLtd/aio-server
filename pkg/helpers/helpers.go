@@ -79,3 +79,24 @@ func GqlTimePointer(val time.Time) *graphql.Time {
 
 	return &time
 }
+
+// RubyTimeParser returns time.Time from string generated in Ruby
+func RubyTimeParser(timeString string) (*time.Time, error) {
+	layout := "2006-01-02 15:04:05 -0700"
+
+	// Parse the string to time.Time object
+	if t, err := time.Parse(layout, timeString); err != nil {
+		fmt.Println("Error parsing time:", err)
+		return nil, errors.New("invalid time string")
+	} else {
+		return &t, nil
+	}
+}
+
+func RubyTimeStringToGqlTime(timeString string) *graphql.Time {
+	if time, err := RubyTimeParser(timeString); err != nil {
+		return nil
+	} else {
+		return GqlTimePointer(*time)
+	}
+}
