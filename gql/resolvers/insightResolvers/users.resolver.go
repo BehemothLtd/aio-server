@@ -17,17 +17,17 @@ func (r *Resolver) Users(ctx context.Context, args insightInputs.UsersInput) (*i
 
 	var users []*models.User
 
-	usersQuery, paginationData := args.ToPaginationDataAndUsersQuery()
+	usersQuery, paginationData := args.ToPaginationDataAndQuery()
 
 	repo := repository.NewUserRepository(&ctx, r.Db)
 
-	err := repo.List(&users, &paginationData, &usersQuery)
+	err := repo.List(&users, &paginationData, usersQuery)
 	if err != nil {
 		return nil, err
 	}
 
 	return &insightTypes.UsersType{
-		Collection: r.toListUser(users),
+		Collection: r.UsersSliceToTypes(users),
 		Metadata: &globalTypes.MetadataType{
 			Metadata: &paginationData.Metadata,
 		},

@@ -10,9 +10,9 @@ type UsersInput struct {
 	Query *UserQueryInput
 }
 
-func (ui *UsersInput) ToPaginationDataAndUsersQuery() (models.UsersQuery, models.PaginationData) {
+func (ui *UsersInput) ToPaginationDataAndQuery() (UserQueryInput, models.PaginationData) {
 	paginationData := ui.Input.ToPaginationInput()
-	query := models.UsersQuery{}
+	query := UserQueryInput{}
 
 	if ui.Query != nil && ui.Query.NameCont != nil {
 		query.NameCont = ui.Query.NameCont

@@ -32,7 +32,7 @@ func (r *Resolver) Authorize(ctx context.Context, target string, action string) 
 	return nil, nil
 }
 
-func (r *Resolver) toListUser(users []*models.User) *[]*globalTypes.UserType {
+func (r *Resolver) UsersSliceToTypes(users []*models.User) *[]*globalTypes.UserType {
 	resolvers := make([]*globalTypes.UserType, len(users))
 
 	for i, u := range users {

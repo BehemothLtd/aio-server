@@ -2,6 +2,7 @@ package repository
 
 import (
 	"aio-server/enums"
+	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -50,7 +51,8 @@ func (r *UserRepository) FindByEmail(user *models.User, email string) error {
 
 // Auth authenticates a user by their email and password.
 func (r *UserRepository) Auth(email string, password string) (user *models.User, err error) {
-	u := models.User{Email: email, State: "active"}
+	stateActive := enums.UserStateActive
+	u := models.User{Email: email, State: &stateActive}
 
 	userFindErr := r.Find(&u)
 
@@ -75,7 +77,7 @@ func (r *UserRepository) Update(user *models.User, fields []string) error {
 func (r *Repository) List(
 	users *[]*models.User,
 	paginateData *models.PaginationData,
-	query *models.UsersQuery,
+	query insightInputs.UserQueryInput,
 ) error {
 	dbTables := r.db.Model(&models.User{})
 

@@ -117,21 +117,14 @@ func (ut *UserType) Birthday(context.Context) *graphql.Time {
 
 // State returns the State of the user.
 func (ut *UserType) State(context.Context) *string {
-	// TODO
+	if ut.User.State != nil {
+		state := ut.User.State.String()
+		return &state
+	}
 	return nil
 }
 
 // SlackId returns the SlackId of the user.
 func (ut *UserType) SlackId(context.Context) *string {
 	return ut.User.SlackId
-}
-
-func (ut *UserType) SlackId(context.Context) *string {
-	return &ut.User.SlackId
-}
-
-func (ut *UserType) State(context.Context) *string {
-	value := ut.User.State.String()
-
-	return &value
 }
