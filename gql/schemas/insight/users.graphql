@@ -11,13 +11,14 @@ type User {
   avatarUrl: String
   createdAt: Time
   companyLevelId: ID
-  state: String
+  state: String!
   address: String
   birthday: Time
   gender: String
   phone: String
   timingActiveAt: Time
   timingDeactiveAt: Time
+  slackId: String
 }
 
 type UserPrivateInfo {
@@ -28,7 +29,15 @@ type UserPrivateInfo {
 
 type UserCollection {
   collection: [User!]
-  metadata: Metadata!
+  metadata: Metadata
+}
+
+input UsersQuery {
+  nameCont: String
+  fullNameCont: String
+  emailcont: String
+  slackIdCont: String
+  stateEq: String
 }
 
 input SelfUpdateProfileInput {

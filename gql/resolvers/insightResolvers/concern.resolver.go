@@ -31,3 +31,13 @@ func (r *Resolver) Authorize(ctx context.Context, target string, action string) 
 
 	return nil, nil
 }
+
+func (r *Resolver) UsersSliceToTypes(users []*models.User) *[]*globalTypes.UserType {
+	resolvers := make([]*globalTypes.UserType, len(users))
+
+	for i, u := range users {
+		resolvers[i] = &globalTypes.UserType{User: u}
+	}
+
+	return &resolvers
+}
