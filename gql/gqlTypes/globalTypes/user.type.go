@@ -48,8 +48,11 @@ func (ut *UserType) About(context.Context) *string {
 
 // AvatarURL returns the AvatarURL of the user.
 func (ut *UserType) AvatarUrl(context.Context) *string {
-	url := ut.User.Avatar.Url()
-	return &url
+	if ut.User.Avatar != nil {
+		url := ut.User.Avatar.Url()
+		return &url
+	}
+	return nil
 }
 
 // CreatedAt returns the CreatedAt of the user.
@@ -78,13 +81,22 @@ func (ut *UserType) Phone(context.Context) *string {
 
 // TimingActivedAt returns the TimingActivedAt of the user.
 func (ut *UserType) TimingActiveAt(context.Context) *graphql.Time {
-	// TODO
+	timing := ut.User.Timing
+
+	if timing != nil && timing.ActiveAt != "" {
+		return helpers.RubyTimeStringToGqlTime(timing.ActiveAt)
+	}
+
 	return nil
 }
 
 // timingDeactiveAt returns the timingDeactiveAt of the user.
 func (ut *UserType) TimingDeactiveAt(context.Context) *graphql.Time {
-	// TODO
+	timing := ut.User.Timing
+
+	if timing != nil && timing.InactiveAt != "" {
+		return helpers.RubyTimeStringToGqlTime(timing.InactiveAt)
+	}
 	return nil
 }
 
