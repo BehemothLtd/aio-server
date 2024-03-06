@@ -27,6 +27,7 @@ type User struct {
 	Birthday          time.Time
 	SlackId           *string
 	State             enums.UserState
+	Timing            *UserTiming
 }
 
 type UserClaims struct {
