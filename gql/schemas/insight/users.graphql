@@ -11,7 +11,7 @@ type User {
   avatarUrl: String
   createdAt: Time
   companyLevelId: ID
-  state: String
+  state: String!
   address: String
   birthday: Time
   gender: String

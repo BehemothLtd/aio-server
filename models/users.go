@@ -26,7 +26,7 @@ type User struct {
 	Gender            *enums.UserGenderType
 	Birthday          time.Time
 	SlackId           *string
-	State             *enums.UserState
+	State             enums.UserState
 }
 
 type UserClaims struct {

@@ -52,7 +52,7 @@ func (r *UserRepository) FindByEmail(user *models.User, email string) error {
 // Auth authenticates a user by their email and password.
 func (r *UserRepository) Auth(email string, password string) (user *models.User, err error) {
 	stateActive := enums.UserStateActive
-	u := models.User{Email: email, State: &stateActive}
+	u := models.User{Email: email, State: stateActive}
 
 	userFindErr := r.Find(&u)
 
