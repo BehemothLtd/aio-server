@@ -90,7 +90,9 @@ func AuthUserFromCtx(ctx context.Context) (models.User, error) {
 
 	currentUser := gc.Value(constants.ContextCurrentUser)
 
-	if currentUser == nil {
+	urlPath := gc.Request.URL.Path
+
+	if currentUser == nil || (urlPath == "/insightGql" && currentUser.(models.User).State != "active") {
 		return models.User{}, exceptions.NewUnauthorizedError("unauthorized")
 	}
 
