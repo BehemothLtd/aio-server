@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-type ProjectAssignees struct {
+type ProjectAssignee struct {
 	Id                int32 `gorm:"not null;autoIncrement"`
 	Active            bool
 	JoinDate          time.Time

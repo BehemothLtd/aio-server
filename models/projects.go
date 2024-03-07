@@ -21,6 +21,6 @@ type Project struct {
 	SprintDuration       int
 	ClientId             int
 	CurrentSprintId      int
-	ProjectAssignees     []ProjectAssignees
-	ProjectIssueStatuses []ProjectIssueStatuses
+	ProjectAssignees     []ProjectAssignee
+	ProjectIssueStatuses []ProjectIssueStatus
 }
