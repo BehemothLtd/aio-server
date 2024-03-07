@@ -69,11 +69,6 @@ func (r *UserRepository) Auth(email string, password string) (user *models.User,
 	return &u, nil
 }
 
-// Update updates an user by its assigned attributes
-func (r *UserRepository) Update(user *models.User, fields []string) error {
-	// TODO: handle NULL value save into DB
-	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
-}
 func (r *Repository) List(
 	users *[]*models.User,
 	paginateData *models.PaginationData,
@@ -144,4 +139,10 @@ func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 			return db.Where(gorm.Expr(`users.state = ?`, stateInInt))
 		}
 	}
+}
+
+// Update updates an user by its assigned attributes
+func (r *UserRepository) Update(user *models.User, fields []string) error {
+	// TODO: handle NULL value save into DB
+	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
 }

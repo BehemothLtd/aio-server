@@ -35,5 +35,15 @@ func (r *Resolver) UserToggleActive(ctx context.Context, args insightInputs.User
 		return nil, err
 	}
 
+	if user.State == enums.UserStateActive {
+		user.State = enums.UserStateInactive
+	} else {
+		user.State = enums.UserStateActive
+	}
+
+	if err := repo.Update(&user, []string{"state"}); err != nil {
+		return nil, exceptions.NewUnprocessableContentError("Unable to toggle user state", nil)
+	}
+
 	return &globalTypes.UserType{User: &user}, nil
 }
