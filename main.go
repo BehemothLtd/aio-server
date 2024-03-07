@@ -27,5 +27,11 @@ func main() {
 
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 
+	// project := models.Project{Id: 1}
+
+	// db.Model(&project).Preload("ProjectAssignees").Preload("ProjectIssueStatuses").First(&project)
+
+	// fmt.Printf("PROJECT %+v\n", project)
+
 	r.Run()
 }
