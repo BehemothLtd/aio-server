@@ -24,9 +24,8 @@ func (pt *ProjectType) Code(ctx context.Context) string {
 	return pt.Project.Code
 }
 
-func (pt *ProjectType) ProjectType(ctx context.Context) *string {
-	value := pt.Project.ProjectType.String()
-	return &value
+func (pt *ProjectType) ProjectType(ctx context.Context) string {
+	return pt.Project.ProjectType.String()
 }
 
 func (pt *ProjectType) ClientId(ctx context.Context) *graphql.ID {

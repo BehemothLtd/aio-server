@@ -12,7 +12,7 @@ import (
 	"context"
 )
 
-// UserGroups resolves the query for retrieving a collection of userGroups.
+// Projects resolves the query for retrieving a collection of Projects.
 func (r *Resolver) ProjectSliceToTypes(projects []*models.Project) *[]*globalTypes.ProjectType {
 	resolvers := make([]*globalTypes.ProjectType, len(projects))
 	for i, s := range projects {
@@ -23,7 +23,7 @@ func (r *Resolver) ProjectSliceToTypes(projects []*models.Project) *[]*globalTyp
 
 func (r *Resolver) Projects(ctx context.Context, args insightInputs.ProjectInput) (*insightTypes.ProjectsType, error) {
 
-	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeUserGroups.String(), enums.PermissionActionTypeRead.String()); err != nil {
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjects.String(), enums.PermissionActionTypeRead.String()); err != nil {
 		return nil, err
 	}
 	user, err := auths.AuthUserFromCtx(ctx)
