@@ -6,6 +6,7 @@ schema {
 type Query {
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
+
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
 }
@@ -15,6 +16,8 @@ type Mutation {
 
   SelfUpdateProfile(input: SelfUpdateProfileInput!): SelfUpdateProfileRes!
   SelfUpdatePassword(input: SelfUpdatePassword!): String
+
+  # ProjectCreate(input: ProjectCreateInput!): ProjectCreate!
 }
 
 scalar Time

@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS project_issue_statuses;
+-- we'll use existed `project_issue_statuses` table
