@@ -28,10 +28,10 @@ func (sfs *SnippetFavoriteService) Execute() error {
 	if err := sfs.validate(); err != nil {
 		return err
 	}
-
+	snippet := models.Snippet{Id: sfs.snippet.Id}
 	// Retrieve the snippet
 	snippetRepo := repository.NewSnippetRepository(sfs.Ctx, sfs.Db)
-	if err := snippetRepo.FindById(&sfs.snippet, sfs.snippet.Id); err != nil {
+	if err := snippetRepo.FindByAttr(&snippet); err != nil {
 		return exceptions.NewRecordNotFoundError()
 	}
 

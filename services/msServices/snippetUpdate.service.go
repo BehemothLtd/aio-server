@@ -36,8 +36,10 @@ func (sus *SnippetUpdateService) Execute() (*models.Snippet, error) {
 		return nil, exceptions.NewBadRequestError("Invalid ID")
 	}
 
-	snippet := models.Snippet{}
-	snippetErr := snippetRepo.FindById(&snippet, snippetId)
+	snippet := models.Snippet{
+		Id: snippetId,
+	}
+	snippetErr := snippetRepo.FindByAttr(&snippet)
 
 	if snippetErr != nil {
 		return nil, exceptions.NewRecordNotFoundError()
