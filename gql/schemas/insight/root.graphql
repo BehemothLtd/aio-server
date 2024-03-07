@@ -17,6 +17,8 @@ type Mutation {
   SelfUpdateProfile(input: SelfUpdateProfileInput!): SelfUpdateProfileRes!
   SelfUpdatePassword(input: SelfUpdatePassword!): String
 
+  UserToggleActive(id: ID!): UserActiveState
+  
   # ProjectCreate(input: ProjectCreateInput!): ProjectCreate!
 }
 
