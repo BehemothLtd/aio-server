@@ -23,9 +23,10 @@ type User struct {
 	CompanyLevelId    *int32
 	Address           *string
 	Phone             *string
-	SlackId           *string
 	Gender            *enums.UserGenderType
 	Birthday          time.Time
+	SlackId           *string
+	State             enums.UserState
 	Timing            *UserTiming
 }
 

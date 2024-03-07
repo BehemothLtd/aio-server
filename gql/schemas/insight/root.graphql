@@ -7,6 +7,7 @@ type Query {
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
   User(id: ID!): User!
+  Users(input: PagyInput, query: UsersQuery): UserCollection!
 }
 
 type Mutation {
