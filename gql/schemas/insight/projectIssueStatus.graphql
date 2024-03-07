@@ -1,0 +1,4 @@
+type ProjectIssueStatus {
+  id: ID
+  position: Int
+}

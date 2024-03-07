@@ -1,0 +1,13 @@
+type ProjectAssignee {
+  id: ID
+  active: Boolean
+  joinDate: Time
+  leaveDate: Time
+}
+
+input ProjectAssigneeInputForProjectCreate {
+  userId: ID
+  developmentRoleId: Int
+  active: Boolean
+  joinDate: Time
+}
