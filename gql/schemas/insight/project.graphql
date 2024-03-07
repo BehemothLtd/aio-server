@@ -13,7 +13,7 @@ type Project {
   updatedAt: Time
   sprintDuration: Int
   clientId: ID
-  currentSprintId: Int
+  currentSprintId: ID
   projectAssignees: [ProjectAssignee!]
   projectIssueStatuses: [ProjectIssueStatus!]
 }

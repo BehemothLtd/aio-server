@@ -1,4 +1,4 @@
 type ProjectIssueStatus {
   id: ID
-  position: Int
+  position: Int!
 }
