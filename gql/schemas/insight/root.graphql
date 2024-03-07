@@ -9,6 +9,7 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
+  Projects(input: PagyInput, query: ProjectsQuery): ProjectCollection!
 }
 
 type Mutation {
@@ -18,7 +19,7 @@ type Mutation {
   SelfUpdatePassword(input: SelfUpdatePassword!): String
 
   UserToggleActive(id: ID!): UserActiveState
-  
+
   # ProjectCreate(input: ProjectCreateInput!): ProjectCreate!
 }
 

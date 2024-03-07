@@ -1,0 +1,32 @@
+type Project {
+  id: ID
+  name: String!
+  code: String!
+  projectType: String
+  clientId: ID
+  jiraId: ID
+  sprintDuration: ID
+  description: String
+  currentSprintId: ID
+  projectPriority: String!
+  state: String!
+  activeAt: Time
+  inActiveAt: Time
+  startedAt: Time
+  endedAt: Time
+  createdAt: Time
+  updatedAt: Time
+  lockVersion: Int!
+}
+
+input ProjectsQuery {
+  nameCont: String
+  stateCont: String
+  projectTypeCont: String
+  DescriptionCont: String
+}
+
+type ProjectCollection {
+  collection: [Project!]
+  metadata: Metadata!
+}
