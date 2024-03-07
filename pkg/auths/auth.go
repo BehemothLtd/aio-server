@@ -10,6 +10,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"aio-server/enums"
 
 	"github.com/gin-gonic/gin"
 )
@@ -90,9 +91,19 @@ func AuthUserFromCtx(ctx context.Context) (models.User, error) {
 
 	currentUser := gc.Value(constants.ContextCurrentUser)
 
-	urlPath := gc.Request.URL.Path
+	if currentUser == nil {
+		return models.User{}, exceptions.NewUnauthorizedError("unauthorized")
+	}
 
-	if currentUser == nil || (urlPath == "/insightGql" && currentUser.(models.User).State != "active") {
+	return currentUser.(models.User), nil
+}
+
+func AuthInsightUserFromCtx(ctx context.Context) (models.User, error) {
+	gc, _ := GinContextFromContext(ctx)
+
+	currentUser := gc.Value(constants.ContextCurrentUser)
+
+	if currentUser == nil || currentUser.(models.User).State != enums.UserStateActive{
 		return models.User{}, exceptions.NewUnauthorizedError("unauthorized")
 	}
 

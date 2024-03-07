@@ -19,7 +19,7 @@ func (r *Resolver) UserGroupSliceToTypes(userGroups []*models.UserGroup) *[]*glo
 }
 
 func (r *Resolver) Authorize(ctx context.Context, target string, action string) (*models.User, error) {
-	user, err := auths.AuthUserFromCtx(ctx)
+	user, err := auths.AuthInsightUserFromCtx(ctx)
 
 	if err != nil {
 		return nil, exceptions.NewUnauthorizedError("")
