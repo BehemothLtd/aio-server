@@ -19,12 +19,12 @@ func (r *Repository) ofParent(key string, parentID int32) func(db *gorm.DB) *gor
 	}
 }
 
-func (r *Repository) stringLike(tableName, columnName string, stringLike string) func(db *gorm.DB) *gorm.DB {
+func (r *Repository) stringLike(tableName, columnName string, stringLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if stringLike == "" || stringLike == "null" {
+		if stringLike == nil {
 			return db
 		} else {
-			return db.Where(gorm.Expr(fmt.Sprintf(`lower(%s.%s) LIKE ?`, tableName, columnName), strings.ToLower("%"+stringLike+"%")))
+			return db.Where(gorm.Expr(fmt.Sprintf(`lower(%s.%s) LIKE ?`, tableName, columnName), strings.ToLower("%"+*stringLike+"%")))
 		}
 	}
 }

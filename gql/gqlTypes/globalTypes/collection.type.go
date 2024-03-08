@@ -28,14 +28,19 @@ func (ct *CollectionType) UserId(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(ct.Collection.UserId)
 }
 
-func (st *CollectionType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(st.Collection.CreatedAt)
+func (ct *CollectionType) Snippets(ctx context.Context) *[]*SnippetType {
+	results := make([]*SnippetType, len(ct.Collection.Snippets))
+
+	for i, s := range ct.Collection.Snippets {
+		results[i] = &SnippetType{Snippet: s}
+	}
+	return &results
 }
 
-func (st *CollectionType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(st.Collection.UpdatedAt)
+func (ct *CollectionType) CreatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(ct.Collection.CreatedAt)
 }
 
-func (st *CollectionType) LockVersion(ctx context.Context) int32 {
-	return st.Collection.LockVersion
+func (ct *CollectionType) UpdatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(ct.Collection.UpdatedAt)
 }
