@@ -74,12 +74,22 @@ const (
 	PermissionTargetTypeAll PermissionTargetType = "all"
 	// PermissionTargetTypeUsers is a PermissionTargetType of type users.
 	PermissionTargetTypeUsers PermissionTargetType = "users"
-	// PermissionTargetTypeUserGroups is a PermissionTargetType of type userGroups.
-	PermissionTargetTypeUserGroups PermissionTargetType = "userGroups"
+	// PermissionTargetTypeUserGroups is a PermissionTargetType of type user_groups.
+	PermissionTargetTypeUserGroups PermissionTargetType = "user_groups"
 	// PermissionTargetTypeProjects is a PermissionTargetType of type projects.
 	PermissionTargetTypeProjects PermissionTargetType = "projects"
 	// PermissionTargetTypeProjectIssues is a PermissionTargetType of type project_issues.
 	PermissionTargetTypeProjectIssues PermissionTargetType = "project_issues"
+	// PermissionTargetTypeLeaveDayRequests is a PermissionTargetType of type leave_day_requests.
+	PermissionTargetTypeLeaveDayRequests PermissionTargetType = "leave_day_requests"
+	// PermissionTargetTypeClients is a PermissionTargetType of type clients.
+	PermissionTargetTypeClients PermissionTargetType = "clients"
+	// PermissionTargetTypeIssueStatuses is a PermissionTargetType of type issue_statuses.
+	PermissionTargetTypeIssueStatuses PermissionTargetType = "issue_statuses"
+	// PermissionTargetTypeDevices is a PermissionTargetType of type devices.
+	PermissionTargetTypeDevices PermissionTargetType = "devices"
+	// PermissionTargetTypeTimesheetTemplates is a PermissionTargetType of type timesheet_templates.
+	PermissionTargetTypeTimesheetTemplates PermissionTargetType = "timesheet_templates"
 )
 
 var ErrInvalidPermissionTargetType = errors.New("not a valid PermissionTargetType")
@@ -97,11 +107,16 @@ func (x PermissionTargetType) IsValid() bool {
 }
 
 var _PermissionTargetTypeValue = map[string]PermissionTargetType{
-	"all":            PermissionTargetTypeAll,
-	"users":          PermissionTargetTypeUsers,
-	"userGroups":     PermissionTargetTypeUserGroups,
-	"projects":       PermissionTargetTypeProjects,
-	"project_issues": PermissionTargetTypeProjectIssues,
+	"all":                 PermissionTargetTypeAll,
+	"users":               PermissionTargetTypeUsers,
+	"user_groups":         PermissionTargetTypeUserGroups,
+	"projects":            PermissionTargetTypeProjects,
+	"project_issues":      PermissionTargetTypeProjectIssues,
+	"leave_day_requests":  PermissionTargetTypeLeaveDayRequests,
+	"clients":             PermissionTargetTypeClients,
+	"issue_statuses":      PermissionTargetTypeIssueStatuses,
+	"devices":             PermissionTargetTypeDevices,
+	"timesheet_templates": PermissionTargetTypeTimesheetTemplates,
 }
 
 // ParsePermissionTargetType attempts to convert a string to a PermissionTargetType.
