@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/models"
 	"context"
 
 	"gorm.io/gorm"
@@ -17,4 +18,11 @@ func NewProjectRepository(c *context.Context, db *gorm.DB) *ProjectRepository {
 			ctx: c,
 		},
 	}
+}
+
+// FindById finds a project by its attributes.
+func (r *ProjectRepository) Find(project *models.Project) error {
+	dbTables := r.db.Model(&models.Project{})
+
+	return dbTables.Where(&project).First(&project).Error
 }
