@@ -1,0 +1,28 @@
+type Project {
+  id: ID
+  name: String
+  code: String
+  projectType: String
+  projectPriority: String
+  state: String!
+  activedAt: Time
+  inactivedAt: Time
+  startedAt: Time
+  endedAt: Time
+  createdAt: Time
+  updatedAt: Time
+  sprintDuration: Int
+  clientId: ID
+  currentSprintId: ID
+  projectAssignees: [ProjectAssignee!]
+  projectIssueStatuses: [ProjectIssueStatus!]
+}
+
+input ProjectCreateInput {
+  name: String
+  code: String
+  description: String
+  projectType: String
+  projectIssueStatusIds: [ID!]
+  projectAssignees: [ProjectAssigneeInputForProjectCreate!]
+}

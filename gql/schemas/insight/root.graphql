@@ -18,8 +18,8 @@ type Mutation {
   SelfUpdatePassword(input: SelfUpdatePassword!): String
 
   UserToggleActive(id: ID!): UserActiveState
-  
-  # ProjectCreate(input: ProjectCreateInput!): ProjectCreate!
+
+  ProjectCreate(input: ProjectCreateInput!): Project!
 }
 
 scalar Time
