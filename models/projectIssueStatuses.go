@@ -1,10 +1,12 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type ProjectIssueStatus struct {
-	Id            int32 `gorm:"not null;autoIncrement"`
-	Position      int   `gorm:"not null;default: 1"`
+	Id            int32
+	Position      int `gorm:"not null;default: 1"`
 	IssueStatusId int32
 	ProjectId     int
 	IssueStatus   IssueStatus

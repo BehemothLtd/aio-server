@@ -6,16 +6,16 @@ import (
 )
 
 type Project struct {
-	Id                   int32 `gorm:"not null;autoIncrement"`
+	Id                   int32
 	Name                 string
 	Code                 string
 	ProjectType          enums.ProjectType
 	ProjectPriority      enums.ProjectPriority
 	State                enums.ProjectState
-	ActivedAt            time.Time
-	InactivedAt          time.Time
-	StartedAt            time.Time
-	EndedAt              time.Time
+	ActivedAt            *time.Time
+	InactivedAt          *time.Time
+	StartedAt            *time.Time
+	EndedAt              *time.Time
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 	SprintDuration       int
@@ -23,4 +23,6 @@ type Project struct {
 	CurrentSprintId      int
 	ProjectAssignees     []ProjectAssignee
 	ProjectIssueStatuses []ProjectIssueStatus
+	IssueStatuses        []IssueStatus `gorm:"many2many:project_issue_statuses;"`
+	LockVersion          int32         `gorm:"default:1"`
 }
