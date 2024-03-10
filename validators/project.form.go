@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
@@ -61,6 +62,12 @@ func (form *ProjectCreateForm) assignAttributes() {
 			},
 			Value: helpers.GetStringOrDefault(form.Description),
 		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "projectType",
+			},
+			Value: helpers.GetStringOrDefault(form.ProjectType),
+		},
 	)
 }
 
@@ -68,6 +75,7 @@ func (form *ProjectCreateForm) validate() error {
 	form.validateName().
 		validateCode().
 		validateDescription().
+		validateProjectType().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -100,9 +108,16 @@ func (form *ProjectCreateForm) validateCode() *ProjectCreateForm {
 
 	codeField.ValidateRequired()
 
-	min := 5
+	min := 2
 	max := int64(constants.MaxLongTextLength)
 	codeField.ValidateLimit(&min, &max)
+
+	if form.Code != nil && strings.TrimSpace(*form.Code) != "" {
+		project := models.Project{Code: *form.Code}
+		if err := form.Repo.Find(&project); err == nil {
+			codeField.AddError("is already exists. Please use another code")
+		}
+	}
 
 	return form
 }
@@ -115,6 +130,22 @@ func (form *ProjectCreateForm) validateDescription() *ProjectCreateForm {
 	min := 5
 	max := int64(constants.MaxLongTextLength)
 	descField.ValidateLimit(&min, &max)
+
+	return form
+}
+
+func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
+	typeField := form.FindAttrByCode("projectType")
+
+	typeField.ValidateRequired()
+
+	if form.ProjectType != nil {
+		fieldValue := enums.ProjectType(*form.ProjectType)
+
+		if !fieldValue.IsValid() {
+			typeField.AddError("is invalid")
+		}
+	}
 
 	return form
 }
