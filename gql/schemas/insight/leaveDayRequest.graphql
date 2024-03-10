@@ -1,0 +1,43 @@
+type LeaveDayRequest {
+  id: ID
+  userId: ID
+  approverId: ID
+  User: User
+  Approver: User
+  from: Time
+  to: Time
+  timeOff: Float
+  requestType: String!
+  requestState: String!
+  reason: String
+  createAt: Time
+  updatedAt: Time
+  lockVersion: Int!
+}
+
+type LeaveDayRequestCollection {
+  collection: [LeaveDayRequest!]
+  metadata: Metadata!
+}
+
+type LeaveDayRequestModification {
+  leaveDayRequest: LeaveDayRequest!
+}
+
+input LeaveDayRequestsQuery {
+  requestType: String
+  requestState: String
+  userId: Int
+}
+
+input LeaveDayRequestInput {
+  userId: ID
+  approverId: ID
+  from: Time
+  to: Time
+  timeOff: Float
+  requestType: String
+  requestState: String
+  reason: String
+  lockVersion: Int
+}
