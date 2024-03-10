@@ -1,0 +1,8 @@
+type ProjectSprint {
+  id: ID
+  title: String!
+  projectID: ID
+  startDate: Time
+  createdAt: Time
+  updatedAt: Time
+}
