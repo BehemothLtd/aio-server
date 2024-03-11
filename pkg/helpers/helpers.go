@@ -82,10 +82,15 @@ func IDPointer(id graphql.ID) *graphql.ID {
 }
 
 // GqlTimePointer returns a pointer to the graphql.Time value.
-func GqlTimePointer(val time.Time) *graphql.Time {
-	time := graphql.Time{Time: val}
+func GqlTimePointer(val *time.Time) *graphql.Time {
+	if val != nil {
+		time := graphql.Time{Time: *val}
 
-	return &time
+		return &time
+	} else {
+		return nil
+	}
+
 }
 
 // RubyTimeParser returns time.Time from string generated in Ruby
@@ -105,6 +110,6 @@ func RubyTimeStringToGqlTime(timeString string) *graphql.Time {
 	if time, err := RubyTimeParser(timeString); err != nil {
 		return nil
 	} else {
-		return GqlTimePointer(*time)
+		return GqlTimePointer(time)
 	}
 }

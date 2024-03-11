@@ -7,13 +7,17 @@ type ProjectCreateInput struct {
 }
 
 type ProjectCreateFormInput struct {
-	Name                  *string
-	Code                  *string
-	Description           *string
-	ProjectType           *string
-	SprintDuration        *int
-	ProjectIssueStatusIds *[]int32
-	ProjectAssignees      *[]ProjectAssigneeInputForProjectCreate
+	Name                 *string
+	Code                 *string
+	Description          *string
+	ProjectType          *string
+	SprintDuration       *int
+	ProjectIssueStatuses []ProjectIssueStatusInputForProjectCreate
+	ProjectAssignees     *[]ProjectAssigneeInputForProjectCreate
+}
+
+type ProjectIssueStatusInputForProjectCreate struct {
+	IssueStatusId int32
 }
 
 type ProjectAssigneeInputForProjectCreate struct {

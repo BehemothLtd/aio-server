@@ -24,7 +24,7 @@ input ProjectCreateInput {
   description: String
   projectType: String
   sprintDuration: Int
-  projectIssueStatusIds: [ID!]
+  projectIssueStatuses: [ProjectIssueStatusInputForProjectCreate!]!
   projectAssignees: [ProjectAssigneeInputForProjectCreate!]
 }
 

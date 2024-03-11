@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/database"
 	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
@@ -8,6 +9,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"fmt"
 	"strings"
 )
 
@@ -36,6 +38,10 @@ func NewProjectCreateFormValidator(
 
 func (form *ProjectCreateForm) Save() error {
 	if err := form.validate(); err != nil {
+		return err
+	}
+
+	if err := form.Repo.Create(form.Project); err != nil {
 		return err
 	}
 
@@ -72,7 +78,13 @@ func (form *ProjectCreateForm) assignAttributes() {
 			FieldAttribute: FieldAttribute{
 				Code: "sprintDuration",
 			},
-			Value: int(helpers.GetIntOrDefault(form.SprintDuration)),
+			Value: helpers.GetIntOrDefault(form.SprintDuration),
+		},
+		&SliceAttribute[insightInputs.ProjectIssueStatusInputForProjectCreate]{
+			FieldAttribute: FieldAttribute{
+				Code: "projectIssueStatuses",
+			},
+			Value: &form.ProjectIssueStatuses,
 		},
 	)
 }
@@ -82,6 +94,7 @@ func (form *ProjectCreateForm) validate() error {
 		validateCode().
 		validateDescription().
 		validateProjectType().
+		validateProjectIssueStatuses().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -104,6 +117,8 @@ func (form *ProjectCreateForm) validateName() *ProjectCreateForm {
 		if err := form.Repo.Find(&project); err == nil {
 			nameField.AddError("is already exists. Please use another name")
 		}
+
+		form.Project.Name = *form.Name
 	}
 
 	return form
@@ -123,6 +138,8 @@ func (form *ProjectCreateForm) validateCode() *ProjectCreateForm {
 		if err := form.Repo.Find(&project); err == nil {
 			codeField.AddError("is already exists. Please use another code")
 		}
+
+		form.Project.Code = *form.Code
 	}
 
 	return form
@@ -136,6 +153,8 @@ func (form *ProjectCreateForm) validateDescription() *ProjectCreateForm {
 	min := 5
 	max := int64(constants.MaxLongTextLength)
 	descField.ValidateLimit(&min, &max)
+
+	form.Project.Description = *form.Description
 
 	return form
 }
@@ -152,12 +171,42 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 			typeField.AddError("is invalid")
 		}
 
+		form.Project.ProjectType = fieldValue
+
 		if fieldValue == enums.ProjectTypeScrum {
 			sprintDurationField := form.FindAttrByCode("sprintDuration")
 
 			sprintDurationField.ValidateRequired()
+
+			form.Project.SprintDuration = *form.SprintDuration
 		}
 	}
 
+	return form
+}
+
+func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm {
+	projectIssueStatusesField := form.FindAttrByCode("projectIssueStatuses")
+
+	projectIssueStatusesField.ValidateRequired()
+
+	projectIssueStatuses := []models.ProjectIssueStatus{}
+	issueStatusRepo := repository.NewIssueStatusRepository(nil, database.Db)
+
+	if form.ProjectIssueStatuses != nil {
+		for i, projectIssueStatusInput := range form.ProjectIssueStatuses {
+			issueStatus := models.IssueStatus{Id: projectIssueStatusInput.IssueStatusId}
+
+			if err := issueStatusRepo.Find(&issueStatus); err != nil {
+				projectIssueStatusesField.AddError(fmt.Sprintf("%d is invalid", i))
+			} else {
+				projectIssueStatuses = append(projectIssueStatuses, models.ProjectIssueStatus{
+					IssueStatusId: projectIssueStatusInput.IssueStatusId,
+					Position:      i + 1,
+				})
+			}
+		}
+		form.Project.ProjectIssueStatuses = projectIssueStatuses
+	}
 	return form
 }

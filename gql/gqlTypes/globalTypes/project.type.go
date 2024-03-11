@@ -43,27 +43,27 @@ func (tt *ProjectType) State(ctx context.Context) string {
 }
 
 func (tt *ProjectType) ActivedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.ActivedAt)
+	return helpers.GqlTimePointer(tt.Project.ActivedAt)
 }
 
 func (tt *ProjectType) InactivedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.InactivedAt)
+	return helpers.GqlTimePointer(tt.Project.InactivedAt)
 }
 
 func (tt *ProjectType) StartedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.StartedAt)
+	return helpers.GqlTimePointer(tt.Project.StartedAt)
 }
 
 func (tt *ProjectType) EndedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.EndedAt)
+	return helpers.GqlTimePointer(tt.Project.EndedAt)
 }
 
 func (tt *ProjectType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.CreatedAt)
+	return helpers.GqlTimePointer(&tt.Project.CreatedAt)
 }
 
 func (tt *ProjectType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.UpdatedAt)
+	return helpers.GqlTimePointer(&tt.Project.UpdatedAt)
 }
 
 func (tt *ProjectType) SprintDuration(ctx context.Context) *int32 {

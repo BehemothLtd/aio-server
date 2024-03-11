@@ -9,9 +9,10 @@ type Project struct {
 	Id                   int32
 	Name                 string
 	Code                 string
+	Description          string
 	ProjectType          enums.ProjectType
-	ProjectPriority      enums.ProjectPriority
-	State                enums.ProjectState
+	ProjectPriority      enums.ProjectPriority `gorm:"default:2"`
+	State                enums.ProjectState    `gorm:"default: 1"`
 	ActivedAt            *time.Time
 	InactivedAt          *time.Time
 	StartedAt            *time.Time

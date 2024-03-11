@@ -25,9 +25,9 @@ func (pt *ProjectAssigneeType) Active(ctx context.Context) bool {
 }
 
 func (tt *ProjectAssigneeType) JoinDate(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.ProjectAssignee.JoinDate)
+	return helpers.GqlTimePointer(tt.ProjectAssignee.JoinDate)
 }
 
 func (tt *ProjectAssigneeType) LeaveDate(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.ProjectAssignee.LeaveDate)
+	return helpers.GqlTimePointer(tt.ProjectAssignee.LeaveDate)
 }
