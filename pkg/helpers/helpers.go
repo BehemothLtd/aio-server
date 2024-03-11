@@ -63,6 +63,14 @@ func GetInt32OrDefault(num *int32) int32 {
 	return *num
 }
 
+// GetIntOrDefault returns the value of the int pointer if not nil, otherwise returns 0.
+func GetIntOrDefault(num *int) int {
+	if num == nil {
+		return 0
+	}
+	return *num
+}
+
 // Int32Pointer returns a pointer to the given int32 value.
 func Int32Pointer(val int32) *int32 {
 	return &val

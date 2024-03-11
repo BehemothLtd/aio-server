@@ -23,6 +23,7 @@ input ProjectCreateInput {
   code: String
   description: String
   projectType: String
+  sprintDuration: Int
   projectIssueStatusIds: [ID!]
   projectAssignees: [ProjectAssigneeInputForProjectCreate!]
 }

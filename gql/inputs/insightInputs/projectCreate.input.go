@@ -11,6 +11,7 @@ type ProjectCreateFormInput struct {
 	Code                  *string
 	Description           *string
 	ProjectType           *string
+	SprintDuration        *int
 	ProjectIssueStatusIds *[]int32
 	ProjectAssignees      *[]ProjectAssigneeInputForProjectCreate
 }

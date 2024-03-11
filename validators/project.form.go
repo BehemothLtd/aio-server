@@ -68,6 +68,12 @@ func (form *ProjectCreateForm) assignAttributes() {
 			},
 			Value: helpers.GetStringOrDefault(form.ProjectType),
 		},
+		&IntAttribute[int]{
+			FieldAttribute: FieldAttribute{
+				Code: "sprintDuration",
+			},
+			Value: int(helpers.GetIntOrDefault(form.SprintDuration)),
+		},
 	)
 }
 
@@ -144,6 +150,12 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 
 		if !fieldValue.IsValid() {
 			typeField.AddError("is invalid")
+		}
+
+		if fieldValue == enums.ProjectTypeScrum {
+			sprintDurationField := form.FindAttrByCode("sprintDuration")
+
+			sprintDurationField.ValidateRequired()
 		}
 	}
 
