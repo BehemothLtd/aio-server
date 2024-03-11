@@ -67,7 +67,7 @@ func (tt *ProjectType) UpdatedAt(ctx context.Context) *graphql.Time {
 }
 
 func (tt *ProjectType) SprintDuration(ctx context.Context) *int32 {
-	return nil
+	return helpers.Int32Pointer(int32(*tt.Project.SprintDuration))
 }
 
 func (pt *ProjectType) ClientId(ctx context.Context) *graphql.ID {

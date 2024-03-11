@@ -19,7 +19,7 @@ type Project struct {
 	EndedAt              *time.Time
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
-	SprintDuration       int
+	SprintDuration       *int32
 	ClientId             int32
 	CurrentSprintId      int
 	ProjectAssignees     []ProjectAssignee

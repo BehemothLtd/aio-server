@@ -10,6 +10,7 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -74,11 +75,11 @@ func (form *ProjectCreateForm) assignAttributes() {
 			},
 			Value: helpers.GetStringOrDefault(form.ProjectType),
 		},
-		&IntAttribute[int]{
+		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
 				Code: "sprintDuration",
 			},
-			Value: helpers.GetIntOrDefault(form.SprintDuration),
+			Value: helpers.GetInt32OrDefault(form.SprintDuration),
 		},
 		&SliceAttribute[insightInputs.ProjectIssueStatusInputForProjectCreate]{
 			FieldAttribute: FieldAttribute{
@@ -178,7 +179,7 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 
 			sprintDurationField.ValidateRequired()
 
-			form.Project.SprintDuration = *form.SprintDuration
+			form.Project.SprintDuration = form.SprintDuration
 		}
 	}
 
@@ -190,22 +191,30 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 
 	projectIssueStatusesField.ValidateRequired()
 
-	projectIssueStatuses := []*models.ProjectIssueStatus{}
 	issueStatusRepo := repository.NewIssueStatusRepository(nil, database.Db)
 
 	if form.ProjectIssueStatuses != nil {
+		projectIssueStatuses := []*models.ProjectIssueStatus{}
+
 		for i, projectIssueStatusInput := range form.ProjectIssueStatuses {
-			issueStatus := models.IssueStatus{Id: projectIssueStatusInput.IssueStatusId}
+			issueStatusId := projectIssueStatusInput.IssueStatusId
+			issueStatus := models.IssueStatus{Id: issueStatusId}
 
 			if err := issueStatusRepo.Find(&issueStatus); err != nil {
 				projectIssueStatusesField.AddError(
 					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is invalid"}}},
 				)
 			} else {
-				projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
-					IssueStatusId: projectIssueStatusInput.IssueStatusId,
-					Position:      i + 1,
-				})
+				if foundIdx := slices.IndexFunc(projectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == issueStatusId }); foundIdx != -1 {
+					projectIssueStatusesField.AddError(
+						map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is duplicated"}}},
+					)
+				} else {
+					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
+						IssueStatusId: issueStatusId,
+						Position:      i + 1,
+					})
+				}
 			}
 		}
 		form.Project.ProjectIssueStatuses = projectIssueStatuses
