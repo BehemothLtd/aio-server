@@ -87,6 +87,12 @@ func (form *ProjectCreateForm) assignAttributes() {
 			},
 			Value: &form.ProjectIssueStatuses,
 		},
+		&SliceAttribute[insightInputs.ProjectAssigneeInputForProjectCreate]{
+			FieldAttribute: FieldAttribute{
+				Code: "projectAssignees",
+			},
+			Value: &form.ProjectAssignees,
+		},
 	)
 }
 
@@ -96,6 +102,7 @@ func (form *ProjectCreateForm) validate() error {
 		validateDescription().
 		validateProjectType().
 		validateProjectIssueStatuses().
+		validateProjectAssignees().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -219,5 +226,13 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 		}
 		form.Project.ProjectIssueStatuses = projectIssueStatuses
 	}
+	return form
+}
+
+func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
+	projectAssigneesField := form.FindAttrByCode("projectAssignees")
+
+	projectAssigneesField.ValidateRequired()
+
 	return form
 }

@@ -6,8 +6,8 @@ type ProjectAssignee {
 }
 
 input ProjectAssigneeInputForProjectCreate {
-  userId: ID
-  developmentRoleId: Int
+  userId: ID!
+  developmentRoleId: Int!
   active: Boolean!
-  joinDate: Time
+  joinDate: Time!
 }

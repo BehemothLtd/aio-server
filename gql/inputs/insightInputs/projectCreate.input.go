@@ -13,7 +13,7 @@ type ProjectCreateFormInput struct {
 	ProjectType          *string
 	SprintDuration       *int32
 	ProjectIssueStatuses []ProjectIssueStatusInputForProjectCreate
-	ProjectAssignees     *[]ProjectAssigneeInputForProjectCreate
+	ProjectAssignees     []ProjectAssigneeInputForProjectCreate
 }
 
 type ProjectIssueStatusInputForProjectCreate struct {
