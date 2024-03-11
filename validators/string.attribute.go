@@ -17,12 +17,12 @@ func (attribute *StringAttribute) GetCode() string {
 }
 
 // GetErrors returns the errors of the string attribute.
-func (attribute *StringAttribute) GetErrors() []string {
+func (attribute *StringAttribute) GetErrors() []interface{} {
 	return attribute.Errors
 }
 
 // AddError adds an error to the string attribute.
-func (attribute *StringAttribute) AddError(message string) {
+func (attribute *StringAttribute) AddError(message interface{}) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 

@@ -198,7 +198,9 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 			issueStatus := models.IssueStatus{Id: projectIssueStatusInput.IssueStatusId}
 
 			if err := issueStatusRepo.Find(&issueStatus); err != nil {
-				projectIssueStatusesField.AddError(fmt.Sprintf("%d is invalid", i))
+				projectIssueStatusesField.AddError(
+					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is invalid"}}},
+				)
 			} else {
 				projectIssueStatuses = append(projectIssueStatuses, models.ProjectIssueStatus{
 					IssueStatusId: projectIssueStatusInput.IssueStatusId,

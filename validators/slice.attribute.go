@@ -17,12 +17,12 @@ func (attribute *SliceAttribute[T]) GetCode() string {
 }
 
 // GetErrors returns the errors associated with the attribute.
-func (attribute *SliceAttribute[T]) GetErrors() []string {
+func (attribute *SliceAttribute[T]) GetErrors() []interface{} {
 	return attribute.Errors
 }
 
 // AddError adds an error message to the attribute.
-func (attribute *SliceAttribute[T]) AddError(message string) {
+func (attribute *SliceAttribute[T]) AddError(message interface{}) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 

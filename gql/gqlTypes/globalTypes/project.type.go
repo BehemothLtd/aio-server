@@ -83,5 +83,13 @@ func (pt *ProjectType) ProjectAssignees(ctx context.Context) *[]*ProjectAssignee
 }
 
 func (pt *ProjectType) ProjectIssueStatuses(ctx context.Context) *[]*ProjectIssueStatusType {
-	return nil
+	result := make([]*ProjectIssueStatusType, len(pt.Project.ProjectIssueStatuses))
+
+	for i, projectIssueStatus := range pt.Project.ProjectIssueStatuses {
+		result[i] = &ProjectIssueStatusType{
+			ProjectIssueStatus: &projectIssueStatus,
+		}
+	}
+
+	return &result
 }
