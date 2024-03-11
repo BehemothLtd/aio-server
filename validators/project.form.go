@@ -190,7 +190,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 
 	projectIssueStatusesField.ValidateRequired()
 
-	projectIssueStatuses := []models.ProjectIssueStatus{}
+	projectIssueStatuses := []*models.ProjectIssueStatus{}
 	issueStatusRepo := repository.NewIssueStatusRepository(nil, database.Db)
 
 	if form.ProjectIssueStatuses != nil {
@@ -202,7 +202,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is invalid"}}},
 				)
 			} else {
-				projectIssueStatuses = append(projectIssueStatuses, models.ProjectIssueStatus{
+				projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
 					IssueStatusId: projectIssueStatusInput.IssueStatusId,
 					Position:      i + 1,
 				})

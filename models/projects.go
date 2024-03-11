@@ -23,7 +23,7 @@ type Project struct {
 	ClientId             int32
 	CurrentSprintId      int
 	ProjectAssignees     []ProjectAssignee
-	ProjectIssueStatuses []ProjectIssueStatus
+	ProjectIssueStatuses []*ProjectIssueStatus
 	IssueStatuses        []IssueStatus `gorm:"many2many:project_issue_statuses;"`
 	LockVersion          int32         `gorm:"default:1"`
 }

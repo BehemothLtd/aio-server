@@ -87,7 +87,7 @@ func (pt *ProjectType) ProjectIssueStatuses(ctx context.Context) *[]*ProjectIssu
 
 	for i, projectIssueStatus := range pt.Project.ProjectIssueStatuses {
 		result[i] = &ProjectIssueStatusType{
-			ProjectIssueStatus: &projectIssueStatus,
+			ProjectIssueStatus: projectIssueStatus,
 		}
 	}
 
