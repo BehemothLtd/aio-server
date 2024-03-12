@@ -24,6 +24,12 @@ type Snippet struct {
 	LockVersion    int32 `gorm:"not null;default:0"`
 }
 
+type SnippetFavorited struct {
+	Id             int32
+	Favorited      bool
+	FavoritesCount int32 `gorm:"not null;default:0"`
+}
+
 func (s *Snippet) EncryptContent(Passkey string) error {
 	if s.SnippetType == enums.SnippetTypePublic {
 		return nil
