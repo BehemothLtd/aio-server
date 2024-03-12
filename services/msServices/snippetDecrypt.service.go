@@ -7,6 +7,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
+	"aio-server/pkg/specialTypes"
 	"aio-server/repository"
 	"context"
 
@@ -73,7 +74,9 @@ func (sds *SnippetDecryptService) validate() error {
 
 	if sds.Args.Passkey == "" {
 		return exceptions.NewUnprocessableContentError("Passkey is required", exceptions.ResourceModificationError{
-			"Passkey": {"Cant be empty"},
+			"passkey": &specialTypes.FieldAttributeErrorType{
+				Base: []string{"Cant be empty"},
+			},
 		})
 	}
 

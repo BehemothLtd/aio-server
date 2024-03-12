@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/pkg/specialTypes"
 	"fmt"
 )
 
@@ -17,13 +18,17 @@ func (attribute *StringAttribute) GetCode() string {
 }
 
 // GetErrors returns the errors of the string attribute.
-func (attribute *StringAttribute) GetErrors() []interface{} {
+func (attribute *StringAttribute) GetErrors() specialTypes.FieldAttributeErrorType {
 	return attribute.Errors
 }
 
 // AddError adds an error to the string attribute.
-func (attribute *StringAttribute) AddError(message interface{}) {
-	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
+func (attribute *StringAttribute) AddError(message string) {
+	attribute.Errors.Base = append(attribute.Errors.Base, ValidationMessage(attribute.Name, message))
+}
+
+func (attribute *StringAttribute) AddItemsError(index int, field string, message string) {
+	// no need to implement
 }
 
 // ValidateRequired validates if the string attribute is required.

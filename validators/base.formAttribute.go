@@ -1,17 +1,20 @@
 package validators
 
+import "aio-server/pkg/specialTypes"
+
 // FieldAttribute represents a field attribute with its name, code, and errors.
 type FieldAttribute struct {
 	Name   string
 	Code   string
-	Errors []interface{}
+	Errors specialTypes.FieldAttributeErrorType
 }
 
 // FieldAttributeInterface defines methods for working with field attributes.
 type FieldAttributeInterface interface {
-	AddError(message interface{})
+	AddError(message string)
+	AddItemsError(index int, field string, message string)
 	GetCode() string
-	GetErrors() []interface{}
+	GetErrors() specialTypes.FieldAttributeErrorType
 
 	// Validators
 	ValidateRequired()
@@ -19,6 +22,6 @@ type FieldAttributeInterface interface {
 }
 
 // ValidationMessage returns a formatted validation message.
-func ValidationMessage(column string, message interface{}) interface{} {
+func ValidationMessage(column string, message string) string {
 	return message
 }

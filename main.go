@@ -6,6 +6,7 @@ import (
 	"aio-server/pkg/auths"
 	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -26,6 +27,12 @@ func main() {
 	r.POST("/insightGql", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), initializers.InsightGqlHandler(db))
 
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
+
+	a := map[int]map[string][]string{}
+	a[1] = map[string][]string{}
+	a[1]["test"] = []string{"abc"}
+
+	fmt.Printf("TESTTTTT %+v", a)
 
 	r.Run()
 }

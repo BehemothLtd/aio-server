@@ -2,6 +2,7 @@ package validators
 
 import (
 	"aio-server/exceptions"
+	"aio-server/pkg/specialTypes"
 	"slices"
 )
 
@@ -29,17 +30,19 @@ func (form *Form) FindAttrByCode(attributeCode string) FieldAttributeInterface {
 
 // SummaryErrors summarizes errors in the form.
 func (form *Form) summaryErrors() {
-	err := exceptions.NewUnprocessableContentError("", nil)
-
-	if form.Errors != nil {
-		err.Errors = form.Errors
-	}
+	err := exceptions.NewUnprocessableContentError("", make(map[string]*specialTypes.FieldAttributeErrorType))
 
 	for _, attribute := range form.Attributes {
 		attributeErr := attribute.GetErrors()
+		attributeCode := attribute.GetCode()
 
-		if len(attributeErr) > 0 {
-			err.AddError(attribute.GetCode(), attributeErr)
+		if len(attributeErr.Base) > 0 || attributeErr.Items != nil {
+			if err.Errors[attributeCode] == nil {
+				err.Errors[attributeCode] = &specialTypes.FieldAttributeErrorType{}
+
+				err.Errors[attributeCode].Base = attributeErr.Base
+				err.Errors[attributeCode].Items = attributeErr.Items
+			}
 		}
 	}
 

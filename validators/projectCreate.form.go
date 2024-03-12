@@ -107,7 +107,7 @@ func (form *ProjectCreateForm) validate() error {
 		validateProjectAssignees().
 		summaryErrors()
 
-	if form.Errors != nil {
+	if len(form.Errors) != 0 {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
 	}
 	return nil
@@ -214,14 +214,10 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 			issueStatus := models.IssueStatus{Id: issueStatusId}
 
 			if err := issueStatusRepo.Find(&issueStatus); err != nil {
-				projectIssueStatusesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is invalid"}}},
-				)
+				projectIssueStatusesField.AddItemsError(i, "issueStatusId", "is invalid")
 			} else {
 				if foundIdx := slices.IndexFunc(projectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == issueStatusId }); foundIdx != -1 {
-					projectIssueStatusesField.AddError(
-						map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is duplicated"}}},
-					)
+					projectIssueStatusesField.AddItemsError(i, "issueStatusId", "is duplicated")
 				} else {
 					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
 						IssueStatusId: issueStatusId,
@@ -257,31 +253,23 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 
 			// validate valid User
 			if err := userRepo.Find(&models.User{Id: userId}); err != nil {
-				projectAssigneesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"userId": {"is invalid"}}},
-				)
+				projectAssigneesField.AddItemsError(i, "userId", "is invalid")
 			}
 
 			// validate valid developmentRole
 			if developmentRole := systems.FindDevelopmentRoleById(developentRoleId); developmentRole == nil {
-				projectAssigneesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"developmentRoleId": {"is invalid"}}},
-				)
+				projectAssigneesField.AddItemsError(i, "developmentRoleId", "is invalid")
 			}
 
 			if foundIdx := slices.IndexFunc(projectAssignees, func(pa *models.ProjectAssignee) bool {
 				return pa.UserId == userId && pa.DevelopmentRoleId == developentRoleId
 			}); foundIdx != -1 {
-				projectAssigneesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"userId": {"is already has this role"}}},
-				)
+				projectAssigneesField.AddItemsError(i, "userId", "is already has this role")
 			}
 
-			if len(projectAssigneesField.GetErrors()) == 0 {
+			if projectAssigneeInput.JoinDate != "" {
 				if joinDate, err := time.Parse("1-2-2006", projectAssigneeInput.JoinDate); err != nil {
-					projectAssigneesField.AddError(
-						map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"joinDate": {"need to be formatted as %d-%m-%y"}}},
-					)
+					projectAssigneesField.AddItemsError(i, "joinDate", "need to be formatted as %d-%m-%y")
 				} else {
 					projectAssignees = append(projectAssignees, &models.ProjectAssignee{
 						UserId:            userId,

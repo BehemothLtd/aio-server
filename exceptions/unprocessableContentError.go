@@ -2,6 +2,7 @@ package exceptions
 
 import (
 	"aio-server/pkg/constants"
+	"aio-server/pkg/specialTypes"
 	"fmt"
 )
 
@@ -11,7 +12,7 @@ type ResourceModifyErrors struct {
 	Errors []string `json:"errors"`
 }
 
-type ResourceModificationError map[string][]interface{}
+type ResourceModificationError map[string]*specialTypes.FieldAttributeErrorType
 
 // UnprocessableContentError represents an unprocessable content error.
 type UnprocessableContentError struct {
@@ -48,16 +49,19 @@ func NewUnprocessableContentError(message string, errors ResourceModificationErr
 	}
 }
 
-// AddError adds a new ResourceModifyErrors to the UnprocessableContentError.
-func (e *UnprocessableContentError) AddError(field string, errors []interface{}) {
+// AddBaseError adds a new ResourceModifyErrors to the UnprocessableContentError.
+func (e *UnprocessableContentError) AddBaseError(field string, errors []string) {
 	if e.Errors == nil {
 		e.Errors = ResourceModificationError{}
 	}
 
 	if e.Errors[field] == nil {
-		e.Errors[field] = errors
-	} else {
+		e.Errors[field] = &specialTypes.FieldAttributeErrorType{}
 
-		e.Errors[field] = append(e.Errors[field], errors...)
+		if len(e.Errors[field].Base) == 0 {
+			e.Errors[field].Base = errors
+		} else {
+			e.Errors[field].Base = append(e.Errors[field].Base, errors...)
+		}
 	}
 }

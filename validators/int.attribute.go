@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/pkg/specialTypes"
 	"fmt"
 
 	"golang.org/x/exp/constraints"
@@ -18,13 +19,17 @@ func (attribute *IntAttribute[T]) GetCode() string {
 }
 
 // GetErrors returns the errors associated with the attribute.
-func (attribute *IntAttribute[T]) GetErrors() []interface{} {
+func (attribute *IntAttribute[T]) GetErrors() specialTypes.FieldAttributeErrorType {
 	return attribute.Errors
 }
 
 // AddError adds an error message to the attribute.
-func (attribute *IntAttribute[T]) AddError(message interface{}) {
-	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
+func (attribute *IntAttribute[T]) AddError(message string) {
+	attribute.Errors.Base = append(attribute.Errors.Base, ValidationMessage(attribute.Name, message))
+}
+
+func (attribute *IntAttribute[T]) AddItemsError(index int, field string, message string) {
+	// no need to implement
 }
 
 // ValidateRequired validates if the attribute is required.
