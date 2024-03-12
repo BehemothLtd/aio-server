@@ -1,6 +1,8 @@
 type ProjectIssueStatus {
   id: ID
   position: Int!
+  issueStatusId: ID
+  issueStatus: IssueStatus
 }
 
 input ProjectIssueStatusInputForProjectCreate {

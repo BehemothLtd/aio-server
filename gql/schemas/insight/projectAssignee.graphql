@@ -8,12 +8,6 @@ type ProjectAssignee {
   developmentRole: DevelopmentRole
 }
 
-type DevelopmentRole {
-  id: ID
-  code: String
-  Title: String
-}
-
 input ProjectAssigneeInputForProjectCreate {
   userId: ID!
   developmentRoleId: Int!

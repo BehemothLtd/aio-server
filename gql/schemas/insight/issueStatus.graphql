@@ -1,0 +1,9 @@
+type IssueStatus {
+  id: ID
+  color: String
+  statusType: String
+  title: String
+  createdAt: Time
+  updatedAt: Time
+  lockVersion: Int
+}
