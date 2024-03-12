@@ -8,12 +8,10 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
-	"aio-server/pkg/systems"
 	"aio-server/repository"
 	"fmt"
 	"slices"
 	"strings"
-	"time"
 )
 
 type ProjectCreateForm struct {
@@ -236,14 +234,21 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 					}
 				} else {
 					// only push to final result when nested form has no error
+					// TODO: fix position
 					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
 						IssueStatusId: issueStatusId,
 						Position:      i + 1,
 					})
 				}
 			}
+		}
 
-			form.Project.ProjectIssueStatuses = projectIssueStatuses
+		form.Project.ProjectIssueStatuses = projectIssueStatuses
+
+		if result, requiredTitles := form.Project.HasEnoughProjectIssueStatuses(); !result {
+			projectIssueStatusesField.AddError(
+				fmt.Sprintf("required issue statuses are %+v", strings.Join(requiredTitles, ", ")),
+			)
 		}
 	}
 
@@ -251,12 +256,13 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 }
 
 func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
-	projectAssigneesField := form.FindAttrByCode("projectAssignees")
+	fieldKey := "projectAssignees"
+	projectAssigneesField := form.FindAttrByCode(fieldKey)
 
 	projectAssigneesField.ValidateRequired()
 
-	userRepo := repository.NewUserRepository(nil, database.Db)
 	if form.ProjectAssignees != nil {
+		userRepo := repository.NewUserRepository(nil, database.Db)
 		projectAssignees := []*models.ProjectAssignee{}
 
 		for i, projectAssigneeInput := range form.ProjectAssignees {
@@ -264,42 +270,26 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 			developentRoleId := projectAssigneeInput.DevelopmentRoleId
 			active := projectAssigneeInput.Active
 
-			// validate valid User
-			if err := userRepo.Find(&models.User{Id: userId}); err != nil {
-				projectAssigneesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"userId": {"is invalid"}}},
-				)
-			}
-
-			// validate valid developmentRole
-			if developmentRole := systems.FindDevelopmentRoleById(developentRoleId); developmentRole == nil {
-				projectAssigneesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"developmentRoleId": {"is invalid"}}},
-				)
-			}
-
+			// Check duplicated in input
 			if foundIdx := slices.IndexFunc(projectAssignees, func(pa *models.ProjectAssignee) bool {
 				return pa.UserId == userId && pa.DevelopmentRoleId == developentRoleId
 			}); foundIdx != -1 {
-				projectAssigneesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"userId": {"is already has this role"}}},
+				form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, "userId"), []interface{}{"is duplicated in role"})
+			} else {
+				projectAssignee := models.ProjectAssignee{UserId: userId, Active: active, DevelopmentRoleId: developentRoleId}
+				projectAssigneeForm := NewProjectCreateProjectAssigneeFormValidator(
+					&projectAssigneeInput,
+					userRepo,
+					&projectAssignee,
 				)
-			}
 
-			if len(projectAssigneesField.GetErrors()) == 0 {
-				if joinDate, err := time.Parse("1-2-2006", projectAssigneeInput.JoinDate); err != nil {
-					projectAssigneesField.AddError(
-						map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"joinDate": {"need to be formatted as %d-%m-%y"}}},
-					)
+				if err := projectAssigneeForm.Validate(); err != nil {
+					for key, innerErr := range err {
+						form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, key), innerErr)
+					}
 				} else {
-					projectAssignees = append(projectAssignees, &models.ProjectAssignee{
-						UserId:            userId,
-						DevelopmentRoleId: developentRoleId,
-						Active:            active,
-						JoinDate:          &joinDate,
-					})
+					projectAssignees = append(projectAssignees, &projectAssignee)
 				}
-
 			}
 		}
 		form.Project.ProjectAssignees = projectAssignees
