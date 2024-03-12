@@ -6,6 +6,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
+	"fmt"
 	"strings"
 
 	"gorm.io/gorm"
@@ -26,10 +27,10 @@ func NewSnippetRepository(c *context.Context, db *gorm.DB) *SnippetRepository {
 }
 
 // FindById finds a snippet by its attribute.
-func (r *SnippetRepository) FindByAttr(snippet *models.Snippet) error {
-	dbTables := r.db.Table("snippets")
 
-	return dbTables.First(&snippet).Error
+func (r *Repository) FindSnippetByAttr(snippet *models.Snippet, attribute string, value interface{}) error {
+	condition := fmt.Sprintf("%s = ?", attribute)
+	return r.db.Where(condition, value).First(&snippet).Error
 }
 
 // List retrieves a list of snippets based on provided pagination data and query.

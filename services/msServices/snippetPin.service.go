@@ -34,7 +34,8 @@ func (sps *SnippetPinService) Execute() (*bool, error) {
 
 	// Retrive the snippet
 	snippetRepo := repository.NewSnippetRepository(sps.Ctx, sps.Db)
-	if err := snippetRepo.FindByAttr(&sps.snippet); err != nil {
+
+	if err := snippetRepo.FindSnippetByAttr(&sps.snippet, "Id", sps.snippet.Id); err != nil {
 		return nil, exceptions.NewRecordNotFoundError()
 	}
 

@@ -20,7 +20,7 @@ type SnippetFavoriteService struct {
 
 	user    models.User
 	snippet models.Snippet
-	Result  *bool
+	Result  models.SnippetFavorited
 }
 
 // Execute performs the favoriting or unfavoriting action.
@@ -30,19 +30,22 @@ func (sfs *SnippetFavoriteService) Execute() error {
 	}
 	snippet := models.Snippet{Id: sfs.snippet.Id}
 	// Retrieve the snippet
-	snippetRepo := repository.NewSnippetRepository(sfs.Ctx, sfs.Db)
-	if err := snippetRepo.FindByAttr(&snippet); err != nil {
+	snippetRepo := repository.NewSnippetRepository(sfs.Ctx, sfs.Db.Preload("FavoritedUsers"))
+	if err := snippetRepo.FindSnippetByAttr(&snippet, "Id", sfs.snippet.Id); err != nil {
 		return exceptions.NewRecordNotFoundError()
 	}
 
+	snippet.FavoritesCount = len(snippet.FavoritedUsers)
+
 	// Toggle favorite status
 	favoriteSnippetRepo := repository.NewSnippetFavoriteRepository(sfs.Ctx, sfs.Db)
-	favorited, err := favoriteSnippetRepo.Toggle(&sfs.snippet, &sfs.user)
+
+	result, err := favoriteSnippetRepo.Toggle(&snippet, &sfs.user)
 	if err != nil {
 		return exceptions.NewUnprocessableContentError("Unable to perform this action", nil)
 	}
 
-	sfs.Result = &favorited
+	sfs.Result = *result
 	return nil
 }
 

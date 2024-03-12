@@ -60,7 +60,7 @@ func (sds *SnippetDecryptService) validate() error {
 	// Retrieve the snippet
 	snippetRepo := repository.NewSnippetRepository(sds.Ctx, sds.Db)
 
-	if err := snippetRepo.FindByAttr(&sds.snippet); err != nil {
+	if err := snippetRepo.FindSnippetByAttr(&sds.snippet, "Id", snippetId); err != nil {
 		return exceptions.NewRecordNotFoundError()
 	}
 

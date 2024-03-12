@@ -39,7 +39,7 @@ func (r *SnippetFavoriteRepository) FindByUserAndSnippet(
 }
 
 // Toggle toggles a snippet favorite.
-func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (favorited bool, err error) {
+func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (result *models.SnippetFavorited, err error) {
 	dbTables := r.db.Table("snippets_favorites")
 
 	snippetFavorited := models.SnippetsFavorite{UserId: user.Id, SnippetId: snippet.Id}
@@ -47,7 +47,7 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 	found, err := r.FindByUserAndSnippet(&snippetFavorited)
 
 	if err != nil {
-		return false, err
+		return nil, err
 	}
 
 	if found != nil {
@@ -55,17 +55,25 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 		deleteResult := dbTables.Where(&snippetFavorited).Delete(&snippetFavorited)
 
 		if deleteResult.Error != nil {
-			return false, deleteResult.Error
+			return nil, deleteResult.Error
 		}
 
-		return false, nil
+		return &models.SnippetFavorited{
+			Id:             snippet.Id,
+			Favorited:      false,
+			FavoritesCount: int32(snippet.FavoritesCount - 1),
+		}, nil
 	}
 
 	// Not Found -> create -> favorited
 	createResult := dbTables.Create(&snippetFavorited)
 	if createResult.Error != nil {
-		return false, createResult.Error
+		return nil, createResult.Error
 	}
 
-	return true, nil
+	return &models.SnippetFavorited{
+		Id:             snippet.Id,
+		Favorited:      true,
+		FavoritesCount: int32(snippet.FavoritesCount + 1),
+	}, nil
 }

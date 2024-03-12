@@ -17,11 +17,10 @@ func (r *Resolver) Snippet(ctx context.Context, args msInputs.SnippetInput) (*gl
 		return nil, exceptions.NewBadRequestError("Invalid Slug")
 	}
 
-	snippet := models.Snippet{
-		Slug: args.Slug,
-	}
+	snippet := models.Snippet{}
+
 	repo := repository.NewSnippetRepository(&ctx, r.Db.Preload("FavoritedUsers").Preload("Pins"))
-	err := repo.FindByAttr(&snippet)
+	err := repo.FindSnippetByAttr(&snippet, "Slug", args.Slug)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

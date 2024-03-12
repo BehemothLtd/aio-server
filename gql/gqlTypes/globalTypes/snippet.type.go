@@ -45,6 +45,8 @@ func (st *SnippetType) SnippetType(ctx context.Context) *string {
 }
 
 func (st *SnippetType) FavoritesCount(ctx context.Context) *int32 {
+	st.Snippet.FavoritesCount = len(st.Snippet.FavoritedUsers)
+
 	return helpers.Int32Pointer(int32(st.Snippet.FavoritesCount))
 }
 
