@@ -8,7 +8,7 @@ type ProjectAssignee struct {
 	JoinDate          *time.Time
 	LeaveDate         *time.Time
 	LockVersion       int32 `gorm:"not null;default:1"`
-	DevelopmentRoleId int   `gorm:"not null;"`
+	DevelopmentRoleId int32   `gorm:"not null;"`
 	UserId            int32
 	ProjectId         int32
 

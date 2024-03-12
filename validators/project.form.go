@@ -8,10 +8,12 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
+	"aio-server/pkg/systems"
 	"aio-server/repository"
 	"fmt"
 	"slices"
 	"strings"
+	"time"
 )
 
 type ProjectCreateForm struct {
@@ -162,7 +164,7 @@ func (form *ProjectCreateForm) validateDescription() *ProjectCreateForm {
 	max := int64(constants.MaxLongTextLength)
 	descField.ValidateLimit(&min, &max)
 
-	form.Project.Description = *form.Description
+	form.Project.Description = form.Description
 
 	return form
 }
@@ -233,6 +235,56 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 	projectAssigneesField := form.FindAttrByCode("projectAssignees")
 
 	projectAssigneesField.ValidateRequired()
+
+	userRepo := repository.NewUserRepository(nil, database.Db)
+	if form.ProjectAssignees != nil {
+		projectAssignees := []*models.ProjectAssignee{}
+
+		for i, projectAssigneeInput := range form.ProjectAssignees {
+			userId := projectAssigneeInput.UserId
+			developentRoleId := projectAssigneeInput.DevelopmentRoleId
+			active := projectAssigneeInput.Active
+
+			// validate valid User
+			if err := userRepo.Find(&models.User{Id: userId}); err != nil {
+				projectAssigneesField.AddError(
+					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"userId": {"is invalid"}}},
+				)
+			}
+
+			// validate valid developmentRole
+			if developmentRole := systems.FindDevelopmentRoleById(developentRoleId); developmentRole == nil {
+				projectAssigneesField.AddError(
+					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"developmentRoleId": {"is invalid"}}},
+				)
+			}
+
+			if foundIdx := slices.IndexFunc(projectAssignees, func(pa *models.ProjectAssignee) bool {
+				return pa.UserId == userId && pa.DevelopmentRoleId == developentRoleId
+			}); foundIdx != -1 {
+				projectAssigneesField.AddError(
+					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"userId": {"is already has this role"}}},
+				)
+			}
+
+			if len(projectAssigneesField.GetErrors()) == 0 {
+				if joinDate, err := time.Parse("1-2-2006", projectAssigneeInput.JoinDate); err != nil {
+					projectAssigneesField.AddError(
+						map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"joinDate": {"need to be formatted as %d-%m-%y"}}},
+					)
+				} else {
+					projectAssignees = append(projectAssignees, &models.ProjectAssignee{
+						UserId:            userId,
+						DevelopmentRoleId: developentRoleId,
+						Active:            active,
+						JoinDate:          &joinDate,
+					})
+				}
+
+			}
+		}
+		form.Project.ProjectAssignees = projectAssignees
+	}
 
 	return form
 }

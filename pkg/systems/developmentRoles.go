@@ -1,7 +1,9 @@
 package systems
 
+import "slices"
+
 type DevelopmentRole struct {
-	Id    int
+	Id    int32
 	Code  string
 	Title string
 }
@@ -16,4 +18,14 @@ var defaultDevelopmentRoles = []DevelopmentRole{
 
 func GetDevelopmentRoles() []DevelopmentRole {
 	return append([]DevelopmentRole(nil), defaultDevelopmentRoles...)
+}
+
+func FindDevelopmentRoleById(id int32) *DevelopmentRole {
+	allDevelopmentRoles := GetDevelopmentRoles()
+
+	if foundIdx := slices.IndexFunc(allDevelopmentRoles, func(p DevelopmentRole) bool { return p.Id == id }); foundIdx != -1 {
+		return &allDevelopmentRoles[foundIdx]
+	} else {
+		return nil
+	}
 }

@@ -1,7 +1,5 @@
 package insightInputs
 
-import "time"
-
 type ProjectCreateInput struct {
 	Input ProjectCreateFormInput
 }
@@ -21,8 +19,8 @@ type ProjectIssueStatusInputForProjectCreate struct {
 }
 
 type ProjectAssigneeInputForProjectCreate struct {
-	UserId            *int32
-	DevelopmentRoleId *int
+	UserId            int32
+	DevelopmentRoleId int32
 	Active            bool
-	JoinDate          *time.Time
+	JoinDate         string
 }

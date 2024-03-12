@@ -3,6 +3,15 @@ type ProjectAssignee {
   active: Boolean!
   joinDate: Time
   leaveDate: Time
+  developmentRoleId: ID
+  userId: ID
+  developmentRole: DevelopmentRole
+}
+
+type DevelopmentRole {
+  id: ID
+  code: String
+  Title: String
 }
 
 input ProjectAssigneeInputForProjectCreate {

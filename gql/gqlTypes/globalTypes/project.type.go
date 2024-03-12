@@ -1,6 +1,7 @@
 package globalTypes
 
 import (
+	"aio-server/enums"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -67,7 +68,11 @@ func (tt *ProjectType) UpdatedAt(ctx context.Context) *graphql.Time {
 }
 
 func (tt *ProjectType) SprintDuration(ctx context.Context) *int32 {
-	return helpers.Int32Pointer(int32(*tt.Project.SprintDuration))
+	if tt.Project.ProjectType == enums.ProjectTypeKanban {
+		return nil
+	} else {
+		return helpers.Int32Pointer(int32(*tt.Project.SprintDuration))
+	}
 }
 
 func (pt *ProjectType) ClientId(ctx context.Context) *graphql.ID {
@@ -79,7 +84,15 @@ func (pt *ProjectType) CurrentSprintId(ctx context.Context) *graphql.ID {
 }
 
 func (pt *ProjectType) ProjectAssignees(ctx context.Context) *[]*ProjectAssigneeType {
-	return nil
+	result := make([]*ProjectAssigneeType, len(pt.Project.ProjectAssignees))
+
+	for i, projectAssignee := range pt.Project.ProjectAssignees {
+		result[i] = &ProjectAssigneeType{
+			ProjectAssignee: projectAssignee,
+		}
+	}
+
+	return &result
 }
 
 func (pt *ProjectType) ProjectIssueStatuses(ctx context.Context) *[]*ProjectIssueStatusType {

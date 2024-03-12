@@ -9,7 +9,7 @@ type Project struct {
 	Id                   int32
 	Name                 string
 	Code                 string
-	Description          string
+	Description          *string
 	ProjectType          enums.ProjectType
 	ProjectPriority      enums.ProjectPriority `gorm:"default:2"`
 	State                enums.ProjectState    `gorm:"default: 1"`
@@ -22,7 +22,7 @@ type Project struct {
 	SprintDuration       *int32
 	ClientId             int32
 	CurrentSprintId      int
-	ProjectAssignees     []ProjectAssignee
+	ProjectAssignees     []*ProjectAssignee
 	ProjectIssueStatuses []*ProjectIssueStatus
 	IssueStatuses        []IssueStatus `gorm:"many2many:project_issue_statuses;"`
 	LockVersion          int32         `gorm:"default:1"`
