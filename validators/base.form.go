@@ -45,3 +45,15 @@ func (form *Form) summaryErrors() {
 
 	form.Errors = err.Errors
 }
+
+func (form *Form) AddError(field string, errors []interface{}) {
+	if len(form.Errors) == 0 {
+		form.Errors = exceptions.ResourceModificationError{}
+	}
+
+	if len(form.Errors[field]) == 0 {
+		form.Errors[field] = []interface{}{}
+	}
+
+	form.Errors[field] = append(form.Errors[field], errors...)
+}

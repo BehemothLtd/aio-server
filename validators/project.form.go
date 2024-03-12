@@ -200,7 +200,8 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 }
 
 func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm {
-	projectIssueStatusesField := form.FindAttrByCode("projectIssueStatuses")
+	fieldKey := "projectIssueStatuses"
+	projectIssueStatusesField := form.FindAttrByCode(fieldKey)
 
 	projectIssueStatusesField.ValidateRequired()
 
@@ -211,33 +212,41 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 
 		for i, projectIssueStatusInput := range form.ProjectIssueStatuses {
 			issueStatusId := projectIssueStatusInput.IssueStatusId
-			issueStatus := models.IssueStatus{Id: issueStatusId}
 
-			if err := issueStatusRepo.Find(&issueStatus); err != nil {
-				projectIssueStatusesField.AddError(
-					map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is invalid"}}},
-				)
+			// Check duplicated in input
+			if foundIdx := slices.IndexFunc(projectIssueStatuses, func(pis *models.ProjectIssueStatus) bool {
+				return pis.IssueStatusId == issueStatusId
+			}); foundIdx != -1 {
+				form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, "issueStatusId"), []interface{}{"is duplicated"})
 			} else {
-				if foundIdx := slices.IndexFunc(projectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == issueStatusId }); foundIdx != -1 {
-					projectIssueStatusesField.AddError(
-						map[string]interface{}{fmt.Sprintf("%d", i): map[string][]string{"issueStatusId": {"is duplicated"}}},
-					)
+				// If not duplicated then create nested form for further validation
+				projectIssueStatus := models.ProjectIssueStatus{
+					IssueStatusId: issueStatusId,
+				}
+
+				projectIssueStatusForm := NewProjectCreateProjectIssueFormValidator(
+					&projectIssueStatusInput,
+					issueStatusRepo,
+					&projectIssueStatus,
+				)
+
+				if err := projectIssueStatusForm.Validate(); err != nil {
+					for key, innerErr := range err {
+						form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, key), innerErr)
+					}
 				} else {
+					// only push to final result when nested form has no error
 					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
 						IssueStatusId: issueStatusId,
 						Position:      i + 1,
 					})
 				}
 			}
-		}
-		form.Project.ProjectIssueStatuses = projectIssueStatuses
 
-		if result, requiredTitles := form.Project.HasEnoughProjectIssueStatuses(); !result {
-			projectIssueStatusesField.AddError(
-				fmt.Sprintf("required issue statuses are %+v", strings.Join(requiredTitles, ", ")),
-			)
+			form.Project.ProjectIssueStatuses = projectIssueStatuses
 		}
 	}
+
 	return form
 }
 

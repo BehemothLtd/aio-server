@@ -22,5 +22,5 @@ type ProjectAssigneeInputForProjectCreate struct {
 	UserId            int32
 	DevelopmentRoleId int32
 	Active            bool
-	JoinDate         string
+	JoinDate          string
 }
