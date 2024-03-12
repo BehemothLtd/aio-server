@@ -234,7 +234,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 
 		if result, requiredTitles := form.Project.HasEnoughProjectIssueStatuses(); !result {
 			projectIssueStatusesField.AddError(
-				map[string]interface{}{"base": fmt.Sprintf("required issue statuses are %+v", strings.Join(requiredTitles, ", "))},
+				fmt.Sprintf("required issue statuses are %+v", strings.Join(requiredTitles, ", ")),
 			)
 		}
 	}
