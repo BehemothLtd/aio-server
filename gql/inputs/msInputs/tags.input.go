@@ -3,22 +3,23 @@ package msInputs
 import (
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
+	"strings"
 )
 
 // TagsInput represents input for querying tags collection.
 type TagsInput struct {
 	Input *globalInputs.PagyInput
-	Query *TagQueryInput
+	Query *TagsQueryInput
 }
 
-// ToPaginationDataAndSnippetsQuery converts SnippetsInput to models.SnippetsQuery and models.PaginationData.
-func (msi *TagsInput) ToPaginationDataAndSnippetsQuery() (models.TagsQuery, models.PaginationData) {
+// ToPaginationDataAndQuery converts TagsInput to TagsQueryInput and models.PaginationData.
+func (msi *TagsInput) ToPaginationDataAndQuery() (TagsQueryInput, models.PaginationData) {
 	paginationData := msi.Input.ToPaginationInput()
+	query := TagsQueryInput{}
 
-	var nameCont string
-	if msi.Query != nil && msi.Query.NameCont != nil {
-		nameCont = *msi.Query.NameCont
+	if msi.Query != nil && msi.Query.NameCont != nil && strings.TrimSpace(*msi.Query.NameCont) != "" {
+		query.NameCont = msi.Query.NameCont
 	}
 
-	return models.TagsQuery{NameCont: nameCont}, paginationData
+	return query, paginationData
 }

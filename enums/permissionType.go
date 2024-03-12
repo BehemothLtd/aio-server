@@ -19,6 +19,11 @@ users
 user_groups
 projects
 project_issues
+leave_day_requests
+clients
+issue_statuses
+devices
+timesheet_templates
 )
 */
 type PermissionTargetType string

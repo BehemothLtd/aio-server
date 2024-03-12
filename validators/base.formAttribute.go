@@ -1,21 +1,17 @@
 package validators
 
-import (
-	"fmt"
-)
-
 // FieldAttribute represents a field attribute with its name, code, and errors.
 type FieldAttribute struct {
 	Name   string
 	Code   string
-	Errors []string
+	Errors []interface{}
 }
 
 // FieldAttributeInterface defines methods for working with field attributes.
 type FieldAttributeInterface interface {
-	AddError(message string)
+	AddError(message interface{})
 	GetCode() string
-	GetErrors() []string
+	GetErrors() []interface{}
 
 	// Validators
 	ValidateRequired()
@@ -23,6 +19,6 @@ type FieldAttributeInterface interface {
 }
 
 // ValidationMessage returns a formatted validation message.
-func ValidationMessage(column string, message string) string {
-	return fmt.Sprintf("%s %s", column, message)
+func ValidationMessage(column string, message interface{}) interface{} {
+	return message
 }

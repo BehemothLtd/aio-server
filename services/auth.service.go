@@ -38,10 +38,10 @@ func (a *AuthService) Execute() error {
 func (a *AuthService) validate() error {
 	exception := exceptions.NewUnprocessableContentError("", nil)
 	if a.Email == "" {
-		exception.AddError("email", []string{"cannot be empty"})
+		exception.AddError("email", []interface{}{"cannot be empty"})
 	}
 	if a.Password == "" {
-		exception.AddError("password", []string{"cannot be empty"})
+		exception.AddError("password", []interface{}{"cannot be empty"})
 	}
 	if len(exception.Errors) > 0 {
 		return exception
@@ -53,6 +53,7 @@ func (a *AuthService) validate() error {
 func (a *AuthService) findUser() (*models.User, error) {
 	repo := repository.NewUserRepository(a.Ctx, a.Db)
 	user, err := repo.Auth(a.Email, a.Password)
+
 	if err != nil {
 		return nil, exceptions.NewUnprocessableContentError("base", exceptions.ResourceModificationError{
 			"base": {"User Or Password is incorrect"},

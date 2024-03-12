@@ -1,0 +1,2 @@
+-- DROP TABLE IF EXISTS attachments;
+-- we'll use existed `attachments` table

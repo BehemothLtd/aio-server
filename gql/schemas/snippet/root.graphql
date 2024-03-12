@@ -18,6 +18,9 @@ type Query {
   Tag(id: ID!): Tag!
   Tags(input: PagyInput, query: TagsQuery): TagsCollection!
   TagsAll: [TagForSelection!]
+
+  Collections(input: PagyInput, query: CollectionQuery): CollectionsCollection!
+  Collection(id: ID!): Collection!
 }
 
 type Mutation {
@@ -36,6 +39,10 @@ type Mutation {
   TagCreate(input: TagInput!): TagModification!
   TagUpdate(id: ID!, input: TagInput!): TagModification!
   TagDelete(id: ID!): String
+
+  CollectionCreate(input: CollectionInput!): CollectionModification!
+  CollectionUpdate(id: ID!, input: CollectionInput!): CollectionModification!
+  CollectionDelete(id: ID!): String
 
   # Pins
   SnippetPin(id: ID!): Boolean

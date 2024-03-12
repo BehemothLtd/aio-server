@@ -22,3 +22,12 @@ func (r *Resolver) TagSliceToTypes(tags []*models.Tag) *[]*globalTypes.TagType {
 	}
 	return &resolvers
 }
+
+func (r *Resolver) CollectionsSliceToTypes(collections []*models.Collection) *[]*globalTypes.CollectionType {
+	resolvers := make([]*globalTypes.CollectionType, len(collections))
+	for i, c := range collections {
+		resolvers[i] = &globalTypes.CollectionType{Collection: c}
+	}
+
+	return &resolvers
+}

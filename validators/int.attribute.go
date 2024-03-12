@@ -18,12 +18,12 @@ func (attribute *IntAttribute[T]) GetCode() string {
 }
 
 // GetErrors returns the errors associated with the attribute.
-func (attribute *IntAttribute[T]) GetErrors() []string {
+func (attribute *IntAttribute[T]) GetErrors() []interface{} {
 	return attribute.Errors
 }
 
 // AddError adds an error message to the attribute.
-func (attribute *IntAttribute[T]) AddError(message string) {
+func (attribute *IntAttribute[T]) AddError(message interface{}) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 

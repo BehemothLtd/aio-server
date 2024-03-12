@@ -63,6 +63,14 @@ func GetInt32OrDefault(num *int32) int32 {
 	return *num
 }
 
+// GetIntOrDefault returns the value of the int pointer if not nil, otherwise returns 0.
+func GetIntOrDefault(num *int) int {
+	if num == nil {
+		return 0
+	}
+	return *num
+}
+
 // Int32Pointer returns a pointer to the given int32 value.
 func Int32Pointer(val int32) *int32 {
 	return &val
@@ -74,8 +82,34 @@ func IDPointer(id graphql.ID) *graphql.ID {
 }
 
 // GqlTimePointer returns a pointer to the graphql.Time value.
-func GqlTimePointer(val time.Time) *graphql.Time {
-	time := graphql.Time{Time: val}
+func GqlTimePointer(val *time.Time) *graphql.Time {
+	if val != nil {
+		time := graphql.Time{Time: *val}
 
-	return &time
+		return &time
+	} else {
+		return nil
+	}
+
+}
+
+// RubyTimeParser returns time.Time from string generated in Ruby
+func RubyTimeParser(timeString string) (*time.Time, error) {
+	layout := "2006-01-02 15:04:05 -0700"
+
+	// Parse the string to time.Time object
+	if t, err := time.Parse(layout, timeString); err != nil {
+		fmt.Println("Error parsing time:", err)
+		return nil, errors.New("invalid time string")
+	} else {
+		return &t, nil
+	}
+}
+
+func RubyTimeStringToGqlTime(timeString string) *graphql.Time {
+	if time, err := RubyTimeParser(timeString); err != nil {
+		return nil
+	} else {
+		return GqlTimePointer(time)
+	}
 }

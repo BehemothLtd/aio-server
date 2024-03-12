@@ -1,0 +1,25 @@
+type Collection {
+  id: ID
+  title: String
+  userId: ID
+  snippets: [Snippet!]
+  createdAt: Time
+  updatedAt: Time
+}
+
+input CollectionQuery {
+  titleCont: String
+}
+
+type CollectionsCollection {
+  collection: [Collection!]
+  metadata: Metadata!
+}
+
+type CollectionModification {
+  collection: Collection!
+}
+
+input CollectionInput {
+  title: String
+}

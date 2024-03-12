@@ -7,6 +7,18 @@ type User {
   email: String
   fullName: String
   name: String
+  about: String
+  avatarUrl: String
+  createdAt: Time
+  companyLevelId: ID
+  state: String!
+  address: String
+  birthday: Time
+  gender: String
+  phone: String
+  timingActiveAt: Time
+  timingDeactiveAt: Time
+  slackId: String
 }
 
 type UserPrivateInfo {
@@ -17,5 +29,54 @@ type UserPrivateInfo {
 
 type UserCollection {
   collection: [User!]
-  metadata: Metadata!
+  metadata: Metadata
+}
+
+input UsersQuery {
+  nameCont: String
+  fullNameCont: String
+  emailcont: String
+  slackIdCont: String
+  stateEq: String
+}
+
+input SelfUpdateProfileInput {
+  about: String
+  avatarKey: String
+  slackId: String
+  address: String
+  birthday: String
+  gender: String
+  phone: String
+}
+
+type SelfUpdateProfileRes {
+  user: SelfUpdateProfile
+}
+
+type SelfUpdateProfile {
+  id: ID
+  email: String
+  fullName: String
+  name: String
+  about: String
+  avatarUrl: String
+  createdAt: Time
+  gender: String
+  phone: String
+  slackId: String
+  birthday: Time
+  address: String
+}
+
+input SelfUpdatePassword {
+  currentPassword: String!
+  password: String!
+  passwordConfirmation: String!
+}
+
+type UserActiveState {
+  state: String!
+  timingActiveAt: Time
+  timingDeactiveAt: Time
 }

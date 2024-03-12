@@ -1,6 +1,6 @@
 package msInputs
 
-// TagQueryInput represents search query for query tags collection
-type TagQueryInput struct {
+// TagsQueryInput represents search query for query tags collection
+type TagsQueryInput struct {
 	NameCont *string
 }

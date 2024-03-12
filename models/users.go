@@ -1,6 +1,7 @@
 package models
 
 import (
+	"aio-server/enums"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -15,6 +16,19 @@ type User struct {
 	Name              string
 	FavoritedSnippets []*Snippet   `gorm:"many2many:snippets_favorites"`
 	UserGroups        []*UserGroup `gorm:"many2many:users_user_groups"`
+	Avatar            *Attachment  `gorm:"polymorphic:Owner;"`
+	About             *string
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	CompanyLevelId    *int32
+	Address           *string
+	Phone             *string
+	Gender            *enums.UserGenderType
+	Birthday          time.Time
+	SlackId           *string
+	State             enums.UserState
+	Timing            *UserTiming
+	WorkingTimelogs   []WorkingTimelog
 }
 
 type UserClaims struct {

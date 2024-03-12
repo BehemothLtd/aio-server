@@ -168,11 +168,14 @@ func (form *SnippetForm) validateSnippetType() *SnippetForm {
 
 	snippetType.ValidateRequired()
 
-	snippetTypeValue := enums.SnippetType(*form.SnippetType)
+	if form.SnippetType != nil {
+		snippetTypeValue := enums.SnippetType(*form.SnippetType)
 
-	if !snippetTypeValue.IsValid() {
-		snippetType.AddError("is invalid")
+		if !snippetTypeValue.IsValid() {
+			snippetType.AddError("is invalid")
+		}
 	}
+
 	return form
 }
 
