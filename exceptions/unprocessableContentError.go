@@ -57,6 +57,7 @@ func (e *UnprocessableContentError) AddError(field string, errors []interface{})
 	if e.Errors[field] == nil {
 		e.Errors[field] = errors
 	} else {
+
 		e.Errors[field] = append(e.Errors[field], errors...)
 	}
 }

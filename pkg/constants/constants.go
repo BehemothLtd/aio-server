@@ -20,3 +20,11 @@ const (
 	UnprocessableContentErrorCode = 422
 	UnprocessableContentErrorMsg  = "Please check your input"
 )
+
+func RequiredIssueStatusIdsForKanbanProject() []int32 {
+	return []int32{2, 3, 7}
+}
+
+func RequiredIssueStatusIdsForScrumProject() []int32 {
+	return []int32{1, 2, 3, 7}
+}
