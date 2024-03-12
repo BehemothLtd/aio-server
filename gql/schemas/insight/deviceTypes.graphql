@@ -11,7 +11,7 @@ type DeviceTypeCollection {
   metadata: Metadata!
 }
 
-input DeviceTypeCreateInput {
+input DeviceTypeInput {
   name: String
 }
 

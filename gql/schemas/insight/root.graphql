@@ -24,7 +24,7 @@ type Mutation {
 
   ProjectCreate(input: ProjectCreateInput!): ProjectModifycation!
 
-  DeviceTypeCreate(input: DeviceTypeCreateInput!): DeviceTypeModification!
+  DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
 }
 
 scalar Time
