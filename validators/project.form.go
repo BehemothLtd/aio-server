@@ -183,12 +183,16 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 
 		form.Project.ProjectType = fieldValue
 
-		if fieldValue == enums.ProjectTypeScrum {
-			sprintDurationField := form.FindAttrByCode("sprintDuration")
+		sprintDurationField := form.FindAttrByCode("sprintDuration")
 
+		if fieldValue == enums.ProjectTypeScrum {
 			sprintDurationField.ValidateRequired()
 
 			form.Project.SprintDuration = form.SprintDuration
+		} else if fieldValue == enums.ProjectTypeKanban {
+			if form.SprintDuration != nil {
+				sprintDurationField.AddError("need to be empty")
+			}
 		}
 	}
 
