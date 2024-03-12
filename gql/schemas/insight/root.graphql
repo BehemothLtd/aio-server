@@ -9,6 +9,9 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
+
+  DeviceType(id: ID!): DeviceType!
+  DeviceTypes(input: PagyInput): DeviceTypeCollection!
 }
 
 type Mutation {
@@ -20,6 +23,8 @@ type Mutation {
   UserToggleActive(id: ID!): UserActiveState
 
   ProjectCreate(input: ProjectCreateInput!): ProjectModifycation!
+
+  DeviceTypeCreate(input: DeviceTypeCreateInput!): DeviceTypeModification!
 }
 
 scalar Time
