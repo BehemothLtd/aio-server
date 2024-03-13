@@ -10,10 +10,10 @@ type DevelopmentRole struct {
 
 var defaultDevelopmentRoles = []DevelopmentRole{
 	{Id: 1, Code: "dev", Title: "Developer"},
-	{Id: 1, Code: "tester", Title: "Developer"},
-	{Id: 1, Code: "comtor", Title: "Developer"},
-	{Id: 1, Code: "brs", Title: "BrSE"},
-	{Id: 1, Code: "pm", Title: "PM"},
+	{Id: 2, Code: "tester", Title: "Developer"},
+	{Id: 3, Code: "comtor", Title: "Developer"},
+	{Id: 4, Code: "brs", Title: "BrSE"},
+	{Id: 5, Code: "pm", Title: "PM"},
 }
 
 func GetDevelopmentRoles() []DevelopmentRole {

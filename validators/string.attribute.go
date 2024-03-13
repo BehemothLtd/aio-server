@@ -2,6 +2,7 @@ package validators
 
 import (
 	"fmt"
+	"time"
 )
 
 // StringAttribute represents a string attribute validator.
@@ -48,4 +49,12 @@ func (attribute *StringAttribute) ValidateLimit(min *int, max *int64) {
 			attribute.AddError(fmt.Sprintf("is too long. Max characters is %d", *max))
 		}
 	}
+}
+
+func (attribute *StringAttribute) ValidateFormat(formatter string, formatterRemind string) {
+	// No need to implement yet
+}
+
+func (attribute *StringAttribute) Time() *time.Time {
+	return nil
 }
