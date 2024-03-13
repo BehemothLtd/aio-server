@@ -13,6 +13,8 @@ type Query {
   ProjectSprint(id: ID!): ProjectSprint!
   UsersAll(): [UsersAllInfo]
   
+  IssueStatus(id: ID!): IssueStatus
+  IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
   IssueStatusesAll(): [IssueStatus]
 
   DevelopmentRoles(): [DevelopmentRole]

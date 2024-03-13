@@ -7,3 +7,13 @@ type IssueStatus {
   updatedAt: Time
   lockVersion: Int
 }
+
+input IssueStatusesQuery {
+  titleCont: String
+  statusTypeEq: String
+}
+
+type IssueStatusCollection {
+  collection: [IssueStatus!]
+  metadata: Metadata
+}

@@ -49,3 +49,11 @@ func (r *Resolver) DeviceTypesSlideToType(deviceTypes []*models.DeviceType) *[]*
 	}
 	return &resolvers
 }
+
+func (r *Resolver) IssueStatusSliceToTypes(issueStatuses []*models.IssueStatus) *[]*globalTypes.IssueStatusType {
+	resolvers := make([]*globalTypes.IssueStatusType, len(issueStatuses))
+	for i, s := range issueStatuses {
+		resolvers[i] = &globalTypes.IssueStatusType{IssueStatus: s}
+	}
+	return &resolvers
+}
