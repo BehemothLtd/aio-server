@@ -49,3 +49,13 @@ func (r *Resolver) DeviceTypesSlideToType(deviceTypes []*models.DeviceType) *[]*
 	}
 	return &resolvers
 }
+
+func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayRequest) *[]*globalTypes.LeaveDayRequestType {
+	resolvers := make([]*globalTypes.LeaveDayRequestType, len(requests))
+
+	for i, rq := range requests {
+		resolvers[i] = &globalTypes.LeaveDayRequestType{LeaveDayRequest: rq}
+	}
+
+	return &resolvers
+}
