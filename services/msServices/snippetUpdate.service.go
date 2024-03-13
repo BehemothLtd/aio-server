@@ -39,7 +39,7 @@ func (sus *SnippetUpdateService) Execute() (*models.Snippet, error) {
 	snippet := models.Snippet{
 		Id: snippetId,
 	}
-	snippetErr := snippetRepo.FindSnippetByAttr(&snippet, "Id", snippetId)
+	snippetErr := snippetRepo.FindSnippetByAttr(&snippet)
 
 	if snippetErr != nil {
 		return nil, exceptions.NewRecordNotFoundError()

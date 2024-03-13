@@ -65,7 +65,7 @@ func (sats *SnippetRemoveTagService) validate() error {
 		Id: snippetId,
 	}
 	snippetRepo := repository.NewSnippetRepository(&sats.Ctx, &sats.Db)
-	err = snippetRepo.FindSnippetByAttr(&snippet, "Id", snippetId)
+	err = snippetRepo.FindSnippetByAttr(&snippet)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
