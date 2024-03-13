@@ -29,18 +29,18 @@ func (pst *ProjectSprintType) ProjectId(context.Context) *graphql.ID {
 }
 
 func (pst *ProjectSprintType) StartDate(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pst.ProjectSprint.StartDate)
+	return helpers.GqlTimePointer(&pst.ProjectSprint.StartDate)
 }
 
 func (pst *ProjectSprintType) EndDate(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pst.ProjectSprint.EndDate)
+	return helpers.GqlTimePointer(&pst.ProjectSprint.EndDate)
 }
 
 func (pst *ProjectSprintType) UpdatedAt(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pst.ProjectSprint.UpdatedAt)
+	return helpers.GqlTimePointer(&pst.ProjectSprint.UpdatedAt)
 }
 func (pst *ProjectSprintType) CreatedAt(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pst.ProjectSprint.CreatedAt)
+	return helpers.GqlTimePointer(&pst.ProjectSprint.CreatedAt)
 }
 
 func (pst *ProjectSprintType) Archived(context.Context) bool {
