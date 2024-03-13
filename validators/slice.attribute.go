@@ -1,6 +1,9 @@
 package validators
 
-import "aio-server/gql/inputs/insightInputs"
+import (
+	"aio-server/gql/inputs/insightInputs"
+	"time"
+)
 
 type NestedSlices interface {
 	insightInputs.ProjectIssueStatusInputForProjectCreate | insightInputs.ProjectAssigneeInputForProjectCreate
@@ -36,4 +39,12 @@ func (attribute *SliceAttribute[T]) ValidateRequired() {
 // ValidateLimit validates if the attribute value is within the specified limits.
 func (attribute *SliceAttribute[T]) ValidateLimit(min *int, max *int64) {
 	// No need to implement
+}
+
+func (attribute *SliceAttribute[T]) ValidateFormat(formatter string, formatterRemind string) {
+	// No need to implement
+}
+
+func (attribute *SliceAttribute[T]) Time() *time.Time {
+	return nil
 }

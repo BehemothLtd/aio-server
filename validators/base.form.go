@@ -2,6 +2,7 @@ package validators
 
 import (
 	"aio-server/exceptions"
+	"fmt"
 	"slices"
 )
 
@@ -46,7 +47,20 @@ func (form *Form) summaryErrors() {
 	form.Errors = err.Errors
 }
 
-func (form *Form) AddError(field string, errors []interface{}) {
+func (form *Form) AddNestedErrors(fieldKey string, index int, errors exceptions.ResourceModificationError) {
+	for key, innerErr := range errors {
+		form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, index, key), innerErr)
+	}
+}
+
+// NestedFieldKey output a key for response
+// such as `projectIssueStatuses.1.issueStatusId`
+// use for nested attributes
+func (form *Form) NestedFieldKey(wrapperFieldKey string, index int, nestedFieldKey string) string {
+	return fmt.Sprintf("%s.%d.%s", wrapperFieldKey, index, nestedFieldKey)
+}
+
+func (form *Form) AddErrorDirectlyToField(field string, errors []interface{}) {
 	if len(form.Errors) == 0 {
 		form.Errors = exceptions.ResourceModificationError{}
 	}

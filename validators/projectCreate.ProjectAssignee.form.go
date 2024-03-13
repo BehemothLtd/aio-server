@@ -7,7 +7,6 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/pkg/systems"
 	"aio-server/repository"
-	"time"
 )
 
 type ProjectCreateProjectAssigneeForm struct {
@@ -48,7 +47,7 @@ func (form *ProjectCreateProjectAssigneeForm) assignAttributes() {
 			},
 			Value: helpers.GetInt32OrDefault(&form.DevelopmentRoleId),
 		},
-		&StringAttribute{
+		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
 				Code: "joinDate",
 			},
@@ -99,15 +98,9 @@ func (form *ProjectCreateProjectAssigneeForm) validateDevelopmentId() *ProjectCr
 func (form *ProjectCreateProjectAssigneeForm) validateJoinDate() *ProjectCreateProjectAssigneeForm {
 	field := form.FindAttrByCode("joinDate")
 	field.ValidateRequired()
+	field.ValidateFormat("1-2-2006", "%d-%m-%y")
 
-	if form.JoinDate != "" {
-		// TODO: add Time FieldType
-		if date, err := time.Parse("1-2-2006", form.JoinDate); err != nil {
-			field.AddError("need to be formatted as %d-%m-%y")
-		} else {
-			form.ProjectAssignee.JoinDate = &date
-		}
-	}
+	form.ProjectAssignee.JoinDate = field.Time()
 
 	return form
 }

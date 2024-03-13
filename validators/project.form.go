@@ -216,7 +216,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 			if foundIdx := slices.IndexFunc(projectIssueStatuses, func(pis *models.ProjectIssueStatus) bool {
 				return pis.IssueStatusId == issueStatusId
 			}); foundIdx != -1 {
-				form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, "issueStatusId"), []interface{}{"is duplicated"})
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "issueStatusId"), []interface{}{"is duplicated"})
 			} else {
 				// If not duplicated then create nested form for further validation
 				projectIssueStatus := models.ProjectIssueStatus{
@@ -230,9 +230,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 				)
 
 				if err := projectIssueStatusForm.Validate(); err != nil {
-					for key, innerErr := range err {
-						form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, key), innerErr)
-					}
+					form.AddNestedErrors(fieldKey, i, err)
 				} else {
 					// only push to final result when nested form has no error
 					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
@@ -275,7 +273,7 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 			if foundIdx := slices.IndexFunc(projectAssignees, func(pa *models.ProjectAssignee) bool {
 				return pa.UserId == userId && pa.DevelopmentRoleId == developentRoleId
 			}); foundIdx != -1 {
-				form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, "userId"), []interface{}{"is duplicated in role"})
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "userId"), []interface{}{"is duplicated in role"})
 			} else {
 				projectAssignee := models.ProjectAssignee{UserId: userId, Active: active, DevelopmentRoleId: developentRoleId}
 				projectAssigneeForm := NewProjectCreateProjectAssigneeFormValidator(
@@ -286,7 +284,7 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 
 				if err := projectAssigneeForm.Validate(); err != nil {
 					for key, innerErr := range err {
-						form.AddError(fmt.Sprintf("%s.%d.%s", fieldKey, i, key), innerErr)
+						form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, key), innerErr)
 					}
 				} else {
 					projectAssignees = append(projectAssignees, &projectAssignee)
