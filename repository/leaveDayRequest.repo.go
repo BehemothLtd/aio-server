@@ -29,5 +29,7 @@ func (ldr *LeaveDayRequestRepository) List(
 ) error {
 	dbTables := ldr.db.Model(&models.LeaveDayRequest{})
 
-	return dbTables.Scopes(helpers.Paginate(dbTables.Scopes()))
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Scopes(), paginationData),
+	).Order("id desc").Find(&leaveDayRequests).Error
 }

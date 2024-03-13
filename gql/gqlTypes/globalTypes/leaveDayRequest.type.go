@@ -56,6 +56,10 @@ func (lt *LeaveDayRequestType) RequestState(context.Context) *string {
 	return &value
 }
 
+// func (lt *LeaveDayRequestType) TimeOff(context.Context) *float32 {
+// 	return &lt.LeaveDayRequest.TimeOff
+// }
+
 func (lt *LeaveDayRequestType) Reason(context.Context) *string {
 	return &lt.LeaveDayRequest.Reason
 }
@@ -66,4 +70,8 @@ func (lt *LeaveDayRequestType) CreatedAt(context.Context) *graphql.Time {
 
 func (lt *LeaveDayRequestType) UpdatedAt(context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&lt.LeaveDayRequest.UpdatedAt)
+}
+
+func (lt *LeaveDayRequestType) LockVersion(ctx context.Context) int32 {
+	return lt.LeaveDayRequest.LockVersion
 }

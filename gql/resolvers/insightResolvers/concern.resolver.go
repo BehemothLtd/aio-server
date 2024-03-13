@@ -41,3 +41,13 @@ func (r *Resolver) UsersSliceToTypes(users []*models.User) *[]*globalTypes.UserT
 
 	return &resolvers
 }
+
+func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayRequest) *[]*globalTypes.LeaveDayRequestType {
+	resolvers := make([]*globalTypes.LeaveDayRequestType, len(requests))
+
+	for i, rq := range requests {
+		resolvers[i] = &globalTypes.LeaveDayRequestType{LeaveDayRequest: rq}
+	}
+
+	return &resolvers
+}
