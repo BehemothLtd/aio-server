@@ -1,7 +1,7 @@
 package insightResolvers
 
 import (
-	// "aio-server/enums"
+	"aio-server/enums"
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
@@ -12,9 +12,9 @@ import (
 
 // Clients resolves the query for retrieving a collection of clients.
 func (r *Resolver) Clients(ctx context.Context, args insightInputs.ClientsInput) (*insightTypes.ClientsType, error) {
-	// if _, err := r.Authorize(ctx, enums.PermissionTargetTypeClients.String(), enums.PermissionActionTypeRead.String()); err != nil {
-	// 	return nil, err
-	// }
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeClients.String(), enums.PermissionActionTypeRead.String()); err != nil {
+		return nil, err
+	}
 
 	var clients []*models.Client
 	clientQuery, paginationData := args.ToPaginationDataAndQuery()

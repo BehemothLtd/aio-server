@@ -1,7 +1,7 @@
 package insightResolvers
 
 import (
-	// "aio-server/enums"
+	"aio-server/enums"
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
@@ -12,9 +12,9 @@ import (
 
 // UserGroups resolves the query for retrieving a collection of userGroups.
 func (r *Resolver) UserGroups(ctx context.Context, args insightInputs.UserGroupsInput) (*insightTypes.UserGroupsType, error) {
-	// if _, err := r.Authorize(ctx, enums.PermissionTargetTypeUserGroups.String(), enums.PermissionActionTypeRead.String()); err != nil {
-	// 	return nil, err
-	// }
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeUserGroups.String(), enums.PermissionActionTypeRead.String()); err != nil {
+		return nil, err
+	}
 
 	var userGroups []*models.UserGroup
 	userGroupsQuery, paginationData := args.ToPaginationDataAndQuery()
