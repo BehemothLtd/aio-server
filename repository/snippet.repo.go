@@ -121,3 +121,23 @@ func (r *SnippetRepository) Update(snippet *models.Snippet) error {
 
 	return r.db.Table("snippets").Omit("FavoritedUsers", "FavoritesCount", "Pins").Updates(&snippet).Error
 }
+
+func (r *SnippetRepository) Delete(snippet *models.Snippet) error {
+	err := r.db.Transaction(func(cx *gorm.DB) error {
+		if err := cx.Delete(&snippet).Error; err != nil {
+			return err
+		}
+
+		if err := cx.Delete(&models.SnippetsCollection{}, "snippet_id = ? ", snippet.Id).Error; err != nil {
+			return err
+		}
+		if err := cx.Delete(&models.SnippetsTag{}, "snippet_id = ? ", snippet.Id).Error; err != nil {
+			return err
+		}
+		if err := cx.Delete(&models.SnippetsFavorite{}, "snippet_id = ?", snippet.Id).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
+}
