@@ -1,8 +1,10 @@
 type ProjectSprint {
   id: ID
   title: String!
-  projectID: ID
+  projectId: ID
   startDate: Time
   createdAt: Time
   updatedAt: Time
+  archived: Boolean!
+  lockVersion: Int!
 }
