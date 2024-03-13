@@ -9,6 +9,11 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
+  UsersAll(): [UsersAllInfo]
+  
+  IssueStatusesAll(): [IssueStatus]
+
+  DevelopmentRoles(): [DevelopmentRole]
 }
 
 type Mutation {

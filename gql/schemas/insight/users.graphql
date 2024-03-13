@@ -27,6 +27,11 @@ type UserPrivateInfo {
   name: String
 }
 
+type UsersAllInfo {
+  id: ID
+  name: String
+}
+
 type UserCollection {
   collection: [User!]
   metadata: Metadata
