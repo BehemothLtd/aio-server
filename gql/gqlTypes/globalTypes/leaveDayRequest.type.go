@@ -37,11 +37,11 @@ func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {
 }
 
 func (lt *LeaveDayRequestType) From(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(lt.LeaveDayRequest.From)
+	return helpers.GqlTimePointer(&lt.LeaveDayRequest.From)
 }
 
 func (lt *LeaveDayRequestType) To(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(lt.LeaveDayRequest.To)
+	return helpers.GqlTimePointer(&lt.LeaveDayRequest.To)
 }
 
 func (lt *LeaveDayRequestType) RequestType(ctx context.Context) *string {
@@ -61,9 +61,9 @@ func (lt *LeaveDayRequestType) Reason(context.Context) *string {
 }
 
 func (lt *LeaveDayRequestType) CreatedAt(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(lt.LeaveDayRequest.CreatedAt)
+	return helpers.GqlTimePointer(&lt.LeaveDayRequest.CreatedAt)
 }
 
 func (lt *LeaveDayRequestType) UpdatedAt(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(lt.LeaveDayRequest.UpdatedAt)
+	return helpers.GqlTimePointer(&lt.LeaveDayRequest.UpdatedAt)
 }

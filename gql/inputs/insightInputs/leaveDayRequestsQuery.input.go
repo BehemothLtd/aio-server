@@ -1,4 +1,4 @@
-package insightinputs
+package insightInputs
 
 type LeaveDayRequestsQueryInput struct {
 	RequestType  *string
