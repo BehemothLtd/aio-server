@@ -1,7 +1,7 @@
 type DeviceType {
   id: ID
   name: String
-  devicesCount: Int!
+  devicesCount: Int
   createdAt: Time
   updatedAt: Time
 }

@@ -20,8 +20,8 @@ func (dtt *DeviceTypeType) Name(context.Context) *string {
 	return &dtt.DeviceType.Name
 }
 
-func (dtt *DeviceTypeType) DevicesCount(context.Context) int32 {
-	return int32(len(dtt.DeviceType.Devices))
+func (dtt *DeviceTypeType) DevicesCount(context.Context) *int32 {
+	return helpers.Int32Pointer(int32(len(dtt.DeviceType.Devices)))
 }
 
 func (dtt *DeviceTypeType) CreatedAt(context.Context) *graphql.Time {
