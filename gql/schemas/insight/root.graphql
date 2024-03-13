@@ -9,6 +9,8 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
+
+  Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
 }
 
 type Mutation {
