@@ -20,8 +20,8 @@ func NewProjectSprintRepository(c *context.Context, db *gorm.DB) *ProjectSprintR
 	}
 }
 
-func (r *ProjectSprintRepository) FindById(projectSprint *models.ProjectSprint, id int32) error {
+func (r *ProjectSprintRepository) Find(projectSprint *models.ProjectSprint) error {
 	dbTables := r.db.Model(&models.ProjectSprint{})
 
-	return dbTables.First(&projectSprint, id).Error
+	return dbTables.Where(&projectSprint).First(&projectSprint).Error
 }

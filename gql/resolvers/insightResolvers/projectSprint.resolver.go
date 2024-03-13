@@ -23,15 +23,15 @@ func (r *Resolver) ProjectSprint(ctx context.Context, args insightInputs.Project
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
 
-	projectSprintID, err := helpers.GqlIdToInt32(args.Id)
+	projectSprintId, err := helpers.GqlIdToInt32(args.Id)
 
 	if err != nil {
 		return nil, err
 	}
 
-	projectSprint := models.ProjectSprint{}
+	projectSprint := models.ProjectSprint{Id: projectSprintId}
 	repo := repository.NewProjectSprintRepository(&ctx, r.Db)
-	err = repo.FindById(&projectSprint, projectSprintID)
+	err = repo.Find(&projectSprint)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
