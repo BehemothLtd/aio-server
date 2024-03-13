@@ -208,6 +208,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 	if form.ProjectIssueStatuses != nil {
 		projectIssueStatuses := []*models.ProjectIssueStatus{}
 
+		position := 1
 		for i, projectIssueStatusInput := range form.ProjectIssueStatuses {
 			issueStatusId := projectIssueStatusInput.IssueStatusId
 
@@ -234,11 +235,11 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 					}
 				} else {
 					// only push to final result when nested form has no error
-					// TODO: fix position
 					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
 						IssueStatusId: issueStatusId,
-						Position:      i + 1,
+						Position:      position,
 					})
+					position += 1
 				}
 			}
 		}
