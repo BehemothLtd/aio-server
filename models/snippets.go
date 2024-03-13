@@ -19,15 +19,10 @@ type Snippet struct {
 	FavoritedUsers []User            `gorm:"many2many:snippets_favorites"`
 	Pins           []Pin             `gorm:"polymorphic:Parent;polymorphicValue:1"`
 	Tags           []*Tag            `gorm:"many2many:snippets_tags;"`
+	Favorited      bool
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 	LockVersion    int32 `gorm:"not null;default:0"`
-}
-
-type SnippetFavorited struct {
-	Id             int32
-	Favorited      bool
-	FavoritesCount int32 `gorm:"not null;default:0"`
 }
 
 func (s *Snippet) EncryptContent(Passkey string) error {

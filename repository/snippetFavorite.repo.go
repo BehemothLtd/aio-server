@@ -39,41 +39,62 @@ func (r *SnippetFavoriteRepository) FindByUserAndSnippet(
 }
 
 // Toggle toggles a snippet favorite.
-func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (result *models.SnippetFavorited, err error) {
-	dbTables := r.db.Table("snippets_favorites")
-
-	snippetFavorited := models.SnippetsFavorite{UserId: user.Id, SnippetId: snippet.Id}
-
-	found, err := r.FindByUserAndSnippet(&snippetFavorited)
-
-	if err != nil {
-		return nil, err
-	}
-
-	if found != nil {
-		// Found -> delete -> unfavorited
-		deleteResult := dbTables.Where(&snippetFavorited).Delete(&snippetFavorited)
-
-		if deleteResult.Error != nil {
-			return nil, deleteResult.Error
+func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (result *models.Snippet, err error) {
+	err = r.db.Transaction(func(tx *gorm.DB) error {
+		snippetFavorited := models.SnippetsFavorite{UserId: user.Id, SnippetId: snippet.Id}
+		found, err := r.FindByUserAndSnippet(&snippetFavorited)
+		if err != nil {
+			return err
 		}
 
-		return &models.SnippetFavorited{
-			Id:             snippet.Id,
-			Favorited:      false,
-			FavoritesCount: int32(snippet.FavoritesCount - 1),
-		}, nil
-	}
+		snippetFavoriteDb := tx.Table("snippets_favorites")
+		snippetDb := tx.Table("snippets")
+		if found != nil {
+			// Found -> delete -> unfavorited
+			deleteResult := snippetFavoriteDb.Where(&snippetFavorited).Delete(&snippetFavorited)
+			if deleteResult.Error != nil {
+				return deleteResult.Error
+			}
 
-	// Not Found -> create -> favorited
-	createResult := dbTables.Create(&snippetFavorited)
-	if createResult.Error != nil {
-		return nil, createResult.Error
-	}
+			updateResult := snippetDb.Where(&snippet).UpdateColumn("favorites_count", gorm.Expr("favorites_count - ?", 1))
+			if updateResult.Error != nil {
+				return updateResult.Error
+			}
 
-	return &models.SnippetFavorited{
-		Id:             snippet.Id,
-		Favorited:      true,
-		FavoritesCount: int32(snippet.FavoritesCount + 1),
-	}, nil
+			if err := tx.First(&snippet, snippet.Id).Error; err != nil {
+				return err
+			}
+
+			result = &models.Snippet{
+				Id:             snippet.Id,
+				Favorited:      false,
+				FavoritesCount: snippet.FavoritesCount,
+			}
+		} else {
+			// Not Found -> create -> favorited
+			createResult := snippetFavoriteDb.Create(&snippetFavorited)
+			if createResult.Error != nil {
+				return createResult.Error
+			}
+
+			updateResult := snippetDb.Where(&snippet).UpdateColumn("favorites_count", gorm.Expr("favorites_count + ?", 1))
+			if updateResult.Error != nil {
+				return updateResult.Error
+			}
+
+			if err := tx.First(&snippet, snippet.Id).Error; err != nil {
+				return err
+			}
+
+			result = &models.Snippet{
+				Id:             snippet.Id,
+				Favorited:      true,
+				FavoritesCount: snippet.FavoritesCount,
+			}
+		}
+
+		return nil
+	})
+
+	return result, err
 }
