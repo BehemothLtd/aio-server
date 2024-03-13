@@ -3,9 +3,9 @@ package models
 import "time"
 
 type SnippetsCollection struct {
-	Id           int32 `gorm:"not null;autoIncrement"`
-	SnippetId    int32 `gorm:"not null"`
-	CollectionId int32 `gorm:"not null"`
+	Id           int32
+	SnippetId    int32
+	CollectionId int32
 	Snippet      Snippet
 	Collection   Collection
 	CreatedAt    time.Time

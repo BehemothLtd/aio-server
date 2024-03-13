@@ -3,6 +3,7 @@ package globalTypes
 import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
+	"aio-server/pkg/systems"
 	"context"
 
 	"github.com/graph-gophers/graphql-go"
@@ -30,4 +31,20 @@ func (tt *ProjectAssigneeType) JoinDate(ctx context.Context) *graphql.Time {
 
 func (tt *ProjectAssigneeType) LeaveDate(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(tt.ProjectAssignee.LeaveDate)
+}
+
+func (tt *ProjectAssigneeType) UserId(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(tt.ProjectAssignee.UserId)
+}
+
+func (tt *ProjectAssigneeType) DevelopmentRoleId(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(tt.ProjectAssignee.DevelopmentRoleId)
+}
+
+func (tt *ProjectAssigneeType) DevelopmentRole(ctx context.Context) *DevelopentRoleType {
+	developmentRole := systems.FindDevelopmentRoleById(tt.ProjectAssignee.DevelopmentRoleId)
+
+	return &DevelopentRoleType{
+		DevelopmentRole: developmentRole,
+	}
 }

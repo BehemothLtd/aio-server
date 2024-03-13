@@ -49,11 +49,11 @@ func (st *SnippetType) FavoritesCount(ctx context.Context) *int32 {
 }
 
 func (st *SnippetType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(st.Snippet.CreatedAt)
+	return helpers.GqlTimePointer(&st.Snippet.CreatedAt)
 }
 
 func (st *SnippetType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(st.Snippet.UpdatedAt)
+	return helpers.GqlTimePointer(&st.Snippet.UpdatedAt)
 }
 
 func (st *SnippetType) LockVersion(ctx context.Context) int32 {

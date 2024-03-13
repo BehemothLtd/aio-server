@@ -1,0 +1,5 @@
+type DevelopmentRole {
+  id: ID
+  code: String
+  title: String
+}

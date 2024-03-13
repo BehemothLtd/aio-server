@@ -3,9 +3,9 @@ package models
 import "time"
 
 type UsersUserGroup struct {
-	Id          int32 `gorm:"not null;autoIncrement"`
-	UserId      int32 `gorm:"not null"`
-	UserGroupId int32 `gorm:"not null"`
+	Id          int32
+	UserId      int32
+	UserGroupId int32
 	User        User
 	UserGroup   UserGroup
 	CreatedAt   time.Time

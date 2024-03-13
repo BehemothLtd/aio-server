@@ -30,5 +30,9 @@ func (pcs *ProjectCreateService) Execute() (*models.Project, error) {
 		return nil, err
 	}
 
+	// repo := repository.NewProjectRepository(pcs.Ctx, pcs.Db.Preload("ProjectIssueStatuses"))
+	// createdProject := models.Project{Id: project.Id}
+	// repo.Find(&createdProject)
+
 	return &project, nil
 }

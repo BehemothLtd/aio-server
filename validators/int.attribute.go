@@ -2,6 +2,7 @@ package validators
 
 import (
 	"fmt"
+	"time"
 
 	"golang.org/x/exp/constraints"
 )
@@ -18,12 +19,12 @@ func (attribute *IntAttribute[T]) GetCode() string {
 }
 
 // GetErrors returns the errors associated with the attribute.
-func (attribute *IntAttribute[T]) GetErrors() []string {
+func (attribute *IntAttribute[T]) GetErrors() []interface{} {
 	return attribute.Errors
 }
 
 // AddError adds an error message to the attribute.
-func (attribute *IntAttribute[T]) AddError(message string) {
+func (attribute *IntAttribute[T]) AddError(message interface{}) {
 	attribute.Errors = append(attribute.Errors, ValidationMessage(attribute.Name, message))
 }
 
@@ -45,4 +46,12 @@ func (attribute *IntAttribute[T]) ValidateLimit(min *int, max *int64) {
 	if max != nil && value > *max {
 		attribute.AddError(fmt.Sprintf("is too large. Max value is %d", *max))
 	}
+}
+
+func (attribute *IntAttribute[T]) ValidateFormat(formatter string, formatterRemind string) {
+	// No need to implement yet
+}
+
+func (attribute *IntAttribute[T]) Time() *time.Time {
+	return nil
 }

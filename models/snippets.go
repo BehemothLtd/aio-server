@@ -9,7 +9,7 @@ import (
 )
 
 type Snippet struct {
-	Id             int32  `gorm:"not null;autoIncrement"`
+	Id             int32  `gorm:"not null;"`
 	Title          string `gorm:"not null;type:varchar(255);default:null"`
 	Content        string `gorm:"not null;type:longtext;default:null"`
 	UserId         int32  `gorm:"not null;type:bigint;default:null"`
@@ -21,7 +21,7 @@ type Snippet struct {
 	Tags           []*Tag            `gorm:"many2many:snippets_tags;"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	LockVersion    int32 `gorm:"not null;autoIncrement;default:0"`
+	LockVersion    int32 `gorm:"not null;default:0"`
 }
 
 func (s *Snippet) EncryptContent(Passkey string) error {

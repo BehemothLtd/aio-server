@@ -6,11 +6,12 @@ import (
 )
 
 type IssueStatus struct {
-	Id         int32 `gorm:"not null;autoIncrement"`
+	Id         int32
 	Color      string
 	StatusType enums.IssueStatusStatusType
 	Title      string
 
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	LockVersion int32 `gorm:"default:1"`
 }

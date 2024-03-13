@@ -38,9 +38,9 @@ func (ct *CollectionType) Snippets(ctx context.Context) *[]*SnippetType {
 }
 
 func (ct *CollectionType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(ct.Collection.CreatedAt)
+	return helpers.GqlTimePointer(&ct.Collection.CreatedAt)
 }
 
 func (ct *CollectionType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(ct.Collection.UpdatedAt)
+	return helpers.GqlTimePointer(&ct.Collection.UpdatedAt)
 }
