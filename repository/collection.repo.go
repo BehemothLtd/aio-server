@@ -65,7 +65,6 @@ func (cr *Repository) Delete(collection *models.Collection) error {
 			if err := cx.Delete(&models.SnippetsCollection{}, "collection_id = ?", collection.Id).Error; err != nil {
 				return err
 			}
-
 			return nil
 		})
 
