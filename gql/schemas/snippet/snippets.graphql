@@ -29,8 +29,6 @@ type SnippetsCollection {
 
 type SnippetFavorite {
   favorited: Boolean!
-  favoritesCount: Int!
-  id: Int!
 }
 
 type SnippetModification {

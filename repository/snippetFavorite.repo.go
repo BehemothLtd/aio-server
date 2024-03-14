@@ -61,14 +61,8 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 				return updateResult.Error
 			}
 
-			if err := tx.First(&snippet, snippet.Id).Error; err != nil {
-				return err
-			}
-
 			result = &models.Snippet{
-				Id:             snippet.Id,
-				Favorited:      false,
-				FavoritesCount: snippet.FavoritesCount,
+				Favorited: false,
 			}
 		} else {
 			// Not Found -> create -> favorited
@@ -82,14 +76,8 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 				return updateResult.Error
 			}
 
-			if err := tx.First(&snippet, snippet.Id).Error; err != nil {
-				return err
-			}
-
 			result = &models.Snippet{
-				Id:             snippet.Id,
-				Favorited:      true,
-				FavoritesCount: snippet.FavoritesCount,
+				Favorited: true,
 			}
 		}
 
