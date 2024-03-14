@@ -48,3 +48,7 @@ func (attribute *SliceAttribute[T]) ValidateFormat(formatter string, formatterRe
 func (attribute *SliceAttribute[T]) Time() *time.Time {
 	return nil
 }
+
+func (attribute *SliceAttribute[T]) IsClean() bool {
+	return len(attribute.Errors) == 0
+}
