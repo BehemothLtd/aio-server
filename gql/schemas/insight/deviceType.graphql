@@ -1,0 +1,12 @@
+type DeviceType {
+  id: ID
+  name: String
+  devicesCount: Int
+  createdAt: Time
+  updatedAt: Time
+}
+
+type DeviceTypeCollection {
+  collection: [DeviceType!]
+  metadata: Metadata!
+}

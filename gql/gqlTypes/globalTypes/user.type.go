@@ -124,3 +124,8 @@ func (ut *UserType) State(context.Context) string {
 func (ut *UserType) SlackId(context.Context) *string {
 	return ut.User.SlackId
 }
+
+// LockVersion returns the lock version of the user.
+func (sir *UserType) LockVersion(context.Context) int32 {
+	return sir.User.LockVersion
+}
