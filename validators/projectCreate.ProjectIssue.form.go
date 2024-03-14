@@ -63,5 +63,9 @@ func (form *ProjectCreateProjectIssueForm) validateIssueStatusId() *ProjectCreat
 		}
 	}
 
+	if field.IsClean() {
+		form.ProjectIssueStatus.IssueStatusId = form.IssueStatusId
+	}
+
 	return form
 }

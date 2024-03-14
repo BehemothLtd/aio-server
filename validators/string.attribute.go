@@ -2,6 +2,7 @@ package validators
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -29,7 +30,7 @@ func (attribute *StringAttribute) AddError(message interface{}) {
 
 // ValidateRequired validates if the string attribute is required.
 func (attribute *StringAttribute) ValidateRequired() {
-	if attribute.Value == "" {
+	if attribute.Value == "" || strings.TrimSpace(attribute.Value) == "" {
 		attribute.AddError("is required")
 	}
 }
@@ -57,4 +58,8 @@ func (attribute *StringAttribute) ValidateFormat(formatter string, formatterRemi
 
 func (attribute *StringAttribute) Time() *time.Time {
 	return nil
+}
+
+func (attribute *StringAttribute) IsClean() bool {
+	return len(attribute.Errors) == 0
 }

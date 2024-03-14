@@ -28,6 +28,19 @@ input ProjectCreateInput {
   projectAssignees: [ProjectAssigneeInputForProjectCreate!]!
 }
 
-type ProjectModifycation {
+input ProjectUpdateInput {
+  name: String
+  projectPriority: String
+  description: String
+  clientId: Int
+  state: String
+  projectType: String
+  sprintDuration: Int
+  startedAt: Time
+  endedAt: Time
+  lockVersion: Int
+}
+
+type ProjectModification {
   project: Project
 }

@@ -51,3 +51,7 @@ func (attribute *TimeAttribute) ValidateFormat(formatter string, formatterRemind
 func (attribute *TimeAttribute) Time() *time.Time {
 	return attribute.TimeValue
 }
+
+func (attribute *TimeAttribute) IsClean() bool {
+	return len(attribute.Errors) == 0
+}
