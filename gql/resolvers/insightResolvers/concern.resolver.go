@@ -42,6 +42,14 @@ func (r *Resolver) UsersSliceToTypes(users []*models.User) *[]*globalTypes.UserT
 	return &resolvers
 }
 
+func (r *Resolver) DeviceTypesSlideToType(deviceTypes []*models.DeviceType) *[]*globalTypes.DeviceTypeType {
+	resolvers := make([]*globalTypes.DeviceTypeType, len(deviceTypes))
+	for i, d := range deviceTypes {
+		resolvers[i] = &globalTypes.DeviceTypeType{DeviceType: d}
+	}
+	return &resolvers
+}
+
 // fromClients converts models.Client slice to []*ClientType.
 func (r *Resolver) ClientSliceToTypes(clients []*models.Client) *[]*globalTypes.ClientType {
     resolvers := make([]*globalTypes.ClientType, len(clients))

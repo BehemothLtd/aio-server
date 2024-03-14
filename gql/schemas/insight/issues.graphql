@@ -1,0 +1,5 @@
+type Issue {
+  id: ID
+  code: String
+  title: String
+}

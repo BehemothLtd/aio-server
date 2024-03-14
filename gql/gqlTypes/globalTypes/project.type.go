@@ -1,6 +1,7 @@
 package globalTypes
 
 import (
+	"aio-server/enums"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -43,31 +44,35 @@ func (tt *ProjectType) State(ctx context.Context) string {
 }
 
 func (tt *ProjectType) ActivedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.ActivedAt)
+	return helpers.GqlTimePointer(tt.Project.ActivedAt)
 }
 
 func (tt *ProjectType) InactivedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.InactivedAt)
+	return helpers.GqlTimePointer(tt.Project.InactivedAt)
 }
 
 func (tt *ProjectType) StartedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.StartedAt)
+	return helpers.GqlTimePointer(tt.Project.StartedAt)
 }
 
 func (tt *ProjectType) EndedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(*tt.Project.EndedAt)
+	return helpers.GqlTimePointer(tt.Project.EndedAt)
 }
 
 func (tt *ProjectType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.CreatedAt)
+	return helpers.GqlTimePointer(&tt.Project.CreatedAt)
 }
 
 func (tt *ProjectType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.UpdatedAt)
+	return helpers.GqlTimePointer(&tt.Project.UpdatedAt)
 }
 
 func (tt *ProjectType) SprintDuration(ctx context.Context) *int32 {
-	return nil
+	if tt.Project.ProjectType == enums.ProjectTypeKanban {
+		return nil
+	} else {
+		return helpers.Int32Pointer(int32(*tt.Project.SprintDuration))
+	}
 }
 
 func (pt *ProjectType) ClientId(ctx context.Context) *graphql.ID {
@@ -79,9 +84,25 @@ func (pt *ProjectType) CurrentSprintId(ctx context.Context) *graphql.ID {
 }
 
 func (pt *ProjectType) ProjectAssignees(ctx context.Context) *[]*ProjectAssigneeType {
-	return nil
+	result := make([]*ProjectAssigneeType, len(pt.Project.ProjectAssignees))
+
+	for i, projectAssignee := range pt.Project.ProjectAssignees {
+		result[i] = &ProjectAssigneeType{
+			ProjectAssignee: projectAssignee,
+		}
+	}
+
+	return &result
 }
 
 func (pt *ProjectType) ProjectIssueStatuses(ctx context.Context) *[]*ProjectIssueStatusType {
-	return nil
+	result := make([]*ProjectIssueStatusType, len(pt.Project.ProjectIssueStatuses))
+
+	for i, projectIssueStatus := range pt.Project.ProjectIssueStatuses {
+		result[i] = &ProjectIssueStatusType{
+			ProjectIssueStatus: projectIssueStatus,
+		}
+	}
+
+	return &result
 }

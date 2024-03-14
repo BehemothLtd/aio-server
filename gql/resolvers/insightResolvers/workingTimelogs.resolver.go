@@ -1,0 +1,38 @@
+package insightResolvers
+
+import (
+	"aio-server/gql/gqlTypes/globalTypes"
+	"aio-server/gql/gqlTypes/insightTypes"
+	"aio-server/gql/inputs/insightInputs"
+	"aio-server/models"
+	"aio-server/repository"
+	"context"
+)
+
+func (r *Resolver) MmWorkingTimelogs(ctx context.Context, args insightInputs.WorkingTimelogsInput) (*insightTypes.WorkingTimelogsType, error) {
+	var workingTimelogs []*models.WorkingTimelog
+
+	workingTimelogQuery, paginationData := args.ToPaginationDataAndQuery()
+
+	repo := repository.NewWorkingTimelogRepository(&ctx, r.Db.Preload("User").Preload("Project").Preload("Issue"))
+
+	err := repo.List(&workingTimelogs, &paginationData, workingTimelogQuery)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*insightTypes.WorkingTimelogType, len(workingTimelogs))
+
+	for i, workingTimelog := range workingTimelogs {
+		result[i] = &insightTypes.WorkingTimelogType{
+			WorkingTimelog: workingTimelog,
+		}
+	}
+
+	return &insightTypes.WorkingTimelogsType{
+		Collection: &result,
+		Metadata: &globalTypes.MetadataType{
+			Metadata: &paginationData.Metadata,
+		},
+	}, nil
+}

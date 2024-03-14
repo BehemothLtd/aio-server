@@ -6,7 +6,7 @@ schema {
 type Query {
   SelfInfo: UserPrivateInfo!
 
-  Snippet(id: ID!): Snippet!
+  Snippet(slug: String!): Snippet!
   Snippets(input: PagyInput, query: SnippetsQuery): SnippetsCollection!
   SelfSnippets(input: PagyInput, query: SelfSnippetsQuery): SnippetsCollection!
   SelfPinnedSnippets(
@@ -30,6 +30,7 @@ type Mutation {
   SnippetFavorite(id: ID!): SnippetFavorite!
   SnippetCreate(input: SnippetInput!): SnippetModification!
   SnippetUpdate(id: ID!, input: SnippetInput!): SnippetModification!
+  SnippetDelete(id: ID!): String
 
   # SnippetsTags
   SnippetAddTag(id: ID!, tagId: ID!): Boolean!

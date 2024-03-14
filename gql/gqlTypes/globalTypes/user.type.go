@@ -57,7 +57,7 @@ func (ut *UserType) AvatarUrl(context.Context) *string {
 
 // CreatedAt returns the CreatedAt of the user.
 func (ut *UserType) CreatedAt(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(ut.User.CreatedAt)
+	return helpers.GqlTimePointer(&ut.User.CreatedAt)
 }
 
 // CompanyLevelId returns the CompanyLevelId of the user.
@@ -112,7 +112,7 @@ func (ut *UserType) Gender(context.Context) *string {
 
 // Birthday returns the Birthday of the user.
 func (ut *UserType) Birthday(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(ut.User.Birthday)
+	return helpers.GqlTimePointer(&ut.User.Birthday)
 }
 
 // State returns the State of the user.
@@ -123,4 +123,9 @@ func (ut *UserType) State(context.Context) string {
 // SlackId returns the SlackId of the user.
 func (ut *UserType) SlackId(context.Context) *string {
 	return ut.User.SlackId
+}
+
+// LockVersion returns the lock version of the user.
+func (sir *UserType) LockVersion(context.Context) int32 {
+	return sir.User.LockVersion
 }

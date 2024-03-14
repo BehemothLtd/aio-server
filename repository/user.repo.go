@@ -122,7 +122,7 @@ func (r *Repository) slackIdLike(slackIdLike *string) func(db *gorm.DB) *gorm.DB
 		if slackIdLike == nil {
 			return db
 		} else {
-			return db.Where(gorm.Expr(`lower(users.name) LIKE ?`, strings.ToLower("%"+*slackIdLike+"%")))
+			return db.Where(gorm.Expr(`lower(users.slack_id) LIKE ?`, strings.ToLower("%"+*slackIdLike+"%")))
 		}
 	}
 }
@@ -145,4 +145,8 @@ func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 func (r *UserRepository) Update(user *models.User, fields []string) error {
 	// TODO: handle NULL value save into DB
 	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
+}
+
+func (r *UserRepository) All(users *[]*models.User) error {
+	return r.db.Table("users").Order("id ASC").Find(&users).Error
 }

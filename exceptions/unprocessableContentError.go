@@ -11,7 +11,7 @@ type ResourceModifyErrors struct {
 	Errors []string `json:"errors"`
 }
 
-type ResourceModificationError map[string][]string
+type ResourceModificationError map[string][]interface{}
 
 // UnprocessableContentError represents an unprocessable content error.
 type UnprocessableContentError struct {
@@ -28,9 +28,9 @@ func (e UnprocessableContentError) Error() string {
 // Extensions returns additional data associated with the error.
 func (e UnprocessableContentError) Extensions() map[string]interface{} {
 	return map[string]interface{}{
-		"code":         e.Code,
-		"message":      e.Message,
-		"errors":       e.Errors,
+		"code":    e.Code,
+		"message": e.Message,
+		"errors":  e.Errors,
 	}
 }
 
@@ -44,13 +44,12 @@ func NewUnprocessableContentError(message string, errors ResourceModificationErr
 	return &UnprocessableContentError{
 		Code:    constants.UnprocessableContentErrorCode,
 		Message: message,
-		Errors: errors,
+		Errors:  errors,
 	}
 }
 
-
 // AddError adds a new ResourceModifyErrors to the UnprocessableContentError.
-func (e *UnprocessableContentError) AddError(field string, errors []string) {
+func (e *UnprocessableContentError) AddError(field string, errors []interface{}) {
 	if e.Errors == nil {
 		e.Errors = ResourceModificationError{}
 	}
@@ -58,6 +57,7 @@ func (e *UnprocessableContentError) AddError(field string, errors []string) {
 	if e.Errors[field] == nil {
 		e.Errors[field] = errors
 	} else {
+
 		e.Errors[field] = append(e.Errors[field], errors...)
 	}
 }

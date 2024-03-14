@@ -23,12 +23,12 @@ func (r *Resolver) ProjectCreate(ctx context.Context, args insightInputs.Project
 		Project: &project,
 	}
 
-	if project, err := service.Execute(); err != nil {
+	if err := service.Execute(); err != nil {
 		return nil, err
 	} else {
 		return &insightTypes.ProjectCreatedType{
 			Project: &globalTypes.ProjectType{
-				Project: project,
+				Project: &project,
 			},
 		}, nil
 	}

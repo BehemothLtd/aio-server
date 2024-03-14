@@ -25,11 +25,12 @@ func NewSnippetRepository(c *context.Context, db *gorm.DB) *SnippetRepository {
 	}
 }
 
-// FindById finds a snippet by its ID.
-func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
-	dbTables := r.db.Model(&models.Snippet{})
+// FindById finds a snippet by its attribute.
 
-	return dbTables.First(&snippet, id).Error
+func (r *Repository) FindSnippetByAttr(snippet *models.Snippet) error {
+	dbTables := r.db.Table("snippets")
+
+	return dbTables.Where(&snippet).First(&snippet).Error
 }
 
 // List retrieves a list of snippets based on provided pagination data and query.
@@ -120,4 +121,24 @@ func (r *SnippetRepository) Update(snippet *models.Snippet) error {
 	snippet.LockVersion += 1
 
 	return r.db.Table("snippets").Omit("FavoritedUsers", "FavoritesCount", "Pins").Updates(&snippet).Error
+}
+
+func (r *SnippetRepository) Delete(snippet *models.Snippet) error {
+	err := r.db.Transaction(func(cx *gorm.DB) error {
+		if err := cx.Delete(&snippet).Error; err != nil {
+			return err
+		}
+
+		if err := cx.Delete(&models.SnippetsCollection{}, "snippet_id = ? ", snippet.Id).Error; err != nil {
+			return err
+		}
+		if err := cx.Delete(&models.SnippetsTag{}, "snippet_id = ? ", snippet.Id).Error; err != nil {
+			return err
+		}
+		if err := cx.Delete(&models.SnippetsFavorite{}, "snippet_id = ?", snippet.Id).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }

@@ -9,6 +9,18 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
+  ProjectSprint(id: ID!): ProjectSprint!
+  UsersAll(): [UsersAllInfo]
+  
+  IssueStatusesAll(): [IssueStatus]
+
+  DevelopmentRoles(): [DevelopmentRole]
+
+  MmWorkingTimelog(id: ID!): WorkingTimelog
+  MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
+
+  DeviceType(id: ID!): DeviceType!
+  DeviceTypes(input: PagyInput): DeviceTypeCollection!
 
   Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
 }
@@ -21,7 +33,8 @@ type Mutation {
 
   UserToggleActive(id: ID!): UserActiveState
 
-  ProjectCreate(input: ProjectCreateInput!): ProjectModifycation!
+  ProjectCreate(input: ProjectCreateInput!): ProjectModification!
+  ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 }
 
 scalar Time

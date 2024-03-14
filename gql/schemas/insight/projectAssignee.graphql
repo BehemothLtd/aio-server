@@ -3,11 +3,14 @@ type ProjectAssignee {
   active: Boolean!
   joinDate: Time
   leaveDate: Time
+  developmentRoleId: ID
+  userId: ID
+  developmentRole: DevelopmentRole
 }
 
 input ProjectAssigneeInputForProjectCreate {
-  userId: ID
-  developmentRoleId: Int
+  userId: ID!
+  developmentRoleId: Int!
   active: Boolean!
-  joinDate: Time
+  joinDate: Time!
 }

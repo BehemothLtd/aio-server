@@ -21,9 +21,9 @@ func (ugt *UserGroupType) Title(ctx context.Context) *string {
 }
 
 func (ugt *UserGroupType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(ugt.UserGroup.CreatedAt)
+	return helpers.GqlTimePointer(&ugt.UserGroup.CreatedAt)
 }
 
 func (ugt *UserGroupType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(ugt.UserGroup.UpdatedAt)
+	return helpers.GqlTimePointer(&ugt.UserGroup.UpdatedAt)
 }

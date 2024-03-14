@@ -23,10 +23,24 @@ input ProjectCreateInput {
   code: String
   description: String
   projectType: String
-  projectIssueStatusIds: [ID!]
-  projectAssignees: [ProjectAssigneeInputForProjectCreate!]
+  sprintDuration: Int
+  projectIssueStatuses: [ProjectIssueStatusInputForProjectCreate!]!
+  projectAssignees: [ProjectAssigneeInputForProjectCreate!]!
 }
 
-type ProjectModifycation {
+input ProjectUpdateInput {
+  name: String
+  projectPriority: String
+  description: String
+  clientId: Int
+  state: String
+  projectType: String
+  sprintDuration: Int
+  startedAt: Time
+  endedAt: Time
+  lockVersion: Int
+}
+
+type ProjectModification {
   project: Project
 }

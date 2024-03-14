@@ -1,0 +1,22 @@
+type WorkingTimelog {
+  description: String!
+  id: ID
+  minutes: Int!
+  loggedAt: Time
+  createdAt: Time
+  updatedAt: Time
+  user: User
+  issue: Issue
+  project: Project
+}
+
+type WorkingTimelogCollection {
+  collection: [WorkingTimelog!]
+  metadata: Metadata
+}
+
+input WorkingTimelogsQuery {
+  descriptionCont: String
+  issueCodeEq: String
+  issueTitleCont: String
+}
