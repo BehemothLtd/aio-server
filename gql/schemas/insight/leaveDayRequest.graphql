@@ -24,9 +24,9 @@ type LeaveDayRequestModification {
 }
 
 input LeaveDayRequestsQuery {
-  requestType: String
-  requestState: String
-  userId: Int
+  requestTypeCont: String
+  requestStateCont: String
+  userIdEq: Int
 }
 
 input LeaveDayRequestInput {
