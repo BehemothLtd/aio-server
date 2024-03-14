@@ -7,3 +7,12 @@ type IssueStatus {
   updatedAt: Time
   lockVersion: Int
 }
+
+input IssueStatusInput {
+  title: String
+  color: String
+}
+
+type IssueStatusModification {
+  issueStatus: IssueStatus
+}
