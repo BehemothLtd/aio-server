@@ -32,7 +32,7 @@ var defaultPermissions = []Permission{
 	{Id: 201, Target: enums.PermissionTargetTypeUserGroups, Action: enums.PermissionActionTypeWrite},
 
 	{Id: 400, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeRead},
-	{Id: 401, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeRead},
+	{Id: 401, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeWrite},
 	{Id: 402, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeDelete},
 }
 
