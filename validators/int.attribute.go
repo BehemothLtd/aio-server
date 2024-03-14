@@ -55,3 +55,7 @@ func (attribute *IntAttribute[T]) ValidateFormat(formatter string, formatterRemi
 func (attribute *IntAttribute[T]) Time() *time.Time {
 	return nil
 }
+
+func (attribute *IntAttribute[T]) IsClean() bool {
+	return len(attribute.Errors) == 0
+}

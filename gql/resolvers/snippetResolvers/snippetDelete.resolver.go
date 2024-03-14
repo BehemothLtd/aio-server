@@ -28,7 +28,7 @@ func (r *Resolver) SnippetDelete(ctx context.Context, args msInputs.SnippetDelet
 	}
 
 	repo := repository.NewSnippetRepository(&ctx, r.Db)
-	err = repo.FindById(&snippet, snippetId)
+	err = repo.FindSnippetByAttr(&snippet)
 
 	if err != nil {
 		return nil, exceptions.NewRecordNotFoundError()
