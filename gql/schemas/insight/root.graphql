@@ -33,6 +33,8 @@ type Mutation {
   UserToggleActive(id: ID!): UserActiveState
 
   ProjectCreate(input: ProjectCreateInput!): ProjectModifycation!
+
+  ProjectSprintDestroy (id: ID!): String
 }
 
 scalar Time
