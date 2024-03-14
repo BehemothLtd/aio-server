@@ -23,6 +23,7 @@ type Query {
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
 
   Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
+  Client(id: ID!): Client!
 }
 
 type Mutation {
