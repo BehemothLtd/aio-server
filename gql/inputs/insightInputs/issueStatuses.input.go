@@ -1,6 +1,7 @@
 package insightInputs
 
 import (
+	"aio-server/enums"
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
 	"strings"
@@ -21,6 +22,13 @@ func (isi *IssueStatusesInput) ToPaginationDataAndQuery() (IssueStatusesQueryInp
 
 	if isi.Query != nil && isi.Query.StatusTypeEq != nil {
 		query.StatusTypeEq = isi.Query.StatusTypeEq
+
+		_, err := enums.ParseIssueStatusStatusType(*isi.Query.StatusTypeEq)
+
+		if err != nil {
+			query.StatusTypeEq = nil
+		}
 	}
+
 	return query, paginationData
 }

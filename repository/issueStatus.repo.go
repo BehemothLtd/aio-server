@@ -50,10 +50,8 @@ func (r *Repository) statusTypeEq(statusTypeEq *string) func(db *gorm.DB) *gorm.
 		if statusTypeEq == nil {
 			return db
 		} else {
-			statusTypeInInt, err := enums.ParseIssueStatusStatusType(*statusTypeEq)
-			if err != nil {
-				return db
-			}
+			statusTypeInInt, _ := enums.ParseIssueStatusStatusType(*statusTypeEq)
+
 			return db.Where(gorm.Expr(`issue_statuses.status_type = ?`, statusTypeInInt))
 		}
 	}
