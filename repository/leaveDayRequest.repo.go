@@ -22,6 +22,7 @@ func NewLeaveDayRequestRepository(c *context.Context, db *gorm.DB) *LeaveDayRequ
 	}
 }
 
+// TODO: handle search with query args
 func (ldr *LeaveDayRequestRepository) List(
 	leaveDayRequests *[]*models.LeaveDayRequest,
 	paginationData *models.PaginationData,
