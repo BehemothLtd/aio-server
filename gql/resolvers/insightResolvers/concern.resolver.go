@@ -41,3 +41,11 @@ func (r *Resolver) UsersSliceToTypes(users []*models.User) *[]*globalTypes.UserT
 
 	return &resolvers
 }
+
+func (r *Resolver) DeviceTypesSlideToType(deviceTypes []*models.DeviceType) *[]*globalTypes.DeviceTypeType {
+	resolvers := make([]*globalTypes.DeviceTypeType, len(deviceTypes))
+	for i, d := range deviceTypes {
+		resolvers[i] = &globalTypes.DeviceTypeType{DeviceType: d}
+	}
+	return &resolvers
+}

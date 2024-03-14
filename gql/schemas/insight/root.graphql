@@ -16,6 +16,9 @@ type Query {
   IssueStatusesAll(): [IssueStatus]
 
   DevelopmentRoles(): [DevelopmentRole]
+
+  DeviceType(id: ID!): DeviceType!
+  DeviceTypes(input: PagyInput): DeviceTypeCollection!
 }
 
 type Mutation {
