@@ -17,6 +17,9 @@ type Query {
 
   DevelopmentRoles(): [DevelopmentRole]
 
+  MmWorkingTimelog(id: ID!): WorkingTimelog
+  MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
+
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
 }

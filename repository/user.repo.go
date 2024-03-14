@@ -122,7 +122,7 @@ func (r *Repository) slackIdLike(slackIdLike *string) func(db *gorm.DB) *gorm.DB
 		if slackIdLike == nil {
 			return db
 		} else {
-			return db.Where(gorm.Expr(`lower(users.name) LIKE ?`, strings.ToLower("%"+*slackIdLike+"%")))
+			return db.Where(gorm.Expr(`lower(users.slack_id) LIKE ?`, strings.ToLower("%"+*slackIdLike+"%")))
 		}
 	}
 }
