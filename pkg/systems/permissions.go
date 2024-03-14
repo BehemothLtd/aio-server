@@ -30,6 +30,10 @@ var defaultPermissions = []Permission{
 
 	{Id: 200, Target: enums.PermissionTargetTypeUserGroups, Action: enums.PermissionActionTypeRead},
 	{Id: 201, Target: enums.PermissionTargetTypeUserGroups, Action: enums.PermissionActionTypeWrite},
+
+	{Id: 400, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeRead},
+	{Id: 401, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeRead},
+	{Id: 402, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeDelete},
 }
 
 // GetPermissions returns a copy of the default permissions slice.
