@@ -16,11 +16,11 @@ func (ldi *LeaveDayRequestsInput) ToPaginationDataAndQuery() (LeaveDayRequestsQu
 	query := LeaveDayRequestsQueryInput{}
 
 	if ldi.Query != nil {
-		if ldi.Query.RequestStateCont != nil && strings.TrimSpace(*ldi.Query.RequestStateCont) != "" {
-			query.RequestStateCont = ldi.Query.RequestStateCont
+		if ldi.Query.RequestStateEq != nil && strings.TrimSpace(*ldi.Query.RequestStateEq) != "" {
+			query.RequestStateEq = ldi.Query.RequestStateEq
 		}
-		if ldi.Query.RequestTypeCont != nil && strings.TrimSpace(*ldi.Query.RequestTypeCont) != "" {
-			query.RequestTypeCont = ldi.Query.RequestTypeCont
+		if ldi.Query.RequestTypeEq != nil && strings.TrimSpace(*ldi.Query.RequestTypeEq) != "" {
+			query.RequestTypeEq = ldi.Query.RequestTypeEq
 		}
 		if ldi.Query.UserIdEq != nil {
 			query.UserIdEq = ldi.Query.UserIdEq

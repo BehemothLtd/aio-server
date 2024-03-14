@@ -1,7 +1,7 @@
 package insightInputs
 
 type LeaveDayRequestsQueryInput struct {
-	RequestTypeCont  *string
-	RequestStateCont *string
-	UserIdEq         *int32
+	RequestTypeEq  *string
+	RequestStateEq *string
+	UserIdEq       *int32
 }
