@@ -3,7 +3,6 @@ package snippetResolvers
 import (
 	snippetTypes "aio-server/gql/gqlTypes/snippetTypes"
 	"aio-server/gql/inputs/msInputs"
-	"aio-server/pkg/helpers"
 	"aio-server/services/msServices"
 	"context"
 )
@@ -22,8 +21,6 @@ func (r *Resolver) SnippetFavorite(ctx context.Context, args msInputs.SnippetFav
 	}
 
 	return &snippetTypes.SnippetFavoriteType{
-		Id:             *&service.Result.Id,
-		Favorited:      *&service.Result.Favorited,
-		FavoritesCount: *helpers.Int32Pointer(int32(service.Result.FavoritesCount)),
+		Favorited: *&service.Result.Favorited,
 	}, nil
 }
