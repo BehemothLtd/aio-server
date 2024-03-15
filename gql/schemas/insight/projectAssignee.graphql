@@ -14,3 +14,15 @@ input ProjectAssigneeInputForProjectCreate {
   active: Boolean!
   joinDate: Time!
 }
+
+type ProjectAssigneeModification {
+  projectAssignee: ProjectAssignee
+}
+
+input ProjectModifyProjectAssigneeInput {
+  userId: Int!
+  developmentRoleId: Int!
+  active: Boolean!
+  joinDate: Time!
+  leaveDate: Time
+}
