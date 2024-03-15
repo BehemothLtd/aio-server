@@ -23,6 +23,7 @@ func NewLeaveDayRequestRepository(c *context.Context, db *gorm.DB) *LeaveDayRequ
 	}
 }
 
+// Querying Functions
 func (r *LeaveDayRequestRepository) FindById(request *models.LeaveDayRequest, id int32) error {
 	dbTables := r.db.Model(&models.LeaveDayRequest{}).Preload("User").Preload("Approver")
 
@@ -77,4 +78,9 @@ func (ldr *LeaveDayRequestRepository) userIdEq(userIdEq *int32) func(db *gorm.DB
 			return db.Where(gorm.Expr(`leave_day_requests.user_id = ?`, userIdEq))
 		}
 	}
+}
+
+// Mutating Functions
+func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) error {
+	return ldr.db.Table("leave_day_requests").Create(&request).Error
 }

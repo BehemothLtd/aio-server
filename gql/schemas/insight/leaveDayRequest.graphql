@@ -31,8 +31,6 @@ input LeaveDayRequestsQuery {
 }
 
 input LeaveDayRequestInput {
-  userId: ID
-  approverId: ID
   from: Time
   to: Time
   timeOff: Float
