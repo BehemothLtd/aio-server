@@ -12,7 +12,7 @@ type Query {
 
   ProjectSprint(id: ID!): ProjectSprint!
   UsersAll(): [UsersAllInfo]
-  
+
   IssueStatusesAll(): [IssueStatus]
 
   DevelopmentRoles(): [DevelopmentRole]
@@ -22,6 +22,12 @@ type Query {
 
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
+
+  # Leave Day Request
+  LeaveDayRequests(
+    input: PagyInput
+    query: LeaveDayRequestsQuery
+  ): LeaveDayRequestCollection!
 }
 
 type Mutation {
