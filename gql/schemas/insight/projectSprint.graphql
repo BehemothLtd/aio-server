@@ -3,6 +3,7 @@ type ProjectSprint {
   title: String!
   projectId: ID
   startDate: Time
+  endDate: Time
   createdAt: Time
   updatedAt: Time
   archived: Boolean!
