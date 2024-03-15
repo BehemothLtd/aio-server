@@ -45,7 +45,6 @@ func (form *LeaveDayRequestForm) Save() error {
 	return nil
 }
 
-// TODO: handle assign attribute : from, to, time_off
 func (form *LeaveDayRequestForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
@@ -65,6 +64,24 @@ func (form *LeaveDayRequestForm) assignAttributes() {
 				Code: "requestState",
 			},
 			Value: helpers.GetStringOrDefault(form.RequestState),
+		},
+		&TimeAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "from",
+			},
+			Value: helpers.GetStringOrDefault(form.From),
+		},
+		&TimeAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "to",
+			},
+			Value: helpers.GetStringOrDefault(form.To),
+		},
+		&FloatAttribute[float64]{
+			FieldAttribute: FieldAttribute{
+				Code: "timeOff",
+			},
+			Value: helpers.GetFloat64OrDefault(form.TimeOff),
 		},
 	)
 }
