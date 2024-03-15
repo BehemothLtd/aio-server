@@ -25,11 +25,12 @@ func NewSnippetRepository(c *context.Context, db *gorm.DB) *SnippetRepository {
 	}
 }
 
-// FindById finds a snippet by its ID.
-func (r *SnippetRepository) FindById(snippet *models.Snippet, id int32) error {
-	dbTables := r.db.Model(&models.Snippet{})
+// FindById finds a snippet by its attribute.
 
-	return dbTables.First(&snippet, id).Error
+func (r *Repository) FindSnippetByAttr(snippet *models.Snippet) error {
+	dbTables := r.db.Table("snippets")
+
+	return dbTables.Where(&snippet).First(&snippet).Error
 }
 
 // List retrieves a list of snippets based on provided pagination data and query.

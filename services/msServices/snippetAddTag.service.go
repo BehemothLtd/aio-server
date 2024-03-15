@@ -61,9 +61,9 @@ func (sats *SnippetAddTagService) validate() error {
 		return err
 	}
 
-	snippet := models.Snippet{}
+	snippet := models.Snippet{Id: snippetId}
 	snippetRepo := repository.NewSnippetRepository(&sats.Ctx, &sats.Db)
-	err = snippetRepo.FindById(&snippet, snippetId)
+	err = snippetRepo.FindSnippetByAttr(&snippet)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

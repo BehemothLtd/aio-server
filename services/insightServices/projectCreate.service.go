@@ -17,22 +17,16 @@ type ProjectCreateService struct {
 	Project *models.Project
 }
 
-func (pcs *ProjectCreateService) Execute() (*models.Project, error) {
-	project := models.Project{}
-
+func (pcs *ProjectCreateService) Execute() error {
 	form := validators.NewProjectCreateFormValidator(
 		&pcs.Args.Input,
 		repository.NewProjectRepository(pcs.Ctx, pcs.Db),
-		&project,
+		pcs.Project,
 	)
 
 	if err := form.Save(); err != nil {
-		return nil, err
+		return err
 	}
 
-	// repo := repository.NewProjectRepository(pcs.Ctx, pcs.Db.Preload("ProjectIssueStatuses"))
-	// createdProject := models.Project{Id: project.Id}
-	// repo.Find(&createdProject)
-
-	return &project, nil
+	return nil
 }

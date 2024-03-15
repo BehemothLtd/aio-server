@@ -5,7 +5,6 @@ import (
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs/msInputs"
 	"aio-server/models"
-	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
 
@@ -14,18 +13,16 @@ import (
 
 // Snippet resolves the query for retrieving a single snippet.
 func (r *Resolver) Snippet(ctx context.Context, args msInputs.SnippetInput) (*globalTypes.SnippetType, error) {
-	if args.Id == "" {
-		return nil, exceptions.NewBadRequestError("Invalid Id")
+	if args.Slug == "" {
+		return nil, exceptions.NewBadRequestError("Invalid Slug")
 	}
 
-	snippetId, err := helpers.GqlIdToInt32(args.Id)
-	if err != nil {
-		return nil, err
+	snippet := models.Snippet{
+		Slug: args.Slug,
 	}
 
-	snippet := models.Snippet{}
 	repo := repository.NewSnippetRepository(&ctx, r.Db.Preload("FavoritedUsers").Preload("Pins"))
-	err = repo.FindById(&snippet, snippetId)
+	err := repo.FindSnippetByAttr(&snippet)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {

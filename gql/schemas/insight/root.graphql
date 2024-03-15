@@ -15,12 +15,18 @@ type Query {
   
   IssueStatus(id: ID!): IssueStatus
   IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
+
   IssueStatusesAll(): [IssueStatus]
 
   DevelopmentRoles(): [DevelopmentRole]
 
+  MmWorkingTimelog(id: ID!): WorkingTimelog
+  MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
+
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
+
+  LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
 }
 
 type Mutation {
@@ -31,7 +37,8 @@ type Mutation {
 
   UserToggleActive(id: ID!): UserActiveState
 
-  ProjectCreate(input: ProjectCreateInput!): ProjectModifycation!
+  ProjectCreate(input: ProjectCreateInput!): ProjectModification!
+  ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 }
 
 scalar Time
