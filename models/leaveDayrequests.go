@@ -9,11 +9,11 @@ type LeaveDayRequest struct {
 	Id           int32 `gorm:"not null;autoIncrement"`
 	UserId       int32 `gorm:"not null;type:bigint;default:null"`
 	ApproverId   int32 `gorm:"not null;type:bigint;default:null"`
-	User         User
-	Approver     User
+	User         User  `gorm:"foreignKey:UserId"`
+	Approver     User  `gorm:"foreignKey:ApproverId"`
 	From         time.Time
 	To           time.Time
-	TimeOff      float32
+	TimeOff      float64
 	RequestType  enums.RequestType      `gorm:"not null;"`
 	RequestState enums.RequestStateType `gorm:"not null;"`
 	Reason       string
