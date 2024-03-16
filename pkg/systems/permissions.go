@@ -34,6 +34,10 @@ var defaultPermissions = []Permission{
 	{Id: 400, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeRead},
 	{Id: 401, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeWrite},
 	{Id: 402, Target: enums.PermissionTargetTypeClients, Action: enums.PermissionActionTypeDelete},
+
+	{Id: 700, Target: enums.PermissionTargetTypeLeaveDayRequests, Action: enums.PermissionActionTypeRead},
+	{Id: 701, Target: enums.PermissionTargetTypeLeaveDayRequests, Action: enums.PermissionActionTypeWrite},
+	{Id: 702, Target: enums.PermissionTargetTypeLeaveDayRequests, Action: enums.PermissionActionTypeChangeState},
 }
 
 // GetPermissions returns a copy of the default permissions slice.
