@@ -6,6 +6,7 @@ type LeaveDayRequest {
   Approver: User
   from: Time
   to: Time
+  timeOff: Float
   requestType: String
   requestState: String
   reason: String
