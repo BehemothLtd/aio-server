@@ -50,13 +50,8 @@ func (r *ClientRepository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB
 	}
 }
 
-// FindById finds a client by its ID.
-func (r *ClientRepository) FindById(client *models.Client, id int32) error {
+func (r *ClientRepository) Find(client *models.Client) error {
 	dbTables := r.db.Model(&models.Client{})
 
-	return dbTables.First(&client, id).Error
-}
-
-func (r *ClientRepository) Find(client *models.Client) error {
-	return r.db.Where(&client).First(&client).Error
+	return dbTables.Where(&client).First(&client).Error
 }
