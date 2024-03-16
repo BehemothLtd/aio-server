@@ -27,6 +27,7 @@ type Query {
 
   Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
   Client(id: ID!): Client! 
+  
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
 }
 
