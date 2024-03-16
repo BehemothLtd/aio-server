@@ -9,11 +9,10 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
-
   ProjectSprint(id: ID!): ProjectSprint!
   UsersAll(): [UsersAllInfo]
   
-  IssueStatus(id: ID!): IssueStatus
+  IssueStatus(id: ID!): IssueStatus 
   IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
 
   IssueStatusesAll(): [IssueStatus]
@@ -26,6 +25,9 @@ type Query {
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
 
+  Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
+  Client(id: ID!): Client! 
+  
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
 }
 
