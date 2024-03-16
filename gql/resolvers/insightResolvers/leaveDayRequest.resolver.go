@@ -29,7 +29,7 @@ func (r *Resolver) LeaveDayRequest(ctx context.Context, args insightInputs.Leave
 	}
 
 	leaveDayRequest := models.LeaveDayRequest{}
-	repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db)
+	repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db.Preload("User").Preload("Approver"))
 	err = repo.FindById(&leaveDayRequest, leaveDayRequestId)
 
 	if err != nil {
