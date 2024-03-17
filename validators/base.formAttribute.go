@@ -19,7 +19,8 @@ type FieldAttributeInterface interface {
 
 	// Validators
 	ValidateRequired()
-	ValidateLimit(min *int, max *int64)
+	ValidateMin(min interface{})
+	ValidateMax(max interface{})
 	ValidateFormat(formatter string, formatterRemind string)
 }
 

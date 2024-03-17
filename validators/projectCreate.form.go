@@ -116,9 +116,8 @@ func (form *ProjectCreateForm) validateName() *ProjectCreateForm {
 
 	nameField.ValidateRequired()
 
-	min := 5
-	max := int64(constants.MaxStringLength)
-	nameField.ValidateLimit(&min, &max)
+	nameField.ValidateMin(interface{}(int64(5)))
+	nameField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Name != nil && strings.TrimSpace(*form.Name) != "" {
 		project := models.Project{Name: *form.Name}
@@ -139,9 +138,8 @@ func (form *ProjectCreateForm) validateCode() *ProjectCreateForm {
 
 	codeField.ValidateRequired()
 
-	min := 2
-	max := int64(constants.MaxLongTextLength)
-	codeField.ValidateLimit(&min, &max)
+	codeField.ValidateMin(interface{}(int64(2)))
+	codeField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Code != nil && strings.TrimSpace(*form.Code) != "" {
 		project := models.Project{Code: *form.Code}
@@ -162,9 +160,8 @@ func (form *ProjectCreateForm) validateDescription() *ProjectCreateForm {
 
 	descField.ValidateRequired()
 
-	min := 5
-	max := int64(constants.MaxLongTextLength)
-	descField.ValidateLimit(&min, &max)
+	descField.ValidateMin(interface{}(int64(5)))
+	descField.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if descField.IsClean() {
 		form.Project.Description = form.Description

@@ -153,20 +153,17 @@ func (form *UserProfileForm) validateBirthday() *UserProfileForm {
 
 func (form *UserProfileForm) validateAbout() *UserProfileForm {
 	about := form.FindAttrByCode("about")
-	maxTitleLength := int64(constants.MaxLongTextLength)
-
-	about.ValidateLimit(nil, &maxTitleLength)
+	about.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	return form
 }
 
 func (form *UserProfileForm) validateSlackId() *UserProfileForm {
 	slackId := form.FindAttrByCode("slackId")
-	minLength := 11
-	maxLength := int64(constants.MaxStringLength)
 
 	slackId.ValidateRequired()
-	slackId.ValidateLimit(&minLength, &maxLength)
+	slackId.ValidateMin(interface{}(int64(11)))
+	slackId.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	return form
 }
@@ -174,10 +171,9 @@ func (form *UserProfileForm) validateSlackId() *UserProfileForm {
 func (form *UserProfileForm) validatePhone() *UserProfileForm {
 	if form.Phone != nil {
 		phone := form.FindAttrByCode("phone")
-		minLength := 10
-		maxLength := int64(13)
 
-		phone.ValidateLimit(&minLength, &maxLength)
+		phone.ValidateMin(interface{}(int64(10)))
+		phone.ValidateMax(interface{}(int64(13)))
 	}
 
 	return form
@@ -186,10 +182,9 @@ func (form *UserProfileForm) validatePhone() *UserProfileForm {
 func (form *UserProfileForm) validateAddress() *UserProfileForm {
 	if form.Address != nil {
 		address := form.FindAttrByCode("address")
-		minLength := 20
-		maxLength := int64(constants.MaxLongTextLength)
 
-		address.ValidateLimit(&minLength, &maxLength)
+		address.ValidateMin(interface{}(int64(20)))
+		address.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 	}
 
 	return form
