@@ -104,7 +104,9 @@ func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	startDate.ValidateRequired()
 	startDate.ValidateFormat("1-2-2006", "%d-%m-%y")
 
-	form.ProjectSprint.StartDate = *startDate.Time()
+	if startDate.IsClean() {
+		form.ProjectSprint.StartDate = *startDate.Time()
+	}
 
 	return form
 }
