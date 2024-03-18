@@ -62,8 +62,7 @@ func (form *ProjectSprintForm) validateTitle() *ProjectSprintForm {
 
 	title := form.FindAttrByCode("title")
 
-	max := int64(constants.MaxStringLength)
-	title.ValidateLimit(nil, &max)
+	title.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Title != nil && strings.TrimSpace(*form.Title) != "" {
 		projectSprint := models.ProjectSprint{Title: *form.Title, ProjectId: *form.ProjectId}
