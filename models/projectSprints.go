@@ -7,7 +7,7 @@ type ProjectSprint struct {
 	Title       string
 	ProjectId   int32
 	Project     Project
-	StartDate   *time.Time
+	StartDate   time.Time
 	EndDate     *time.Time
 	Archived    bool
 	CreatedAt   time.Time
