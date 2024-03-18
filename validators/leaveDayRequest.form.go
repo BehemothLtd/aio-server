@@ -8,6 +8,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"strings"
 )
 
 type LeaveDayRequestForm struct {
@@ -103,7 +104,7 @@ func (form *LeaveDayRequestForm) validate() error {
 func (form *LeaveDayRequestForm) validateReason() *LeaveDayRequestForm {
 	reasonField := form.FindAttrByCode("reason")
 
-	if *form.Reason != "" {
+	if strings.TrimSpace(*form.Reason) != "" {
 		reasonField.ValidateMin(interface{}(int64(3)))
 		reasonField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 	}
