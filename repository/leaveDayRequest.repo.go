@@ -23,12 +23,18 @@ func NewLeaveDayRequestRepository(c *context.Context, db *gorm.DB) *LeaveDayRequ
 	}
 }
 
+func (r *LeaveDayRequestRepository) FindById(request *models.LeaveDayRequest, id int32) error {
+	dbTables := r.db.Model(&models.LeaveDayRequest{})
+
+	return dbTables.First(&request, id).Error
+}
+
 func (ldr *LeaveDayRequestRepository) List(
 	leaveDayRequests *[]*models.LeaveDayRequest,
 	paginationData *models.PaginationData,
 	query insightInputs.LeaveDayRequestsQueryInput,
 ) error {
-	dbTables := ldr.db.Model(&models.LeaveDayRequest{})
+	dbTables := ldr.db.Model(&models.LeaveDayRequest{}).Preload("User").Preload("Approver")
 
 	return dbTables.Scopes(
 		helpers.Paginate(dbTables.Scopes(

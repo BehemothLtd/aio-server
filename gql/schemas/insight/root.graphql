@@ -25,7 +25,12 @@ type Query {
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
 
+  Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
+  Client(id: ID!): Client!
+
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
+
+  LeaveDayRequest(id: ID!): LeaveDayRequest!
 }
 
 type Mutation {

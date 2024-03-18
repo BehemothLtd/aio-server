@@ -136,9 +136,8 @@ func (form *ProjectUpdateForm) validateName() *ProjectUpdateForm {
 	field := form.FindAttrByCode("name")
 	field.ValidateRequired()
 
-	min := 5
-	max := int64(constants.MaxStringLength)
-	field.ValidateLimit(&min, &max)
+	field.ValidateMin(interface{}(int64(5)))
+	field.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Name != nil && strings.TrimSpace(*form.Name) != "" {
 		project := models.Project{Name: *form.Name}
@@ -176,9 +175,8 @@ func (form *ProjectUpdateForm) validateDescription() *ProjectUpdateForm {
 
 	field.ValidateRequired()
 
-	min := 5
-	max := int64(constants.MaxLongTextLength)
-	field.ValidateLimit(&min, &max)
+	field.ValidateMin(interface{}(int64(5)))
+	field.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if field.IsClean() {
 		form.Project.Description = form.Description
@@ -291,8 +289,7 @@ func (form *ProjectUpdateForm) validateLockVersion() *ProjectUpdateForm {
 	if field.IsClean() {
 		lockVersion := *form.LockVersion
 
-		min := int(currentLockVersion)
-		field.ValidateLimit(&min, nil)
+		field.ValidateMin(interface{}(int64(currentLockVersion)))
 
 		if currentLockVersion > lockVersion {
 			field.AddError("Attempted to update stale object")

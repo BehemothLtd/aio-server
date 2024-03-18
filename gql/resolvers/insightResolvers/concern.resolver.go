@@ -50,14 +50,13 @@ func (r *Resolver) DeviceTypesSlideToType(deviceTypes []*models.DeviceType) *[]*
 	return &resolvers
 }
 
-
 func (r *Resolver) IssueStatusSliceToTypes(issueStatuses []*models.IssueStatus) *[]*globalTypes.IssueStatusType {
 	resolvers := make([]*globalTypes.IssueStatusType, len(issueStatuses))
 	for i, s := range issueStatuses {
 		resolvers[i] = &globalTypes.IssueStatusType{IssueStatus: s}
 	}
-  
-  return &resolvers
+
+	return &resolvers
 }
 
 func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayRequest) *[]*globalTypes.LeaveDayRequestType {
@@ -67,5 +66,14 @@ func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayReques
 		resolvers[i] = &globalTypes.LeaveDayRequestType{LeaveDayRequest: rq}
 	}
 
+	return &resolvers
+}
+
+// fromClients converts models.Client slice to []*ClientType.
+func (r *Resolver) ClientSliceToTypes(clients []*models.Client) *[]*globalTypes.ClientType {
+	resolvers := make([]*globalTypes.ClientType, len(clients))
+	for i, c := range clients {
+		resolvers[i] = &globalTypes.ClientType{Client: c}
+	}
 	return &resolvers
 }
