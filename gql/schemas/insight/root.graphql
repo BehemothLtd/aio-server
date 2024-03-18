@@ -9,13 +9,12 @@ type Query {
 
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
+  UsersAll(): [UsersAllInfo]
 
   ProjectSprint(id: ID!): ProjectSprint!
-  UsersAll(): [UsersAllInfo]
-  
+
   IssueStatus(id: ID!): IssueStatus
   IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
-
   IssueStatusesAll(): [IssueStatus]
 
   DevelopmentRoles(): [DevelopmentRole]
@@ -26,7 +25,12 @@ type Query {
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
 
+  Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
+  Client(id: ID!): Client!
+
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
+
+  LeaveDayRequest(id: ID!): LeaveDayRequest!
 }
 
 type Mutation {
@@ -37,10 +41,13 @@ type Mutation {
 
   UserToggleActive(id: ID!): UserActiveState
 
+  ProjectSprintCreate(input: ProjectSprintCreateInput!): ProjectSprintModification!
+  ProjectSprintDestroy (id: ID!): String
+  
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 
-  ProjectSprintCreate(input: ProjectSprintCreateInput!): ProjectSprintModification!
+  ProjectCreateProjectAssignee(id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
 }
 
 scalar Time

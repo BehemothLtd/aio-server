@@ -103,14 +103,13 @@ func (form *UserPasswordForm) validateNewPassword() *UserPasswordForm {
 	newPasswordField := form.FindAttrByCode("password")
 	newPasswordConfirmationField := form.FindAttrByCode("passwordConfirmation")
 
-	min := 8
-	max := int64(20)
-
 	newPasswordField.ValidateRequired()
-	newPasswordField.ValidateLimit(&min, &max)
+	newPasswordConfirmationField.ValidateMin(interface{}(int64(8)))
+	newPasswordConfirmationField.ValidateMax(interface{}(int64(20)))
 
 	newPasswordConfirmationField.ValidateRequired()
-	newPasswordConfirmationField.ValidateLimit(&min, &max)
+	newPasswordConfirmationField.ValidateMin(interface{}(int64(8)))
+	newPasswordConfirmationField.ValidateMax(interface{}(int64(20)))
 
 	if form.Password != form.PasswordConfirmation {
 		newPasswordConfirmationField.AddError("needs to be the same with new password")

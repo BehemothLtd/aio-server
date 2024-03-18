@@ -32,7 +32,6 @@ func (lt *LeaveDayRequestType) User(ctx context.Context) *UserType {
 	return &UserType{User: &lt.LeaveDayRequest.User}
 }
 
-// TODO: Handle approver relation
 func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {
 	return &UserType{User: &lt.LeaveDayRequest.Approver}
 }
@@ -57,10 +56,9 @@ func (lt *LeaveDayRequestType) RequestState(context.Context) *string {
 	return &value
 }
 
-// TODO: handle  float poiter
-// func (lt *LeaveDayRequestType) TimeOff(context.Context) *float32 {
-// 	return &lt.LeaveDayRequest.TimeOff
-// }
+func (lt *LeaveDayRequestType) TimeOff(ctx context.Context) *float64 {
+	return helpers.Float64Pointer(lt.LeaveDayRequest.TimeOff)
+}
 
 func (lt *LeaveDayRequestType) Reason(context.Context) *string {
 	return &lt.LeaveDayRequest.Reason

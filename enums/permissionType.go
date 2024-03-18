@@ -19,6 +19,7 @@ users
 user_groups
 projects
 project_issues
+project_assignees
 leave_day_requests
 clients
 issue_statuses
