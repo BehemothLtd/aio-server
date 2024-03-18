@@ -8,6 +8,10 @@ type IssueStatus {
   lockVersion: Int
 }
 
+type IssueStatusModification {
+  issueStatus: IssueStatus
+}
+
 input IssueStatusesQuery {
   titleCont: String
   statusTypeEq: String
