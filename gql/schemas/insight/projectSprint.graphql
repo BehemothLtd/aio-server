@@ -3,8 +3,19 @@ type ProjectSprint {
   title: String!
   projectId: ID
   startDate: Time
+  endDate: Time
   createdAt: Time
   updatedAt: Time
   archived: Boolean!
   lockVersion: Int!
+}
+
+type ProjectSprintModification {
+  projectSprint: ProjectSprint
+}
+
+input ProjectSprintCreateInput {
+  title: String
+  projectId: Int
+  startDate: String
 }

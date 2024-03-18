@@ -39,6 +39,8 @@ type Mutation {
 
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
+
+  ProjectSprintCreate(input: ProjectSprintCreateInput!): ProjectSprintModification!
 }
 
 scalar Time

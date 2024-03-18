@@ -25,3 +25,7 @@ func (r *ProjectSprintRepository) Find(projectSprint *models.ProjectSprint) erro
 
 	return dbTables.Where(&projectSprint).First(&projectSprint).Error
 }
+
+func (cr *ProjectSprintRepository) Create(projectSprint *models.ProjectSprint) error {
+	return cr.db.Model(&projectSprint).Create(&projectSprint).First(&projectSprint).Error
+}
