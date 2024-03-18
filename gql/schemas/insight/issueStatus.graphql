@@ -8,15 +8,10 @@ type IssueStatus {
   lockVersion: Int
 }
 
-<<<<<<< HEAD
-input IssueStatusInput {
-  title: String
-  color: String
-}
-
 type IssueStatusModification {
   issueStatus: IssueStatus
-=======
+}
+
 input IssueStatusesQuery {
   titleCont: String
   statusTypeEq: String
@@ -25,5 +20,4 @@ input IssueStatusesQuery {
 type IssueStatusCollection {
   collection: [IssueStatus!]
   metadata: Metadata
->>>>>>> main
 }
