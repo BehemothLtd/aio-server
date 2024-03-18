@@ -113,7 +113,7 @@ func (r *SnippetRepository) ofUser(userId int32) func(db *gorm.DB) *gorm.DB {
 
 // Create creates a new snippet.
 func (r *SnippetRepository) Create(snippet *models.Snippet) error {
-	return r.db.Table("snippets").Create(&snippet).Error
+	return r.db.Table("snippets").Omit("Favorited").Create(&snippet).Error
 }
 
 // Update updates an existing snippet.

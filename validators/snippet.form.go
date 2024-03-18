@@ -142,6 +142,8 @@ func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 
 func (form *SnippetForm) validateTitle() *SnippetForm {
 	title := form.FindAttrByCode("title")
+
+	title.ValidateRequired()
 	title.ValidateMin(interface{}(int64(5)))
 	title.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
