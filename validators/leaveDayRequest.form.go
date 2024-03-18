@@ -49,7 +49,7 @@ func (form *LeaveDayRequestForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "name",
+				Code: "reason",
 			},
 			Value: helpers.GetStringOrDefault(form.Reason),
 		},
@@ -90,6 +90,7 @@ func (form *LeaveDayRequestForm) validate() error {
 	form.validateReason().
 		validateRequestType().
 		validateRequestState().
+		validateTimeOff().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -102,9 +103,10 @@ func (form *LeaveDayRequestForm) validate() error {
 func (form *LeaveDayRequestForm) validateReason() *LeaveDayRequestForm {
 	reasonField := form.FindAttrByCode("reason")
 
-	min := 3
-	max := int64(constants.MaxStringLength)
-	reasonField.ValidateLimit(&min, &max)
+	if *form.Reason != "" {
+		reasonField.ValidateMin(interface{}(int64(3)))
+		reasonField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
+	}
 
 	if reasonField.IsClean() {
 		form.Request.Reason = *form.Reason
@@ -149,6 +151,15 @@ func (form *LeaveDayRequestForm) validateRequestState() *LeaveDayRequestForm {
 			form.Request.RequestState = fieldValue
 		}
 	}
+
+	return form
+}
+
+func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
+	timeOff := form.FindAttrByCode("timeOff")
+
+	timeOff.ValidateRequired()
+	timeOff.ValidateMin(interface{}(float64(0)))
 
 	return form
 }
