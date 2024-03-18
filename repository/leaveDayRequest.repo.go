@@ -25,7 +25,7 @@ func NewLeaveDayRequestRepository(c *context.Context, db *gorm.DB) *LeaveDayRequ
 
 // Querying Functions
 func (r *LeaveDayRequestRepository) FindById(request *models.LeaveDayRequest, id int32) error {
-	dbTables := r.db.Model(&models.LeaveDayRequest{}).Preload("User").Preload("Approver")
+	dbTables := r.db.Model(&models.LeaveDayRequest{})
 
 	return dbTables.First(&request, id).Error
 }
