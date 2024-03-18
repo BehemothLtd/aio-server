@@ -6,7 +6,9 @@ import (
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
+	"aio-server/pkg/systems"
 	"aio-server/repository"
+	"strings"
 )
 
 type ProjectAssigneeForm struct {
@@ -50,11 +52,29 @@ func (form *ProjectAssigneeForm) assignAttributes() {
 			},
 			Value: helpers.GetInt32OrDefault(&form.UserId),
 		},
+		&TimeAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "joinDate",
+			},
+			Value: helpers.GetStringOrDefault(&form.JoinDate),
+		},
+		&TimeAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "leaveDate",
+			},
+			Value: helpers.GetStringOrDefault(form.LeaveDate),
+		},
 	)
+
+	form.ProjectAssignee.Active = form.Active
 }
 
 func (form *ProjectAssigneeForm) validate() error {
-	form.validateUserId().summaryErrors()
+	form.validateUserId().
+		validateDevelopmentId().
+		validateJoinDate().
+		validateLeaveDate().
+		summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -73,6 +93,49 @@ func (form *ProjectAssigneeForm) validateUserId() *ProjectAssigneeForm {
 
 	if field.IsClean() {
 		form.ProjectAssignee.UserId = form.UserId
+	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
+	field := form.FindAttrByCode("developmentRoleId")
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		if developmentRole := systems.FindDevelopmentRoleById(form.DevelopmentRoleId); developmentRole == nil {
+			field.AddError("is invalid")
+		}
+	}
+
+	if field.IsClean() {
+		form.ProjectAssignee.DevelopmentRoleId = form.DevelopmentRoleId
+	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
+	field := form.FindAttrByCode("joinDate")
+	field.ValidateRequired()
+	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+
+	if field.IsClean() {
+		form.ProjectAssignee.JoinDate = field.Time()
+	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
+	field := form.FindAttrByCode("leaveDate")
+
+	if form.LeaveDate != nil && *form.LeaveDate != "" && strings.TrimSpace(*form.LeaveDate) != "" {
+		field.ValidateFormat("1-2-2006", "%d-%m-%y")
+
+		if field.IsClean() {
+			form.ProjectAssignee.LeaveDate = field.Time()
+		}
 	}
 
 	return form
