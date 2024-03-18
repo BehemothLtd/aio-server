@@ -116,9 +116,8 @@ func (form *ProjectCreateForm) validateName() *ProjectCreateForm {
 
 	nameField.ValidateRequired()
 
-	min := 5
-	max := int64(constants.MaxStringLength)
-	nameField.ValidateLimit(&min, &max)
+	nameField.ValidateMin(interface{}(int64(5)))
+	nameField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Name != nil && strings.TrimSpace(*form.Name) != "" {
 		project := models.Project{Name: *form.Name}
@@ -126,7 +125,9 @@ func (form *ProjectCreateForm) validateName() *ProjectCreateForm {
 			nameField.AddError("is already exists. Please use another name")
 		}
 
-		form.Project.Name = *form.Name
+		if nameField.IsClean() {
+			form.Project.Name = *form.Name
+		}
 	}
 
 	return form
@@ -137,9 +138,8 @@ func (form *ProjectCreateForm) validateCode() *ProjectCreateForm {
 
 	codeField.ValidateRequired()
 
-	min := 2
-	max := int64(constants.MaxLongTextLength)
-	codeField.ValidateLimit(&min, &max)
+	codeField.ValidateMin(interface{}(int64(2)))
+	codeField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Code != nil && strings.TrimSpace(*form.Code) != "" {
 		project := models.Project{Code: *form.Code}
@@ -147,7 +147,9 @@ func (form *ProjectCreateForm) validateCode() *ProjectCreateForm {
 			codeField.AddError("is already exists. Please use another code")
 		}
 
-		form.Project.Code = *form.Code
+		if codeField.IsClean() {
+			form.Project.Code = *form.Code
+		}
 	}
 
 	return form
@@ -158,11 +160,12 @@ func (form *ProjectCreateForm) validateDescription() *ProjectCreateForm {
 
 	descField.ValidateRequired()
 
-	min := 5
-	max := int64(constants.MaxLongTextLength)
-	descField.ValidateLimit(&min, &max)
+	descField.ValidateMin(interface{}(int64(5)))
+	descField.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
-	form.Project.Description = form.Description
+	if descField.IsClean() {
+		form.Project.Description = form.Description
+	}
 
 	return form
 }
@@ -179,14 +182,19 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 			typeField.AddError("is invalid")
 		}
 
-		form.Project.ProjectType = fieldValue
+		if typeField.IsClean() {
+			form.Project.ProjectType = fieldValue
+		}
 
 		sprintDurationField := form.FindAttrByCode("sprintDuration")
 
 		if fieldValue == enums.ProjectTypeScrum {
 			sprintDurationField.ValidateRequired()
 
-			form.Project.SprintDuration = form.SprintDuration
+			if sprintDurationField.IsClean() {
+				form.Project.SprintDuration = form.SprintDuration
+			}
+
 		} else if fieldValue == enums.ProjectTypeKanban {
 			if form.SprintDuration != nil {
 				sprintDurationField.AddError("need to be empty")
@@ -219,9 +227,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "issueStatusId"), []interface{}{"is duplicated"})
 			} else {
 				// If not duplicated then create nested form for further validation
-				projectIssueStatus := models.ProjectIssueStatus{
-					IssueStatusId: issueStatusId,
-				}
+				projectIssueStatus := models.ProjectIssueStatus{}
 
 				projectIssueStatusForm := NewProjectCreateProjectIssueFormValidator(
 					&projectIssueStatusInput,
@@ -242,7 +248,9 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 			}
 		}
 
-		form.Project.ProjectIssueStatuses = projectIssueStatuses
+		if projectIssueStatusesField.IsClean() {
+			form.Project.ProjectIssueStatuses = projectIssueStatuses
+		}
 
 		if result, requiredTitles := form.Project.HasEnoughProjectIssueStatuses(); !result {
 			projectIssueStatusesField.AddError(
@@ -291,7 +299,10 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 				}
 			}
 		}
-		form.Project.ProjectAssignees = projectAssignees
+
+		if projectAssigneesField.IsClean() {
+			form.Project.ProjectAssignees = projectAssignees
+		}
 	}
 
 	return form

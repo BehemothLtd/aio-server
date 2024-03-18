@@ -1,0 +1,15 @@
+type Client {
+  id: ID
+  name: String
+  createdAt: Time
+  updatedAt: Time
+}
+
+input ClientsQuery {
+  nameCont: String
+}
+
+type ClientCollection {
+  collection: [Client!]
+  metadata: Metadata!
+}

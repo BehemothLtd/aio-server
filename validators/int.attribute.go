@@ -35,23 +35,40 @@ func (attribute *IntAttribute[T]) ValidateRequired() {
 	}
 }
 
-// ValidateLimit validates if the attribute value is within the specified limits.
-func (attribute *IntAttribute[T]) ValidateLimit(min *int, max *int64) {
-	value := int64(attribute.Value)
-
-	if min != nil && int64(attribute.Value) < int64(*min) {
-		attribute.AddError(fmt.Sprintf("is too small. Min value is %d", *min))
-	}
-
-	if max != nil && value > *max {
-		attribute.AddError(fmt.Sprintf("is too large. Max value is %d", *max))
-	}
-}
-
 func (attribute *IntAttribute[T]) ValidateFormat(formatter string, formatterRemind string) {
 	// No need to implement yet
 }
 
 func (attribute *IntAttribute[T]) Time() *time.Time {
 	return nil
+}
+
+func (attribute *IntAttribute[T]) IsClean() bool {
+	return len(attribute.Errors) == 0
+}
+
+func (attribute *IntAttribute[T]) ValidateMin(min interface{}) {
+	switch v := min.(type) {
+	case int64:
+		if int64(attribute.Value) < v {
+			attribute.AddError(fmt.Sprintf("is too small. Min value is %d", min))
+		} else {
+			attribute.AddError(fmt.Sprintf("is invalid min value %d", min))
+		}
+	default:
+		panic("Need to provide int64 interface{} as params")
+	}
+}
+
+func (attribute *IntAttribute[T]) ValidateMax(max interface{}) {
+	switch v := max.(type) {
+	case int64:
+		if v < int64(attribute.Value) {
+			attribute.AddError(fmt.Sprintf("is too large. Max value is %d", max))
+		} else {
+			attribute.AddError(fmt.Sprintf("is invalid max value %d", max))
+		}
+	default:
+		panic("Need to provide int64 interface{} as params")
+	}
 }

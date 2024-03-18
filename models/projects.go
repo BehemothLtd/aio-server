@@ -24,7 +24,7 @@ type Project struct {
 	UpdatedAt            time.Time
 	SprintDuration       *int32
 	ClientId             int32
-	CurrentSprintId      int
+	CurrentSprintId      int32
 	ProjectAssignees     []*ProjectAssignee
 	ProjectIssueStatuses []*ProjectIssueStatus
 	IssueStatuses        []IssueStatus `gorm:"many2many:project_issue_statuses;"`

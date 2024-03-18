@@ -85,11 +85,9 @@ func (form *TagForm) assignAttributes(input *msInputs.TagFormInput) {
 func (form *TagForm) validateName() *TagForm {
 	name := form.FindAttrByCode("name")
 
-	minNameLength := 2
-	maxNameLength := int64(20)
-
 	name.ValidateRequired()
-	name.ValidateLimit(&minNameLength, &maxNameLength)
+	name.ValidateMin(interface{}(int64(2)))
+	name.ValidateMax(interface{}(int64(20)))
 
 	if form.Name != nil {
 		presentedTag := models.Tag{}
@@ -109,8 +107,7 @@ func (form *TagForm) validateLockVersion() *TagForm {
 	newLockVersion := helpers.GetInt32OrDefault(form.LockVersion) + 1
 	formAttribute := form.FindAttrByCode("lockVersion")
 
-	min := int(currentLockVersion)
-	formAttribute.ValidateLimit(&min, nil)
+	formAttribute.ValidateMin(interface{}(int64(currentLockVersion)))
 
 	if newRecord {
 		return form

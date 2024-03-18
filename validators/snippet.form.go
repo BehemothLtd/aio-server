@@ -133,9 +133,8 @@ func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 		// Private
 		PasskeyAttr.ValidateRequired()
 
-		min := 8
-		max := int64(32)
-		PasskeyAttr.ValidateLimit(&min, &max)
+		PasskeyAttr.ValidateMin(interface{}(8))
+		PasskeyAttr.ValidateMax(interface{}(32))
 	}
 
 	return form
@@ -143,22 +142,18 @@ func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 
 func (form *SnippetForm) validateTitle() *SnippetForm {
 	title := form.FindAttrByCode("title")
-	minTitleLength := 5
-	maxTitleLength := int64(constants.MaxStringLength)
-
-	title.ValidateRequired()
-	title.ValidateLimit(&minTitleLength, &maxTitleLength)
+	title.ValidateMin(interface{}(int64(5)))
+	title.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	return form
 }
 
 func (form *SnippetForm) validateContent() *SnippetForm {
 	content := form.FindAttrByCode("content")
-	minContentLength := 10
-	maxContentLength := int64(constants.MaxLongTextLength)
 
 	content.ValidateRequired()
-	content.ValidateLimit(&minContentLength, &maxContentLength)
+	content.ValidateMin(interface{}(int64(10)))
+	content.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	return form
 }
@@ -185,8 +180,7 @@ func (form *SnippetForm) validateLockVersion() *SnippetForm {
 	newLockVersion := helpers.GetInt32OrDefault(form.LockVersion) + 1
 	formAttribute := form.FindAttrByCode("lockVersion")
 
-	min := int(currentLockVersion)
-	formAttribute.ValidateLimit(&min, nil)
+	formAttribute.ValidateMin(interface{}(int64(currentLockVersion)))
 
 	if newRecord {
 		return form

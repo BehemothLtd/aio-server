@@ -33,11 +33,6 @@ func (attribute *TimeAttribute) ValidateRequired() {
 	}
 }
 
-// ValidateLimit validates if the attribute value is within the specified limits.
-func (attribute *TimeAttribute) ValidateLimit(min *int, max *int64) {
-	// No need to implement
-}
-
 func (attribute *TimeAttribute) ValidateFormat(formatter string, formatterRemind string) {
 	if attribute.Value != "" {
 		if timeValue, err := time.Parse(formatter, attribute.Value); err != nil {
@@ -50,4 +45,14 @@ func (attribute *TimeAttribute) ValidateFormat(formatter string, formatterRemind
 
 func (attribute *TimeAttribute) Time() *time.Time {
 	return attribute.TimeValue
+}
+
+func (attribute *TimeAttribute) IsClean() bool {
+	return len(attribute.Errors) == 0
+}
+
+func (attribute *TimeAttribute) ValidateMin(min interface{}) {
+}
+
+func (attribute *TimeAttribute) ValidateMax(min interface{}) {
 }

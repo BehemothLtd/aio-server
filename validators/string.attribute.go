@@ -2,6 +2,7 @@ package validators
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -29,25 +30,8 @@ func (attribute *StringAttribute) AddError(message interface{}) {
 
 // ValidateRequired validates if the string attribute is required.
 func (attribute *StringAttribute) ValidateRequired() {
-	if attribute.Value == "" {
+	if attribute.Value == "" || strings.TrimSpace(attribute.Value) == "" {
 		attribute.AddError("is required")
-	}
-}
-
-// ValidateLimit validates the length limits of the string attribute.
-func (attribute *StringAttribute) ValidateLimit(min *int, max *int64) {
-	value := attribute.Value
-
-	if min != nil {
-		if len(value) < *min {
-			attribute.AddError(fmt.Sprintf("is too short. Min characters is %d", *min))
-		}
-	}
-
-	if max != nil {
-		if int64(len(value)) > *max {
-			attribute.AddError(fmt.Sprintf("is too long. Max characters is %d", *max))
-		}
 	}
 }
 
@@ -57,4 +41,34 @@ func (attribute *StringAttribute) ValidateFormat(formatter string, formatterRemi
 
 func (attribute *StringAttribute) Time() *time.Time {
 	return nil
+}
+
+func (attribute *StringAttribute) IsClean() bool {
+	return len(attribute.Errors) == 0
+}
+
+func (attribute *StringAttribute) ValidateMin(min interface{}) {
+	switch v := min.(type) {
+	case int64:
+		if int64(len(attribute.Value)) < v {
+			attribute.AddError(fmt.Sprintf("is too short. Min length is %d", min))
+		} else {
+			attribute.AddError(fmt.Sprintf("is invalid min length %d", min))
+		}
+	default:
+		panic("Need to provide int64 interface{} as params")
+	}
+}
+
+func (attribute *StringAttribute) ValidateMax(max interface{}) {
+	switch v := max.(type) {
+	case int64:
+		if v < int64(len(attribute.Value)) {
+			attribute.AddError(fmt.Sprintf("is too long. Max length is %d", max))
+		} else {
+			attribute.AddError(fmt.Sprintf("is invalid max length %d", max))
+		}
+	default:
+		panic("Need to provide int64 interface{} as params")
+	}
 }

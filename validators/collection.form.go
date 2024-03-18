@@ -58,11 +58,9 @@ func (form *CollectionForm) validate() error {
 func (form *CollectionForm) validateTitle() *CollectionForm {
 	title := form.FindAttrByCode("title")
 
-	minTitleLength := 2
-	maxTitleLength := int64(30)
-
 	title.ValidateRequired()
-	title.ValidateLimit(&minTitleLength, &maxTitleLength)
+	title.ValidateMin(interface{}(int64(2)))
+	title.ValidateMax(interface{}(int64(30)))
 
 	return form
 }

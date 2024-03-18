@@ -36,15 +36,20 @@ func (attribute *SliceAttribute[T]) ValidateRequired() {
 	}
 }
 
-// ValidateLimit validates if the attribute value is within the specified limits.
-func (attribute *SliceAttribute[T]) ValidateLimit(min *int, max *int64) {
-	// No need to implement
-}
-
 func (attribute *SliceAttribute[T]) ValidateFormat(formatter string, formatterRemind string) {
 	// No need to implement
 }
 
 func (attribute *SliceAttribute[T]) Time() *time.Time {
 	return nil
+}
+
+func (attribute *SliceAttribute[T]) IsClean() bool {
+	return len(attribute.Errors) == 0
+}
+
+func (attribute *SliceAttribute[T]) ValidateMin(min interface{}) {
+}
+
+func (attribute *SliceAttribute[T]) ValidateMax(min interface{}) {
 }

@@ -113,3 +113,8 @@ func RubyTimeStringToGqlTime(timeString string) *graphql.Time {
 		return GqlTimePointer(time)
 	}
 }
+
+// Float64Pointer returns a pointer to the given float64 value.
+func Float64Pointer(val float64) *float64 {
+	return &val
+}

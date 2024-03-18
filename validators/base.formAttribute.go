@@ -15,10 +15,12 @@ type FieldAttributeInterface interface {
 	GetCode() string
 	GetErrors() []interface{}
 	Time() *time.Time
+	IsClean() bool
 
 	// Validators
 	ValidateRequired()
-	ValidateLimit(min *int, max *int64)
+	ValidateMin(min interface{})
+	ValidateMax(max interface{})
 	ValidateFormat(formatter string, formatterRemind string)
 }
 
