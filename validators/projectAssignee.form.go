@@ -74,6 +74,7 @@ func (form *ProjectAssigneeForm) validate() error {
 		validateDevelopmentId().
 		validateJoinDate().
 		validateLeaveDate().
+		validateDuplicate().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -135,6 +136,25 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 
 		if field.IsClean() {
 			form.ProjectAssignee.LeaveDate = field.Time()
+		}
+	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
+	userIdField := form.FindAttrByCode("userId")
+	developmentIdField := form.FindAttrByCode("developmentRoleId")
+
+	if userIdField.IsClean() && developmentIdField.IsClean() {
+		presentedProjectAssignee := models.ProjectAssignee{
+			ProjectId:         form.Project.Id,
+			UserId:            form.UserId,
+			DevelopmentRoleId: form.DevelopmentRoleId,
+		}
+
+		if err := form.Repo.Find(&presentedProjectAssignee); err == nil {
+			userIdField.AddError("already has this role")
 		}
 	}
 

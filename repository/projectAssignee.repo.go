@@ -23,3 +23,7 @@ func NewProjectAssigneeRepository(c *context.Context, db *gorm.DB) *ProjectAssig
 func (r *ProjectAssigneeRepository) Create(projectAssignee *models.ProjectAssignee) error {
 	return r.db.Create(&projectAssignee).Error
 }
+
+func (r *ProjectAssigneeRepository) Find(projectAssignee *models.ProjectAssignee) error {
+	return r.db.Table("project_assignees").Where(&projectAssignee).First(&projectAssignee).Error
+}
