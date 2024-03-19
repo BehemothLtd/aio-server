@@ -52,8 +52,6 @@ func (attribute *StringAttribute) ValidateMin(min interface{}) {
 	case int64:
 		if int64(len(attribute.Value)) < v {
 			attribute.AddError(fmt.Sprintf("is too short. Min length is %d", min))
-		} else {
-			attribute.AddError(fmt.Sprintf("is invalid min length %d", min))
 		}
 	default:
 		panic("Need to provide int64 interface{} as params")
@@ -65,8 +63,6 @@ func (attribute *StringAttribute) ValidateMax(max interface{}) {
 	case int64:
 		if v < int64(len(attribute.Value)) {
 			attribute.AddError(fmt.Sprintf("is too long. Max length is %d", max))
-		} else {
-			attribute.AddError(fmt.Sprintf("is invalid max length %d", max))
 		}
 	default:
 		panic("Need to provide int64 interface{} as params")

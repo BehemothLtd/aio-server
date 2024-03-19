@@ -31,11 +31,10 @@ input LeaveDayRequestsQuery {
 }
 
 input LeaveDayRequestInput {
-  from: Time
-  to: Time
-  timeOff: Float
-  requestType: String
-  requestState: String
+  from: Time!
+  to: Time!
+  timeOff: Float!
+  requestType: String!
   reason: String
   lockVersion: Int
 }

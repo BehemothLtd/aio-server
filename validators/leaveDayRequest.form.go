@@ -8,6 +8,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"fmt"
 	"strings"
 )
 
@@ -58,41 +59,38 @@ func (form *LeaveDayRequestForm) assignAttributes() {
 			FieldAttribute: FieldAttribute{
 				Code: "requestType",
 			},
-			Value: helpers.GetStringOrDefault(form.RequestType),
-		},
-		&StringAttribute{
-			FieldAttribute: FieldAttribute{
-				Code: "requestState",
-			},
-			Value: helpers.GetStringOrDefault(form.RequestState),
+			Value: helpers.GetStringOrDefault(&form.RequestType),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
 				Code: "from",
 			},
-			Value: helpers.GetStringOrDefault(form.From),
+			Value: helpers.GetStringOrDefault(&form.From),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
 				Code: "to",
 			},
-			Value: helpers.GetStringOrDefault(form.To),
+			Value: helpers.GetStringOrDefault(&form.To),
 		},
 		&FloatAttribute[float64]{
 			FieldAttribute: FieldAttribute{
 				Code: "timeOff",
 			},
-			Value: helpers.GetFloat64OrDefault(form.TimeOff),
+			Value: helpers.GetFloat64OrDefault(&form.TimeOff),
 		},
 	)
 }
 
 func (form *LeaveDayRequestForm) validate() error {
+
 	form.validateReason().
 		validateRequestType().
-		validateRequestState().
 		validateTimeOff().
+		validateFrom().
 		summaryErrors()
+
+	fmt.Printf("form after validate %+v", form)
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -110,7 +108,7 @@ func (form *LeaveDayRequestForm) validateReason() *LeaveDayRequestForm {
 	}
 
 	if reasonField.IsClean() {
-		form.Request.Reason = *form.Reason
+		form.Request.Reason = form.Reason
 	}
 
 	return form
@@ -121,8 +119,8 @@ func (form *LeaveDayRequestForm) validateRequestType() *LeaveDayRequestForm {
 
 	requestTypeField.ValidateRequired()
 
-	if form.RequestType != nil {
-		fieldValue := enums.RequestType(*form.RequestType)
+	if form.RequestType != "" {
+		fieldValue := enums.RequestType(form.RequestType)
 
 		if !fieldValue.IsValid() {
 			requestTypeField.AddError("is invalid")
@@ -136,31 +134,20 @@ func (form *LeaveDayRequestForm) validateRequestType() *LeaveDayRequestForm {
 	return form
 }
 
-func (form *LeaveDayRequestForm) validateRequestState() *LeaveDayRequestForm {
-	requestStateField := form.FindAttrByCode("requestState")
-
-	requestStateField.ValidateRequired()
-
-	if form.RequestState != nil {
-		fieldValue := enums.RequestStateType(*form.RequestState)
-
-		if !fieldValue.IsValid() {
-			requestStateField.AddError("is invalid")
-		}
-
-		if requestStateField.IsClean() {
-			form.Request.RequestState = fieldValue
-		}
-	}
-
-	return form
-}
-
 func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 	timeOff := form.FindAttrByCode("timeOff")
 
 	timeOff.ValidateRequired()
 	timeOff.ValidateMin(interface{}(float64(0)))
 
+	return form
+}
+
+func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
+	field := form.FindAttrByCode("from")
+	field.ValidateRequired()
+	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+
+	form.Request.From = *field.Time()
 	return form
 }
