@@ -2,8 +2,10 @@ package insightResolvers
 
 import (
 	"aio-server/enums"
+	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
+	"aio-server/services/insightServices"
 	"context"
 )
 
@@ -12,20 +14,19 @@ func (r *Resolver) ProjectUpdateProjectAssignee(ctx context.Context, args insigh
 		return nil, err
 	}
 
-	return nil, nil
-	// service := insightServices.ProjectCreateProjectAssigneeService{
-	// 	Ctx:  &ctx,
-	// 	Db:   r.Db,
-	// 	Args: args,
-	// }
+	service := insightServices.ProjectUpdateProjectAssigneeService{
+		Ctx:  &ctx,
+		Db:   r.Db,
+		Args: args,
+	}
 
-	// if err := service.Execute(); err != nil {
-	// 	return nil, err
-	// } else {
-	// 	return &insightTypes.ProjectAssigneeModificationType{
-	// 		ProjectAssignee: &globalTypes.ProjectAssigneeType{
-	// 			ProjectAssignee: service.ProjectAssignee,
-	// 		},
-	// 	}, nil
-	// }
+	if err := service.Execute(); err != nil {
+		return nil, err
+	} else {
+		return &insightTypes.ProjectAssigneeModificationType{
+			ProjectAssignee: &globalTypes.ProjectAssigneeType{
+				ProjectAssignee: service.ProjectAssignee,
+			},
+		}, nil
+	}
 }

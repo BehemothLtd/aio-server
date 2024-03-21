@@ -154,6 +154,10 @@ func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
 		}
 
 		if err := form.Repo.Find(&presentedProjectAssignee); err == nil {
+			if form.ProjectAssignee.Id == presentedProjectAssignee.Id {
+				return form
+			}
+
 			userIdField.AddError("already has this role")
 		}
 	}
@@ -166,8 +170,14 @@ func (form *ProjectAssigneeForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.ProjectAssignee); err != nil {
-		return err
+	if form.ProjectAssignee.Id != 0 {
+		if err := form.Repo.Update(form.ProjectAssignee); err != nil {
+			return err
+		}
+	} else {
+		if err := form.Repo.Create(form.ProjectAssignee); err != nil {
+			return err
+		}
 	}
 
 	return nil
