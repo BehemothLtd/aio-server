@@ -48,3 +48,7 @@ func (tt *ProjectAssigneeType) DevelopmentRole(ctx context.Context) *DevelopentR
 		DevelopmentRole: developmentRole,
 	}
 }
+
+func (tt *ProjectAssigneeType) LockVersion(ctx context.Context) *int32 {
+	return &tt.ProjectAssignee.LockVersion
+}

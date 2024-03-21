@@ -19,4 +19,5 @@ type ProjectModifyProjectAssigneeFormInput struct {
 	Active            bool
 	JoinDate          string
 	LeaveDate         *string
+	LockVersion       *int32
 }

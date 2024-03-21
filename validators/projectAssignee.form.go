@@ -75,6 +75,7 @@ func (form *ProjectAssigneeForm) validate() error {
 		validateJoinDate().
 		validateLeaveDate().
 		validateDuplicate().
+		validateLockVersion().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -161,6 +162,25 @@ func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
 			userIdField.AddError("already has this role")
 		}
 	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateLockVersion() *ProjectAssigneeForm {
+	if form.ProjectAssignee.Id == 0 {
+		return form
+	}
+
+	field := IntAttribute[int32]{
+		FieldAttribute: FieldAttribute{
+			Code: "lockVersion",
+		},
+		Value: helpers.GetInt32OrDefault(form.LockVersion),
+	}
+	form.AddAttributes(&field)
+
+	field.ValidateRequired()
+	field.ValidateMin(interface{}(int64(form.ProjectAssignee.LockVersion)))
 
 	return form
 }

@@ -6,6 +6,7 @@ type ProjectAssignee {
   developmentRoleId: ID
   userId: ID
   developmentRole: DevelopmentRole
+  lockVersion: Int
 }
 
 input ProjectAssigneeInputForProjectCreate {
@@ -25,4 +26,5 @@ input ProjectModifyProjectAssigneeInput {
   active: Boolean!
   joinDate: Time!
   leaveDate: Time
+  lockVersion: Int
 }
