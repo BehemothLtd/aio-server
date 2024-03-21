@@ -9,7 +9,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) ProjectCreateProjectAssignee(ctx context.Context, args insightInputs.ProjectModifyProjectAssigneeInput) (*insightTypes.ProjectAssigneeModificationType, error) {
+func (r *Resolver) ProjectCreateProjectAssignee(ctx context.Context, args insightInputs.ProjectCreateProjectAssigneeInput) (*insightTypes.ProjectAssigneeModificationType, error) {
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectAssignees.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}

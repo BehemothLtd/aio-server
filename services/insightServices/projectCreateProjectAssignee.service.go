@@ -16,7 +16,7 @@ import (
 type ProjectCreateProjectAssigneeService struct {
 	Ctx             *context.Context
 	Db              *gorm.DB
-	Args            insightInputs.ProjectModifyProjectAssigneeInput
+	Args            insightInputs.ProjectCreateProjectAssigneeInput
 	Project         *models.Project
 	ProjectAssignee *models.ProjectAssignee
 }
