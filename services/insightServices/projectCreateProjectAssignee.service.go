@@ -7,7 +7,6 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"aio-server/validators"
-	"fmt"
 
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
@@ -16,7 +15,7 @@ import (
 type ProjectCreateProjectAssigneeService struct {
 	Ctx             *context.Context
 	Db              *gorm.DB
-	Args            insightInputs.ProjectModifyProjectAssigneeInput
+	Args            insightInputs.ProjectCreateProjectAssigneeInput
 	Project         *models.Project
 	ProjectAssignee *models.ProjectAssignee
 }
@@ -49,7 +48,6 @@ func (pcpas *ProjectCreateProjectAssigneeService) Execute() error {
 	)
 
 	if err := form.Save(); err != nil {
-		fmt.Println("ERROR", err)
 		return err
 	}
 

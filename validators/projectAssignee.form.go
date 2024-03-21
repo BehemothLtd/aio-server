@@ -75,6 +75,7 @@ func (form *ProjectAssigneeForm) validate() error {
 		validateJoinDate().
 		validateLeaveDate().
 		validateDuplicate().
+		validateLockVersion().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -154,9 +155,32 @@ func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
 		}
 
 		if err := form.Repo.Find(&presentedProjectAssignee); err == nil {
+			if form.ProjectAssignee.Id == presentedProjectAssignee.Id {
+				return form
+			}
+
 			userIdField.AddError("already has this role")
 		}
 	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateLockVersion() *ProjectAssigneeForm {
+	if form.ProjectAssignee.Id == 0 {
+		return form
+	}
+
+	field := IntAttribute[int32]{
+		FieldAttribute: FieldAttribute{
+			Code: "lockVersion",
+		},
+		Value: helpers.GetInt32OrDefault(form.LockVersion),
+	}
+	form.AddAttributes(&field)
+
+	field.ValidateRequired()
+	field.ValidateMin(interface{}(int64(form.ProjectAssignee.LockVersion)))
 
 	return form
 }
@@ -166,8 +190,14 @@ func (form *ProjectAssigneeForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.ProjectAssignee); err != nil {
-		return err
+	if form.ProjectAssignee.Id != 0 {
+		if err := form.Repo.Update(form.ProjectAssignee); err != nil {
+			return err
+		}
+	} else {
+		if err := form.Repo.Create(form.ProjectAssignee); err != nil {
+			return err
+		}
 	}
 
 	return nil

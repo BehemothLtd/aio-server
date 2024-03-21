@@ -9,12 +9,12 @@ import (
 	"context"
 )
 
-func (r *Resolver) ProjectCreateProjectAssignee(ctx context.Context, args insightInputs.ProjectCreateProjectAssigneeInput) (*insightTypes.ProjectAssigneeModificationType, error) {
+func (r *Resolver) ProjectUpdateProjectAssignee(ctx context.Context, args insightInputs.ProjectUpdateProjectAssigneeInput) (*insightTypes.ProjectAssigneeModificationType, error) {
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectAssignees.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
 
-	service := insightServices.ProjectCreateProjectAssigneeService{
+	service := insightServices.ProjectUpdateProjectAssigneeService{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,
