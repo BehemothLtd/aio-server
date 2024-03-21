@@ -135,6 +135,12 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 	if form.LeaveDate != nil && *form.LeaveDate != "" && strings.TrimSpace(*form.LeaveDate) != "" {
 		field.ValidateFormat("1-2-2006", "%d-%m-%y")
 
+		joinDateTime := form.FindAttrByCode("joinDate").Time()
+
+		if joinDateTime != nil {
+			field.ValidateMin(interface{}(*joinDateTime))
+		}
+
 		if field.IsClean() {
 			form.ProjectAssignee.LeaveDate = field.Time()
 		}
