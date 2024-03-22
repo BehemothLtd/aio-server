@@ -41,7 +41,9 @@ func (form *ProjectUpdateForm) Save() error {
 	}
 
 	if err := form.Repo.Update(form.Project); err != nil {
-		return err
+		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+			"base": {err.Error()},
+		})
 	}
 
 	return nil

@@ -198,11 +198,15 @@ func (form *ProjectAssigneeForm) Save() error {
 
 	if form.ProjectAssignee.Id != 0 {
 		if err := form.Repo.Update(form.ProjectAssignee); err != nil {
-			return err
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
 		}
 	} else {
 		if err := form.Repo.Create(form.ProjectAssignee); err != nil {
-			return err
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
 		}
 	}
 
