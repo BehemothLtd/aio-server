@@ -37,3 +37,7 @@ func (r *DeviceTypeRepository) FindById(deviceType *models.DeviceType, id int32)
 
 	return dbTables.First(&deviceType, id).Error
 }
+
+func (r *DeviceTypeRepository) Create(deviceType *models.DeviceType) error {
+	return r.db.Model(&deviceType).Create(&deviceType).Error
+}
