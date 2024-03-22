@@ -13,6 +13,11 @@ type ProjectUpdateProjectAssigneeInput struct {
 	Input     ProjectModifyProjectAssigneeFormInput
 }
 
+type ProjectDeleteProjectAssigneeInput struct {
+	ProjectId graphql.ID
+	Id        graphql.ID
+}
+
 type ProjectModifyProjectAssigneeFormInput struct {
 	UserId            int32
 	DevelopmentRoleId int32

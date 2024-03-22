@@ -20,6 +20,7 @@ type Issue struct {
 	Archived        int
 	CreatorId       int
 	Data            string
+	IssueAssignees  []IssueAssignee
 	LockVersion     int32
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
