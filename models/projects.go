@@ -62,13 +62,15 @@ func (p *Project) BeforeUpdate(tx *gorm.DB) (err error) {
 	if tx.Statement.Changed() {
 		tx.Statement.SetColumn("lock_version", p.LockVersion+1)
 
-		timeNow := time.Now()
-		if p.State == enums.ProjectStateActive {
-			tx.Statement.SetColumn("inactived_at", &timeNow)
-			tx.Statement.SetColumn("actived_at", nil)
-		} else {
-			tx.Statement.SetColumn("actived_at", &timeNow)
-			tx.Statement.SetColumn("inactived_at", nil)
+		if tx.Statement.Changed("state") {
+			timeNow := time.Now()
+			if p.State == enums.ProjectStateActive {
+				tx.Statement.SetColumn("inactived_at", &timeNow)
+				tx.Statement.SetColumn("actived_at", nil)
+			} else {
+				tx.Statement.SetColumn("actived_at", &timeNow)
+				tx.Statement.SetColumn("inactived_at", nil)
+			}
 		}
 	}
 
