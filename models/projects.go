@@ -6,6 +6,8 @@ import (
 	"aio-server/pkg/constants"
 	"slices"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Project struct {
@@ -50,4 +52,25 @@ func (p Project) HasEnoughProjectIssueStatuses() (bool, []string) {
 		}
 	}
 	return true, requiredTitles
+}
+
+func (p *Project) BeforeUpdate(tx *gorm.DB) (err error) {
+	if p.ProjectType == enums.ProjectTypeKanban {
+		p.SprintDuration = nil
+	}
+
+	if tx.Statement.Changed() {
+		tx.Statement.SetColumn("lock_version", p.LockVersion+1)
+
+		timeNow := time.Now()
+		if p.State == enums.ProjectStateActive {
+			tx.Statement.SetColumn("inactived_at", &timeNow)
+			tx.Statement.SetColumn("actived_at", nil)
+		} else {
+			tx.Statement.SetColumn("actived_at", &timeNow)
+			tx.Statement.SetColumn("inactived_at", nil)
+		}
+	}
+
+	return
 }

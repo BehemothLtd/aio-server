@@ -289,13 +289,7 @@ func (form *ProjectUpdateForm) validateLockVersion() *ProjectUpdateForm {
 	field.ValidateRequired()
 
 	if field.IsClean() {
-		lockVersion := *form.LockVersion
-
 		field.ValidateMin(interface{}(int64(currentLockVersion)))
-
-		if currentLockVersion > lockVersion {
-			field.AddError("Attempted to update stale object")
-		}
 	}
 
 	return form

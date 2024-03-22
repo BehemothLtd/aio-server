@@ -106,3 +106,7 @@ func (pt *ProjectType) ProjectIssueStatuses(ctx context.Context) *[]*ProjectIssu
 
 	return &result
 }
+
+func (pt *ProjectType) LockVersion(ctx context.Context) int32 {
+	return pt.Project.LockVersion
+}
