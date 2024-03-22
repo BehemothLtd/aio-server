@@ -12,4 +12,4 @@ CREATE TABLE IF NOT EXISTS `project_issue_statuses` (
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_project_issue_statuses_on_project_id_and_issue_status_id` (`project_id`,`issue_status_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
