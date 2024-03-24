@@ -49,6 +49,8 @@ type Mutation {
   ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
 
   ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
+  
+  IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
 }
 
 scalar Time

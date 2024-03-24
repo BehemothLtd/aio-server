@@ -17,3 +17,13 @@ type IssueStatusCollection {
   collection: [IssueStatus!]
   metadata: Metadata
 }
+
+input IssueStatusCreateInput {
+  title: String
+  color: String
+  statusType: String
+}
+
+type IssueStatusModification {
+  issueStatus: IssueStatus
+}

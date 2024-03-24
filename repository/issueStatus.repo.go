@@ -31,6 +31,10 @@ func (r *IssueStatusRepository) Find(issueStatus *models.IssueStatus) error {
 	return dbTables.Where(&issueStatus).First(&issueStatus).Error
 }
 
+func (r *IssueStatusRepository) Create(issueStatus *models.IssueStatus) error {
+	return r.db.Model(&issueStatus).Create(&issueStatus).First(&issueStatus).Error
+}
+
 func (r *IssueStatusRepository) All(issueStatuses *[]*models.IssueStatus) error {
 	return r.db.Table("issue_statuses").Order("id DESC").Find(&issueStatuses).Error
 }
