@@ -8,6 +8,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"fmt"
 	"strings"
 )
 
@@ -89,11 +90,9 @@ func (form *ProjectSprintForm) validateProjectId() *ProjectSprintForm {
 	if projectId.IsClean() {
 		if err := projectRepo.Find(&models.Project{Id: *form.ProjectId}); err != nil {
 			projectId.AddError("is invalid")
+		} else {
+			form.ProjectSprint.ProjectId = *form.ProjectId
 		}
-	}
-
-	if projectId.IsClean() {
-		form.ProjectSprint.ProjectId = *form.ProjectId
 	}
 
 	return form
@@ -103,6 +102,15 @@ func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	startDate := form.FindAttrByCode("startDate")
 	startDate.ValidateRequired()
 	startDate.ValidateFormat("1-2-2006", "%d-%m-%y")
+
+	project := models.Project{Id: *form.ProjectId}
+	projectRepo := repository.NewProjectRepository(nil, database.Db)
+
+	projectRepo.Find(&project)
+
+	endDate := startDate.Time().AddDate(0, 0, int(project.SprintDuration*7))
+
+	fmt.Printf("endDate==========================: %v\n", endDate)
 
 	if startDate.IsClean() {
 		form.ProjectSprint.StartDate = *startDate.Time()

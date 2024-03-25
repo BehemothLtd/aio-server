@@ -71,7 +71,7 @@ func (tt *ProjectType) SprintDuration(ctx context.Context) *int32 {
 	if tt.Project.ProjectType == enums.ProjectTypeKanban {
 		return nil
 	} else {
-		return helpers.Int32Pointer(int32(*tt.Project.SprintDuration))
+		return helpers.Int32Pointer(int32(tt.Project.SprintDuration))
 	}
 }
 

@@ -240,7 +240,7 @@ func (form *ProjectUpdateForm) validateProjectType() *ProjectUpdateForm {
 					sprintDurationField.ValidateRequired()
 
 					if sprintDurationField.IsClean() {
-						form.Project.SprintDuration = form.SprintDuration
+						form.Project.SprintDuration = *form.SprintDuration
 					}
 
 				} else if projectType == enums.ProjectTypeKanban {
