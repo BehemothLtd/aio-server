@@ -23,10 +23,10 @@ type Issue struct {
 	Deadline        time.Time
 	Archived        bool
 	CreatorId       int32
-	Creator         User
+	Creator         User `gorm:"foreignkey:CreatorId"`
 	Data            string
 	IssueAssignees  []IssueAssignee
-	Children        []Issue
+	Children        []Issue `gorm:"foreignkey:ParentId"`
 	Parent          *Issue
 	LockVersion     int32
 	CreatedAt       time.Time
