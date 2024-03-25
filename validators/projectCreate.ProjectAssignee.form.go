@@ -98,7 +98,7 @@ func (form *ProjectCreateProjectAssigneeForm) validateDevelopmentId() *ProjectCr
 func (form *ProjectCreateProjectAssigneeForm) validateJoinDate() *ProjectCreateProjectAssigneeForm {
 	field := form.FindAttrByCode("joinDate")
 	field.ValidateRequired()
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat("2-1-2006", "%d-%m-%y")
 
 	form.ProjectAssignee.JoinDate = field.Time()
 

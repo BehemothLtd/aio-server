@@ -260,7 +260,7 @@ func (form *ProjectUpdateForm) validateProjectType() *ProjectUpdateForm {
 func (form *ProjectUpdateForm) validateStartedAt() *ProjectUpdateForm {
 	field := form.FindAttrByCode("startedAt")
 
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat("2-1-2006", "%d-%m-%y")
 
 	if field.IsClean() {
 		form.Project.StartedAt = field.Time()
@@ -272,7 +272,7 @@ func (form *ProjectUpdateForm) validateStartedAt() *ProjectUpdateForm {
 func (form *ProjectUpdateForm) validateEndedAt() *ProjectUpdateForm {
 	field := form.FindAttrByCode("endedAt")
 
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat("2-1-2006", "%d-%m-%y")
 
 	if field.IsClean() {
 		form.Project.EndedAt = field.Time()

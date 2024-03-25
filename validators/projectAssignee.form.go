@@ -120,7 +120,7 @@ func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
 func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
 	field := form.FindAttrByCode("joinDate")
 	field.ValidateRequired()
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat("2-1-2006", "%d-%m-%y")
 
 	if field.IsClean() {
 		form.ProjectAssignee.JoinDate = field.Time()
@@ -133,7 +133,7 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 	field := form.FindAttrByCode("leaveDate")
 
 	if form.LeaveDate != nil && *form.LeaveDate != "" && strings.TrimSpace(*form.LeaveDate) != "" {
-		field.ValidateFormat("1-2-2006", "%d-%m-%y")
+		field.ValidateFormat("2-1-2006", "%d-%m-%y")
 
 		joinDateTime := form.FindAttrByCode("joinDate").Time()
 
