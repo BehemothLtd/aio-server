@@ -21,10 +21,10 @@ func (r *Resolver) MmWorkingTimelogs(ctx context.Context, args insightInputs.Wor
 		return nil, err
 	}
 
-	result := make([]*insightTypes.WorkingTimelogType, len(workingTimelogs))
+	result := make([]*globalTypes.WorkingTimelogType, len(workingTimelogs))
 
 	for i, workingTimelog := range workingTimelogs {
-		result[i] = &insightTypes.WorkingTimelogType{
+		result[i] = &globalTypes.WorkingTimelogType{
 			WorkingTimelog: workingTimelog,
 		}
 	}

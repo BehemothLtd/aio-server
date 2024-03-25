@@ -2,7 +2,7 @@ package insightResolvers
 
 import (
 	"aio-server/exceptions"
-	"aio-server/gql/gqlTypes/insightTypes"
+	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *Resolver) MmWorkingTimelog(ctx context.Context, args insightInputs.WorkingTimelogInput) (*insightTypes.WorkingTimelogType, error) {
+func (r *Resolver) MmWorkingTimelog(ctx context.Context, args insightInputs.WorkingTimelogInput) (*globalTypes.WorkingTimelogType, error) {
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError(("Invalid ID"))
 	}
@@ -34,5 +34,5 @@ func (r *Resolver) MmWorkingTimelog(ctx context.Context, args insightInputs.Work
 		return nil, err
 	}
 
-	return &insightTypes.WorkingTimelogType{WorkingTimelog: &workingTimelog}, nil
+	return &globalTypes.WorkingTimelogType{WorkingTimelog: &workingTimelog}, nil
 }

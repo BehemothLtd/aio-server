@@ -1,0 +1,10 @@
+type IssueAssignee {
+  id: ID
+  userId: ID
+  developmentRoleId: ID
+}
+
+input IssueAssigneeInput {
+  userId: Int
+  developmentRoleId: Int
+}
