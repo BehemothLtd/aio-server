@@ -11,7 +11,6 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/services/insightServices"
 	"context"
-	"fmt"
 )
 
 func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs.LeaveDayRequestUpdateInput) (*insightTypes.LeaveDayRequestUpdatedType, error) {
@@ -31,7 +30,6 @@ func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs
 
 	request := models.LeaveDayRequest{Id: requestId}
 
-	fmt.Print(request)
 	service := insightServices.LeaveDayRequestUpdateServive{
 		Ctx:     &ctx,
 		Db:      r.Db,
