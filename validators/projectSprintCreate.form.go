@@ -8,7 +8,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 	"strings"
 )
 
@@ -102,17 +101,25 @@ func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	startDate := form.FindAttrByCode("startDate")
 	startDate.ValidateRequired()
 	startDate.ValidateFormat("1-2-2006", "%d-%m-%y")
+	startDateFormat := startDate.Time().Format("2006-01-02")
 
 	project := models.Project{Id: *form.ProjectId}
 	projectRepo := repository.NewProjectRepository(nil, database.Db)
 
 	projectRepo.Find(&project)
 
-	endDate := startDate.Time().AddDate(0, 0, int(project.SprintDuration*7))
+	endDate := startDate.Time().AddDate(0, 0, int(project.SprintDuration*7)).Format("2006-01-02")
 
-	fmt.Printf("endDate==========================: %v\n", endDate)
+	result := []models.ProjectSprint{}
+	db := database.Db
+	db.Raw(
+		"Select id from project_sprints where project_id = ? AND ((start_date < ? AND end_date > ?) OR (start_date < ? AND end_date > ?) OR (start_date > ? AND end_date < ?))",
+		project.Id, startDateFormat, startDateFormat, endDate, endDate, startDateFormat, endDate,
+	).Scan(&result)
 
-	if startDate.IsClean() {
+	if len(result) > 0 {
+		startDate.AddError("is duplicate with another sprints")
+	} else {
 		form.ProjectSprint.StartDate = *startDate.Time()
 	}
 
