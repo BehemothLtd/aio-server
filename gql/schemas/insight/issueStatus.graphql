@@ -24,6 +24,13 @@ input IssueStatusCreateInput {
   statusType: String
 }
 
+input IssueStatusUpdateInput {
+  title: String
+  color: String
+  statusType: String
+  lockVersion: Int
+}
+
 type IssueStatusModification {
   issueStatus: IssueStatus
 }
