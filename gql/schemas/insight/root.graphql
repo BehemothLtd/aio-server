@@ -46,6 +46,7 @@ type Mutation {
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 
   LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
+  LeaveDayRequestUpdate(id: ID!, input: LeaveDayRequestInput!): LeaveDayRequestModification!
 }
 
 scalar Time
