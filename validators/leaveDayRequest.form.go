@@ -8,7 +8,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 	"strings"
 )
 
@@ -83,14 +82,12 @@ func (form *LeaveDayRequestForm) assignAttributes() {
 }
 
 func (form *LeaveDayRequestForm) validate() error {
-
 	form.validateReason().
 		validateRequestType().
 		validateTimeOff().
 		validateFrom().
+		validateTo().
 		summaryErrors()
-
-	fmt.Printf("form after validate %+v", form)
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -139,6 +136,7 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 
 	timeOff.ValidateRequired()
 	timeOff.ValidateMin(interface{}(float64(0)))
+	form.Request.TimeOff = form.TimeOff
 
 	return form
 }
@@ -146,8 +144,16 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
 	field := form.FindAttrByCode("from")
 	field.ValidateRequired()
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
-
+	field.ValidateFormat("02-01-2006 15:04", "%d-%m-%y %H:%M")
 	form.Request.From = *field.Time()
+	return form
+}
+
+func (form *LeaveDayRequestForm) validateTo() *LeaveDayRequestForm {
+	field := form.FindAttrByCode("to")
+	field.ValidateRequired()
+	field.ValidateFormat("02-01-2006 15:04", "%d-%m-%y %H:%M")
+
+	form.Request.To = *field.Time()
 	return form
 }
