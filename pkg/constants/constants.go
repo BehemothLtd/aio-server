@@ -19,6 +19,8 @@ const (
 
 	UnprocessableContentErrorCode = 422
 	UnprocessableContentErrorMsg  = "Please check your input"
+
+	DdMMYYYY_DateFormat = "2-1-2006" // "Month-Date-Year"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
