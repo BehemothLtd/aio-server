@@ -147,7 +147,7 @@ func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
 	field.ValidateRequired()
 	field.ValidateFormat("02-01-2006 15:04", "%d-%m-%y %H:%M")
 
-	beginningOfDay := helpers.BeginningOfDay()
+	beginningOfDay := helpers.BeginningOfDay(nil)
 
 	if field.Time().Before(beginningOfDay) {
 		field.AddError(fmt.Sprintf("is invalid, must be later than start of the day %+v",

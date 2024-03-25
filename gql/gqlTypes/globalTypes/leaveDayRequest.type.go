@@ -29,7 +29,7 @@ func (lt *LeaveDayRequestType) ApproverId(ctx context.Context) *graphql.ID {
 }
 
 func (lt *LeaveDayRequestType) User(ctx context.Context) *UserType {
-	return &UserType{User: lt.LeaveDayRequest.User}
+	return &UserType{User: &lt.LeaveDayRequest.User}
 }
 
 func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {

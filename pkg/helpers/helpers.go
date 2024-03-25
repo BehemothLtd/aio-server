@@ -122,20 +122,7 @@ func Float64Pointer(val float64) *float64 {
 // GetFloat64OrDefault returns the value of the float64 pointer if not nil, otherwise returns 0.
 func GetFloat64OrDefault(num *float64) float64 {
 	if num == nil {
-		return 0
+		return 0.0
 	}
 	return *num
-}
-
-// Get time Beginning Of Day
-func BeginningOfDay(t ...time.Time) time.Time {
-	var inputTime time.Time
-
-	if len(t) > 0 {
-		inputTime = t[0]
-	} else {
-		inputTime = time.Now()
-	}
-
-	return time.Date(inputTime.Year(), inputTime.Month(), inputTime.Day(), 0, 0, 0, 0, inputTime.Location())
 }

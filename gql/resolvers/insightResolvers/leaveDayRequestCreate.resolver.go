@@ -19,7 +19,7 @@ func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs
 
 	request := models.LeaveDayRequest{
 		UserId:       user.Id,
-		RequestState: enums.RequestStateType("pending"),
+		RequestState: enums.RequestStateTypePending,
 	}
 	service := insightServices.LeaveDayRequestService{
 		Ctx:     &ctx,
