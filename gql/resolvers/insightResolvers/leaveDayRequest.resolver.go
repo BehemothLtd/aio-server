@@ -28,9 +28,11 @@ func (r *Resolver) LeaveDayRequest(ctx context.Context, args insightInputs.Leave
 		return nil, err
 	}
 
-	leaveDayRequest := models.LeaveDayRequest{}
+	leaveDayRequest := models.LeaveDayRequest{
+		Id: leaveDayRequestId,
+	}
 	repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db.Preload("User").Preload("Approver"))
-	err = repo.FindById(&leaveDayRequest, leaveDayRequestId)
+	err = repo.Find(&leaveDayRequest)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
