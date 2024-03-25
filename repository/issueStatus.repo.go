@@ -35,6 +35,13 @@ func (r *IssueStatusRepository) Create(issueStatus *models.IssueStatus) error {
 	return r.db.Model(&issueStatus).Create(&issueStatus).First(&issueStatus).Error
 }
 
+func (r *IssueStatusRepository) Update(issueStatus *models.IssueStatus) error {
+	originalIssueStatus := models.IssueStatus{Id: issueStatus.Id}
+	r.db.Model(&originalIssueStatus).First(&originalIssueStatus)
+
+	return r.db.Model(&originalIssueStatus).Save(&issueStatus).First(&issueStatus).Error
+}
+
 func (r *IssueStatusRepository) All(issueStatuses *[]*models.IssueStatus) error {
 	return r.db.Table("issue_statuses").Order("id DESC").Find(&issueStatuses).Error
 }

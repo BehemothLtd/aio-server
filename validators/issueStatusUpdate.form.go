@@ -11,21 +11,21 @@ import (
 	"strings"
 )
 
-type IssueStatusCreateForm struct {
+type IssueStatusUpdateForm struct {
 	Form
-	insightInputs.IssueStatusCreateFormInput
+	insightInputs.IssueStatusUpdateFormInput
 	IssueStatus *models.IssueStatus
 	Repo        *repository.IssueStatusRepository
 }
 
-func NewIssueStatusCreateFormValidator(
-	input *insightInputs.IssueStatusCreateFormInput,
+func NewIssueStatusUpdateFormValidator(
+	input *insightInputs.IssueStatusUpdateFormInput,
 	repo *repository.IssueStatusRepository,
 	issueStatus *models.IssueStatus,
-) IssueStatusCreateForm {
-	form := IssueStatusCreateForm{
+) IssueStatusUpdateForm {
+	form := IssueStatusUpdateForm{
 		Form:                       Form{},
-		IssueStatusCreateFormInput: *input,
+		IssueStatusUpdateFormInput: *input,
 		IssueStatus:                issueStatus,
 		Repo:                       repo,
 	}
@@ -34,19 +34,19 @@ func NewIssueStatusCreateFormValidator(
 	return form
 }
 
-func (form *IssueStatusCreateForm) Save() error {
+func (form *IssueStatusUpdateForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
 
-	if err := form.Repo.Create(form.IssueStatus); err != nil {
+	if err := form.Repo.Update(form.IssueStatus); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func (form *IssueStatusCreateForm) assignAttributes() {
+func (form *IssueStatusUpdateForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -69,7 +69,7 @@ func (form *IssueStatusCreateForm) assignAttributes() {
 	)
 }
 
-func (form *IssueStatusCreateForm) validate() error {
+func (form *IssueStatusUpdateForm) validate() error {
 	form.validateColor().
 		validateTitle().
 		validateStatusType().
@@ -81,7 +81,7 @@ func (form *IssueStatusCreateForm) validate() error {
 	return nil
 }
 
-func (form *IssueStatusCreateForm) validateColor() *IssueStatusCreateForm {
+func (form *IssueStatusUpdateForm) validateColor() *IssueStatusUpdateForm {
 	colorField := form.FindAttrByCode("color")
 
 	colorField.ValidateRequired()
@@ -98,7 +98,7 @@ func (form *IssueStatusCreateForm) validateColor() *IssueStatusCreateForm {
 	return form
 }
 
-func (form *IssueStatusCreateForm) validateTitle() *IssueStatusCreateForm {
+func (form *IssueStatusUpdateForm) validateTitle() *IssueStatusUpdateForm {
 	titleField := form.FindAttrByCode("title")
 
 	titleField.ValidateRequired()
@@ -116,7 +116,7 @@ func (form *IssueStatusCreateForm) validateTitle() *IssueStatusCreateForm {
 	return form
 }
 
-func (form *IssueStatusCreateForm) validateStatusType() *IssueStatusCreateForm {
+func (form *IssueStatusUpdateForm) validateStatusType() *IssueStatusUpdateForm {
 	typeField := form.FindAttrByCode("statusType")
 
 	typeField.ValidateRequired()
