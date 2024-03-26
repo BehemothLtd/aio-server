@@ -117,7 +117,7 @@ func (form *LeaveDayRequestForm) validateRequestType() *LeaveDayRequestForm {
 
 	requestTypeField.ValidateRequired()
 
-	if form.RequestType != "" {
+	if requestTypeField.IsClean() {
 		fieldValue := enums.RequestType(form.RequestType)
 
 		if !fieldValue.IsValid() {
