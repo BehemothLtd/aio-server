@@ -10,7 +10,6 @@ type ProjectCreateIssueInput struct {
 type ProjectModifyIssueFormInput struct {
 	Title           *string
 	Description     *string
-	IssueStatus     *string
 	IssueType       *string
 	Priority        *string
 	Archived        *bool

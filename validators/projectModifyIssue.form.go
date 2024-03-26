@@ -4,8 +4,10 @@ import (
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"slices"
 )
 
 type ProjectModifyIssueForm struct {
@@ -59,12 +61,6 @@ func (form *ProjectModifyIssueForm) assignAttributes() {
 				Code: "description",
 			},
 			Value: helpers.GetStringOrDefault(form.Description),
-		},
-		&StringAttribute{
-			FieldAttribute: FieldAttribute{
-				Code: "issueStatus",
-			},
-			Value: helpers.GetStringOrDefault(form.IssueStatus),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -124,11 +120,54 @@ func (form *ProjectModifyIssueForm) assignAttributes() {
 }
 
 func (form *ProjectModifyIssueForm) validate() error {
-	form.summaryErrors()
+	form.validateTitle().
+		validateDescription().
+		validateIssueStatusId().
+		summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
 	}
 
 	return nil
+}
+
+func (form *ProjectModifyIssueForm) validateTitle() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("title")
+	field.ValidateRequired()
+
+	field.ValidateMin(interface{}(int64(5)))
+	field.ValidateMax(interface{}(int64(constants.MaxStringLength)))
+
+	if field.IsClean() {
+		form.Issue.Title = *form.Title
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateDescription() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("description")
+	field.ValidateRequired()
+
+	field.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
+
+	if field.IsClean() {
+		form.Issue.Description = *form.Description
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("issueStatusId")
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		if foundIdx := slices.IndexFunc(form.Project.ProjectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == *form.IssueStatusId }); foundIdx == -1 {
+			field.AddError("is invalid status")
+		}
+	}
+
+	return form
 }
