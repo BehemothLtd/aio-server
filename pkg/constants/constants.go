@@ -21,7 +21,7 @@ const (
 	UnprocessableContentErrorMsg  = "Please check your input"
 
 	DDMMYYY_DateFormat        = "2-1-2006" // "Month-Date-Year"
-	HUMAN_DD_MM_YY_DateFormat = constants.HUMAN_DD_MM_YY_DateFormat
+	HUMAN_DD_MM_YY_DateFormat = "%d-%m-%y"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
