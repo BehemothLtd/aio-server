@@ -1,6 +1,7 @@
 package insightServices
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
@@ -23,6 +24,10 @@ func (rus *LeaveDayRequestUpdateService) Execute() error {
 
 	if err := repo.Find(rus.Request); err != nil {
 		return exceptions.NewRecordNotFoundError()
+	}
+
+	if rus.Request.RequestState != enums.RequestStateTypePending {
+		return exceptions.NewBadRequestError("Can not update this request!")
 	}
 
 	form := validators.NewLeaveDayrequestFormValidator(

@@ -2,10 +2,12 @@ package repository
 
 import (
 	"aio-server/enums"
+	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -87,4 +89,16 @@ func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) er
 
 func (ldr *LeaveDayRequestRepository) Update(request *models.LeaveDayRequest) error {
 	return ldr.db.Table("leave_day_requests").Updates(&request).Error
+}
+
+func (ldr *LeaveDayRequestRepository) Destroy(request *models.LeaveDayRequest) error {
+	if err := ldr.Find(request); err != nil {
+		return exceptions.NewRecordNotFoundError()
+	}
+
+	if request.RequestState != enums.RequestStateTypePending {
+		return exceptions.NewBadRequestError(fmt.Sprintf("Request was %s", request.RequestState))
+	}
+
+	return ldr.db.Table("leave_day_requests").Delete(&request).Error
 }

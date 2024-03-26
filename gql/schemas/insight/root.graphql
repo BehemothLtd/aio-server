@@ -52,6 +52,7 @@ type Mutation {
 
   LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
   LeaveDayRequestUpdate(id: ID!, input: LeaveDayRequestInput!): LeaveDayRequestModification!
+  LeaveDayRequestDelete(id: ID!): String
 }
 
 scalar Time
