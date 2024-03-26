@@ -9,6 +9,7 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"slices"
+	"strings"
 )
 
 type ProjectModifyIssueForm struct {
@@ -126,6 +127,8 @@ func (form *ProjectModifyIssueForm) validate() error {
 		validateIssueStatusId().
 		validateIssueType().
 		validatePriority().
+		validateArchived().
+		validateDeadlineAndStartDate().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -202,6 +205,46 @@ func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueF
 		} else {
 			form.Issue.IssueStatusId = *form.IssueStatusId
 		}
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateArchived() *ProjectModifyIssueForm {
+	form.Issue.Archived = helpers.GetBoolOrDefault(form.Archived)
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateDeadlineAndStartDate() *ProjectModifyIssueForm {
+	deadlineField := form.FindAttrByCode("deadline")
+	startDateField := form.FindAttrByCode("startDate")
+
+	if form.Deadline != nil && strings.TrimSpace(*form.Deadline) != "" {
+		deadlineField.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+	}
+
+	if form.StartDate != nil && strings.TrimSpace(*form.StartDate) != "" {
+		startDateField.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+	}
+
+	if !deadlineField.IsClean() || !startDateField.IsClean() {
+		return form
+	}
+
+	deadline := *deadlineField.Time()
+	startDate := *startDateField.Time()
+
+	if deadline.Before(startDate) {
+		deadlineField.AddError("need to be after Start Date")
+	}
+
+	if deadlineField.IsClean() {
+		form.Issue.Deadline = deadline
+	}
+
+	if startDateField.IsClean() {
+		form.Issue.StartDate = startDate
 	}
 
 	return form
