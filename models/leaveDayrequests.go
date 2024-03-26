@@ -3,6 +3,8 @@ package models
 import (
 	"aio-server/enums"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type LeaveDayRequest struct {
@@ -20,4 +22,12 @@ type LeaveDayRequest struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	LockVersion  int32 `gorm:"not null;autoIncrement;default:0"`
+}
+
+func (r *LeaveDayRequest) BeforeUpdate(tx *gorm.DB) (err error) {
+	if tx.Statement.Changed() {
+		tx.Statement.SetColumn("lock_version", r.LockVersion+1)
+	}
+
+	return
 }

@@ -86,7 +86,5 @@ func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) er
 }
 
 func (ldr *LeaveDayRequestRepository) Update(request *models.LeaveDayRequest) error {
-	request.LockVersion += 1
-
 	return ldr.db.Table("leave_day_requests").Updates(&request).Error
 }

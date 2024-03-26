@@ -145,13 +145,13 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
 	field := form.FindAttrByCode("from")
 	field.ValidateRequired()
-	field.ValidateFormat("02-01-2006 15:04", "%d-%m-%y %H:%M")
+	field.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, "%d-%m-%y %H:%M")
 
 	beginningOfDay := helpers.BeginningOfDay(nil)
 
 	if field.Time().Before(beginningOfDay) {
 		field.AddError(fmt.Sprintf("is invalid, must be later than start of the day %+v",
-			beginningOfDay.Format("02-01-2006")),
+			beginningOfDay.Format(constants.DdMMYYYY_DateFormat)),
 		)
 	}
 
@@ -164,11 +164,11 @@ func (form *LeaveDayRequestForm) validateTo() *LeaveDayRequestForm {
 	fromTime := form.FindAttrByCode("from")
 
 	toTime.ValidateRequired()
-	toTime.ValidateFormat("02-01-2006 15:04", "%d-%m-%y %H:%M")
+	toTime.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, "%d-%m-%y %H:%M")
 
 	if toTime.Time().Before(*fromTime.Time()) {
 		toTime.AddError(fmt.Sprintf("is invalid, must be later than start time %+v",
-			fromTime.Time().Format("02-01-2006 15:04")),
+			fromTime.Time().Format(constants.DDMMYYY_HHMM_DateFormat)),
 		)
 	}
 
