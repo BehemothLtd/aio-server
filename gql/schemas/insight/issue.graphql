@@ -37,10 +37,10 @@ type ProjectIssueModification {
 }
 
 input ProjectModifyIssueInput {
+  title: String
   description: String
   issueType: String
   priority: String
-  title: String
   archived: Boolean
   deadline: Time
   startDate: Time
