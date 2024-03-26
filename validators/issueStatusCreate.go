@@ -86,9 +86,6 @@ func (form *IssueStatusCreateForm) validateColor() *IssueStatusCreateForm {
 
 	colorField.ValidateRequired()
 
-	// nameField.ValidateMin(interface{}(int64(5)))
-	// nameField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
-
 	if form.Color != nil && strings.TrimSpace(*form.Color) != "" {
 		if colorField.IsClean() {
 			form.IssueStatus.Color = *form.Color

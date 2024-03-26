@@ -73,6 +73,7 @@ func (form *IssueStatusUpdateForm) validate() error {
 	form.validateColor().
 		validateTitle().
 		validateStatusType().
+		validateLockVersion().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -85,9 +86,6 @@ func (form *IssueStatusUpdateForm) validateColor() *IssueStatusUpdateForm {
 	colorField := form.FindAttrByCode("color")
 
 	colorField.ValidateRequired()
-
-	// nameField.ValidateMin(interface{}(int64(5)))
-	// nameField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if form.Color != nil && strings.TrimSpace(*form.Color) != "" {
 		if colorField.IsClean() {
@@ -131,6 +129,20 @@ func (form *IssueStatusUpdateForm) validateStatusType() *IssueStatusUpdateForm {
 		if typeField.IsClean() {
 			form.IssueStatus.StatusType = fieldValue
 		}
+	}
+
+	return form
+}
+
+func (form *IssueStatusUpdateForm) validateLockVersion() *IssueStatusUpdateForm {
+	currentLockVersion := form.IssueStatus.LockVersion
+
+	field := form.FindAttrByCode("lockVersion")
+
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		field.ValidateMin(interface{}(int64(currentLockVersion)))
 	}
 
 	return form
