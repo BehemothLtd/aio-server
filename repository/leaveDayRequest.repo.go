@@ -23,10 +23,11 @@ func NewLeaveDayRequestRepository(c *context.Context, db *gorm.DB) *LeaveDayRequ
 	}
 }
 
-func (r *LeaveDayRequestRepository) FindById(request *models.LeaveDayRequest, id int32) error {
+// Querying Functions
+func (r *LeaveDayRequestRepository) Find(request *models.LeaveDayRequest) error {
 	dbTables := r.db.Model(&models.LeaveDayRequest{})
 
-	return dbTables.First(&request, id).Error
+	return dbTables.Where(&request).First(&request).Error
 }
 
 func (ldr *LeaveDayRequestRepository) List(
@@ -77,4 +78,13 @@ func (ldr *LeaveDayRequestRepository) userIdEq(userIdEq *int32) func(db *gorm.DB
 			return db.Where(gorm.Expr(`leave_day_requests.user_id = ?`, userIdEq))
 		}
 	}
+}
+
+// Mutating Functions
+func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) error {
+	return ldr.db.Table("leave_day_requests").Create(&request).Error
+}
+
+func (ldr *LeaveDayRequestRepository) Update(request *models.LeaveDayRequest) error {
+	return ldr.db.Table("leave_day_requests").Updates(&request).Error
 }

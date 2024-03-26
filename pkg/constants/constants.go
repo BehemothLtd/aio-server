@@ -22,6 +22,7 @@ const (
 
 	DDMMYYY_DateFormat        = "2-1-2006" // "Month-Date-Year"
 	HUMAN_DD_MM_YY_DateFormat = "%d-%m-%y"
+	DDMMYYY_HHMM_DateFormat   = "2-1-2006 15:04"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
