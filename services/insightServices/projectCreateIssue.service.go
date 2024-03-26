@@ -37,11 +37,13 @@ func (pcis *ProjectCreateIssueService) Execute() error {
 		return exceptions.NewBadRequestError("Invalid Project")
 	}
 
+	issue := models.Issue{ProjectId: project.Id}
+
 	form := validators.NewProjectModifyIssueFormValidator(
 		&pcis.Args.Input,
 		*repository.NewIssueRepository(pcis.Ctx, pcis.Db),
 		project,
-		nil,
+		&issue,
 	)
 
 	if err := form.Save(); err != nil {

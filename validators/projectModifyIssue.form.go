@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
@@ -123,6 +124,8 @@ func (form *ProjectModifyIssueForm) validate() error {
 	form.validateTitle().
 		validateDescription().
 		validateIssueStatusId().
+		validateIssueType().
+		validatePriority().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -159,6 +162,36 @@ func (form *ProjectModifyIssueForm) validateDescription() *ProjectModifyIssueFor
 	return form
 }
 
+func (form *ProjectModifyIssueForm) validateIssueType() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("issueType")
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		if issueTypeEnum, err := enums.ParseIssueType(*form.IssueType); err != nil {
+			field.AddError("is invalid type")
+		} else {
+			form.Issue.IssueType = issueTypeEnum
+		}
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validatePriority() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("priority")
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		if priority, err := enums.ParseIssuePriority(*form.Priority); err != nil {
+			field.AddError("is invalid priority")
+		} else {
+			form.Issue.Priority = priority
+		}
+	}
+
+	return form
+}
+
 func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueForm {
 	field := form.FindAttrByCode("issueStatusId")
 	field.ValidateRequired()
@@ -166,6 +199,8 @@ func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueF
 	if field.IsClean() {
 		if foundIdx := slices.IndexFunc(form.Project.ProjectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == *form.IssueStatusId }); foundIdx == -1 {
 			field.AddError("is invalid status")
+		} else {
+			form.Issue.IssueStatusId = *form.IssueStatusId
 		}
 	}
 
