@@ -12,7 +12,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) IssueStatusUpdate(ctx context.Context, args insightInputs.IssueStatusInput) (*insightTypes.IssueStatusUpdatedType, error) {
+func (r *Resolver) IssueStatusUpdate(ctx context.Context, args insightInputs.IssueStatusUpdateInput) (*insightTypes.IssueStatusUpdatedType, error) {
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeIssueStatuses.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
