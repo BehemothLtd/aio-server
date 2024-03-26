@@ -17,7 +17,7 @@ const (
 	UnauthorizedErrorCode = 401
 	UnauthorizedErrorMsg  = "You need to sign in to perform this action"
 
-	UnprocessableContentErrorCode = 422go
+	UnprocessableContentErrorCode = 422
 	UnprocessableContentErrorMsg  = "Please check your input"
 
 	DdMMYYYY_DateFormat     = "2-1-2006" // "Month-Date-Year"
