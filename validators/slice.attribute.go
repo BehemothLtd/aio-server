@@ -6,7 +6,9 @@ import (
 )
 
 type NestedSlices interface {
-	insightInputs.ProjectIssueStatusInputForProjectCreate | insightInputs.ProjectAssigneeInputForProjectCreate
+	insightInputs.ProjectIssueStatusInputForProjectCreate |
+		insightInputs.ProjectAssigneeInputForProjectCreate |
+		insightInputs.IssueAssigneeInputForIssueCreate
 }
 
 type SliceAttribute[T NestedSlices] struct {

@@ -55,6 +55,14 @@ func GetStringOrDefault(str *string) string {
 	return *str
 }
 
+// GetStringOrDefault returns the value of the bool pointer if not nil, otherwise returns false.
+func GetBoolOrDefault(b *bool) bool {
+	if b == nil {
+		return false
+	}
+	return *b
+}
+
 // GetInt32OrDefault returns the value of the int32 pointer if not nil, otherwise returns 0.
 func GetInt32OrDefault(num *int32) int32 {
 	if num == nil {
