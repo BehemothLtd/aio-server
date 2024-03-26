@@ -33,22 +33,41 @@ type UploadedBlob struct {
 	Key string `json:"key"`
 }
 
-func (u *Uploader) Upload() (*UploadedBlob, error) {
+func (u *Uploader) Upload() ([]*UploadedBlob, error) {
 	if _, signedIn := u.Ctx.Get(constants.ContextCurrentUser); !signedIn {
 		return nil, errors.New("Unauthorized")
 	}
 
-	file, err := u.Ctx.FormFile("file")
+	err := u.Ctx.Request.ParseMultipartForm(10 << 20)
 	if err != nil {
 		return nil, err
 	}
 
-	filename := file.Filename
+	var uploadedBlobs []*UploadedBlob
 
-	if u.Local {
-		return u.uploadLocally(file, filename)
+	form := u.Ctx.Request.MultipartForm
+	files := form.File["files[]"]
+
+	for _, file := range files {
+		filename := file.Filename
+
+		var uploadedBlob *UploadedBlob
+		var uploadErr error
+
+		if u.Local {
+			uploadedBlob, uploadErr = u.uploadLocally(file, filename)
+		} else {
+			uploadedBlob, uploadErr = u.uploadToGCS(file, filename)
+		}
+
+		if uploadErr != nil {
+			return nil, uploadErr
+		}
+
+		uploadedBlobs = append(uploadedBlobs, uploadedBlob)
 	}
-	return u.uploadToGCS(file, filename)
+
+	return uploadedBlobs, nil
 }
 
 func (u *Uploader) uploadLocally(file *multipart.FileHeader, fileName string) (*UploadedBlob, error) {
