@@ -17,10 +17,11 @@ const (
 	UnauthorizedErrorCode = 401
 	UnauthorizedErrorMsg  = "You need to sign in to perform this action"
 
-	UnprocessableContentErrorCode = 422
+	UnprocessableContentErrorCode = 422go
 	UnprocessableContentErrorMsg  = "Please check your input"
 
-	DdMMYYYY_DateFormat = "2-1-2006" // "Month-Date-Year"
+	DdMMYYYY_DateFormat     = "2-1-2006" // "Month-Date-Year"
+	DDMMYYY_HHMM_DateFormat = "2-1-2006 15:04"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
