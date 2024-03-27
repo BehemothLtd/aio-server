@@ -131,7 +131,7 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 	timeOff := form.FindAttrByCode("timeOff")
 
 	timeOff.ValidateRequired()
-	timeOff.ValidateMin(interface{}(float64(0.0)))
+	timeOff.ValidateMin(interface{}(float64(0)))
 
 	if timeOff.IsClean() {
 		form.Request.TimeOff = form.TimeOff
@@ -142,11 +142,11 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 
 func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
 	field := form.FindAttrByCode("from")
+
 	field.ValidateRequired()
 	field.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
 	beginningOfDay := helpers.BeginningOfDay(nil)
-
 	field.ValidateMin(interface{}(beginningOfDay))
 
 	if field.IsClean() {
