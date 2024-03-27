@@ -28,3 +28,18 @@ func (r *IssueRepository) Create(issue *models.Issue) error {
 		Preload("IssueAssignees").
 		Create(&issue).First(&issue).Error
 }
+
+func (r *IssueRepository) Update(issue *models.Issue) error {
+	// db.Transaction(func(tx *gorm.DB) error {
+	// 	if err := db.Model(&issue).Unscoped().Association("IssueAssignees").Unscoped().Clear(); err != nil {
+	// 		return err
+	// 	}
+
+	// 	if err := db.Model(&issue).Association("IssueAssignees").Append(newIssueAssignees); err != nil {
+	// 		return err
+	// 	}
+
+	// 	return nil
+	// })
+	return nil
+}
