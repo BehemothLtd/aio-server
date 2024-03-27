@@ -21,5 +21,9 @@ func NewIssueRepository(c *context.Context, db *gorm.DB) *IssueRepository {
 }
 
 func (r *IssueRepository) Create(issue *models.Issue) error {
-	return r.db.Model(&issue).Create(&issue).Error
+	return r.db.Model(&issue).
+		Preload("Creator").Preload("Project").
+		Preload("Children").Preload("Parent").
+		Preload("IssueAssignees").
+		Create(&issue).First(&issue).Error
 }
