@@ -11,11 +11,13 @@ import (
 )
 
 func (r *Resolver) ProjectCreateIssue(ctx context.Context, args insightInputs.ProjectCreateIssueInput) (*insightTypes.IssueCreatedType, error) {
-	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectIssues.String(), enums.PermissionActionTypeWrite.String()); err != nil {
+	user, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectIssues.String(), enums.PermissionActionTypeWrite.String())
+
+	if err != nil {
 		return nil, err
 	}
 
-	issue := models.Issue{}
+	issue := models.Issue{CreatorId: user.Id}
 
 	service := insightServices.ProjectCreateIssueService{
 		Ctx:   &ctx,
