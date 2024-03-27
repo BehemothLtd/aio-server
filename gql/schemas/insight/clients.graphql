@@ -13,3 +13,11 @@ type ClientCollection {
   collection: [Client!]
   metadata: Metadata!
 }
+
+input ClientCreateInput {
+  name: String
+}
+
+type ClientModification {
+  client: Client
+}
