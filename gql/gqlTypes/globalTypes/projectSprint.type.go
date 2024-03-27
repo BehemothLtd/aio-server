@@ -25,7 +25,7 @@ func (pst *ProjectSprintType) Title(context.Context) string {
 }
 
 func (pst *ProjectSprintType) ProjectId(context.Context) *graphql.ID {
-	return helpers.GqlIDP(pst.ProjectSprint.Id)
+	return helpers.GqlIDP(pst.ProjectSprint.ProjectId)
 }
 
 func (pst *ProjectSprintType) StartDate(context.Context) *graphql.Time {
@@ -33,7 +33,7 @@ func (pst *ProjectSprintType) StartDate(context.Context) *graphql.Time {
 }
 
 func (pst *ProjectSprintType) EndDate(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&pst.ProjectSprint.EndDate)
+	return helpers.GqlTimePointer(pst.ProjectSprint.EndDate)
 }
 
 func (pst *ProjectSprintType) UpdatedAt(context.Context) *graphql.Time {

@@ -52,3 +52,7 @@ func (psr *ProjectSprintRepository) Destroy(projectSprint *models.ProjectSprint)
 	}
 	return nil
 }
+
+func (cr *ProjectSprintRepository) Create(projectSprint *models.ProjectSprint) error {
+	return cr.db.Model(&projectSprint).Create(&projectSprint).First(&projectSprint).Error
+}

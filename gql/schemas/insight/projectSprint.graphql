@@ -9,3 +9,13 @@ type ProjectSprint {
   archived: Boolean!
   lockVersion: Int!
 }
+
+type ProjectSprintModification {
+  projectSprint: ProjectSprint
+}
+
+input ProjectSprintCreateInput {
+  title: String
+  projectId: Int
+  startDate: String
+}
