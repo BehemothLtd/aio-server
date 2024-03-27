@@ -43,9 +43,9 @@ func (form *ProjectModifyIssueForm) Save() error {
 		return err
 	}
 
-	// if err := form.Repo.Create(form.Project); err != nil {
-	// 	return err
-	// }
+	if err := form.Repo.Create(form.Issue); err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -124,11 +124,13 @@ func (form *ProjectModifyIssueForm) assignAttributes() {
 func (form *ProjectModifyIssueForm) validate() error {
 	form.validateTitle().
 		validateDescription().
-		validateIssueStatusId().
 		validateIssueType().
 		validatePriority().
 		validateArchived().
 		validateDeadlineAndStartDate().
+		validateIssueStatusId().
+		validateParentId().
+		validateProjectSprintId().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -195,21 +197,6 @@ func (form *ProjectModifyIssueForm) validatePriority() *ProjectModifyIssueForm {
 	return form
 }
 
-func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("issueStatusId")
-	field.ValidateRequired()
-
-	if field.IsClean() {
-		if foundIdx := slices.IndexFunc(form.Project.ProjectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == *form.IssueStatusId }); foundIdx == -1 {
-			field.AddError("is invalid status")
-		} else {
-			form.Issue.IssueStatusId = *form.IssueStatusId
-		}
-	}
-
-	return form
-}
-
 func (form *ProjectModifyIssueForm) validateArchived() *ProjectModifyIssueForm {
 	form.Issue.Archived = helpers.GetBoolOrDefault(form.Archived)
 
@@ -245,6 +232,50 @@ func (form *ProjectModifyIssueForm) validateDeadlineAndStartDate() *ProjectModif
 
 	if startDateField.IsClean() {
 		form.Issue.StartDate = startDate
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("issueStatusId")
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		if foundIdx := slices.IndexFunc(form.Project.ProjectIssueStatuses, func(pis *models.ProjectIssueStatus) bool { return pis.IssueStatusId == *form.IssueStatusId }); foundIdx == -1 {
+			field.AddError("is invalid status")
+		} else {
+			form.Issue.IssueStatusId = *form.IssueStatusId
+		}
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateParentId() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("parentId")
+	field.ValidateRequired()
+
+	if field.IsClean() {
+		if foundIdx := slices.IndexFunc(form.Project.Issues, func(issue models.Issue) bool { return issue.Id == *form.ParentId }); foundIdx == -1 {
+			field.AddError("is invalid Parent Issue")
+		} else {
+			form.Issue.ParentId = *form.ParentId
+		}
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateProjectSprintId() *ProjectModifyIssueForm {
+	field := form.FindAttrByCode("projectSprintId")
+
+	if form.ProjectSprintId != nil {
+		if foundIdx := slices.IndexFunc(form.Project.ProjectSprints, func(ps models.ProjectSprint) bool { return ps.Id == *form.ProjectSprintId }); foundIdx == -1 {
+			field.AddError("is invalid Sprint")
+		} else {
+			form.Issue.ProjectSprintId = form.ProjectSprintId
+		}
 	}
 
 	return form

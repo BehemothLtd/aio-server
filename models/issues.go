@@ -24,7 +24,7 @@ type Issue struct {
 	Archived        bool
 	CreatorId       int32
 	Creator         User `gorm:"foreignkey:CreatorId"`
-	Data            string
+	Data            *string
 	IssueAssignees  []IssueAssignee
 	Children        []Issue `gorm:"foreignkey:ParentId"`
 	Parent          *Issue

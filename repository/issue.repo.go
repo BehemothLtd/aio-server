@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/models"
 	"context"
 
 	"gorm.io/gorm"
@@ -17,4 +18,8 @@ func NewIssueRepository(c *context.Context, db *gorm.DB) *IssueRepository {
 			ctx: c,
 		},
 	}
+}
+
+func (r *IssueRepository) Create(issue *models.Issue) error {
+	return r.db.Model(&issue).Create(&issue).Error
 }

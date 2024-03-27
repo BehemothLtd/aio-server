@@ -31,19 +31,19 @@ func (pcis *ProjectCreateIssueService) Execute() error {
 	}
 
 	project := models.Project{Id: projectId}
-	projectRepo := repository.NewProjectRepository(pcis.Ctx, pcis.Db.Preload("ProjectIssueStatuses"))
+	projectRepo := repository.NewProjectRepository(pcis.Ctx, pcis.Db.Preload("ProjectIssueStatuses").Preload("Issues").Preload("ProjectSprints"))
 
 	if err := projectRepo.Find(&project); err != nil {
 		return exceptions.NewBadRequestError("Invalid Project")
 	}
 
-	issue := models.Issue{ProjectId: project.Id}
+	pcis.Issue.ProjectId = project.Id
 
 	form := validators.NewProjectModifyIssueFormValidator(
 		&pcis.Args.Input,
 		*repository.NewIssueRepository(pcis.Ctx, pcis.Db),
 		project,
-		&issue,
+		pcis.Issue,
 	)
 
 	if err := form.Save(); err != nil {

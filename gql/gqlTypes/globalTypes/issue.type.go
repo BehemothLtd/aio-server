@@ -145,11 +145,19 @@ func (it *IssueType) Assignees(ctx context.Context) *[]*UserType {
 }
 
 func (it *IssueType) ProjectSprintId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(*it.Issue.ProjectSprintId)
+	if it.Issue.ProjectSprintId != nil {
+		return helpers.GqlIDP(*it.Issue.ProjectSprintId)
+	}
+
+	return nil
 }
 
 func (it *IssueType) ProjectSprint(ctx context.Context) *ProjectSprintType {
-	return &ProjectSprintType{
-		ProjectSprint: it.Issue.ProjectSprint,
+	if it.Issue.ProjectSprintId != nil {
+		return &ProjectSprintType{
+			ProjectSprint: it.Issue.ProjectSprint,
+		}
 	}
+
+	return nil
 }
