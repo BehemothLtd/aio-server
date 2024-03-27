@@ -99,7 +99,7 @@ func (form *LeaveDayRequestForm) validate() error {
 func (form *LeaveDayRequestForm) validateReason() *LeaveDayRequestForm {
 	reasonField := form.FindAttrByCode("reason")
 
-	if strings.TrimSpace(*form.Reason) != "" {
+	if form.Reason != nil && strings.TrimSpace(*form.Reason) != "" {
 		reasonField.ValidateMin(interface{}(int64(3)))
 		reasonField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 	}
@@ -146,7 +146,8 @@ func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
 	field.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
 	beginningOfDay := helpers.BeginningOfDay(nil)
-	field.ValidateMin(interface{}(*&beginningOfDay))
+
+	field.ValidateMin(interface{}(beginningOfDay))
 
 	if field.IsClean() {
 		form.Request.From = *field.Time()
