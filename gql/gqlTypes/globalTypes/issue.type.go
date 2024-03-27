@@ -137,7 +137,7 @@ func (it *IssueType) IssueAssignees(ctx context.Context) *[]*IssueAssigneeType {
 
 	for i, issueAssignee := range it.Issue.IssueAssignees {
 		issueAssignees[i] = &IssueAssigneeType{
-			IssueAssignee: &issueAssignee,
+			IssueAssignee: issueAssignee,
 		}
 	}
 

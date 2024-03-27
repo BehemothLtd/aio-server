@@ -1,6 +1,7 @@
 package validators
 
 import (
+	"aio-server/database"
 	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
@@ -131,6 +132,7 @@ func (form *ProjectModifyIssueForm) validate() error {
 		validateIssueStatusId().
 		validateParentId().
 		validateProjectSprintId().
+		validateIssueAssignees().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -274,6 +276,51 @@ func (form *ProjectModifyIssueForm) validateProjectSprintId() *ProjectModifyIssu
 			field.AddError("is invalid Sprint")
 		} else {
 			form.Issue.ProjectSprintId = form.ProjectSprintId
+		}
+	}
+
+	return form
+}
+
+func (form *ProjectModifyIssueForm) validateIssueAssignees() *ProjectModifyIssueForm {
+	fieldKey := "issueAssignees"
+	field := form.FindAttrByCode(fieldKey)
+
+	if form.IssueAssignees != nil && len(*form.IssueAssignees) > 0 {
+		issueAssignees := []*models.IssueAssignee{}
+
+		issueAssigneeRepo := repository.NewIssueAssigneeRepository(nil, database.Db)
+
+		for i, issueAssigneeInput := range *form.IssueAssignees {
+			userId := issueAssigneeInput.UserId
+			developementRoleId := issueAssigneeInput.DevelopmentRoleId
+
+			// Check duplicated in input
+			if foundIdx := slices.IndexFunc(issueAssignees, func(ia *models.IssueAssignee) bool {
+				return (userId != nil && ia.UserId == *userId && developementRoleId != nil && ia.DevelopmentRoleId == *developementRoleId)
+			}); foundIdx != -1 {
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "userId"), []interface{}{"is already has same role"})
+			} else {
+				issueAssignee := models.IssueAssignee{}
+
+				issueAssigneeForm := NewIssueCreateIssueAssigneeFormValidator(
+					&issueAssigneeInput,
+					issueAssigneeRepo,
+					&issueAssignee,
+					form.Project,
+				)
+
+				if err := issueAssigneeForm.Validate(); err != nil {
+					form.AddNestedErrors(fieldKey, i, err)
+				} else {
+					// only push to final result when nested form has no error
+					issueAssignees = append(issueAssignees, &issueAssignee)
+				}
+			}
+		}
+
+		if field.IsClean() {
+			form.Issue.IssueAssignees = issueAssignees
 		}
 	}
 
