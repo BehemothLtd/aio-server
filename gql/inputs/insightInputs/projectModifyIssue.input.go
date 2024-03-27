@@ -7,6 +7,12 @@ type ProjectCreateIssueInput struct {
 	Input ProjectModifyIssueFormInput
 }
 
+type ProjectUpdateIssueInput struct {
+	Id        graphql.ID
+	ProjectId graphql.ID
+	Input     ProjectModifyIssueFormInput
+}
+
 type ProjectModifyIssueFormInput struct {
 	Title           *string
 	Description     *string

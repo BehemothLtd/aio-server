@@ -20,6 +20,12 @@ func NewIssueRepository(c *context.Context, db *gorm.DB) *IssueRepository {
 	}
 }
 
+func (r *IssueRepository) Find(issue *models.Issue) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	return dbTables.Where(&issue).First(&issue).Error
+}
+
 func (r *IssueRepository) Create(issue *models.Issue) error {
 	return r.db.Model(&issue).
 		Preload("Creator").Preload("Project").
