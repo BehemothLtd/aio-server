@@ -254,13 +254,12 @@ func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueF
 
 func (form *ProjectModifyIssueForm) validateParentId() *ProjectModifyIssueForm {
 	field := form.FindAttrByCode("parentId")
-	field.ValidateRequired()
 
-	if field.IsClean() {
+	if form.ParentId != nil {
 		if foundIdx := slices.IndexFunc(form.Project.Issues, func(issue models.Issue) bool { return issue.Id == *form.ParentId }); foundIdx == -1 {
 			field.AddError("is invalid Parent Issue")
 		} else {
-			form.Issue.ParentId = *form.ParentId
+			form.Issue.ParentId = form.ParentId
 		}
 	}
 

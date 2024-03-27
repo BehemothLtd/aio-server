@@ -9,6 +9,7 @@ type Issue {
   issueType: String
   priority: String
   status: String
+  position: Int
 
   createdAt: Time
   updatedAt: Time

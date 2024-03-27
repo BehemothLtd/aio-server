@@ -62,6 +62,10 @@ func (it *IssueType) Status(ctx context.Context) *string {
 	return &status
 }
 
+func (it *IssueType) Position(ctx context.Context) *int32 {
+	return &it.Issue.Position
+}
+
 func (it *IssueType) CreatedAt(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&it.Issue.CreatedAt)
 }
@@ -91,13 +95,21 @@ func (it *IssueType) Children(ctx context.Context) *[]*IssueType {
 }
 
 func (it *IssueType) ParentId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(it.Issue.ParentId)
+	if it.Issue.ParentId != nil {
+		return helpers.GqlIDP(*it.Issue.ParentId)
+	}
+
+	return nil
 }
 
 func (it *IssueType) Parent(ctx context.Context) *IssueType {
-	return &IssueType{
-		Issue: it.Issue.Parent,
+	if it.Issue.ParentId != nil {
+		return &IssueType{
+			Issue: it.Issue.Parent,
+		}
 	}
+
+	return nil
 }
 
 func (it *IssueType) ProjectId(ctx context.Context) *graphql.ID {
