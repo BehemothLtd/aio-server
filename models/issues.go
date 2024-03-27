@@ -3,6 +3,8 @@ package models
 import (
 	"aio-server/enums"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Issue struct {
@@ -31,4 +33,18 @@ type Issue struct {
 	LockVersion     int32
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
+}
+
+func (i *Issue) BeforeCreate(tx *gorm.DB) (err error) {
+	i.SetPosition(tx)
+
+	return
+}
+
+func (i *Issue) SetPosition(tx *gorm.DB) *Issue {
+	maxPosition := 0
+	tx.Model(&i).Select("MAX(position)").Where("issue_status_id = ?", i.IssueStatusId).Where("project_id = ?", i.ProjectId).Scan(&maxPosition)
+
+	i.Position = maxPosition + 1
+	return i
 }
