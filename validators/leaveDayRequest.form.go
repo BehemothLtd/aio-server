@@ -131,7 +131,7 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 	timeOff := form.FindAttrByCode("timeOff")
 
 	timeOff.ValidateRequired()
-	timeOff.ValidateMin(interface{}(float64(0)))
+	timeOff.ValidateMin(interface{}(float64(0.0)))
 
 	if timeOff.IsClean() {
 		form.Request.TimeOff = form.TimeOff
