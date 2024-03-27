@@ -88,7 +88,10 @@ func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) er
 }
 
 func (ldr *LeaveDayRequestRepository) Update(request *models.LeaveDayRequest) error {
-	return ldr.db.Table("leave_day_requests").Updates(&request).Error
+	originalRequest := models.LeaveDayRequest{Id: request.Id}
+	ldr.db.Model(&originalRequest).First(&originalRequest)
+
+	return ldr.db.Model(&originalRequest).Save(&request).Error
 }
 
 func (ldr *LeaveDayRequestRepository) Destroy(request *models.LeaveDayRequest) error {

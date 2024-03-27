@@ -4,7 +4,11 @@ import (
 	"aio-server/enums"
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
+	"aio-server/models"
+	"aio-server/pkg/helpers"
+	"aio-server/repository"
 	"context"
+	"fmt"
 )
 
 func (r *Resolver) LeaveDayRequestStateChange(ctx context.Context, args insightInputs.LeaveDayRequestStateChangeInput) (*string, error) {
@@ -17,5 +21,28 @@ func (r *Resolver) LeaveDayRequestStateChange(ctx context.Context, args insightI
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
-	if args.RequestState != enums.RequestStateType()
+
+	requetId, err := helpers.GqlIdToInt32(args.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	if requestStateEnum, err := enums.ParseRequestStateType(args.RequestState); err != nil {
+		return nil, exceptions.NewBadRequestError("Invalid request state")
+	} else {
+		request := models.LeaveDayRequest{
+			Id:           requetId,
+			ApproverId:   &user.Id,
+			RequestState: requestStateEnum,
+		}
+
+		repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db)
+
+		if err = repo.Update(&request); err != nil {
+			return nil, exceptions.NewBadRequestError(fmt.Sprintf("Can not change this request's state %s", err.Error()))
+		} else {
+			message := "State Changed"
+			return &message, nil
+		}
+	}
 }
