@@ -8,7 +8,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 	"strings"
 )
 
@@ -118,14 +117,10 @@ func (form *LeaveDayRequestForm) validateRequestType() *LeaveDayRequestForm {
 	requestTypeField.ValidateRequired()
 
 	if requestTypeField.IsClean() {
-		fieldValue := enums.RequestType(form.RequestType)
-
-		if !fieldValue.IsValid() {
+		if requestTypeEnum, err := enums.ParseRequestType(form.RequestType); err != nil {
 			requestTypeField.AddError("is invalid")
-		}
-
-		if requestTypeField.IsClean() {
-			form.Request.RequestType = fieldValue
+		} else {
+			form.Request.RequestType = requestTypeEnum
 		}
 	}
 
@@ -137,7 +132,10 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 
 	timeOff.ValidateRequired()
 	timeOff.ValidateMin(interface{}(float64(0)))
-	form.Request.TimeOff = form.TimeOff
+
+	if timeOff.IsClean() {
+		form.Request.TimeOff = form.TimeOff
+	}
 
 	return form
 }
@@ -145,33 +143,32 @@ func (form *LeaveDayRequestForm) validateTimeOff() *LeaveDayRequestForm {
 func (form *LeaveDayRequestForm) validateFrom() *LeaveDayRequestForm {
 	field := form.FindAttrByCode("from")
 	field.ValidateRequired()
-	field.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, "%d-%m-%y %H:%M")
+	field.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
 	beginningOfDay := helpers.BeginningOfDay(nil)
+	field.ValidateMin(interface{}(*&beginningOfDay))
 
-	if field.Time().Before(beginningOfDay) {
-		field.AddError(fmt.Sprintf("is invalid, must be later than start of the day %+v",
-			beginningOfDay.Format(constants.DDMMYYY_DateFormat)),
-		)
+	if field.IsClean() {
+		form.Request.From = *field.Time()
 	}
 
-	form.Request.From = *field.Time()
 	return form
 }
 
 func (form *LeaveDayRequestForm) validateTo() *LeaveDayRequestForm {
 	toTime := form.FindAttrByCode("to")
-	fromTime := form.FindAttrByCode("from")
+	fromTime := form.FindAttrByCode("from").Time()
 
 	toTime.ValidateRequired()
-	toTime.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, "%d-%m-%y %H:%M")
+	toTime.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
-	if toTime.Time().Before(*fromTime.Time()) {
-		toTime.AddError(fmt.Sprintf("is invalid, must be later than start time %+v",
-			fromTime.Time().Format(constants.DDMMYYY_HHMM_DateFormat)),
-		)
+	if fromTime != nil {
+		toTime.ValidateMin(interface{}(*fromTime))
 	}
 
-	form.Request.To = *toTime.Time()
+	if toTime.IsClean() {
+		form.Request.To = *toTime.Time()
+	}
+
 	return form
 }
