@@ -41,7 +41,7 @@ func (form *LeaveDayRequestForm) Save() error {
 	}
 
 	if form.Request.Id == 0 {
-		form.Repo.Create(form.Request)
+		return form.Repo.Create(form.Request)
 	}
 	return form.Repo.Update(form.Request)
 }
