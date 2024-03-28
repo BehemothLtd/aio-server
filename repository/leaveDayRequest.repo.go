@@ -84,3 +84,14 @@ func (ldr *LeaveDayRequestRepository) userIdEq(userIdEq *int32) func(db *gorm.DB
 func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) error {
 	return ldr.db.Table("leave_day_requests").Create(&request).Error
 }
+
+func (ldr *LeaveDayRequestRepository) Update(request *models.LeaveDayRequest) error {
+	originalRequest := models.LeaveDayRequest{Id: request.Id}
+	ldr.db.Model(&originalRequest).First(&originalRequest)
+
+	return ldr.db.Model(&originalRequest).Save(&request).Error
+}
+
+func (ldr *LeaveDayRequestRepository) Destroy(request *models.LeaveDayRequest) error {
+	return ldr.db.Table("leave_day_requests").Delete(&request).Error
+}

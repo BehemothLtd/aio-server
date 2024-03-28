@@ -40,10 +40,10 @@ func (form *LeaveDayRequestForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.Request); err != nil {
-		return err
+	if form.Request.Id == 0 {
+		return form.Repo.Create(form.Request)
 	}
-	return nil
+	return form.Repo.Update(form.Request)
 }
 
 func (form *LeaveDayRequestForm) assignAttributes() {
