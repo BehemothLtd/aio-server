@@ -6,6 +6,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"aio-server/validators"
 
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
@@ -48,6 +49,17 @@ func (puis *ProjectUpdateIssueService) Execute() error {
 	repo := repository.NewIssueRepository(nil, puis.Db)
 	if err := repo.Find(puis.Issue); err != nil {
 		return exceptions.NewBadRequestError("Invalid Issue")
+	}
+
+	form := validators.NewProjectModifyIssueFormValidator(
+		&puis.Args.Input,
+		*repository.NewIssueRepository(puis.Ctx, puis.Db),
+		project,
+		puis.Issue,
+	)
+
+	if err := form.Save(); err != nil {
+		return err
 	}
 
 	return nil

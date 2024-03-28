@@ -44,8 +44,14 @@ func (form *ProjectModifyIssueForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.Issue); err != nil {
-		return err
+	if form.Issue.Id == 0 {
+		if err := form.Repo.Create(form.Issue); err != nil {
+			return err
+		}
+	} else {
+		if err := form.Repo.Update(form.Issue); err != nil {
+			return err
+		}
 	}
 
 	return nil
