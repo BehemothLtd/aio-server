@@ -32,7 +32,8 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 }
 
 func (r *ProjectRepository) Update(project *models.Project) error {
-	project.LockVersion += 1
+	originalProject := models.Project{Id: project.Id}
+	r.db.Model(&originalProject).First(&originalProject)
 
-	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Save(&project).First(&project).Error
+	return r.db.Model(&originalProject).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Save(&project).First(&project).Error
 }

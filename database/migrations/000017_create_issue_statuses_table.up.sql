@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS `issue_statuses` (
   `lock_version` int NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_issue_statuses_on_title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -29,7 +29,7 @@ func (r *Resolver) Authorize(ctx context.Context, target string, action string) 
 		return nil, exceptions.NewUnauthorizedError("You dont have authorization for this action")
 	}
 
-	return nil, nil
+	return &user, nil
 }
 
 func (r *Resolver) UsersSliceToTypes(users []*models.User) *[]*globalTypes.UserType {

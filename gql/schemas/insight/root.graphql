@@ -4,6 +4,8 @@ schema {
 }
 
 type Query {
+  SelfGeneralInfo(): SelfGeneralInfo!
+
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
 
@@ -30,6 +32,8 @@ type Query {
 
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
   LeaveDayRequest(id: ID!): LeaveDayRequest!
+
+  AnalysesTotalSummarize(): AnalysesTotalSummarize!
 }
 
 type Mutation {
@@ -46,6 +50,12 @@ type Mutation {
 
   ProjectCreateProjectAssignee(id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
   ProjectUpdateProjectAssignee(projectId: ID!, id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
+  ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
+
+  ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
+  ProjectUpdateIssue(projectId: ID!, id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
+
+  LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
 
   DeviceTypeCreate(input: DeviceTypeCreateInput!): DeviceTypeModification!
 }

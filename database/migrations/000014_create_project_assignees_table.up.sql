@@ -17,4 +17,4 @@ CREATE TABLE IF NOT EXISTS `project_assignees` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx_pas_on_project_user_role` (`project_id`,`user_id`,`development_role_id`),
   KEY `index_project_assignees_on_project_id` (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=251 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

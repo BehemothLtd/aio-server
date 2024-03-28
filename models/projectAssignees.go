@@ -11,6 +11,7 @@ type ProjectAssignee struct {
 	DevelopmentRoleId int32 `gorm:"not null;"`
 	UserId            int32
 	ProjectId         int32
+	Project           Project
 
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -229,7 +229,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 				// If not duplicated then create nested form for further validation
 				projectIssueStatus := models.ProjectIssueStatus{}
 
-				projectIssueStatusForm := NewProjectCreateProjectIssueFormValidator(
+				projectIssueStatusForm := NewProjectCreateProjectIssueStatusFormValidator(
 					&projectIssueStatusInput,
 					issueStatusRepo,
 					&projectIssueStatus,

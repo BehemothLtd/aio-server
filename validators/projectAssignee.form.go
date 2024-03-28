@@ -5,6 +5,7 @@ import (
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/pkg/systems"
 	"aio-server/repository"
@@ -120,7 +121,7 @@ func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
 func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
 	field := form.FindAttrByCode("joinDate")
 	field.ValidateRequired()
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 	if field.IsClean() {
 		form.ProjectAssignee.JoinDate = field.Time()
@@ -133,7 +134,7 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 	field := form.FindAttrByCode("leaveDate")
 
 	if form.LeaveDate != nil && *form.LeaveDate != "" && strings.TrimSpace(*form.LeaveDate) != "" {
-		field.ValidateFormat("1-2-2006", "%d-%m-%y")
+		field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 		joinDateTime := form.FindAttrByCode("joinDate").Time()
 
@@ -198,11 +199,15 @@ func (form *ProjectAssigneeForm) Save() error {
 
 	if form.ProjectAssignee.Id != 0 {
 		if err := form.Repo.Update(form.ProjectAssignee); err != nil {
-			return err
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
 		}
 	} else {
 		if err := form.Repo.Create(form.ProjectAssignee); err != nil {
-			return err
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
 		}
 	}
 

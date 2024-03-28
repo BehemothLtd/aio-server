@@ -19,4 +19,4 @@ CREATE TABLE IF NOT EXISTS `working_timelogs` (
   KEY `index_working_timelogs_on_project_id_and_logged_at` (`project_id`,`logged_at`),
   KEY `index_working_timelogs_on_project_id` (`project_id`),
   KEY `index_working_timelogs_on_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12501 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

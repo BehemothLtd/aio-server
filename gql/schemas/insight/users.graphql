@@ -21,10 +21,14 @@ type User {
   slackId: String
 }
 
-type UserPrivateInfo {
+type SelfGeneralInfo {
   id: ID
   email: String
   name: String
+  fullName: String
+  issuesCount: Int
+  projectsCount: Int
+  avatarUrl: String
 }
 
 type UsersAllInfo {

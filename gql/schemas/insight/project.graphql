@@ -16,6 +16,7 @@ type Project {
   currentSprintId: ID
   projectAssignees: [ProjectAssignee!]
   projectIssueStatuses: [ProjectIssueStatus!]
+  lockVersion: Int!
 }
 
 input ProjectCreateInput {

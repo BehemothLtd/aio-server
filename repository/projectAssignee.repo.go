@@ -33,3 +33,7 @@ func (r *ProjectAssigneeRepository) Update(projectAssignee *models.ProjectAssign
 
 	return r.db.Updates(&projectAssignee).Error
 }
+
+func (r *ProjectAssigneeRepository) Delete(projectAssignee *models.ProjectAssignee) error {
+	return r.db.Where("id = ?", &projectAssignee.Id).Delete(&projectAssignee).Error
+}

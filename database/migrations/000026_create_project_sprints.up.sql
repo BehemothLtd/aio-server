@@ -13,4 +13,4 @@ CREATE TABLE IF NOT EXISTS `project_sprints` (
   `lock_version` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_project_sprints_on_title_and_project_id` (`title`,`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
