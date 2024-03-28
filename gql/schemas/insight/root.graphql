@@ -56,6 +56,9 @@ type Mutation {
   ProjectUpdateIssue(projectId: ID!, id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
 
   LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
+  LeaveDayRequestUpdate(id: ID!, input: LeaveDayRequestInput!): LeaveDayRequestModification!
+  LeaveDayRequestDelete(id: ID!): String
+  LeaveDayRequestStateChange(id: ID!, requestState: String!): String
 
   DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
   DeviceTypeUpdate(id: ID!, input: DeviceTypeInput!): DeviceTypeModification!
