@@ -34,19 +34,15 @@ func (r *Resolver) LeaveDayRequestStateChange(ctx context.Context, args insightI
 			Id: requetId,
 		}
 
-		fmt.Print(requestStateEnum, user)
-
 		repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db)
 
 		if err := repo.Find(&request); err != nil {
 			return nil, exceptions.NewRecordNotFoundError()
 		}
-		fmt.Printf(">>>>> request: %+v\n", request)
 
-		request = models.LeaveDayRequest{
-			ApproverId:   &user.Id,
-			RequestState: requestStateEnum,
-		}
+		request.ApproverId = &user.Id
+		request.RequestState = requestStateEnum
+
 		if err = repo.Update(&request); err != nil {
 			return nil, exceptions.NewBadRequestError(fmt.Sprintf("Can not change this request's state %s", err.Error()))
 		} else {
