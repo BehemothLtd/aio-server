@@ -13,7 +13,7 @@ import (
 )
 
 func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs.LeaveDayRequestUpdateInput) (*insightTypes.LeaveDayRequestUpdatedType, error) {
-	_, err := r.Authorize(ctx, string(enums.PermissionTargetTypeLeaveDayRequests), string(enums.PermissionActionTypeWrite))
+	user, err := r.Authorize(ctx, string(enums.PermissionTargetTypeLeaveDayRequests), string(enums.PermissionActionTypeWrite))
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs
 		return nil, err
 	}
 
-	request := models.LeaveDayRequest{Id: requetId}
+	request := models.LeaveDayRequest{Id: requetId, UserId: user.Id}
 	service := insightServices.LeaveDayRequestUpdateService{
 		Ctx:     &ctx,
 		Db:      r.Db,
