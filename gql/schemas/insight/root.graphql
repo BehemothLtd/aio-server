@@ -4,6 +4,8 @@ schema {
 }
 
 type Query {
+  SelfGeneralInfo(): SelfGeneralInfo!
+
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
 
