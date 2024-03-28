@@ -32,6 +32,8 @@ type Query {
 
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
   LeaveDayRequest(id: ID!): LeaveDayRequest!
+
+  AnalysesTotalSummarize(): AnalysesTotalSummarize!
 }
 
 type Mutation {

@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Resolver) SelfGeneralInfo(ctx context.Context) (*globalTypes.UserType, error) {
-	user, err := auths.AuthUserFromCtx(ctx)
+	user, err := auths.AuthInsightUserFromCtx(ctx)
 
 	if err != nil {
 		return nil, exceptions.NewUnauthorizedError("")
