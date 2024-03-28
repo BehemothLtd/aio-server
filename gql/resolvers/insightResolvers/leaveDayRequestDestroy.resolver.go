@@ -12,11 +12,11 @@ import (
 )
 
 func (r *Resolver) LeaveDayRequestDelete(ctx context.Context, args insightInputs.LeaveDayRequestInput) (*string, error) {
-	_, err := r.Authorize(ctx, string(enums.PermissionTargetTypeLeaveDayRequests), string(enums.PermissionActionTypeWrite))
+	user, err := r.Authorize(ctx, string(enums.PermissionTargetTypeLeaveDayRequests), string(enums.PermissionActionTypeWrite))
+
 	if err != nil {
 		return nil, err
 	}
-
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
@@ -27,9 +27,17 @@ func (r *Resolver) LeaveDayRequestDelete(ctx context.Context, args insightInputs
 	}
 
 	leaveDayRequest := models.LeaveDayRequest{
-		Id: requestId,
+		Id:     requestId,
+		UserId: user.Id,
 	}
 	repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db)
+
+	if err := repo.Find(&leaveDayRequest); err != nil {
+		return nil, exceptions.NewRecordNotFoundError()
+	}
+	if leaveDayRequest.RequestState != enums.RequestStateTypePending {
+		return nil, exceptions.NewBadRequestError(fmt.Sprintf("Request was %s", leaveDayRequest.RequestState))
+	}
 
 	if err = repo.Destroy(&leaveDayRequest); err != nil {
 		return nil, exceptions.NewBadRequestError(fmt.Sprintf("Can not delete this request %s", err.Error()))
