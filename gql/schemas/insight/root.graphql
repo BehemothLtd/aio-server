@@ -50,6 +50,8 @@ type Mutation {
 
   ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
   ProjectUpdateIssue(projectId: ID!, id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
+
+  LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
 }
 
 scalar Time
