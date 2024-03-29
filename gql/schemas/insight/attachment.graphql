@@ -1,0 +1,4 @@
+type Attachment {
+  key: String
+  url: String
+}
