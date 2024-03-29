@@ -18,7 +18,7 @@ type SlackClient struct {
 	Headers  map[string]string
 }
 
-func (client *SlackClient) InitSlackClient() *SlackClient {
+func NewSlackClient(client *SlackClient) *SlackClient {
 	httpClient := http.Client{
 		Timeout: constants.RequestTimeOut * time.Second,
 	}
@@ -31,8 +31,8 @@ func (client *SlackClient) InitSlackClient() *SlackClient {
 	return client
 }
 
-func (client *SlackClient) SlackRequest(method string, endpoint string, payload []byte) (*http.Request, error) {
-	client = client.InitSlackClient()
+func (client *SlackClient) Request(method string, endpoint string, payload []byte) (*http.Request, error) {
+	client = NewSlackClient(client)
 
 	requestEndPoint := client.EndPoint + endpoint
 
@@ -54,7 +54,7 @@ func (client *SlackClient) SlackRequest(method string, endpoint string, payload 
 	}
 }
 
-func (client *SlackClient) SlackConversationHistory(channel string, limit *int, timestamp *time.Time, inclusion *bool) (*SlackMessage, error) {
+func (client *SlackClient) FetchConversationHistories(channel string, limit *int, timestamp *time.Time, inclusion *bool) (*SlackMessage, error) {
 	if limit == nil {
 		num := 20
 		limit = &num
@@ -81,7 +81,7 @@ func (client *SlackClient) SlackConversationHistory(channel string, limit *int, 
 		return nil, err
 	}
 
-	request, err := client.SlackRequest(constants.Post, "/conversations.history", payloadBytes)
+	request, err := client.Request(constants.Post, "/conversations.history", payloadBytes)
 
 	if err != nil {
 		return nil, err
