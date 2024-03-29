@@ -6,6 +6,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"aio-server/validators"
 	"context"
 
 	"gorm.io/gorm"
@@ -29,14 +30,23 @@ func (puis *ProjectUploadImagesService) Execute() error {
 		return exceptions.NewBadRequestError("Invalid Project")
 	}
 
-	project := models.Project{Id: projectId}
+	puis.Project.Id = projectId
 	projectRepo := repository.NewProjectRepository(puis.Ctx, puis.Db.Preload("ProjectIssueStatuses").Preload("Issues").Preload("ProjectSprints"))
 
-	if err := projectRepo.Find(&project); err != nil {
+	if err := projectRepo.Find(puis.Project); err != nil {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	puis.Project.Id = projectId
+	form := validators.NewProjectUploadImagesFormValidator(
+		&puis.Args.Input,
+		*repository.NewAttachmentBlobRepository(puis.Ctx, puis.Db),
+		*repository.NewProjectRepository(puis.Ctx, puis.Db.Preload("Logo")),
+		puis.Project,
+	)
+
+	if err := form.Save(); err != nil {
+		return err
+	}
 
 	return nil
 }

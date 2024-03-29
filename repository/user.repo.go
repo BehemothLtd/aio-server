@@ -143,7 +143,6 @@ func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 
 // Update updates an user by its assigned attributes
 func (r *UserRepository) Update(user *models.User, fields []string) error {
-	// TODO: handle NULL value save into DB
 	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
 }
 

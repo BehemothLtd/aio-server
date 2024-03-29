@@ -40,7 +40,7 @@ func (form *ProjectUpdateForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Update(form.Project); err != nil {
+	if err := form.Repo.Update(form.Project, []string{"Name", "ProjectPriority", "Description", "ClientId", "State", "ProjectType", "SprintDuration", "StartedAt", "EndedAt"}); err != nil {
 		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 			"base": {err.Error()},
 		})
@@ -190,18 +190,18 @@ func (form *ProjectUpdateForm) validateDescription() *ProjectUpdateForm {
 func (form *ProjectUpdateForm) validateClientId() *ProjectUpdateForm {
 	field := form.FindAttrByCode("clientId")
 
-	field.ValidateRequired()
+	if form.ClientId != nil {
+		clientRepo := repository.NewClientRepository(nil, database.Db)
 
-	clientRepo := repository.NewClientRepository(nil, database.Db)
-
-	if field.IsClean() {
-		if err := clientRepo.Find(&models.Client{Id: *form.ClientId}); err != nil {
-			field.AddError("is invalid")
+		if field.IsClean() {
+			if err := clientRepo.Find(&models.Client{Id: *form.ClientId}); err != nil {
+				field.AddError("is invalid")
+			}
 		}
-	}
 
-	if field.IsClean() {
-		form.Project.ClientId = *form.ClientId
+		if field.IsClean() {
+			form.Project.ClientId = *form.ClientId
+		}
 	}
 
 	return form

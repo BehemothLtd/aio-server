@@ -31,9 +31,6 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Create(&project).First(&project).Error
 }
 
-func (r *ProjectRepository) Update(project *models.Project) error {
-	originalProject := models.Project{Id: project.Id}
-	r.db.Model(&originalProject).First(&originalProject)
-
-	return r.db.Model(&originalProject).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Save(&project).First(&project).Error
+func (r *ProjectRepository) Update(project *models.Project, fields []string) error {
+	return r.db.Model(&project).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&project).Error
 }

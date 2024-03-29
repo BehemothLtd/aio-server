@@ -17,13 +17,21 @@ type Attachment struct {
 	UpdatedAt time.Time
 }
 
-func (a Attachment) Url() string {
-	key := a.AttachmentBlob.Key
+func (a Attachment) Url() *string {
+	if a.AttachmentBlob != nil {
+		var url string
 
-	if os.Getenv("UPLOAD_LOCALLY_PATH") != "" {
-		return os.Getenv("UPLOAD_LOCALLY_PATH") + key
-	} else {
-		bucketName := os.Getenv("GCS_BUCKET_NAME")
-		return fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, key)
+		key := a.AttachmentBlob.Key
+
+		if os.Getenv("UPLOAD_LOCALLY_PATH") != "" {
+			url = os.Getenv("UPLOAD_LOCALLY_PATH") + key
+		} else {
+			bucketName := os.Getenv("GCS_BUCKET_NAME")
+			url = fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, key)
+		}
+
+		return &url
 	}
+
+	return nil
 }
