@@ -24,6 +24,9 @@ func (client *SlackClient) InitSlackClient() *SlackClient {
 	}
 	client.Client = &httpClient
 	client.EndPoint = os.Getenv("SLACK_MESSAGE_API_ENDPOINT")
+	client.Headers = map[string]string{
+		"Content-Type": "application/json; charset=UTF-8",
+	}
 
 	return client
 }
@@ -40,8 +43,8 @@ func (client *SlackClient) SlackRequest(method string, endpoint string, payload 
 		additionHeaders := map[string]string{
 			"Authorization": fmt.Sprintf("Bearer %+v", os.Getenv("SLACK_BOT_TOKEN")),
 		}
-		headers := GetHeaders(&additionHeaders)
-		client.Headers = headers
+
+		client.GetHeaders(&additionHeaders)
 
 		for key, value := range client.Headers {
 			request.Header.Set(key, value)
@@ -107,22 +110,12 @@ func (client *SlackClient) SlackConversationHistory(channel string, limit *int, 
 	return &message, nil
 }
 
-func GetHeaders(additionHeaders *map[string]string) map[string]string {
-	headers := make(map[string]string)
-
-	defaultHeaders := map[string]string{
-		"Content-Type": "application/json; charset=UTF-8",
-	}
-
-	for key, value := range defaultHeaders {
-		headers[key] = value
-	}
-
+func (client *SlackClient) GetHeaders(additionHeaders *map[string]string) *SlackClient {
 	if additionHeaders != nil {
 		for key, value := range *additionHeaders {
-			headers[key] = value
+			client.Headers[key] = value
 		}
 	}
 
-	return headers
+	return client
 }
