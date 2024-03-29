@@ -33,6 +33,7 @@ type Project struct {
 	Issues               []Issue
 	IssueStatuses        []IssueStatus `gorm:"many2many:project_issue_statuses;"`
 	LockVersion          int32         `gorm:"default:1"`
+	Logo                 *Attachment   `gorm:"polymorphic:Owner;"`
 }
 
 func (p Project) HasEnoughProjectIssueStatuses() (bool, []string) {
