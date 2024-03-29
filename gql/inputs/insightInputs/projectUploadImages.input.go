@@ -9,5 +9,5 @@ type ProjectUploadImagesInput struct {
 
 type ProjectUploadImagesFormInput struct {
 	LogoKey  *string
-	FileKeys *[]*string
+	FileKeys *[]string
 }

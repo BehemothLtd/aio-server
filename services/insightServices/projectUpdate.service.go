@@ -20,8 +20,8 @@ type ProjectUpdateService struct {
 
 func (pus *ProjectUpdateService) Execute() error {
 	repo := repository.NewProjectRepository(
-		pus.Ctx, 
-		pus.Db.Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees")
+		pus.Ctx,
+		pus.Db.Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees"),
 	)
 
 	if err := repo.Find(pus.Project); err != nil {

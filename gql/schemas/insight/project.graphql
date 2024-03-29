@@ -48,7 +48,7 @@ type ProjectModification {
 
 input ProjectUploadImagesInput {
   logoKey: String
-  fileKeys: [String]
+  fileKeys: [String!]
 }
 
 type ProjectWithImages {

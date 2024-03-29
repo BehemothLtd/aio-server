@@ -60,6 +60,10 @@ func (form *Form) NestedFieldKey(wrapperFieldKey string, index int, nestedFieldK
 	return fmt.Sprintf("%s.%d.%s", wrapperFieldKey, index, nestedFieldKey)
 }
 
+func (form *Form) NestedDirectItemFieldKey(wrapperFieldKey string, index int) string {
+	return fmt.Sprintf("%s.%d", wrapperFieldKey, index)
+}
+
 func (form *Form) AddErrorDirectlyToField(field string, errors []interface{}) {
 	if len(form.Errors) == 0 {
 		form.Errors = exceptions.ResourceModificationError{}

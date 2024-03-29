@@ -43,6 +43,12 @@ func (form *ProjectUploadImagesForm) assignAttributes() {
 			},
 			Value: helpers.GetStringOrDefault(form.LogoKey),
 		},
+		&SliceAttribute[string]{
+			FieldAttribute: FieldAttribute{
+				Code: "fileKeys",
+			},
+			Value: form.FileKeys,
+		},
 	)
 }
 
@@ -61,7 +67,7 @@ func (form *ProjectUploadImagesForm) Save() error {
 }
 
 func (form *ProjectUploadImagesForm) validate() error {
-	form.validateLogo().summaryErrors()
+	form.validateLogo().validateFiles().summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -71,10 +77,8 @@ func (form *ProjectUploadImagesForm) validate() error {
 }
 
 func (form *ProjectUploadImagesForm) validateLogo() *ProjectUploadImagesForm {
-	field := form.FindAttrByCode("logoKey")
-	field.ValidateRequired()
-
 	if form.LogoKey != nil {
+		field := form.FindAttrByCode("logoKey")
 		blob := models.AttachmentBlob{Key: *form.LogoKey}
 
 		if err := form.Repo.Find(&blob); err != nil {
@@ -87,6 +91,23 @@ func (form *ProjectUploadImagesForm) validateLogo() *ProjectUploadImagesForm {
 				}
 			} else {
 				form.Project.Logo.AttachmentBlob = &blob
+			}
+		}
+	}
+
+	return form
+}
+
+func (form *ProjectUploadImagesForm) validateFiles() *ProjectUploadImagesForm {
+	if form.FileKeys != nil {
+		fieldKey := "fileKeys"
+		// field := form.FindAttrByCode(fieldKey)
+
+		for i, fileKey := range *form.FileKeys {
+			blob := models.AttachmentBlob{Key: fileKey}
+
+			if err := form.Repo.Find(&blob); err != nil {
+				form.AddErrorDirectlyToField(form.NestedDirectItemFieldKey(fieldKey, i), []interface{}{"is invalid"})
 			}
 		}
 	}
