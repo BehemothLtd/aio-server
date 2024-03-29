@@ -31,7 +31,7 @@ func (dtus *DeviceTypeUpdateService) Execute() error {
 		dtus.DeviceType,
 	)
 
-	if err := form.Update(); err != nil {
+	if err := form.Save(); err != nil {
 		return err
 	}
 

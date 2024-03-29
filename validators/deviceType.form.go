@@ -36,27 +36,11 @@ func (form *DeviceTypeForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.DeviceType); err != nil {
-		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
-			"base": {err.Error()},
-		})
+	if form.DeviceType.Id == 0 {
+		return form.Repo.Create(form.DeviceType)
 	}
 
-	return nil
-}
-
-func (form *DeviceTypeForm) Update() error {
-	if err := form.validate(); err != nil {
-		return err
-	}
-
-	if err := form.Repo.Update(form.DeviceType); err != nil {
-		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
-			"base": {err.Error()},
-		})
-	}
-
-	return nil
+	return form.Repo.Update(form.DeviceType)
 }
 
 func (form *DeviceTypeForm) assignAttributes() {
