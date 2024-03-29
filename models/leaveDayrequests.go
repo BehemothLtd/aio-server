@@ -31,3 +31,7 @@ func (r *LeaveDayRequest) BeforeUpdate(tx *gorm.DB) (err error) {
 
 	return
 }
+
+func (r *LeaveDayRequest) GetMessage(mentions string) string {
+	return ""
+}
