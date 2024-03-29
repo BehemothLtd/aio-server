@@ -18,7 +18,9 @@ type SlackClient struct {
 	Headers  map[string]string
 }
 
-func NewSlackClient(client *SlackClient) *SlackClient {
+func NewSlackClient() *SlackClient {
+	client := SlackClient{}
+
 	httpClient := http.Client{
 		Timeout: constants.RequestTimeOut * time.Second,
 	}
@@ -28,12 +30,10 @@ func NewSlackClient(client *SlackClient) *SlackClient {
 		"Content-Type": "application/json; charset=UTF-8",
 	}
 
-	return client
+	return &client
 }
 
 func (client *SlackClient) Request(method string, endpoint string, payload []byte) (*http.Request, error) {
-	client = NewSlackClient(client)
-
 	requestEndPoint := client.EndPoint + endpoint
 
 	if request, err := http.NewRequest(method, requestEndPoint, bytes.NewBuffer(payload)); err != nil {
