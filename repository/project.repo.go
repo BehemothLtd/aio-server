@@ -32,5 +32,8 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 }
 
 func (r *ProjectRepository) Update(project *models.Project, fields []string) error {
-	return r.db.Model(&project).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&project).Error
+	originalProject := models.Project{Id: project.Id}
+	r.db.Model(&originalProject).First(&originalProject)
+
+	return r.db.Model(&originalProject).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&project).Error
 }

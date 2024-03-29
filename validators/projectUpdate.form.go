@@ -40,7 +40,7 @@ func (form *ProjectUpdateForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Update(form.Project, []string{"Name", "ProjectPriority", "Description", "ClientId", "State", "ProjectType", "SprintDuration", "StartedAt", "EndedAt"}); err != nil {
+	if err := form.Repo.Update(form.Project, []string{"Name", "ProjectPriority", "Description", "ClientId", "State", "ProjectType", "SprintDuration", "StartedAt", "EndedAt", "LockVersion", "ActivedAt", "InactivedAt"}); err != nil {
 		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 			"base": {err.Error()},
 		})
