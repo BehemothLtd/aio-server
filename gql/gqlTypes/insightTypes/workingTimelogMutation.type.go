@@ -2,6 +2,6 @@ package insightTypes
 
 import "aio-server/gql/gqlTypes/globalTypes"
 
-type WorkingtimelogCreateReturnType struct {
+type WorkingtimelogMutationType struct {
 	WorkingTimelog *globalTypes.WorkingTimelogType
 }

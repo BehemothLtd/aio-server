@@ -11,7 +11,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) MmSelfWorkingTimelogCreate(ctx context.Context, args insightInputs.SelfWorkingTimelogCreateInput) (*insightTypes.WorkingtimelogCreateReturnType, error) {
+func (r *Resolver) MmSelfWorkingTimelogCreate(ctx context.Context, args insightInputs.SelfWorkingTimelogCreateInput) (*insightTypes.WorkingtimelogMutationType, error) {
 	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
@@ -33,7 +33,7 @@ func (r *Resolver) MmSelfWorkingTimelogCreate(ctx context.Context, args insightI
 		return nil, err
 	}
 
-	return &insightTypes.WorkingtimelogCreateReturnType{
+	return &insightTypes.WorkingtimelogMutationType{
 		WorkingTimelog: &globalTypes.WorkingTimelogType{
 			WorkingTimelog: &workingTimelog,
 		},
