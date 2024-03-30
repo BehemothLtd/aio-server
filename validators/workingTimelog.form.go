@@ -40,10 +40,6 @@ func NewWorkingTimelogFormValidator(
 }
 
 func (form *WorkingTimelogForm) assignAttributes() {
-
-	// regexpHour := `/\d+h/`
-	// regexpMinute := `/\d+m/`
-
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -118,6 +114,9 @@ func (form *WorkingTimelogForm) validateTimes() *WorkingTimelogForm {
 
 			totalLogtime := 0
 			for _, wt := range workingTimelogsByLoggedAt {
+				if wt.Id == form.WorkingTimelog.Id {
+					continue
+				}
 				totalLogtime = totalLogtime + wt.Minutes
 			}
 
@@ -141,12 +140,24 @@ func (form *WorkingTimelogForm) assignIssueInfo() *WorkingTimelogForm {
 	return form
 }
 
-func (form *WorkingTimelogForm) Save() error {
+func (form *WorkingTimelogForm) Create() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
 
 	if err := form.Repo.Create(form.WorkingTimelog); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (form *WorkingTimelogForm) Update() error {
+	if err := form.validate(); err != nil {
+		return err
+	}
+
+	if err := form.Repo.Update(form.WorkingTimelog); err != nil {
 		return err
 	}
 

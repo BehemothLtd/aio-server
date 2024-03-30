@@ -38,7 +38,7 @@ func (scwts *SelfCreateWorkingTimelogService) Execute() error {
 		&issue,
 	)
 
-	if err := form.Save(); err != nil {
+	if err := form.Create(); err != nil {
 		return err
 	}
 

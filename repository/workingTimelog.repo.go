@@ -54,6 +54,10 @@ func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLog
 	return dbTables.Where("logged_at = ?", dateOfLogging).Find(&workingTimeLogs).Error
 }
 
+func (wtr *WorkingTimelogRepository) Update(workingTimelog *models.WorkingTimelog) error {
+	return wtr.db.Model(&workingTimelog).Save(&workingTimelog).First(&workingTimelog).Error
+}
+
 // RANSACK
 func (r *Repository) DescriptionLike(descriptionLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
