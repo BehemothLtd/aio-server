@@ -6,6 +6,7 @@ import (
 	"aio-server/pkg/helpers"
 	"context"
 	"strings"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -41,6 +42,19 @@ func (wtr *WorkingTimelogRepository) List(workingTimeLogs *[]*models.WorkingTime
 	).Order("id desc").Find(&workingTimeLogs).Error
 }
 
+func (wtr *WorkingTimelogRepository) Create(workingTimelog *models.WorkingTimelog) error {
+	return wtr.db.Model(&workingTimelog).Create(&workingTimelog).First(&workingTimelog).Error
+}
+
+func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLogs *[]*models.WorkingTimelog, loggedAt time.Time) error {
+	dbTables := wtr.db.Model(&models.WorkingTimelog{})
+
+	dateOfLogging := loggedAt.Format("2006-01-02")
+
+	return dbTables.Where("logged_at = ?", dateOfLogging).Find(&workingTimeLogs).Error
+}
+
+// RANSACK
 func (r *Repository) DescriptionLike(descriptionLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if descriptionLike == nil {

@@ -1,15 +1,23 @@
 package insightResolvers
 
 import (
+	"aio-server/exceptions"
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/auths"
 	"aio-server/repository"
 	"context"
 )
 
 func (r *Resolver) MmWorkingTimelogs(ctx context.Context, args insightInputs.WorkingTimelogsInput) (*insightTypes.WorkingTimelogsType, error) {
+	_, authErr := auths.AuthUserFromCtx(ctx)
+
+	if authErr != nil {
+		return nil, exceptions.NewUnauthorizedError("")
+	}
+
 	var workingTimelogs []*models.WorkingTimelog
 
 	workingTimelogQuery, paginationData := args.ToPaginationDataAndQuery()

@@ -11,7 +11,7 @@ type WorkingTimelog struct {
 	IssueId     int32
 	Issue       Issue
 	Minutes     int
-	Description string
+	Description *string
 	LoggedAt    time.Time
 	CreatedAt   time.Time
 	UpdatedAt   time.Time

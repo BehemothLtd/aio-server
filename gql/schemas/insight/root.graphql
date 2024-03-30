@@ -64,6 +64,8 @@ type Mutation {
 
   DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
   DeviceTypeUpdate(id: ID!, input: DeviceTypeInput!): DeviceTypeModification!
+  
+  MmSelfWorkingTimelogCreate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 }
 
 scalar Time
