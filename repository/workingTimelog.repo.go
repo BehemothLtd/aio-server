@@ -58,6 +58,10 @@ func (wtr *WorkingTimelogRepository) Update(workingTimelog *models.WorkingTimelo
 	return wtr.db.Model(&workingTimelog).Save(&workingTimelog).First(&workingTimelog).Error
 }
 
+func (wtr *WorkingTimelogRepository) Delete(workingTimelog *models.WorkingTimelog) error {
+	return wtr.db.Delete(&workingTimelog).Error
+}
+
 // RANSACK
 func (r *Repository) DescriptionLike(descriptionLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {

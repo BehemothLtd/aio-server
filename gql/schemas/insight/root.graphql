@@ -67,6 +67,7 @@ type Mutation {
 
   MmSelfWorkingTimelogCreate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
   MmSelfWorkingTimelogUpdate(input: WorkingTimelogInput, issueId: Int, id: ID!): WorkingTimelogModification
+  MmSelfWorkingTimelogDelete(id: ID!, issueId: Int): String
 }
 
 scalar Time
