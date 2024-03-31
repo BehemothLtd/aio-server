@@ -23,13 +23,18 @@ func (r *Resolver) MmSelfWorkingTimelogDelete(ctx context.Context, args insightI
 		return nil, exceptions.NewRecordNotFoundError()
 	}
 
-	workingTimelog := models.WorkingTimelog{Id: workingTimeLogId, UserId: user.Id, IssueId: *args.IssueId}
+	workingTimelog := models.WorkingTimelog{UserId: user.Id, IssueId: *args.IssueId, Id: workingTimeLogId}
 
 	repo := repository.NewWorkingTimelogRepository(&ctx, r.Db)
 
-	err = repo.Delete(&workingTimelog)
+	findByIdErr := r.Db.Model(&workingTimelog).Where(&workingTimelog).First(&workingTimelog).Error
 
-	if err != nil {
+	if findByIdErr != nil {
+		return nil, exceptions.NewRecordNotFoundError()
+	}
+	deleteError := repo.Delete(&workingTimelog)
+
+	if deleteError != nil {
 		return nil, exceptions.NewRecordNotFoundError()
 	} else {
 		successMessage := "Deleted"
