@@ -8,45 +8,44 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"strings"
 )
 
-type IssueStatusUpdateForm struct {
+type IssueStatusForm struct {
 	Form
-	insightInputs.IssueStatusUpdateFormInput
+	insightInputs.IssueStatusFormInput
 	IssueStatus *models.IssueStatus
 	Repo        *repository.IssueStatusRepository
 }
 
-func NewIssueStatusUpdateFormValidator(
-	input *insightInputs.IssueStatusUpdateFormInput,
+func NewIssueStatusFormValidator(
+	input *insightInputs.IssueStatusFormInput,
 	repo *repository.IssueStatusRepository,
 	issueStatus *models.IssueStatus,
-) IssueStatusUpdateForm {
-	form := IssueStatusUpdateForm{
-		Form:                       Form{},
-		IssueStatusUpdateFormInput: *input,
-		IssueStatus:                issueStatus,
-		Repo:                       repo,
+) IssueStatusForm {
+	form := IssueStatusForm{
+		Form:                 Form{},
+		IssueStatusFormInput: *input,
+		IssueStatus:          issueStatus,
+		Repo:                 repo,
 	}
 	form.assignAttributes()
 
 	return form
 }
 
-func (form *IssueStatusUpdateForm) Save() error {
+func (form *IssueStatusForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
 
-	if err := form.Repo.Update(form.IssueStatus); err != nil {
-		return err
+	if form.IssueStatus.Id == 0 {
+		return form.Repo.Create(form.IssueStatus)
 	}
 
-	return nil
+	return form.Repo.Update(form.IssueStatus)
 }
 
-func (form *IssueStatusUpdateForm) assignAttributes() {
+func (form *IssueStatusForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -66,15 +65,25 @@ func (form *IssueStatusUpdateForm) assignAttributes() {
 			},
 			Value: helpers.GetStringOrDefault(form.StatusType),
 		},
+		&IntAttribute[int32]{
+			FieldAttribute: FieldAttribute{
+				Code: "lockVersion",
+			},
+			Value: helpers.GetInt32OrDefault(form.LockVersion),
+		},
 	)
 }
 
-func (form *IssueStatusUpdateForm) validate() error {
+func (form *IssueStatusForm) validate() error {
 	form.validateColor().
 		validateTitle().
-		validateStatusType().
-		validateLockVersion().
-		summaryErrors()
+		validateStatusType()
+
+	if form.IssueStatus.Id != 0 {
+		form.validateLockVersion()
+	}
+
+	form.summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -82,21 +91,19 @@ func (form *IssueStatusUpdateForm) validate() error {
 	return nil
 }
 
-func (form *IssueStatusUpdateForm) validateColor() *IssueStatusUpdateForm {
+func (form *IssueStatusForm) validateColor() *IssueStatusForm {
 	colorField := form.FindAttrByCode("color")
 
 	colorField.ValidateRequired()
 
-	if form.Color != nil && strings.TrimSpace(*form.Color) != "" {
-		if colorField.IsClean() {
-			form.IssueStatus.Color = *form.Color
-		}
+	if colorField.IsClean() {
+		form.IssueStatus.Color = *form.Color
 	}
 
 	return form
 }
 
-func (form *IssueStatusUpdateForm) validateTitle() *IssueStatusUpdateForm {
+func (form *IssueStatusForm) validateTitle() *IssueStatusForm {
 	titleField := form.FindAttrByCode("title")
 
 	titleField.ValidateRequired()
@@ -104,37 +111,30 @@ func (form *IssueStatusUpdateForm) validateTitle() *IssueStatusUpdateForm {
 	titleField.ValidateMin(interface{}(int64(2)))
 	titleField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
-	if form.Title != nil && strings.TrimSpace(*form.Title) != "" {
-
-		if titleField.IsClean() {
-			form.IssueStatus.Title = *form.Title
-		}
+	if titleField.IsClean() {
+		form.IssueStatus.Title = *form.Title
 	}
 
 	return form
 }
 
-func (form *IssueStatusUpdateForm) validateStatusType() *IssueStatusUpdateForm {
+func (form *IssueStatusForm) validateStatusType() *IssueStatusForm {
 	typeField := form.FindAttrByCode("statusType")
 
 	typeField.ValidateRequired()
 
-	if form.StatusType != nil {
-		fieldValue := enums.IssueStatusStatusType(*form.StatusType)
-
-		if !fieldValue.IsValid() {
-			typeField.AddError("is invalid")
-		}
-
-		if typeField.IsClean() {
-			form.IssueStatus.StatusType = fieldValue
+	if typeField.IsClean() {
+		if statusType, err := enums.ParseIssueStatusStatusType(*form.StatusType); err != nil {
+			typeField.AddError("is invalid issue status type")
+		} else {
+			form.IssueStatus.StatusType = statusType
 		}
 	}
 
 	return form
 }
 
-func (form *IssueStatusUpdateForm) validateLockVersion() *IssueStatusUpdateForm {
+func (form *IssueStatusForm) validateLockVersion() *IssueStatusForm {
 	currentLockVersion := form.IssueStatus.LockVersion
 
 	field := form.FindAttrByCode("lockVersion")

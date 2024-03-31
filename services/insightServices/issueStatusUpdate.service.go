@@ -25,7 +25,7 @@ func (isus *IssueStatusUpdateService) Execute() error {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	form := validators.NewIssueStatusUpdateFormValidator(
+	form := validators.NewIssueStatusFormValidator(
 		&isus.Args.Input,
 		repo,
 		isus.IssueStatus,

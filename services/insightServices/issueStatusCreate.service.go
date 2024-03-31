@@ -18,7 +18,7 @@ type IssueStatusCreateService struct {
 }
 
 func (iscs *IssueStatusCreateService) Execute() error {
-	form := validators.NewIssueStatusCreateFormValidator(
+	form := validators.NewIssueStatusFormValidator(
 		&iscs.Args.Input,
 		repository.NewIssueStatusRepository(iscs.Ctx, iscs.Db),
 		iscs.IssueStatus,
