@@ -59,11 +59,17 @@ func (form *WorkingTimelogForm) assignAttributes() {
 			},
 			Value: helpers.GetInt32OrDefault(form.Minutes),
 		},
+		&IntAttribute[int32]{
+			FieldAttribute: FieldAttribute{
+				Code: "lockVersion",
+			},
+			Value: helpers.GetInt32OrDefault(form.LockVersion),
+		},
 	)
 }
 
 func (form *WorkingTimelogForm) validate() error {
-	form.validateDescription().validateLoggedAt().validateTimes().assignIssueInfo().summaryErrors()
+	form.validateDescription().validateLoggedAt().validateTimes().assignIssueInfo().validateLockVersion().summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -129,6 +135,25 @@ func (form *WorkingTimelogForm) validateTimes() *WorkingTimelogForm {
 	if field.IsClean() {
 		form.WorkingTimelog.Minutes = int(*form.Minutes)
 	}
+	return form
+}
+
+func (form *WorkingTimelogForm) validateLockVersion() *WorkingTimelogForm {
+	newRecord := form.WorkingTimelog.Id == 0
+	currentLockVersion := form.WorkingTimelog.LockVersion
+	newLockVersion := helpers.GetInt32OrDefault(form.LockVersion) + 1
+	formAttribute := form.FindAttrByCode("lockVersion")
+
+	formAttribute.ValidateMin(interface{}(int64(currentLockVersion)))
+
+	if newRecord {
+		return form
+	}
+
+	if currentLockVersion >= newLockVersion {
+		formAttribute.AddError("Attempted to update stale object")
+	}
+
 	return form
 }
 

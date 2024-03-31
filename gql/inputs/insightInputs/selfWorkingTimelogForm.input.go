@@ -4,4 +4,5 @@ type SelfWorkingTimelogFormInput struct {
 	Description *string
 	LoggedAt    *string
 	Minutes     *int32
+	LockVersion *int32
 }
