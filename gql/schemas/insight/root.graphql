@@ -49,14 +49,11 @@ type Mutation {
   ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
 
   ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
-<<<<<<< Updated upstream
-=======
   
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
 
   ClientCreate(input: ClientCreateInput!): ClientModification!
->>>>>>> Stashed changes
 }
 
 scalar Time
