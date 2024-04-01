@@ -128,19 +128,18 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 
 	fmt.Print("\n\n============================\nStart send_message")
 
-	payload := map[string]string{
+	payload := map[string]interface{}{
 		"text":    text,
 		"channel": channel,
 	}
 
-	// TODO : Handle payload with attachment - json - url endcode string
 	if callback != nil {
 		attachment := NewMessageAttachment(*callback)
 
-		if jsonAttachment, err := json.Marshal(attachment); err != nil {
+		if _, err := json.Marshal(attachment); err != nil {
 			return exceptions.NewBadRequestError("invalid attachments")
 		} else {
-			payload["attachment"] = string(jsonAttachment)
+			payload["attachments"] = *attachment
 		}
 	}
 
@@ -167,8 +166,4 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
 
 	return nil
-}
-
-type myJson struct {
-	Array []string
 }

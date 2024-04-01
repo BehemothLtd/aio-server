@@ -31,8 +31,6 @@ func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs
 	if err := service.Excecute(); err != nil {
 		return nil, err
 	} else {
-		// Redis Job to send message to slack channel
-
 		return &insightTypes.LeaveDayRequestCreatedType{
 			LeaveDayRequest: &globalTypes.LeaveDayRequestType{
 				LeaveDayRequest: &request,
