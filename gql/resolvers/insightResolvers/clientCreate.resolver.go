@@ -5,8 +5,8 @@ import (
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/services/insightServices"
 	"context"
-	"time"
 )
 
 func (r *Resolver) ClientCreate(ctx context.Context, args insightInputs.ClientCreateInput) (*insightTypes.ClientCreatedType, error) {
@@ -14,32 +14,35 @@ func (r *Resolver) ClientCreate(ctx context.Context, args insightInputs.ClientCr
 	// 	return nil, err
 	// }
 
-	return &insightTypes.ClientCreatedType{
-		Client: &globalTypes.ClientType{
-			Client: &models.Client{
-				Id:             1,
-				Name:           "Example Client",
-				ShowOnHomePage: true,
-				LockVersion:    0,
-				CreatedAt:      time.Now(),
-				UpdatedAt:      time.Now(),
-			},
-		},
-	}, nil
-	// service := insightServices.IssueStatusCreateService{
-	// 	Ctx:         &ctx,
-	// 	Db:          r.Db,
-	// 	Args:        args,
-	// 	IssueStatus: &IssueStatus,
-	// }
+	Client := models.Client{}
 
-	// if err := service.Execute(); err != nil {
-	// 	return nil, err
-	// } else {
-	// 	return &insightTypes.IssueStatusCreatedType{
-	// 		IssueStatus: &globalTypes.IssueStatusType{
-	// 			IssueStatus: &IssueStatus,
+	service := insightServices.ClientCreateService{
+		Ctx:    &ctx,
+		Db:     r.Db,
+		Args:   args,
+		Client: &Client,
+	}
+
+	if err := service.Execute(); err != nil {
+		return nil, err
+	} else {
+		return &insightTypes.ClientCreatedType{
+			Client: &globalTypes.ClientType{
+				Client: &Client,
+			},
+		}, nil
+	}
+
+	// return &insightTypes.ClientCreatedType{
+	// 	Client: &globalTypes.ClientType{
+	// 		Client: &models.Client{
+	// 			Id:             1,
+	// 			Name:           "Example Client",
+	// 			ShowOnHomePage: true,
+	// 			LockVersion:    0,
+	// 			CreatedAt:      time.Now(),
+	// 			UpdatedAt:      time.Now(),
 	// 		},
-	// 	}, nil
-	// }
+	// 	},
+	// }, nil
 }

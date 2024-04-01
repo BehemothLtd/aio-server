@@ -55,3 +55,7 @@ func (r *ClientRepository) Find(client *models.Client) error {
 
 	return dbTables.Where(&client).First(&client).Error
 }
+
+func (r *ClientRepository) Create(client *models.Client) error {
+	return r.db.Model(&client).Create(&client).First(&client).Error
+}
