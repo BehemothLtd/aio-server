@@ -8,7 +8,7 @@ import (
 	"aio-server/repository"
 )
 
-type ProjectCreateProjectIssueForm struct {
+type ProjectCreateProjectIssueStatusForm struct {
 	Form
 	insightInputs.ProjectIssueStatusInputForProjectCreate
 
@@ -16,12 +16,12 @@ type ProjectCreateProjectIssueForm struct {
 	IssueStatusRepo    *repository.IssueStatusRepository
 }
 
-func NewProjectCreateProjectIssueFormValidator(
+func NewProjectCreateProjectIssueStatusFormValidator(
 	input *insightInputs.ProjectIssueStatusInputForProjectCreate,
 	repo *repository.IssueStatusRepository,
 	projectIssueStatus *models.ProjectIssueStatus,
-) ProjectCreateProjectIssueForm {
-	form := ProjectCreateProjectIssueForm{
+) ProjectCreateProjectIssueStatusForm {
+	form := ProjectCreateProjectIssueStatusForm{
 		Form:                                    Form{},
 		ProjectIssueStatusInputForProjectCreate: *input,
 		ProjectIssueStatus:                      projectIssueStatus,
@@ -32,7 +32,7 @@ func NewProjectCreateProjectIssueFormValidator(
 	return form
 }
 
-func (form *ProjectCreateProjectIssueForm) assignAttributes() {
+func (form *ProjectCreateProjectIssueStatusForm) assignAttributes() {
 	form.AddAttributes(
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
@@ -43,7 +43,7 @@ func (form *ProjectCreateProjectIssueForm) assignAttributes() {
 	)
 }
 
-func (form *ProjectCreateProjectIssueForm) Validate() exceptions.ResourceModificationError {
+func (form *ProjectCreateProjectIssueStatusForm) Validate() exceptions.ResourceModificationError {
 	form.validateIssueStatusId().summaryErrors()
 
 	if form.Errors != nil {
@@ -53,7 +53,7 @@ func (form *ProjectCreateProjectIssueForm) Validate() exceptions.ResourceModific
 	return nil
 }
 
-func (form *ProjectCreateProjectIssueForm) validateIssueStatusId() *ProjectCreateProjectIssueForm {
+func (form *ProjectCreateProjectIssueStatusForm) validateIssueStatusId() *ProjectCreateProjectIssueStatusForm {
 	field := form.FindAttrByCode("issueStatusId")
 	field.ValidateRequired()
 

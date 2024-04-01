@@ -4,6 +4,7 @@ import (
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/pkg/systems"
 	"aio-server/repository"
@@ -98,7 +99,7 @@ func (form *ProjectCreateProjectAssigneeForm) validateDevelopmentId() *ProjectCr
 func (form *ProjectCreateProjectAssigneeForm) validateJoinDate() *ProjectCreateProjectAssigneeForm {
 	field := form.FindAttrByCode("joinDate")
 	field.ValidateRequired()
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 	form.ProjectAssignee.JoinDate = field.Time()
 

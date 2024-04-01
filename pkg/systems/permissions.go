@@ -28,6 +28,9 @@ var defaultPermissions = []Permission{
 	{Id: 101, Target: enums.PermissionTargetTypeProjects, Action: enums.PermissionActionTypeWrite},
 	{Id: 102, Target: enums.PermissionTargetTypeProjects, Action: enums.PermissionActionTypeDelete},
 
+	{Id: 110, Target: enums.PermissionTargetTypeProjectIssues, Action: enums.PermissionActionTypeWrite},
+	{Id: 111, Target: enums.PermissionTargetTypeProjectIssues, Action: enums.PermissionActionTypeDelete},
+
 	{Id: 200, Target: enums.PermissionTargetTypeUserGroups, Action: enums.PermissionActionTypeRead},
 	{Id: 201, Target: enums.PermissionTargetTypeUserGroups, Action: enums.PermissionActionTypeWrite},
 

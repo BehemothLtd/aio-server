@@ -1,0 +1,6 @@
+type AnalysesTotalSummarize {
+  IssueCount: Int!
+  MemberCount: Int!
+  ProjectCount: Int!
+  WorkingTimeCount: Int!
+}

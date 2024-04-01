@@ -37,7 +37,7 @@ func (r *UserRepository) Find(user *models.User) error {
 
 // FindWithAvatar finds an user includes his avatar data
 func (r *UserRepository) FindWithAvatar(user *models.User) error {
-	dbTables := r.db.Table("users").Preload("Avatar.AttachmentBlob")
+	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob")
 
 	return dbTables.Where("id = ?", user.Id).First(&user).Error
 }
@@ -143,8 +143,19 @@ func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 
 // Update updates an user by its assigned attributes
 func (r *UserRepository) Update(user *models.User, fields []string) error {
-	// TODO: handle NULL value save into DB
-	return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
+	if user.Avatar != nil {
+		err := r.db.Transaction(func(tx *gorm.DB) error {
+			if err := r.db.Model(&user).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+				return err
+			}
+
+			return r.db.Model(&user).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error
+		})
+
+		return err
+	}
+
+	return r.db.Model(&user).Select(fields).Updates(&user).Error
 }
 
 func (r *UserRepository) All(users *[]*models.User) error {

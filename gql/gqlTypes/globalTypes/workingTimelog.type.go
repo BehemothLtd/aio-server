@@ -1,7 +1,6 @@
-package insightTypes
+package globalTypes
 
 import (
-	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
@@ -44,14 +43,14 @@ func (wtt *WorkingTimelogType) UpdatedAt(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&wtt.WorkingTimelog.UpdatedAt)
 }
 
-func (wtt *WorkingTimelogType) User(ctx context.Context) *globalTypes.UserType {
-	result := globalTypes.UserType{User: &wtt.WorkingTimelog.User}
+func (wtt *WorkingTimelogType) User(ctx context.Context) *UserType {
+	result := UserType{User: &wtt.WorkingTimelog.User}
 
 	return &result
 }
 
-func (wtt *WorkingTimelogType) Project(ctx context.Context) *globalTypes.ProjectType {
-	result := globalTypes.ProjectType{Project: &wtt.WorkingTimelog.Project}
+func (wtt *WorkingTimelogType) Project(ctx context.Context) *ProjectType {
+	result := ProjectType{Project: &wtt.WorkingTimelog.Project}
 
 	return &result
 }

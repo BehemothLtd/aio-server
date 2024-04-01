@@ -9,6 +9,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"strings"
 	"time"
 )
 
@@ -101,7 +102,10 @@ func (form *UserProfileForm) Save() error {
 		form.User.Address = form.Address
 	}
 
-	return form.Repo.Update(form.User, []string{"FullName", "Phone", "Birthday", "SlackId", "About", "Address", "Gender", "Avatar"})
+	return form.Repo.Update(form.User, []string{
+		"FullName", "Phone", "Birthday", "SlackId",
+		"About", "Address", "Gender", "Avatar"},
+	)
 }
 
 // validate validates the snippet form.
@@ -191,26 +195,21 @@ func (form *UserProfileForm) validateAddress() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
-	if form.AvatarKey != nil {
-		if *form.AvatarKey != "" {
-			blob := models.AttachmentBlob{Key: *form.AvatarKey}
+	avatar := form.FindAttrByCode("avatarKey")
 
-			repo := repository.NewAttachmentBlobRepository(nil, database.Db)
-			if err := repo.Find(&blob); err != nil {
-				avatar := form.FindAttrByCode("avatarKey")
-				avatar.AddError("is invalid")
-			} else {
-				if form.User.Avatar == nil {
-					form.User.Avatar = &models.Attachment{
-						AttachmentBlob: &blob,
-					}
-				} else {
-					form.User.Avatar.AttachmentBlob = &blob
-				}
-			}
-		} else {
-			avatar := form.FindAttrByCode("avatarKey")
+	if form.AvatarKey != nil && strings.TrimSpace(*form.AvatarKey) != "" {
+		blob := models.AttachmentBlob{Key: *form.AvatarKey}
+
+		repo := repository.NewAttachmentBlobRepository(nil, database.Db)
+		if err := repo.Find(&blob); err != nil {
+
 			avatar.AddError("is invalid")
+		} else {
+			form.User.Avatar = &models.Attachment{
+				AttachmentBlob:   blob,
+				AttachmentBlobId: blob.Id,
+				Name:             "avatar",
+			}
 		}
 	}
 	return form

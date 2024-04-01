@@ -28,4 +28,4 @@ CREATE TABLE IF NOT EXISTS `issues` (
   KEY `index_issues_on_deadline` (`deadline`),
   KEY `index_issues_on_project_id_and_deadline` (`project_id`,`deadline`),
   KEY `index_issues_on_project_id` (`project_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1501 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

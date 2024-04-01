@@ -51,9 +51,7 @@ func (attribute *FloatAttribute[T]) ValidateMin(min interface{}) {
 	switch v := min.(type) {
 	case float64:
 		if float64(attribute.Value) < v {
-			attribute.AddError(fmt.Sprintf("is too small. Min value is %f", min))
-		} else {
-			attribute.AddError(fmt.Sprintf("is invalid min value %f", min))
+			attribute.AddError(fmt.Sprintf("is too small. Min value is %.2f%%", min))
 		}
 	default:
 		panic("Need to provide float interface{} as params")
@@ -64,9 +62,7 @@ func (attribute *FloatAttribute[T]) ValidateMax(max interface{}) {
 	switch v := max.(type) {
 	case float64:
 		if v < float64(attribute.Value) {
-			attribute.AddError(fmt.Sprintf("is too large. Max value is %d", max))
-		} else {
-			attribute.AddError(fmt.Sprintf("is invalid max value %d", max))
+			attribute.AddError(fmt.Sprintf("is too large. Max value is %.2f%%", max))
 		}
 	default:
 		panic("Need to provide float64 interface{} as params")

@@ -20,10 +20,20 @@ func NewProjectAssigneeRepository(c *context.Context, db *gorm.DB) *ProjectAssig
 	}
 }
 
+func (r *ProjectAssigneeRepository) Find(projectAssignee *models.ProjectAssignee) error {
+	return r.db.Table("project_assignees").Where(&projectAssignee).First(&projectAssignee).Error
+}
+
 func (r *ProjectAssigneeRepository) Create(projectAssignee *models.ProjectAssignee) error {
 	return r.db.Create(&projectAssignee).Error
 }
 
-func (r *ProjectAssigneeRepository) Find(projectAssignee *models.ProjectAssignee) error {
-	return r.db.Table("project_assignees").Where(&projectAssignee).First(&projectAssignee).Error
+func (r *ProjectAssigneeRepository) Update(projectAssignee *models.ProjectAssignee) error {
+	projectAssignee.LockVersion += 1
+
+	return r.db.Updates(&projectAssignee).Error
+}
+
+func (r *ProjectAssigneeRepository) Delete(projectAssignee *models.ProjectAssignee) error {
+	return r.db.Where("id = ?", &projectAssignee.Id).Delete(&projectAssignee).Error
 }

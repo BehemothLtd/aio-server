@@ -11,19 +11,24 @@ type Attachment struct {
 	OwnerID          int32 `gorm:"column:owner_id"`
 	OwnerType        string
 	AttachmentBlobId int32
-	AttachmentBlob   *AttachmentBlob
+	AttachmentBlob   AttachmentBlob
+	Name             string
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-func (a Attachment) Url() string {
+func (a Attachment) Url() *string {
+	var url string
+
 	key := a.AttachmentBlob.Key
 
 	if os.Getenv("UPLOAD_LOCALLY_PATH") != "" {
-		return os.Getenv("UPLOAD_LOCALLY_PATH") + key
+		url = os.Getenv("UPLOAD_LOCALLY_PATH") + key
 	} else {
 		bucketName := os.Getenv("GCS_BUCKET_NAME")
-		return fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, key)
+		url = fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, key)
 	}
+
+	return &url
 }

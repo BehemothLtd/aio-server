@@ -15,8 +15,9 @@ import (
 type ProjectUpdateForm struct {
 	Form
 	insightInputs.ProjectUpdateFormInput
-	Project *models.Project
-	Repo    *repository.ProjectRepository
+	Project       *models.Project
+	UpdateProject models.Project
+	Repo          *repository.ProjectRepository
 }
 
 func NewProjectUpdateFormValidator(
@@ -28,6 +29,7 @@ func NewProjectUpdateFormValidator(
 		Form:                   Form{},
 		ProjectUpdateFormInput: *input,
 		Project:                project,
+		UpdateProject:          models.Project{},
 		Repo:                   repo,
 	}
 	form.assignAttributes()
@@ -40,8 +42,10 @@ func (form *ProjectUpdateForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Update(form.Project); err != nil {
-		return err
+	if err := form.Repo.Update(form.Project, form.UpdateProject); err != nil {
+		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+			"base": {err.Error()},
+		})
 	}
 
 	return nil
@@ -139,16 +143,18 @@ func (form *ProjectUpdateForm) validateName() *ProjectUpdateForm {
 	field.ValidateMin(interface{}(int64(5)))
 	field.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
-	if form.Name != nil && strings.TrimSpace(*form.Name) != "" {
+	if field.IsClean() {
 		project := models.Project{Name: *form.Name}
+
 		if err := form.Repo.Find(&project); err == nil {
+
 			if project.Id != form.Project.Id {
 				field.AddError("is already exists. Please use another name")
 			}
 		}
 
 		if field.IsClean() {
-			form.Project.Name = *form.Name
+			form.UpdateProject.Name = *form.Name
 		}
 	}
 
@@ -163,7 +169,7 @@ func (form *ProjectUpdateForm) validateProjectPriority() *ProjectUpdateForm {
 		if projectPriority, err := enums.ParseProjectPriority(*form.ProjectPriority); err != nil {
 			field.AddError("is invalid")
 		} else {
-			form.Project.ProjectPriority = projectPriority
+			form.UpdateProject.ProjectPriority = projectPriority
 		}
 	}
 
@@ -179,7 +185,7 @@ func (form *ProjectUpdateForm) validateDescription() *ProjectUpdateForm {
 	field.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if field.IsClean() {
-		form.Project.Description = form.Description
+		form.UpdateProject.Description = form.Description
 	}
 
 	return form
@@ -188,18 +194,18 @@ func (form *ProjectUpdateForm) validateDescription() *ProjectUpdateForm {
 func (form *ProjectUpdateForm) validateClientId() *ProjectUpdateForm {
 	field := form.FindAttrByCode("clientId")
 
-	field.ValidateRequired()
+	if form.ClientId != nil {
+		clientRepo := repository.NewClientRepository(nil, database.Db)
 
-	clientRepo := repository.NewClientRepository(nil, database.Db)
-
-	if field.IsClean() {
-		if err := clientRepo.Find(&models.Client{Id: *form.ClientId}); err != nil {
-			field.AddError("is invalid")
+		if field.IsClean() {
+			if err := clientRepo.Find(&models.Client{Id: *form.ClientId}); err != nil {
+				field.AddError("is invalid")
+			}
 		}
-	}
 
-	if field.IsClean() {
-		form.Project.ClientId = *form.ClientId
+		if field.IsClean() {
+			form.UpdateProject.ClientId = *form.ClientId
+		}
 	}
 
 	return form
@@ -214,7 +220,7 @@ func (form *ProjectUpdateForm) validateState() *ProjectUpdateForm {
 			field.AddError("is invalid")
 		} else {
 			if field.IsClean() {
-				form.Project.State = state
+				form.UpdateProject.State = state
 			}
 		}
 	}
@@ -232,7 +238,7 @@ func (form *ProjectUpdateForm) validateProjectType() *ProjectUpdateForm {
 			field.AddError("is invalid")
 		} else {
 			if field.IsClean() {
-				form.Project.ProjectType = projectType
+				form.UpdateProject.ProjectType = projectType
 
 				sprintDurationField := form.FindAttrByCode("sprintDuration")
 
@@ -240,7 +246,7 @@ func (form *ProjectUpdateForm) validateProjectType() *ProjectUpdateForm {
 					sprintDurationField.ValidateRequired()
 
 					if sprintDurationField.IsClean() {
-						form.Project.SprintDuration = form.SprintDuration
+						form.UpdateProject.SprintDuration = form.SprintDuration
 					}
 
 				} else if projectType == enums.ProjectTypeKanban {
@@ -258,10 +264,10 @@ func (form *ProjectUpdateForm) validateProjectType() *ProjectUpdateForm {
 func (form *ProjectUpdateForm) validateStartedAt() *ProjectUpdateForm {
 	field := form.FindAttrByCode("startedAt")
 
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 	if field.IsClean() {
-		form.Project.StartedAt = field.Time()
+		form.UpdateProject.StartedAt = field.Time()
 	}
 
 	return form
@@ -270,10 +276,10 @@ func (form *ProjectUpdateForm) validateStartedAt() *ProjectUpdateForm {
 func (form *ProjectUpdateForm) validateEndedAt() *ProjectUpdateForm {
 	field := form.FindAttrByCode("endedAt")
 
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 	if field.IsClean() {
-		form.Project.EndedAt = field.Time()
+		form.UpdateProject.EndedAt = field.Time()
 	}
 
 	return form
@@ -287,13 +293,7 @@ func (form *ProjectUpdateForm) validateLockVersion() *ProjectUpdateForm {
 	field.ValidateRequired()
 
 	if field.IsClean() {
-		lockVersion := *form.LockVersion
-
 		field.ValidateMin(interface{}(int64(currentLockVersion)))
-
-		if currentLockVersion > lockVersion {
-			field.AddError("Attempted to update stale object")
-		}
 	}
 
 	return form

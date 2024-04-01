@@ -2,9 +2,20 @@ package insightInputs
 
 import "github.com/graph-gophers/graphql-go"
 
-type ProjectModifyProjectAssigneeInput struct {
+type ProjectCreateProjectAssigneeInput struct {
 	Id    graphql.ID
 	Input ProjectModifyProjectAssigneeFormInput
+}
+
+type ProjectUpdateProjectAssigneeInput struct {
+	ProjectId graphql.ID
+	Id        graphql.ID
+	Input     ProjectModifyProjectAssigneeFormInput
+}
+
+type ProjectDeleteProjectAssigneeInput struct {
+	ProjectId graphql.ID
+	Id        graphql.ID
 }
 
 type ProjectModifyProjectAssigneeFormInput struct {
@@ -13,4 +24,5 @@ type ProjectModifyProjectAssigneeFormInput struct {
 	Active            bool
 	JoinDate          string
 	LeaveDate         *string
+	LockVersion       *int32
 }

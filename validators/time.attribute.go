@@ -52,7 +52,23 @@ func (attribute *TimeAttribute) IsClean() bool {
 }
 
 func (attribute *TimeAttribute) ValidateMin(min interface{}) {
+	switch v := min.(type) {
+	case time.Time:
+		if attribute.TimeValue != nil && v.After(*attribute.TimeValue) {
+			attribute.AddError(fmt.Sprintf("is invalid. Need to be after %+v", v))
+		}
+	default:
+		panic("Need to provide time interface{} as params")
+	}
 }
 
-func (attribute *TimeAttribute) ValidateMax(min interface{}) {
+func (attribute *TimeAttribute) ValidateMax(max interface{}) {
+	switch v := max.(type) {
+	case time.Time:
+		if attribute.TimeValue != nil && v.Before(*attribute.TimeValue) {
+			attribute.AddError(fmt.Sprintf("is invalid. Need to be after %+v", v))
+		}
+	default:
+		panic("Need to provide time interface{} as params")
+	}
 }

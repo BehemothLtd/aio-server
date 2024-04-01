@@ -5,6 +5,7 @@ import (
 	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/pkg/systems"
 	"aio-server/repository"
@@ -75,6 +76,7 @@ func (form *ProjectAssigneeForm) validate() error {
 		validateJoinDate().
 		validateLeaveDate().
 		validateDuplicate().
+		validateLockVersion().
 		summaryErrors()
 
 	if form.Errors != nil {
@@ -119,7 +121,7 @@ func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
 func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
 	field := form.FindAttrByCode("joinDate")
 	field.ValidateRequired()
-	field.ValidateFormat("1-2-2006", "%d-%m-%y")
+	field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 	if field.IsClean() {
 		form.ProjectAssignee.JoinDate = field.Time()
@@ -132,7 +134,13 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 	field := form.FindAttrByCode("leaveDate")
 
 	if form.LeaveDate != nil && *form.LeaveDate != "" && strings.TrimSpace(*form.LeaveDate) != "" {
-		field.ValidateFormat("1-2-2006", "%d-%m-%y")
+		field.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+
+		joinDateTime := form.FindAttrByCode("joinDate").Time()
+
+		if joinDateTime != nil {
+			field.ValidateMin(interface{}(*joinDateTime))
+		}
 
 		if field.IsClean() {
 			form.ProjectAssignee.LeaveDate = field.Time()
@@ -154,9 +162,32 @@ func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
 		}
 
 		if err := form.Repo.Find(&presentedProjectAssignee); err == nil {
+			if form.ProjectAssignee.Id == presentedProjectAssignee.Id {
+				return form
+			}
+
 			userIdField.AddError("already has this role")
 		}
 	}
+
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateLockVersion() *ProjectAssigneeForm {
+	if form.ProjectAssignee.Id == 0 {
+		return form
+	}
+
+	field := IntAttribute[int32]{
+		FieldAttribute: FieldAttribute{
+			Code: "lockVersion",
+		},
+		Value: helpers.GetInt32OrDefault(form.LockVersion),
+	}
+	form.AddAttributes(&field)
+
+	field.ValidateRequired()
+	field.ValidateMin(interface{}(int64(form.ProjectAssignee.LockVersion)))
 
 	return form
 }
@@ -166,8 +197,18 @@ func (form *ProjectAssigneeForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.ProjectAssignee); err != nil {
-		return err
+	if form.ProjectAssignee.Id != 0 {
+		if err := form.Repo.Update(form.ProjectAssignee); err != nil {
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
+		}
+	} else {
+		if err := form.Repo.Create(form.ProjectAssignee); err != nil {
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
+		}
 	}
 
 	return nil

@@ -55,6 +55,14 @@ func GetStringOrDefault(str *string) string {
 	return *str
 }
 
+// GetStringOrDefault returns the value of the bool pointer if not nil, otherwise returns false.
+func GetBoolOrDefault(b *bool) bool {
+	if b == nil {
+		return false
+	}
+	return *b
+}
+
 // GetInt32OrDefault returns the value of the int32 pointer if not nil, otherwise returns 0.
 func GetInt32OrDefault(num *int32) int32 {
 	if num == nil {
@@ -117,4 +125,12 @@ func RubyTimeStringToGqlTime(timeString string) *graphql.Time {
 // Float64Pointer returns a pointer to the given float64 value.
 func Float64Pointer(val float64) *float64 {
 	return &val
+}
+
+// GetFloat64OrDefault returns the value of the float64 pointer if not nil, otherwise returns 0.
+func GetFloat64OrDefault(num *float64) float64 {
+	if num == nil {
+		return 0.0
+	}
+	return *num
 }
