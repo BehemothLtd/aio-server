@@ -64,6 +64,9 @@ type Mutation {
 
   DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
   DeviceTypeUpdate(id: ID!, input: DeviceTypeInput!): DeviceTypeModification!
+  
+  IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
+  IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
 }
 
 scalar Time
