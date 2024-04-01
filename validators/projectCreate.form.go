@@ -192,7 +192,7 @@ func (form *ProjectCreateForm) validateProjectType() *ProjectCreateForm {
 			sprintDurationField.ValidateRequired()
 
 			if sprintDurationField.IsClean() {
-				form.Project.SprintDuration = *form.SprintDuration
+				form.Project.SprintDuration = form.SprintDuration
 			}
 
 		} else if fieldValue == enums.ProjectTypeKanban {

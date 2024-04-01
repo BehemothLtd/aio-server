@@ -57,8 +57,7 @@ func (psr *ProjectSprintRepository) CollapsedSprints(projectSprint *models.Proje
 	startDate := projectSprint.StartDate.Format("2006-01-02")
 	endDate := projectSprint.EndDate.Format("2006-01-02")
 
-	dbError := psr.db.Where("project_id = ? AND ((start_date < ? AND end_date > ?) OR (start_date < ? AND end_date > ?) OR (start_date > ? AND end_date < ?))", projectSprint.ProjectId, startDate, startDate, endDate, endDate, startDate, endDate).First(&models.ProjectSprint{}).Error
-
+	dbError := psr.db.Where("project_id = ? AND ((start_date <= ? AND end_date >= ?) OR (start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?))", projectSprint.ProjectId, startDate, startDate, endDate, endDate, startDate, endDate).First(&models.ProjectSprint{}).Error
 	return dbError
 }
 
