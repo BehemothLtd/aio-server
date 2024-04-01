@@ -86,11 +86,11 @@ func (form *ProjectUploadImagesForm) validateLogo() *ProjectUploadImagesForm {
 		} else {
 			if form.Project.Logo == nil {
 				form.Project.Logo = &models.Attachment{
-					AttachmentBlob:   &blob,
+					AttachmentBlob:   blob,
 					AttachmentBlobId: blob.Id,
 				}
 			} else {
-				form.Project.Logo.AttachmentBlob = &blob
+				form.Project.Logo.AttachmentBlob = blob
 			}
 		}
 	}

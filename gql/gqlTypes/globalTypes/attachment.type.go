@@ -10,11 +10,7 @@ type AttachmentType struct {
 }
 
 func (at *AttachmentType) Key(ctx context.Context) *string {
-	if at.Attachment.AttachmentBlob != nil {
-		return &at.Attachment.AttachmentBlob.Key
-	}
-
-	return nil
+	return &at.Attachment.AttachmentBlob.Key
 }
 
 func (at *AttachmentType) Url(ctx context.Context) *string {
