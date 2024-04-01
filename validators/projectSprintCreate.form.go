@@ -100,7 +100,7 @@ func (form *ProjectSprintForm) validateProjectId() *ProjectSprintForm {
 func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	startDate := form.FindAttrByCode("startDate")
 	startDate.ValidateRequired()
-	startDate.ValidateFormat("1-2-2006", "%d-%m-%y")
+	startDate.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 
 	project := models.Project{Id: *form.ProjectId}
 	projectRepo := repository.NewProjectRepository(nil, database.Db)
@@ -110,9 +110,8 @@ func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	endDate := startDate.Time().AddDate(0, 0, int(*project.SprintDuration*7))
 
 	projectSprint := models.ProjectSprint{StartDate: *startDate.Time(), EndDate: &endDate, ProjectId: *form.ProjectId}
-	sprintError := form.Repo.CollapsedSprints(&projectSprint)
 
-	if sprintError == nil {
+	if err := form.Repo.FindCollapsedSprints(&projectSprint); err == nil {
 		startDate.AddError("is duplicate with another sprints")
 	} else {
 		form.ProjectSprint.StartDate = *startDate.Time()
