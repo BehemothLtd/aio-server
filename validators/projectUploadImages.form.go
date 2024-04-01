@@ -6,14 +6,16 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"strings"
 )
 
 type ProjectUploadImagesForm struct {
 	Form
 	insightInputs.ProjectUploadImagesFormInput
-	Project     *models.Project
-	ProjectRepo repository.ProjectRepository
-	Repo        repository.AttachmentBlobRepository
+	Project       *models.Project
+	UpdateProject models.Project
+	ProjectRepo   repository.ProjectRepository
+	Repo          repository.AttachmentBlobRepository
 }
 
 func NewProjectUploadImagesFormValidator(
@@ -57,7 +59,7 @@ func (form *ProjectUploadImagesForm) Save() error {
 		return err
 	}
 
-	if err := form.ProjectRepo.Update(form.Project, []string{"Logo"}); err != nil {
+	if err := form.ProjectRepo.UpdateFiles(form.Project); err != nil {
 		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 			"base": {err.Error()},
 		})
@@ -77,20 +79,17 @@ func (form *ProjectUploadImagesForm) validate() error {
 }
 
 func (form *ProjectUploadImagesForm) validateLogo() *ProjectUploadImagesForm {
-	if form.LogoKey != nil {
+	if form.LogoKey != nil && strings.TrimSpace(*form.LogoKey) != "" {
 		field := form.FindAttrByCode("logoKey")
 		blob := models.AttachmentBlob{Key: *form.LogoKey}
 
 		if err := form.Repo.Find(&blob); err != nil {
 			field.AddError("is invalid")
 		} else {
-			if form.Project.Logo == nil {
-				form.Project.Logo = &models.Attachment{
-					AttachmentBlob:   blob,
-					AttachmentBlobId: blob.Id,
-				}
-			} else {
-				form.Project.Logo.AttachmentBlob = blob
+			form.Project.Logo = &models.Attachment{
+				AttachmentBlob:   blob,
+				AttachmentBlobId: blob.Id,
+				Name:             "logo",
 			}
 		}
 	}

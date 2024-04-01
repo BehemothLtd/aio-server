@@ -9,6 +9,7 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"strings"
 	"time"
 )
 
@@ -196,23 +197,19 @@ func (form *UserProfileForm) validateAddress() *UserProfileForm {
 func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
 	avatar := form.FindAttrByCode("avatarKey")
 
-	if form.AvatarKey != nil {
-		if *form.AvatarKey != "" {
-			blob := models.AttachmentBlob{Key: *form.AvatarKey}
+	if form.AvatarKey != nil && strings.TrimSpace(*form.AvatarKey) != "" {
+		blob := models.AttachmentBlob{Key: *form.AvatarKey}
 
-			repo := repository.NewAttachmentBlobRepository(nil, database.Db)
-			if err := repo.Find(&blob); err != nil {
+		repo := repository.NewAttachmentBlobRepository(nil, database.Db)
+		if err := repo.Find(&blob); err != nil {
 
-				avatar.AddError("is invalid")
-			} else {
-				form.User.Avatar = &models.Attachment{
-					AttachmentBlob:   blob,
-					AttachmentBlobId: blob.Id,
-					Name:             "avatar",
-				}
-			}
-		} else {
 			avatar.AddError("is invalid")
+		} else {
+			form.User.Avatar = &models.Attachment{
+				AttachmentBlob:   blob,
+				AttachmentBlobId: blob.Id,
+				Name:             "avatar",
+			}
 		}
 	}
 	return form

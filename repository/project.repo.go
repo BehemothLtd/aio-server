@@ -31,9 +31,28 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Create(&project).First(&project).Error
 }
 
-func (r *ProjectRepository) Update(project *models.Project, fields []string) error {
-	originalProject := models.Project{Id: project.Id}
-	r.db.Model(&originalProject).First(&originalProject)
+func (r *ProjectRepository) Update(project *models.Project, updateProject models.Project) error {
+	if err := r.db.Model(&project).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateProject).Error; err != nil {
+		return err
+	}
 
-	return r.db.Model(&originalProject).Select(fields).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&project).Error
+	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Where("id = ?", project.Id).First(&project).Error
+}
+
+func (r *Repository) UpdateFiles(project *models.Project) error {
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if project.Logo != nil {
+			if err := r.db.Model(&models.Project{}).Unscoped().Where("name = 'logo'").Association("Logo").Unscoped().Clear(); err != nil {
+				return err
+			}
+
+			return r.db.Model(&project).Updates(&project).Error
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return r.db.Model(&project).Where("id = ?", project.Id).Preload("Logo.AttachmentBlob").First(&project).Error
 }

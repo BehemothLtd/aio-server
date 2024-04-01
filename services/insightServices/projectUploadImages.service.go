@@ -31,7 +31,7 @@ func (puis *ProjectUploadImagesService) Execute() error {
 	}
 
 	puis.Project.Id = projectId
-	projectRepo := repository.NewProjectRepository(puis.Ctx, puis.Db.Preload("ProjectIssueStatuses").Preload("Issues").Preload("ProjectSprints"))
+	projectRepo := repository.NewProjectRepository(puis.Ctx, puis.Db)
 
 	if err := projectRepo.Find(puis.Project); err != nil {
 		return exceptions.NewRecordNotFoundError()
@@ -40,7 +40,7 @@ func (puis *ProjectUploadImagesService) Execute() error {
 	form := validators.NewProjectUploadImagesFormValidator(
 		&puis.Args.Input,
 		*repository.NewAttachmentBlobRepository(puis.Ctx, puis.Db),
-		*repository.NewProjectRepository(puis.Ctx, puis.Db.Preload("Logo")),
+		*projectRepo,
 		puis.Project,
 	)
 
