@@ -38,7 +38,7 @@ type ActionDetail struct {
 	DismissText string `json:"dismiss_text"`
 }
 
-func NewMessageAttachment(callback string) *MessageAttachment {
+func NewMessageAttachment(callback string) *[]MessageAttachment {
 	if callback == "" {
 		return nil
 	}
@@ -51,37 +51,41 @@ func NewMessageAttachment(callback string) *MessageAttachment {
 	}
 }
 
-func ChangeStateRequest() *MessageAttachment {
-	return &MessageAttachment{
-		Text:           "Descision",
-		CallbackId:     "change_state_rq",
-		Color:          "#3AA3E3",
-		AttachmentType: "default",
-		Actions: []AttachedAction{
-			{
-				Name:  "approve",
-				Text:  "Approve",
-				Type:  "button",
-				Value: "approved",
-				Confirm: ActionDetail{
-					Title:       "Are you sure?",
-					Text:        "Approve",
-					OkText:      "Yes",
-					DismissText: "No",
+func ChangeStateRequest() *[]MessageAttachment {
+	attachments := []MessageAttachment{
+		{
+			Text:           "Descision",
+			CallbackId:     "change_state_rq",
+			Color:          "#3AA3E3",
+			AttachmentType: "default",
+			Actions: []AttachedAction{
+				{
+					Name:  "approve",
+					Text:  "Approve",
+					Type:  "button",
+					Value: "approved",
+					Confirm: ActionDetail{
+						Title:       "Are you sure?",
+						Text:        "Approve",
+						OkText:      "Yes",
+						DismissText: "No",
+					},
 				},
-			},
-			{
-				Name:  "reject",
-				Text:  "Reject",
-				Type:  "button",
-				Value: "rejected",
-				Confirm: ActionDetail{
-					Title:       "Are you sure?",
-					Text:        "Reject",
-					OkText:      "Yes",
-					DismissText: "No",
+				{
+					Name:  "reject",
+					Text:  "Reject",
+					Type:  "button",
+					Value: "rejected",
+					Confirm: ActionDetail{
+						Title:       "Are you sure?",
+						Text:        "Reject",
+						OkText:      "Yes",
+						DismissText: "No",
+					},
 				},
 			},
 		},
 	}
+
+	return &attachments
 }

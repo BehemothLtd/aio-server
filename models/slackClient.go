@@ -121,21 +121,27 @@ func (client *SlackClient) SetHeaders(additionHeaders *map[string]string) *Slack
 	return client
 }
 
-func (client *SlackClient) SendMessage(text string, channel string, attachment *string) error {
+func (client *SlackClient) SendMessage(text string, channel string, callback *string) error {
 	if text == "" || channel == "" {
 		return exceptions.NewBadRequestError("Text and channel are required")
 	}
 
 	fmt.Print("\n\n============================\nStart send_message")
 
-	// TODO parse attachment to string
 	payload := map[string]string{
 		"text":    text,
 		"channel": channel,
 	}
 
-	if attachment != nil {
-		payload["attachments"] = *attachment
+	// TODO : Handle payload with attachment - json - url endcode string
+	if callback != nil {
+		attachment := NewMessageAttachment(*callback)
+
+		if jsonAttachment, err := json.Marshal(attachment); err != nil {
+			return exceptions.NewBadRequestError("invalid attachments")
+		} else {
+			payload["attachment"] = string(jsonAttachment)
+		}
 	}
 
 	payloadBytes, err := json.Marshal(payload)
@@ -161,4 +167,8 @@ func (client *SlackClient) SendMessage(text string, channel string, attachment *
 	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
 
 	return nil
+}
+
+type myJson struct {
+	Array []string
 }
