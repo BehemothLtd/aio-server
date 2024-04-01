@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-// Unit timestamp to millis second
+// Unit timestamp with millis second
 func UnixTimestamp(t time.Time) string {
 	second := t.Unix()
 	nanos := t.UnixNano() % 1e9

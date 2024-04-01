@@ -2,12 +2,10 @@ package controllers
 
 import (
 	"aio-server/exceptions"
-	"aio-server/models"
 	"aio-server/pkg/utilities"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"encoding/json"
 	"io"
 	"os"
 	"strconv"
@@ -21,14 +19,7 @@ func Interactives(c *gin.Context) {
 		return
 	}
 
-	a, _ := io.ReadAll(c.Request.Body)
-
-	message := models.SlackMessage{}
-
-	err := json.Unmarshal([]byte(string(a)), &message)
-	if err == nil {
-
-	}
+	// TODO: handle Interactives request
 }
 
 func VerifySlackRequest(c *gin.Context) error {
@@ -42,7 +33,7 @@ func VerifySlackRequest(c *gin.Context) error {
 		return exceptions.NewBadRequestError("Timestamp is invalid")
 	}
 
-	// Check request time out
+	// Request time out within 5 minutes
 	if (currentTimeInt - timestampInt) > 60*5 {
 		return exceptions.NewBadRequestError("Request time out")
 	}

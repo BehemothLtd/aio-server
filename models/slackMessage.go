@@ -39,10 +39,6 @@ type ActionDetail struct {
 }
 
 func NewMessageAttachment(callback string) *[]MessageAttachment {
-	if callback == "" {
-		return nil
-	}
-
 	switch callback {
 	case "change_state_rq":
 		return ChangeStateRequest()
