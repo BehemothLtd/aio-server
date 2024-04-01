@@ -20,6 +20,12 @@ func NewIssueRepository(c *context.Context, db *gorm.DB) *IssueRepository {
 	}
 }
 
+func (r *IssueRepository) Find(issue *models.Issue) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	return dbTables.Where(&issue).First(&issue).Error
+}
+
 func (r *IssueRepository) Create(issue *models.Issue) error {
 	return r.db.Model(&issue).
 		Preload("Creator").Preload("Project").
@@ -30,16 +36,25 @@ func (r *IssueRepository) Create(issue *models.Issue) error {
 }
 
 func (r *IssueRepository) Update(issue *models.Issue) error {
-	// db.Transaction(func(tx *gorm.DB) error {
-	// 	if err := db.Model(&issue).Unscoped().Association("IssueAssignees").Unscoped().Clear(); err != nil {
-	// 		return err
-	// 	}
+	originalIssue := models.Issue{Id: issue.Id}
+	r.db.Model(&originalIssue).First(&originalIssue)
 
-	// 	if err := db.Model(&issue).Association("IssueAssignees").Append(newIssueAssignees); err != nil {
-	// 		return err
-	// 	}
+	r.db.Transaction(func(tx *gorm.DB) error {
+		if err := r.db.Model(&originalIssue).Unscoped().Association("IssueAssignees").Unscoped().Clear(); err != nil {
+			return err
+		}
 
-	// 	return nil
-	// })
+		if err := r.db.Model(&originalIssue).Association("IssueAssignees").Append(issue.IssueAssignees); err != nil {
+			return err
+		}
+
+		return r.db.Model(&originalIssue).
+			Preload("Creator").Preload("Project").
+			Preload("ProjectSprint").
+			Preload("Children").Preload("Parent").
+			Preload("IssueAssignees").
+			Save(&issue).First(&issue).Error
+	})
+
 	return nil
 }

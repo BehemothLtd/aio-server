@@ -48,11 +48,8 @@ func (ut *UserType) About(context.Context) *string {
 
 // AvatarURL returns the AvatarURL of the user.
 func (ut *UserType) AvatarUrl(context.Context) *string {
-	if ut.User.Avatar != nil {
-		url := ut.User.Avatar.Url()
-		return &url
-	}
-	return nil
+	url := ut.User.Avatar.Url()
+	return url
 }
 
 // CreatedAt returns the CreatedAt of the user.
@@ -126,6 +123,22 @@ func (ut *UserType) SlackId(context.Context) *string {
 }
 
 // LockVersion returns the lock version of the user.
-func (sir *UserType) LockVersion(context.Context) int32 {
-	return sir.User.LockVersion
+func (ut *UserType) LockVersion(context.Context) int32 {
+	return ut.User.LockVersion
+}
+
+func (ut *UserType) IssuesCount(context.Context) *int32 {
+	var issuesCount int32
+
+	ut.Db.Table("issue_assignees").Select("Count(distinct issue_id)").Where("user_id = ?", ut.User.Id).Scan(&issuesCount)
+
+	return &issuesCount
+}
+
+func (ut *UserType) ProjectsCount(context.Context) *int32 {
+	var projectsCount int32
+
+	ut.Db.Table("project_assignees").Select("Count(distinct project_id)").Where("user_id = ?", ut.User.Id).Scan(&projectsCount)
+
+	return &projectsCount
 }

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `attachments` (
   `attachment_blob_id` bigint DEFAULT NULL,
   `owner_id` bigint DEFAULT NULL,
   `owner_type` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),

@@ -19,7 +19,10 @@ type ProjectUpdateService struct {
 }
 
 func (pus *ProjectUpdateService) Execute() error {
-	repo := repository.NewProjectRepository(pus.Ctx, pus.Db)
+	repo := repository.NewProjectRepository(
+		pus.Ctx,
+		pus.Db,
+	)
 
 	if err := repo.Find(pus.Project); err != nil {
 		return exceptions.NewRecordNotFoundError()

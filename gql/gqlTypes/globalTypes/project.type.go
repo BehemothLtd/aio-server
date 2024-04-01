@@ -110,3 +110,29 @@ func (pt *ProjectType) ProjectIssueStatuses(ctx context.Context) *[]*ProjectIssu
 func (pt *ProjectType) LockVersion(ctx context.Context) int32 {
 	return pt.Project.LockVersion
 }
+
+func (pt *ProjectType) Logo(ctx context.Context) *AttachmentType {
+	if pt.Project.Logo == nil {
+		return nil
+	}
+
+	return &AttachmentType{
+		Attachment: pt.Project.Logo,
+	}
+}
+
+func (pt *ProjectType) Files(ctx context.Context) *[]*AttachmentType {
+	if len(pt.Project.Files) == 0 {
+		return nil
+	}
+
+	result := make([]*AttachmentType, len(pt.Project.Files))
+
+	for i, attachment := range pt.Project.Files {
+		result[i] = &AttachmentType{
+			Attachment: attachment,
+		}
+	}
+
+	return &result
+}

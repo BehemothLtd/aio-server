@@ -45,3 +45,18 @@ input ProjectUpdateInput {
 type ProjectModification {
   project: Project
 }
+
+input ProjectUploadImagesInput {
+  logoKey: String
+  fileKeys: [String!]
+}
+
+type ProjectWithImages {
+  project: ProjectImagesUploaded
+}
+
+type ProjectImagesUploaded {
+  id: ID
+  logo: Attachment
+  files: [Attachment]
+}

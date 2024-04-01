@@ -4,6 +4,8 @@ schema {
 }
 
 type Query {
+  SelfGeneralInfo(): SelfGeneralInfo!
+
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
 
@@ -30,6 +32,8 @@ type Query {
 
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
   LeaveDayRequest(id: ID!): LeaveDayRequest!
+
+  AnalysesTotalSummarize(): AnalysesTotalSummarize!
 }
 
 type Mutation {
@@ -44,6 +48,8 @@ type Mutation {
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 
+  ProjectUploadImages(id: ID!, input: ProjectUploadImagesInput!): ProjectWithImages!
+
   ProjectCreateProjectAssignee(id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
   ProjectUpdateProjectAssignee(projectId: ID!, id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
   ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
@@ -51,6 +57,18 @@ type Mutation {
   ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
 
   ClientCreate(input: ClientCreateInput!): ClientModification!
+  ProjectUpdateIssue(projectId: ID!, id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
+
+  LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
+  LeaveDayRequestUpdate(id: ID!, input: LeaveDayRequestInput!): LeaveDayRequestModification!
+  LeaveDayRequestDelete(id: ID!): String
+  LeaveDayRequestStateChange(id: ID!, requestState: String!): String
+
+  DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
+  DeviceTypeUpdate(id: ID!, input: DeviceTypeInput!): DeviceTypeModification!
+  
+  IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
+  IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
 }
 
 scalar Time

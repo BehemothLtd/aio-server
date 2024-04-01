@@ -8,7 +8,8 @@ import (
 type NestedSlices interface {
 	insightInputs.ProjectIssueStatusInputForProjectCreate |
 		insightInputs.ProjectAssigneeInputForProjectCreate |
-		insightInputs.IssueAssigneeInputForIssueCreate
+		insightInputs.IssueAssigneeInputForIssueCreate |
+		string
 }
 
 type SliceAttribute[T NestedSlices] struct {
