@@ -49,9 +49,6 @@ type Mutation {
   ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
 
   ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
-  
-  IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
-  IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
 
   ClientCreate(input: ClientCreateInput!): ClientModification!
 }
