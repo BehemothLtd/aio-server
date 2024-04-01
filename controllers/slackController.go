@@ -30,31 +30,32 @@ func VerifySlackRequest(c *gin.Context) error {
 	currentTimeInt, err := strconv.ParseInt(curentTime, 10, 32)
 
 	if err != nil {
-		return exceptions.NewBadRequestError("Timestamp is invalid")
+		return err
 	}
 
 	// Request time out within 5 minutes
 	if (currentTimeInt - timestampInt) > 60*5 {
-		return exceptions.NewBadRequestError("Request time out")
+		return exceptions.NewBadRequestError("Request time out!")
 	}
 
 	requestBody, err := io.ReadAll(c.Request.Body)
 
 	if err != nil {
-		return exceptions.NewBadRequestError("Request body is invalid")
+		return err
 	}
 
 	sigBaseString := "v0:" + timestamp + ":" + string(requestBody)
 	slackSigningSecret := os.Getenv("SLACK_SIGNING_SECRET")
 
 	sigKey := []byte(slackSigningSecret)
-	hHash := hmac.New(sha256.New, sigKey)
-	hHash.Write([]byte(sigBaseString))
-	signature := "v0=" + hex.EncodeToString(hHash.Sum(nil))
+	hasKey := hmac.New(sha256.New, sigKey)
+	hasKey.Write([]byte(sigBaseString))
+
+	signature := "v0=" + hex.EncodeToString(hasKey.Sum(nil))
 	slackSignature := c.Request.Header["X-Slack-Signature"][0]
 
-	if utilities.SecureCompare([]byte(signature), []byte(slackSignature)) {
-		return exceptions.NewBadRequestError("Verify request failed!")
+	if !utilities.SecureCompare([]byte(signature), []byte(slackSignature)) {
+		return exceptions.NewBadRequestError("Invalid secret signature!")
 	}
 
 	return nil
