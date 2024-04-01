@@ -45,14 +45,21 @@ func (r *Repository) UpdateFiles(project *models.Project) error {
 			if err := r.db.Model(&models.Project{}).Unscoped().Where("name = 'logo'").Association("Logo").Unscoped().Clear(); err != nil {
 				return err
 			}
-
-			return r.db.Model(&project).Updates(&project).Error
 		}
 
-		return nil
+		if len(project.Files) > 0 {
+			if err := r.db.Model(&models.Project{}).Unscoped().Where("name = 'files'").Association("Files").Unscoped().Clear(); err != nil {
+				return err
+			}
+		}
+
+		return r.db.Model(&project).Updates(&project).Error
 	}); err != nil {
 		return err
 	}
 
-	return r.db.Model(&project).Where("id = ?", project.Id).Preload("Logo.AttachmentBlob").First(&project).Error
+	return r.db.Model(&project).Where("id = ?", project.Id).
+		Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
+		Preload("Files", "name = 'files'").Preload("Files.AttachmentBlob").
+		First(&project).Error
 }

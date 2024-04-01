@@ -58,5 +58,5 @@ type ProjectWithImages {
 type ProjectImagesUploaded {
   id: ID
   logo: Attachment
-  # files: [Attachment]
+  files: [Attachment]
 }

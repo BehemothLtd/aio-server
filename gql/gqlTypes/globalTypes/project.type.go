@@ -121,12 +121,18 @@ func (pt *ProjectType) Logo(ctx context.Context) *AttachmentType {
 	}
 }
 
-// func (pt *ProjectType) Files(ctx context.Context) *AttachmentType {
-// 	if pt.Project.Logo == nil {
-// 		return nil
-// 	}
+func (pt *ProjectType) Files(ctx context.Context) *[]*AttachmentType {
+	if len(pt.Project.Files) == 0 {
+		return nil
+	}
 
-// 	return &AttachmentType{
-// 		Attachment: pt.Project.Logo,
-// 	}
-// }
+	result := make([]*AttachmentType, len(pt.Project.Files))
+
+	for i, attachment := range pt.Project.Files {
+		result[i] = &AttachmentType{
+			Attachment: attachment,
+		}
+	}
+
+	return &result
+}

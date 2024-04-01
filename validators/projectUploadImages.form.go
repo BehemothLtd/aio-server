@@ -100,13 +100,19 @@ func (form *ProjectUploadImagesForm) validateLogo() *ProjectUploadImagesForm {
 func (form *ProjectUploadImagesForm) validateFiles() *ProjectUploadImagesForm {
 	if form.FileKeys != nil {
 		fieldKey := "fileKeys"
-		// field := form.FindAttrByCode(fieldKey)
+		form.Project.Files = []*models.Attachment{}
 
 		for i, fileKey := range *form.FileKeys {
 			blob := models.AttachmentBlob{Key: fileKey}
 
 			if err := form.Repo.Find(&blob); err != nil {
 				form.AddErrorDirectlyToField(form.NestedDirectItemFieldKey(fieldKey, i), []interface{}{"is invalid"})
+			} else {
+				form.Project.Files = append(form.Project.Files, &models.Attachment{
+					AttachmentBlob:   blob,
+					AttachmentBlobId: blob.Id,
+					Name:             "files",
+				})
 			}
 		}
 	}
