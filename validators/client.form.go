@@ -27,6 +27,7 @@ func NewClientFormValidator(
 		Client:          client,
 		Repo:            repo,
 	}
+
 	form.assignAttributes()
 
 	return form
@@ -52,23 +53,23 @@ func (form *ClientForm) assignAttributes() {
 			},
 			Value: helpers.GetStringOrDefault(form.Name),
 		},
-		// &StringAttribute{
-		// 	FieldAttribute: FieldAttribute{
-	// 		Code: "ShowOnHomepage",
-	// 	},
-	// 	Value: helpers.GetStringOrDefault(form.ShowOnHomePage),
-	// },
-	// &StringAttribute{
-	// 	FieldAttribute: FieldAttribute{
-	// 		Code: "LockVersion",
-	// 	},
-	// 	Value: helpers.GetStringOrDefault(form.LockVersion),
-	// },
+		&BoolAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "showOnHomepage",
+			},
+			Value: helpers.GetBoolOrDefault(form.ShowOnHomePage),
+		},
+		&IntAttribute[int32]{
+			FieldAttribute: FieldAttribute{
+				Code: "lockVersion",
+			},
+			Value: helpers.GetInt32OrDefault(form.LockVersion),
+		},
 	)
 }
 
 func (form *ClientForm) validate() error {
-	form.validateName()
+	form.validateName().validateShowOnHomePage().validateLockVersion()
 
 	if form.Client.Id != 0 {
 		form.validateLockVersion()
@@ -80,18 +81,6 @@ func (form *ClientForm) validate() error {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
 	}
 	return nil
-}
-
-func (form *ClientForm) validateColor() *ClientForm {
-	colorField := form.FindAttrByCode("color")
-
-	colorField.ValidateRequired()
-
-	if colorField.IsClean() {
-		form.Client.Name = *form.Name
-	}
-
-	return form
 }
 
 func (form *ClientForm) validateName() *ClientForm {
@@ -109,21 +98,11 @@ func (form *ClientForm) validateName() *ClientForm {
 	return form
 }
 
-// func (form *ClientForm) validateClientType() *ClientForm {
-// 	typeField := form.FindAttrByCode("statusType")
+func (form *ClientForm) validateShowOnHomePage() *ClientForm {
+	form.Client.ShowOnHomePage = helpers.GetBoolOrDefault(form.ShowOnHomePage)
 
-// 	typeField.ValidateRequired()
-
-// 	if typeField.IsClean() {
-// 		if statusType, err := enums.ParseIssueStatusStatusType(*form.StatusType); err != nil {
-// 			typeField.AddError("is invalid issue status type")
-// 		} else {
-// 			form.IssueStatus.StatusType = statusType
-// 		}
-// 	}
-
-// 	return form
-// }
+	return form
+}
 
 func (form *ClientForm) validateLockVersion() *ClientForm {
 	currentLockVersion := form.Client.LockVersion

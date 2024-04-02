@@ -1,6 +1,7 @@
 package insightResolvers
 
 import (
+	"aio-server/enums"
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
@@ -10,9 +11,9 @@ import (
 )
 
 func (r *Resolver) ClientCreate(ctx context.Context, args insightInputs.ClientCreateInput) (*insightTypes.ClientCreatedType, error) {
-	// if _, err := r.Authorize(ctx, enums.PermissionTargetTypeClients.String(), enums.PermissionActionTypeWrite.String()); err != nil {
-	// 	return nil, err
-	// }
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeClients.String(), enums.PermissionActionTypeWrite.String()); err != nil {
+		return nil, err
+	}
 
 	Client := models.Client{}
 
@@ -32,17 +33,4 @@ func (r *Resolver) ClientCreate(ctx context.Context, args insightInputs.ClientCr
 			},
 		}, nil
 	}
-
-	// return &insightTypes.ClientCreatedType{
-	// 	Client: &globalTypes.ClientType{
-	// 		Client: &models.Client{
-	// 			Id:             1,
-	// 			Name:           "Example Client",
-	// 			ShowOnHomePage: true,
-	// 			LockVersion:    0,
-	// 			CreatedAt:      time.Now(),
-	// 			UpdatedAt:      time.Now(),
-	// 		},
-	// 	},
-	// }, nil
 }

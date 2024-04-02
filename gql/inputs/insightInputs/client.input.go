@@ -11,7 +11,7 @@ type ClientCreateInput struct {
 }
 
 type ClientFormInput struct {
-	Name *string
-	// ShowOnHomePage bool
-	// LockVersion    int32
+	Name           *string
+	ShowOnHomePage *bool
+	LockVersion    *int32
 }
