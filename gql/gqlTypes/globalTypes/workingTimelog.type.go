@@ -2,6 +2,7 @@ package globalTypes
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
 
@@ -22,7 +23,7 @@ func (wtt *WorkingTimelogType) ID(ctx context.Context) *graphql.ID {
 }
 
 func (wtt *WorkingTimelogType) Description(ctx context.Context) string {
-	return *wtt.WorkingTimelog.Description
+	return wtt.WorkingTimelog.Description
 	// return nil
 }
 
@@ -34,7 +35,7 @@ func (wtt *WorkingTimelogType) Minutes(ctx context.Context) int32 {
 func (wtt *WorkingTimelogType) LoggedAt(ctx context.Context) string {
 	loggedAt := helpers.GqlTimePointer(&wtt.WorkingTimelog.LoggedAt)
 
-	return loggedAt.Format("2026-01-02")
+	return loggedAt.Format(constants.DDMMYYY_DateFormat)
 }
 
 func (wtt *WorkingTimelogType) CreatedAt(ctx context.Context) *graphql.Time {

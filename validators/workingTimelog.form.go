@@ -63,7 +63,7 @@ func (form *WorkingTimelogForm) assignAttributes() {
 }
 
 func (form *WorkingTimelogForm) validate() error {
-	form.validateDescription().validateLoggedAt().validateTimes().assignIssueInfo().summaryErrors()
+	form.assignIssueInfo().validateAndFindRecordWithLoggedAt().validateDescription().validateTimes().summaryErrors()
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -78,13 +78,13 @@ func (form *WorkingTimelogForm) validateDescription() *WorkingTimelogForm {
 	field.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if field.IsClean() {
-		form.WorkingTimelog.Description = form.Description
+		form.WorkingTimelog.Description = *form.Description
 	}
 
 	return form
 }
 
-func (form *WorkingTimelogForm) validateLoggedAt() *WorkingTimelogForm {
+func (form *WorkingTimelogForm) validateAndFindRecordWithLoggedAt() *WorkingTimelogForm {
 	field := form.FindAttrByCode("loggedAt")
 
 	field.ValidateRequired()
@@ -92,6 +92,8 @@ func (form *WorkingTimelogForm) validateLoggedAt() *WorkingTimelogForm {
 
 	if field.IsClean() {
 		form.WorkingTimelog.LoggedAt = *field.Time()
+		form.Repo.FindByAttr(form.WorkingTimelog)
+
 	}
 
 	return form
@@ -110,7 +112,7 @@ func (form *WorkingTimelogForm) validateTimes() *WorkingTimelogForm {
 
 		if form.FindAttrByCode("loggedAt").IsClean() {
 			var workingTimelogsByLoggedAt []*models.WorkingTimelog
-			form.Repo.GetWorkingTimelogsByLoggedAt(&workingTimelogsByLoggedAt, *form.FindAttrByCode("loggedAt").Time())
+			form.Repo.GetWorkingTimelogsByLoggedAt(&workingTimelogsByLoggedAt, *form.FindAttrByCode("loggedAt").Time(), form.WorkingTimelog.Id)
 
 			totalLogtime := 0
 			for _, wt := range workingTimelogsByLoggedAt {
@@ -142,7 +144,7 @@ func (form *WorkingTimelogForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Create(form.WorkingTimelog); err != nil {
+	if err := form.Repo.Save(form.WorkingTimelog); err != nil {
 		return err
 	}
 

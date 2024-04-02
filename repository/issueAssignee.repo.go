@@ -27,6 +27,6 @@ func (r *IssueAssigneeRepository) CountByProjectAssignee(projectAssignee models.
 	return count
 }
 
-func (r *IssueAssigneeRepository) FindByAttr(issueAssignee models.IssueAssignee) error {
-	return r.db.Model(&issueAssignee).First(&issueAssignee).Error
+func (r *IssueAssigneeRepository) FindByAttr(issueAssignee *models.IssueAssignee) error {
+	return r.db.Model(&issueAssignee).Where(&issueAssignee).First(&issueAssignee).Error
 }

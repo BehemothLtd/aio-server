@@ -70,7 +70,7 @@ type Mutation {
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
   
-  MmSelfWorkingTimelogCreate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
+  MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 }
 
 scalar Time

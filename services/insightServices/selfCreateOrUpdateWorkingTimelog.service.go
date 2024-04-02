@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type SelfCreateWorkingTimelogService struct {
+type SelfCreateOrUpdateWorkingTimelogService struct {
 	Ctx            *context.Context
 	Db             *gorm.DB
 	Args           insightInputs.SelfWorkingTimelogCreateInput
@@ -19,11 +19,11 @@ type SelfCreateWorkingTimelogService struct {
 	WorkingTimelog *models.WorkingTimelog
 }
 
-func (scwts *SelfCreateWorkingTimelogService) Execute() error {
+func (scwts *SelfCreateOrUpdateWorkingTimelogService) Execute() error {
 	issueAssignee := models.IssueAssignee{IssueId: *scwts.Args.IssueId, UserId: scwts.User.Id}
 	issueAssigneeRepo := repository.NewIssueAssigneeRepository(scwts.Ctx, scwts.Db.Preload("Issue"))
 
-	checkIssueError := issueAssigneeRepo.FindByAttr(issueAssignee)
+	checkIssueError := issueAssigneeRepo.FindByAttr(&issueAssignee)
 
 	if checkIssueError != nil {
 		return exceptions.NewUnprocessableContentError("You have no permission for this issue", nil)
