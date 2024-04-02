@@ -42,13 +42,13 @@ func (r *ProjectRepository) Update(project *models.Project, updateProject models
 func (r *Repository) UpdateFiles(project *models.Project) error {
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
 		if project.Logo != nil {
-			if err := r.db.Model(&models.Project{}).Unscoped().Where("name = 'logo'").Association("Logo").Unscoped().Clear(); err != nil {
+			if err := r.db.Model(&models.Project{Id: project.Id}).Unscoped().Where("name = 'logo'").Association("Logo").Unscoped().Clear(); err != nil {
 				return err
 			}
 		}
 
 		if len(project.Files) > 0 {
-			if err := r.db.Model(&models.Project{}).Unscoped().Where("name = 'files'").Association("Files").Unscoped().Clear(); err != nil {
+			if err := r.db.Model(&models.Project{Id: project.Id}).Unscoped().Where("name = 'files'").Association("Files").Unscoped().Clear(); err != nil {
 				return err
 			}
 		}
