@@ -2,6 +2,7 @@ package models
 
 import (
 	"aio-server/enums"
+	"aio-server/pkg/constants"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -61,4 +62,16 @@ type TimeGraphOnProjects struct {
 type ProjectsWorkingHours struct {
 	Hours float64
 	Name  string
+}
+
+func (user *User) IsBod() bool {
+	result := false
+	for _, ug := range user.UserGroups {
+		if ug.Title == constants.BODGroup {
+			result = true
+
+			return result
+		}
+	}
+	return result
 }

@@ -1,14 +1,18 @@
 package controllers
 
 import (
+	"aio-server/database"
 	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/utilities"
+	"aio-server/services/insightServices"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"os"
 	"strconv"
@@ -38,6 +42,23 @@ func Interactives(c *gin.Context) {
 	if responseBody.Type != "interactive_message" {
 		return
 	}
+
+	requestResponse := insightServices.SlackInteractiveService{
+		Db:   database.Db,
+		Args: responseBody,
+	}
+
+	result, err := requestResponse.Excecute()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// c.JSON(http.StatusOK, result)
+
+	fmt.Printf(">>>>>>>>>>> request response %+v \n\n", result)
 }
 
 func VerifySlackRequest(c *gin.Context) ([]byte, error) {
