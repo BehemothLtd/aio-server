@@ -26,3 +26,7 @@ func (r *IssueAssigneeRepository) CountByProjectAssignee(projectAssignee models.
 	r.db.Model(&models.IssueAssignee{}).Where("user_id = ?", projectAssignee.UserId).Where("issue_id IN (?)", r.db.Table("issues").Select("id").Where("project_id = ?", projectAssignee.ProjectId)).Count(&count)
 	return count
 }
+
+func (r *IssueAssigneeRepository) FindByAttr(issueAssignee models.IssueAssignee) error {
+	return r.db.Model(&issueAssignee).First(&issueAssignee).Error
+}

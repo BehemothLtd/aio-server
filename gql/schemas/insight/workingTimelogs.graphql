@@ -2,7 +2,7 @@ type WorkingTimelog {
   description: String!
   id: ID
   minutes: Int!
-  loggedAt: Time
+  loggedAt: String!
   createdAt: Time
   updatedAt: Time
   user: User
@@ -15,8 +15,18 @@ type WorkingTimelogCollection {
   metadata: Metadata
 }
 
+type WorkingTimelogModification {
+  workingTimelog: WorkingTimelog
+}
+
 input WorkingTimelogsQuery {
   descriptionCont: String
   issueCodeEq: String
   issueTitleCont: String
+}
+
+input WorkingTimelogInput {
+  description: String
+  loggedAt: String
+  minutes: Int
 }

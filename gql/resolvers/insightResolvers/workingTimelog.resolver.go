@@ -5,6 +5,7 @@ import (
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/auths"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
@@ -13,6 +14,12 @@ import (
 )
 
 func (r *Resolver) MmWorkingTimelog(ctx context.Context, args insightInputs.WorkingTimelogInput) (*globalTypes.WorkingTimelogType, error) {
+	_, err := auths.AuthInsightUserFromCtx(ctx)
+
+	if err != nil {
+		return nil, exceptions.NewUnauthorizedError("")
+	}
+
 	if args.Id == "" {
 		return nil, exceptions.NewBadRequestError(("Invalid ID"))
 	}
