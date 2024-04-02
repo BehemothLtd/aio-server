@@ -45,3 +45,20 @@ func (user *User) GenerateJwtClaims() (claims jwt.Claims) {
 		},
 	}
 }
+
+type ThisMonthWorkingHours struct {
+	Hours                     float64
+	PercentCompareToLastMonth float64
+	UpFromLastMonth           bool
+	TimeGraphOnProjects       TimeGraphOnProjects
+}
+
+type TimeGraphOnProjects struct {
+	Labels []string
+	Series []float64
+}
+
+type ProjectsWorkingHours struct {
+	Hours float64
+	Name  string
+}

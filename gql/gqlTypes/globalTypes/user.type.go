@@ -4,6 +4,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
+	"time"
 
 	graphql "github.com/graph-gophers/graphql-go"
 	"gorm.io/gorm"
@@ -141,4 +142,92 @@ func (ut *UserType) ProjectsCount(context.Context) *int32 {
 	ut.Db.Table("project_assignees").Select("Count(distinct project_id)").Where("user_id = ?", ut.User.Id).Scan(&projectsCount)
 
 	return &projectsCount
+}
+
+func (ut *UserType) ThisMonthWorkingHours(context.Context) *ThisMonthWorkingHoursType {
+	result := models.ThisMonthWorkingHours{}
+
+	now := time.Now()
+	currentYear, currentMonth, _ := now.Date()
+	currentLocation := now.Location()
+
+	firstOfMonth := time.Date(currentYear, currentMonth, 1, 0, 0, 0, 0, currentLocation)
+	lastOfMonth := firstOfMonth.AddDate(0, 1, -1)
+
+	var thisMonthHours, lastMonthHours float64
+
+	ut.Db.Model(&models.WorkingTimelog{}).Select("(IFNULL(SUM(minutes), 0) / 60)").Where("user_id = ?", ut.User.Id).Where(
+		"logged_at between ? AND ?", firstOfMonth, lastOfMonth,
+	).Scan(&thisMonthHours)
+
+	firstOfLastMonth := time.Date(currentYear, currentMonth-1, 1, 0, 0, 0, 0, currentLocation)
+	lastOfLastMonth := firstOfLastMonth.AddDate(0, 1, -1)
+	ut.Db.Model(&models.WorkingTimelog{}).Select("(IFNULL(SUM(minutes), 0) / 60)").Where("user_id = ?", ut.User.Id).Where(
+		"logged_at between ? AND ?", firstOfLastMonth, lastOfLastMonth,
+	).Scan(&lastMonthHours)
+
+	result.Hours = thisMonthHours
+	result.UpFromLastMonth = thisMonthHours > lastMonthHours
+
+	var comparation float64
+	if lastMonthHours == 0.0 {
+		comparation = 1.0
+	} else {
+		comparation = lastMonthHours
+	}
+
+	result.PercentCompareToLastMonth = ((thisMonthHours - lastMonthHours) / comparation) * 100
+
+	timeGraphOnProjects := models.TimeGraphOnProjects{Labels: []string{}, Series: []float64{}}
+	ProjectsWorkingHours := []models.ProjectsWorkingHours{}
+	ut.Db.Model(&models.WorkingTimelog{}).Select("SUM(minutes) / 60 as hours, projects.name").
+		Joins("left join projects on projects.id = working_timelogs.project_id").
+		Where("projects.state = 1").
+		Where("working_timelogs.logged_at between ? AND ?", firstOfMonth, lastOfMonth).
+		Group("project_id").Find(&ProjectsWorkingHours)
+
+	for _, ProjectWorkingHour := range ProjectsWorkingHours {
+		timeGraphOnProjects.Labels = append(timeGraphOnProjects.Labels, ProjectWorkingHour.Name)
+		timeGraphOnProjects.Series = append(timeGraphOnProjects.Series, ProjectWorkingHour.Hours)
+	}
+
+	result.TimeGraphOnProjects = timeGraphOnProjects
+
+	return &ThisMonthWorkingHoursType{
+		ThisMonthWorkingHours: &result,
+	}
+}
+
+type ThisMonthWorkingHoursType struct {
+	ThisMonthWorkingHours *models.ThisMonthWorkingHours
+}
+
+func (tmwht *ThisMonthWorkingHoursType) Hours(context.Context) *float64 {
+	return &tmwht.ThisMonthWorkingHours.Hours
+}
+
+func (tmwht *ThisMonthWorkingHoursType) PercentCompareToLastMonth(context.Context) *float64 {
+	return &tmwht.ThisMonthWorkingHours.PercentCompareToLastMonth
+}
+
+func (tmwht *ThisMonthWorkingHoursType) UpFromLastMonth(context.Context) *bool {
+	return &tmwht.ThisMonthWorkingHours.UpFromLastMonth
+}
+
+func (tmwht *ThisMonthWorkingHoursType) TimeGraphOnProjects(context.Context) *TimeGraphOnProjectType {
+	return &TimeGraphOnProjectType{
+		TimeGraphOnProject: &tmwht.ThisMonthWorkingHours.TimeGraphOnProjects,
+	}
+}
+
+type TimeGraphOnProjectType struct {
+	TimeGraphOnProject *models.TimeGraphOnProjects
+}
+
+func (tgopt *TimeGraphOnProjectType) Series(context.Context) *[]float64 {
+	return &tgopt.TimeGraphOnProject.Series
+}
+
+func (tgopt *TimeGraphOnProjectType) Labels(context.Context) *[]string {
+	return &tgopt.TimeGraphOnProject.Labels
 }
