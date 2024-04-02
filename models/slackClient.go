@@ -102,7 +102,7 @@ func (client *SlackClient) FetchConversationHistories(channel string, limit *int
 	}
 
 	message := SlackMessage{}
-	err = json.Unmarshal([]byte(string(body)), &message)
+	err = json.Unmarshal(body, &message)
 
 	if err != nil {
 		return nil, err

@@ -26,6 +26,7 @@ func main() {
 	r.POST("/insightGql", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), initializers.InsightGqlHandler(db))
 
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
+	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
 
 	r.Run()
 }

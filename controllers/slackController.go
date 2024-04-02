@@ -2,27 +2,45 @@ package controllers
 
 import (
 	"aio-server/exceptions"
+	"aio-server/models"
 	"aio-server/pkg/utilities"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
 	"io"
+	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Interactives(c *gin.Context) {
-	if err := VerifySlackRequest(c); err != nil {
+	response, err := VerifySlackRequest(c)
+	if err != nil {
 		return
 	}
 
-	// TODO: handle Interactives request
+	responseBody := models.SlackInteractivePayload{}
+
+	decode, err := url.QueryUnescape(string(response))
+	prefix := "payload="
+
+	if strings.HasPrefix(decode, prefix) {
+		decode = strings.TrimPrefix(decode, prefix)
+
+		err = json.Unmarshal([]byte(decode), &responseBody)
+	}
+
+	if responseBody.Type != "interactive_message" {
+		return
+	}
 }
 
-func VerifySlackRequest(c *gin.Context) error {
+func VerifySlackRequest(c *gin.Context) ([]byte, error) {
 	timestamp := c.Request.Header["X-Slack-Request-Timestamp"][0]
 	curentTime := utilities.UnixTimestampSecond(time.Now())
 
@@ -30,18 +48,18 @@ func VerifySlackRequest(c *gin.Context) error {
 	currentTimeInt, err := strconv.ParseInt(curentTime, 10, 32)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	// Request time out within 5 minutes
 	if (currentTimeInt - timestampInt) > 60*5 {
-		return exceptions.NewBadRequestError("Request time out!")
+		return nil, exceptions.NewBadRequestError("Request time out!")
 	}
 
 	requestBody, err := io.ReadAll(c.Request.Body)
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	sigBaseString := "v0:" + timestamp + ":" + string(requestBody)
@@ -55,8 +73,8 @@ func VerifySlackRequest(c *gin.Context) error {
 	slackSignature := c.Request.Header["X-Slack-Signature"][0]
 
 	if !utilities.SecureCompare([]byte(signature), []byte(slackSignature)) {
-		return exceptions.NewBadRequestError("Invalid secret signature!")
+		return nil, exceptions.NewBadRequestError("Invalid secret signature!")
 	}
 
-	return nil
+	return requestBody, nil
 }
