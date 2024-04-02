@@ -145,7 +145,7 @@ func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 func (r *UserRepository) Update(user *models.User, fields []string) error {
 	if user.Avatar != nil {
 		err := r.db.Transaction(func(tx *gorm.DB) error {
-			if err := r.db.Model(&user).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+			if err := r.db.Model(&models.User{}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
 				return err
 			}
 
