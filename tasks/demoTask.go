@@ -44,7 +44,7 @@ func HandleDemoTask(ctx context.Context, t *asynq.Task) error {
 	user := models.User{Id: p.UserId}
 	db.Model(&user).First(&user)
 
-	db.Model(&user).Updates(&models.User{Name: "TEST UPDATE FROM ASYNQ"})
+	db.Model(&user).Updates(&models.User{Name: "bachdx"})
 
 	return nil
 }

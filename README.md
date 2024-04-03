@@ -65,7 +65,7 @@ go install github.com/hibiken/asynq/tools/asynq@latest
 
 cd $GOPATH/bin
 
-async dash
+asynq dash
 ```
 
 ## Enum generator
