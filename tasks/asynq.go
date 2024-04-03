@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	TypeDemoTask = "default:demo"
+	TypeDemoTask = "demo"
 )
 
 var AsynqClient *asynq.Client

@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("could not create task: %v", err)
 	}
-	info, err := tasks.AsynqClient.Enqueue(task, asynq.ProcessIn(5*time.Second))
+	info, err := tasks.AsynqClient.Enqueue(task, asynq.ProcessIn(5*time.Second), asynq.Queue("critical"))
 	if err != nil {
 		log.Fatalf("could not enqueue task: %v", err)
 	}

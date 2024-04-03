@@ -2,16 +2,16 @@ package main
 
 import (
 	"aio-server/database"
+	"aio-server/pkg/initializers"
 	"aio-server/tasks"
 	"log"
 	"os"
 
 	"github.com/hibiken/asynq"
-	"github.com/joho/godotenv"
 )
 
 func main() {
-	godotenv.Load("../.env")
+	initializers.LoadEnv()
 	database.InitDb()
 
 	worker := asynq.NewServer(
