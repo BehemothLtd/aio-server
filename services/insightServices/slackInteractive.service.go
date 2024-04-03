@@ -43,7 +43,7 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 
 	if user.IsBod() {
 		// approverId := user.Id
-		// TODO : trigger request - change state job
+		// TODO : trigger request - change state job & reply to request thread
 
 		action := payload.Action[0].Value
 		text := payload.OriginalMessage.Text
@@ -53,8 +53,6 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 		result.ReplaceOriginal = true
 		result.Text = text
 	}
-
-	fmt.Printf(">>>>>>>>> result object %+v\n", result)
 
 	return &result, nil
 }

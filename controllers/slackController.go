@@ -10,7 +10,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -43,6 +42,7 @@ func Interactives(c *gin.Context) {
 		return
 	}
 
+	// Response to request message
 	requestResponse := insightServices.SlackInteractiveService{
 		Db:   database.Db,
 		Args: responseBody,
@@ -56,9 +56,7 @@ func Interactives(c *gin.Context) {
 		return
 	}
 
-	// c.JSON(http.StatusOK, result)
-
-	fmt.Printf(">>>>>>>>>>> request response %+v \n\n", result)
+	c.JSON(http.StatusOK, result)
 }
 
 func VerifySlackRequest(c *gin.Context) ([]byte, error) {
