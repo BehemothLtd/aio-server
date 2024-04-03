@@ -61,11 +61,11 @@ func (wtr *WorkingTimelogRepository) FindByAttr(workingTimeLog *models.WorkingTi
 }
 
 func (wtr *WorkingTimelogRepository) Update(workingTimelog *models.WorkingTimelog, updateRecord models.WorkingTimelog) error {
-	return wtr.db.Model(&workingTimelog).Updates(&updateRecord).First(&workingTimelog).Error
+	return wtr.db.Model(&workingTimelog).Preload("User").Preload("Issue").Preload("Project").Updates(&updateRecord).First(&workingTimelog).Error
 }
 
 func (wtr *WorkingTimelogRepository) Create(workingTimelog *models.WorkingTimelog) error {
-	return wtr.db.Model(workingTimelog).Create(&workingTimelog).Error
+	return wtr.db.Model(workingTimelog).Preload("User").Preload("Issue").Preload("Project").Create(&workingTimelog).Error
 }
 
 func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLogs *[]*models.WorkingTimelog, loggedAt time.Time, id int32) error {
