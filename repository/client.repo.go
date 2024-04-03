@@ -66,3 +66,7 @@ func (r *ClientRepository) Update(client *models.Client) error {
 
 	return r.db.Model(&originalClient).Save(&client).Error
 }
+
+func (ldr *ClientRepository) Destroy(client *models.Client) error {
+	return ldr.db.Table("clients").Delete(&client).Error
+}

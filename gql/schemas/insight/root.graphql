@@ -55,8 +55,6 @@ type Mutation {
   ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
 
   ProjectCreateIssue(id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
-
-  ClientCreate(input: ClientCreateInput!): ClientModification!
   ProjectUpdateIssue(projectId: ID!, id: ID!, input: ProjectModifyIssueInput!): ProjectIssueModification!
 
   LeaveDayRequestCreate(input: LeaveDayRequestInput!): LeaveDayRequestModification!
@@ -69,6 +67,10 @@ type Mutation {
   
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
+
+  ClientCreate(input: ClientCreateInput!): ClientModification!
+  ClientUpdate(id: ID!, input: ClientUpdateInput!): ClientModification!
+  ClientDelete(id: ID!): String
 }
 
 scalar Time

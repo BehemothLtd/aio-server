@@ -3,6 +3,7 @@ type Client {
   name: String
   createdAt: Time
   updatedAt: Time
+  lockVersion: Int
 }
 
 input ClientsQuery {
@@ -15,6 +16,11 @@ type ClientCollection {
 }
 
 input ClientCreateInput {
+  name: String
+  showOnHomePage: Boolean
+}
+
+input ClientUpdateInput {
   name: String
   showOnHomePage: Boolean
   lockVersion: Int
