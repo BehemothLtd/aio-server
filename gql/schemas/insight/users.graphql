@@ -102,3 +102,9 @@ type UserActiveState {
   timingActiveAt: Time
   timingDeactiveAt: Time
 }
+
+type UserBasicInfo {
+  id: ID
+  name: String
+  avatarUrl: String
+}

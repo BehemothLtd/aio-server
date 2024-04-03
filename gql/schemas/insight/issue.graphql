@@ -37,6 +37,13 @@ type ProjectIssueModification {
   Issue: Issue
 }
 
+type SelfRecentTask {
+  id: ID
+  projectId: ID
+  title: String
+  assignees: [UserBasicInfo!]
+}
+
 input ProjectModifyIssueInput {
   title: String
   description: String
