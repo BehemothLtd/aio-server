@@ -3,6 +3,7 @@ package repository
 import (
 	"aio-server/exceptions"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"context"
 	"fmt"
 
@@ -51,4 +52,16 @@ func (psr *ProjectSprintRepository) Destroy(projectSprint *models.ProjectSprint)
 		return exceptions.NewBadRequestError(fmt.Sprintf("Cant delete this project sprint %s", err.Error()))
 	}
 	return nil
+}
+
+func (psr *ProjectSprintRepository) FindCollapsedSprints(projectSprint *models.ProjectSprint) error {
+	startDate := projectSprint.StartDate.Format(constants.YYMMDD_DateFormat)
+	endDate := projectSprint.EndDate.Format(constants.YYMMDD_DateFormat)
+
+	dbError := psr.db.Where("project_id = ? AND ((start_date <= ? AND end_date >= ?) OR (start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?))", projectSprint.ProjectId, startDate, startDate, endDate, endDate, startDate, endDate).First(&models.ProjectSprint{}).Error
+	return dbError
+}
+
+func (cr *ProjectSprintRepository) Create(projectSprint *models.ProjectSprint) error {
+	return cr.db.Model(&projectSprint).Create(&projectSprint).First(&projectSprint).Error
 }

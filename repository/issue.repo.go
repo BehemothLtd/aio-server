@@ -26,6 +26,17 @@ func (r *IssueRepository) Find(issue *models.Issue) error {
 	return dbTables.Where(&issue).First(&issue).Error
 }
 
+func (r *IssueRepository) FindRecentTasksByUser(issues *[]models.Issue, userId int32) error {
+	return r.db.Model(&models.Issue{}).
+		Distinct("*").
+		Joins("LEFT JOIN issue_assignees on issues.id = issue_assignees.issue_id").
+		Where("user_id = ?", userId).
+		Preload("IssueAssignees.User.Avatar", "name='avatar'").
+		Preload("IssueAssignees.User.Avatar.AttachmentBlob").
+		Limit(5).
+		Find(&issues).Error
+}
+
 func (r *IssueRepository) Create(issue *models.Issue) error {
 	return r.db.Model(&issue).
 		Preload("Creator").Preload("Project").

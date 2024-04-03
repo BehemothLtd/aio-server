@@ -5,6 +5,7 @@ schema {
 
 type Query {
   SelfGeneralInfo(): SelfGeneralInfo!
+  SelfRecentTasks(): [SelfRecentTask]!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
@@ -44,7 +45,9 @@ type Mutation {
 
   UserToggleActive(id: ID!): UserActiveState
 
+  ProjectSprintCreate(input: ProjectSprintCreateInput!): ProjectSprintModification!
   ProjectSprintDestroy (id: ID!): String
+  
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 
@@ -71,6 +74,8 @@ type Mutation {
   ClientCreate(input: ClientCreateInput!): ClientModification!
   ClientUpdate(id: ID!, input: ClientUpdateInput!): ClientModification!
   ClientDelete(id: ID!): String
+  
+  MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 }
 
 scalar Time

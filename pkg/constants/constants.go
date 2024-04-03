@@ -21,6 +21,7 @@ const (
 	UnprocessableContentErrorMsg  = "Please check your input"
 
 	DDMMYYY_DateFormat            = "2-1-2006" // "Month-Date-Year"
+	YYMMDD_DateFormat             = "2006-01-02"
 	HUMAN_DD_MM_YY_DateFormat     = "%d-%m-%y"
 	DDMMYYY_HHMM_DateFormat       = "2-1-2006 15:04"
 	HUMAN_DDMMYYY_HHMM_DateFormat = "%d-%m-%y %H:%M"
@@ -28,6 +29,8 @@ const (
 	RequestTimeOut = 20
 	Get            = "GET"
 	Post           = "POST"
+
+	MaximumLogMinutesPerDay = 840
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {

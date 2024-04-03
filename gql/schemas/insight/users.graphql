@@ -29,6 +29,19 @@ type SelfGeneralInfo {
   issuesCount: Int
   projectsCount: Int
   avatarUrl: String
+  thisMonthWorkingHours: ThisMonthWorkingHours
+}
+
+type ThisMonthWorkingHours {
+  hours: Float
+  percentCompareToLastMonth: Float
+  upFromLastMonth: Boolean
+  timeGraphOnProjects: TimeGraphOnProjects
+}
+
+type TimeGraphOnProjects {
+  labels: [String!]
+  series: [Float!]
 }
 
 type UsersAllInfo {
@@ -88,4 +101,10 @@ type UserActiveState {
   state: String!
   timingActiveAt: Time
   timingDeactiveAt: Time
+}
+
+type UserBasicInfo {
+  id: ID
+  name: String
+  avatarUrl: String
 }

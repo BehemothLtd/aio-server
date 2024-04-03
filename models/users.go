@@ -16,7 +16,7 @@ type User struct {
 	Name              string
 	FavoritedSnippets []*Snippet   `gorm:"many2many:snippets_favorites"`
 	UserGroups        []*UserGroup `gorm:"many2many:users_user_groups"`
-	Avatar            *Attachment  `gorm:"polymorphic:Owner;"`
+	Avatar            *Attachment  `gorm:"polymorphic:Owner;polymorphicValue:User"`
 	About             *string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
@@ -44,4 +44,21 @@ func (user *User) GenerateJwtClaims() (claims jwt.Claims) {
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 		},
 	}
+}
+
+type ThisMonthWorkingHours struct {
+	Hours                     float64
+	PercentCompareToLastMonth float64
+	UpFromLastMonth           bool
+	TimeGraphOnProjects       TimeGraphOnProjects
+}
+
+type TimeGraphOnProjects struct {
+	Labels []string
+	Series []float64
+}
+
+type ProjectsWorkingHours struct {
+	Hours float64
+	Name  string
 }

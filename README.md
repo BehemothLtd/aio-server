@@ -44,6 +44,30 @@ go mod tidy
 go run main.go
 ```
 
+# Kickoff async server
+
+```bash
+go run workers/main.go
+```
+
+# Monitor Async queues
+
+`.zshrc`
+
+```bash
+export GOPATH=$HOME/go
+export GOROOT="$(brew --prefix golang)/libexec"
+export PATH="$PATH:${GOPATH}/bin:${GOROOT}/bin"
+```
+
+```
+go install github.com/hibiken/asynq/tools/asynq@latest
+
+cd $GOPATH/bin
+
+asynq dash
+```
+
 ## Enum generator
 
 ```bash
