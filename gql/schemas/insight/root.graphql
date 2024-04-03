@@ -69,6 +69,8 @@ type Mutation {
   
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
+  
+  MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 }
 
 scalar Time

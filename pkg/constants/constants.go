@@ -29,6 +29,8 @@ const (
 	RequestTimeOut = 20
 	Get            = "GET"
 	Post           = "POST"
+
+	MaximumLogMinutesPerDay = 840
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
