@@ -59,3 +59,10 @@ func (r *ClientRepository) Find(client *models.Client) error {
 func (r *ClientRepository) Create(client *models.Client) error {
 	return r.db.Model(&client).Create(&client).First(&client).Error
 }
+
+func (r *ClientRepository) Update(client *models.Client) error {
+	originalClient := models.Client{Id: client.Id}
+	r.db.Model(&originalClient).First(&originalClient)
+
+	return r.db.Model(&originalClient).Save(&client).Error
+}

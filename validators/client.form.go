@@ -42,7 +42,7 @@ func (form *ClientForm) Save() error {
 		return form.Repo.Create(form.Client)
 	}
 
-	return nil
+	return form.Repo.Update(form.Client)
 }
 
 func (form *ClientForm) assignAttributes() {

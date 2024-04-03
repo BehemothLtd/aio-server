@@ -10,6 +10,11 @@ type ClientCreateInput struct {
 	Input ClientFormInput
 }
 
+type ClientUpdateInput struct {
+	Id graphql.ID
+	Input ClientFormInput
+}
+
 type ClientFormInput struct {
 	Name           *string
 	ShowOnHomePage *bool
