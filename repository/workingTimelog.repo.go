@@ -31,14 +31,6 @@ func (wtr *WorkingTimelogRepository) FindById(workingTimeLog *models.WorkingTime
 	return dbTables.First(&workingTimeLog, id).Error
 }
 
-func (wtr *WorkingTimelogRepository) FindByAttr(workingTimeLog *models.WorkingTimelog) error {
-	findWorkingTimelog := models.WorkingTimelog{IssueId: workingTimeLog.IssueId, ProjectId: workingTimeLog.ProjectId, UserId: workingTimeLog.UserId}
-	dbTables := wtr.db.Model(findWorkingTimelog)
-	dateOfLogging := workingTimeLog.LoggedAt.Format(constants.YYMMDD_DateFormat)
-
-	return dbTables.Where(&findWorkingTimelog).Where("logged_at = ?", dateOfLogging).First(&workingTimeLog).Error
-}
-
 func (wtr *WorkingTimelogRepository) List(workingTimeLogs *[]*models.WorkingTimelog, paginateData *models.PaginationData, query insightInputs.WorkingTimelogsQueryInput) error {
 	dbTables := wtr.db.Model(&models.WorkingTimelog{})
 
@@ -51,8 +43,29 @@ func (wtr *WorkingTimelogRepository) List(workingTimeLogs *[]*models.WorkingTime
 	).Order("id desc").Find(&workingTimeLogs).Error
 }
 
-func (wtr *WorkingTimelogRepository) Save(workingTimelog *models.WorkingTimelog) error {
-	return wtr.db.Model(&workingTimelog).Save(&workingTimelog).First(&workingTimelog).Error
+func (wtr *WorkingTimelogRepository) FindByAttr(workingTimeLog *models.WorkingTimelog) error {
+	findRecord := models.WorkingTimelog{
+		ProjectId: workingTimeLog.ProjectId,
+		IssueId:   workingTimeLog.IssueId,
+		UserId:    workingTimeLog.UserId,
+	}
+	dbTables := wtr.db.Model(&findRecord)
+
+	if !workingTimeLog.LoggedAt.IsZero() {
+		dateOfLogging := workingTimeLog.LoggedAt.Format(constants.YYMMDD_DateFormat)
+		dbTables = dbTables.Where("logged_at = ?", dateOfLogging)
+
+	}
+
+	return dbTables.Where(&findRecord).First(&workingTimeLog).Error
+}
+
+func (wtr *WorkingTimelogRepository) Update(workingTimelog *models.WorkingTimelog, updateRecord models.WorkingTimelog) error {
+	return wtr.db.Model(&workingTimelog).Updates(&updateRecord).First(&workingTimelog).Error
+}
+
+func (wtr *WorkingTimelogRepository) Create(workingTimelog *models.WorkingTimelog) error {
+	return wtr.db.Model(workingTimelog).Create(&workingTimelog).Error
 }
 
 func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLogs *[]*models.WorkingTimelog, loggedAt time.Time, id int32) error {

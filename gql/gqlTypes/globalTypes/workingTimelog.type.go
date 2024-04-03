@@ -24,7 +24,6 @@ func (wtt *WorkingTimelogType) ID(ctx context.Context) *graphql.ID {
 
 func (wtt *WorkingTimelogType) Description(ctx context.Context) string {
 	return wtt.WorkingTimelog.Description
-	// return nil
 }
 
 func (wtt *WorkingTimelogType) Minutes(ctx context.Context) int32 {

@@ -12,10 +12,11 @@ import (
 type WorkingTimelogForm struct {
 	Form
 	insightInputs.SelfWorkingTimelogFormInput
-	User           *models.User
-	Issue          *models.Issue
-	Repo           *repository.WorkingTimelogRepository
-	WorkingTimelog *models.WorkingTimelog
+	User                 *models.User
+	Issue                *models.Issue
+	Repo                 *repository.WorkingTimelogRepository
+	WorkingTimelog       *models.WorkingTimelog
+	WorkingTimelogUpdate *models.WorkingTimelog
 }
 
 func NewWorkingTimelogFormValidator(
@@ -32,6 +33,7 @@ func NewWorkingTimelogFormValidator(
 		Repo:                        repo,
 		WorkingTimelog:              workingTimelog,
 		Issue:                       issue,
+		WorkingTimelogUpdate:        &models.WorkingTimelog{},
 	}
 
 	form.assignAttributes()
@@ -78,7 +80,7 @@ func (form *WorkingTimelogForm) validateDescription() *WorkingTimelogForm {
 	field.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if field.IsClean() {
-		form.WorkingTimelog.Description = *form.Description
+		form.WorkingTimelogUpdate.Description = *form.Description
 	}
 
 	return form
@@ -93,7 +95,6 @@ func (form *WorkingTimelogForm) validateAndFindRecordWithLoggedAt() *WorkingTime
 	if field.IsClean() {
 		form.WorkingTimelog.LoggedAt = *field.Time()
 		form.Repo.FindByAttr(form.WorkingTimelog)
-
 	}
 
 	return form
@@ -126,7 +127,7 @@ func (form *WorkingTimelogForm) validateTimes() *WorkingTimelogForm {
 	}
 
 	if field.IsClean() {
-		form.WorkingTimelog.Minutes = int(*form.Minutes)
+		form.WorkingTimelogUpdate.Minutes = int(*form.Minutes)
 	}
 	return form
 }
@@ -144,8 +145,18 @@ func (form *WorkingTimelogForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Save(form.WorkingTimelog); err != nil {
-		return err
+	if form.WorkingTimelog.Id != 0 {
+		err := form.Repo.Update(form.WorkingTimelog, *form.WorkingTimelogUpdate)
+		if err != nil {
+			return err
+		}
+	} else {
+		form.WorkingTimelog.Description = form.WorkingTimelogUpdate.Description
+		form.WorkingTimelog.Minutes = form.WorkingTimelogUpdate.Minutes
+		err := form.Repo.Create(form.WorkingTimelog)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
