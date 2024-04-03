@@ -27,6 +27,7 @@ func main() {
 	)
 	mux := asynq.NewServeMux()
 	mux.HandleFunc(tasks.TypeDemoTask, tasks.HandleDemoTask)
+	mux.HandleFunc(tasks.SlackSendLeaveDayRequestMessagetask, tasks.HandleSlackSendLeaveDayRequestTask)
 
 	if err := worker.Run(mux); err != nil {
 		log.Fatal(err)

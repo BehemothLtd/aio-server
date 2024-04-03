@@ -36,7 +36,7 @@ func (r *LeaveDayRequest) BeforeUpdate(tx *gorm.DB) (err error) {
 	return
 }
 
-func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]string) string {
+func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]*string) string {
 	user := User{Id: request.UserId}
 	err := db.Table("users").Where(&user).First(&user).Error
 	if err != nil {
