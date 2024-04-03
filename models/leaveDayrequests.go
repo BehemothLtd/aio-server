@@ -2,6 +2,10 @@ package models
 
 import (
 	"aio-server/enums"
+	"aio-server/pkg/constants"
+	"aio-server/pkg/utilities"
+	"fmt"
+	"os"
 	"time"
 
 	"gorm.io/gorm"
@@ -30,4 +34,44 @@ func (r *LeaveDayRequest) BeforeUpdate(tx *gorm.DB) (err error) {
 	}
 
 	return
+}
+
+func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]string) string {
+	user := User{Id: request.UserId}
+	err := db.Table("users").Where(&user).First(&user).Error
+	if err != nil {
+		return err.Error()
+	}
+
+	requestType := utilities.SnakeCaseToHumanize(request.RequestType.String())
+	from := request.From.Format(constants.DDMMYYY_HHMM_DateFormat)
+	to := request.To.Format(constants.DDMMYYY_HHMM_DateFormat)
+
+	reason := request.Reason
+	groupId := os.Getenv("SLACK_GROUP_VN_MEMBER_ID")
+	insightFrontDomain := os.Getenv("MM_FRONT_DOMAIN")
+
+	if insightFrontDomain == "" {
+		insightFrontDomain = "https://insight.behemoth.vn"
+	}
+	requetLink := fmt.Sprintf("%+s/leave_day_requests?id=%+d", insightFrontDomain, request.Id)
+
+	message := fmt.Sprintf("<!subteam^%+s>\n<@%+v> requested %+s.\nFrom: %+s to: %+s\n%+s", groupId, *user.SlackId, requestType, from, to, requetLink)
+	if reason != nil {
+		message += fmt.Sprintf("\nReason: %+v", reason)
+	}
+	if mentions != nil {
+		message += MentionText(*mentions)
+	}
+
+	return message
+}
+
+func MentionText(mentions []string) string {
+	mentionText := ""
+	for _, value := range mentions {
+		mentionText += fmt.Sprintf("<@%s>", value)
+	}
+
+	return mentionText
 }

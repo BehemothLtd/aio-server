@@ -1,6 +1,7 @@
 package models
 
 import (
+	"aio-server/exceptions"
 	"aio-server/pkg/constants"
 	"aio-server/pkg/utilities"
 	"bytes"
@@ -101,7 +102,7 @@ func (client *SlackClient) FetchConversationHistories(channel string, limit *int
 	}
 
 	message := SlackMessage{}
-	err = json.Unmarshal([]byte(string(body)), &message)
+	err = json.Unmarshal(body, &message)
 
 	if err != nil {
 		return nil, err
@@ -118,4 +119,51 @@ func (client *SlackClient) SetHeaders(additionHeaders *map[string]string) *Slack
 	}
 
 	return client
+}
+
+func (client *SlackClient) SendMessage(text string, channel string, callback *string) error {
+	if text == "" || channel == "" {
+		return exceptions.NewBadRequestError("Text and channel are required")
+	}
+
+	fmt.Print("\n\n============================\nStart send_message")
+
+	payload := map[string]interface{}{
+		"text":    text,
+		"channel": channel,
+	}
+
+	if callback != nil {
+		attachment := NewMessageAttachment(*callback)
+
+		if _, err := json.Marshal(attachment); err != nil {
+			return exceptions.NewBadRequestError("invalid attachments")
+		} else {
+			payload["attachments"] = *attachment
+		}
+	}
+
+	payloadBytes, err := json.Marshal(payload)
+
+	if err != nil {
+		return err
+	}
+
+	endPoint := "/chat.postMessage"
+	request, err := client.Request(constants.Post, endPoint, payloadBytes)
+
+	if err != nil {
+		return err
+	}
+
+	response, err := client.Client.Do(request)
+
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
+
+	return nil
 }

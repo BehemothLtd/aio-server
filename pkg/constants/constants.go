@@ -31,6 +31,8 @@ const (
 	Post           = "POST"
 
 	MaximumLogMinutesPerDay = 840
+
+	BODGroup = "BOD"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
