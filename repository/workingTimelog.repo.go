@@ -65,7 +65,7 @@ func (wtr *WorkingTimelogRepository) Update(workingTimelog *models.WorkingTimelo
 }
 
 func (wtr *WorkingTimelogRepository) Create(workingTimelog *models.WorkingTimelog) error {
-	return wtr.db.Model(workingTimelog).Preload("User").Preload("Issue").Preload("Project").Create(&workingTimelog).Error
+	return wtr.db.Model(&workingTimelog).Preload("User").Preload("Issue").Preload("Project").Create(&workingTimelog).First(&workingTimelog).Error
 }
 
 func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLogs *[]*models.WorkingTimelog, loggedAt time.Time, id int32) error {
