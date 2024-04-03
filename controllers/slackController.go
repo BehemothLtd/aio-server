@@ -28,14 +28,25 @@ func Interactives(c *gin.Context) {
 	}
 
 	responseBody := models.SlackInteractivePayload{}
-
 	decode, err := url.QueryUnescape(string(response))
-	prefix := "payload="
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
+	prefix := "payload="
 	if strings.HasPrefix(decode, prefix) {
 		decode = strings.TrimPrefix(decode, prefix)
 
 		err = json.Unmarshal([]byte(decode), &responseBody)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 	}
 
 	if responseBody.Type != "interactive_message" {
@@ -91,7 +102,7 @@ func VerifySlackRequest(c *gin.Context) ([]byte, error) {
 	signature := "v0=" + hex.EncodeToString(hasKey.Sum(nil))
 	slackSignature := c.Request.Header["X-Slack-Signature"][0]
 
-	if !utilities.SecureCompare([]byte(signature), []byte(slackSignature)) {
+	if !utilities.SecureCompare(signature, slackSignature) {
 		return nil, exceptions.NewBadRequestError("Invalid secret signature!")
 	}
 

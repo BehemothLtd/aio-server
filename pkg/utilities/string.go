@@ -20,6 +20,6 @@ func SnakeCaseToHumanize(s string) string {
 	return strings.Join(words, " ")
 }
 
-func SecureCompare(s1, s2 []byte) bool {
-	return subtle.ConstantTimeCompare(s1, s2) == 1
+func SecureCompare(s1, s2 string) bool {
+	return subtle.ConstantTimeCompare([]byte(s1), []byte(s2)) == 1
 }
