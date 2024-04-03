@@ -24,6 +24,9 @@ import (
 func Interactives(c *gin.Context) {
 	response, err := VerifySlackRequest(c)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
