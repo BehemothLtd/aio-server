@@ -9,19 +9,19 @@ import (
 	"aio-server/repository"
 )
 
-type ClientForm struct {
+type ClientCreateForm struct {
 	Form
 	insightInputs.ClientFormInput
 	Client *models.Client
 	Repo   *repository.ClientRepository
 }
 
-func NewClientFormValidator(
+func NewClientCreateFormValidator(
 	input *insightInputs.ClientFormInput,
 	repo *repository.ClientRepository,
 	client *models.Client,
-) ClientForm {
-	form := ClientForm{
+) ClientCreateForm {
+	form := ClientCreateForm{
 		Form:            Form{},
 		ClientFormInput: *input,
 		Client:          client,
@@ -33,7 +33,7 @@ func NewClientFormValidator(
 	return form
 }
 
-func (form *ClientForm) Save() error {
+func (form *ClientCreateForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
@@ -42,10 +42,10 @@ func (form *ClientForm) Save() error {
 		return form.Repo.Create(form.Client)
 	}
 
-	return form.Repo.Update(form.Client)
+	return nil
 }
 
-func (form *ClientForm) assignAttributes() {
+func (form *ClientCreateForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -68,12 +68,8 @@ func (form *ClientForm) assignAttributes() {
 	)
 }
 
-func (form *ClientForm) validate() error {
-	form.validateName().validateShowOnHomePage().validateLockVersion()
-
-	if form.Client.Id != 0 {
-		form.validateLockVersion()
-	}
+func (form *ClientCreateForm) validate() error {
+	form.validateName().validateShowOnHomePage()
 
 	form.summaryErrors()
 
@@ -83,7 +79,7 @@ func (form *ClientForm) validate() error {
 	return nil
 }
 
-func (form *ClientForm) validateName() *ClientForm {
+func (form *ClientCreateForm) validateName() *ClientCreateForm {
 	nameField := form.FindAttrByCode("name")
 
 	nameField.ValidateRequired()
@@ -98,22 +94,8 @@ func (form *ClientForm) validateName() *ClientForm {
 	return form
 }
 
-func (form *ClientForm) validateShowOnHomePage() *ClientForm {
+func (form *ClientCreateForm) validateShowOnHomePage() *ClientCreateForm {
 	form.Client.ShowOnHomePage = helpers.GetBoolOrDefault(form.ShowOnHomePage)
-
-	return form
-}
-
-func (form *ClientForm) validateLockVersion() *ClientForm {
-	currentLockVersion := form.Client.LockVersion
-
-	field := form.FindAttrByCode("lockVersion")
-
-	field.ValidateRequired()
-
-	if field.IsClean() {
-		field.ValidateMin(interface{}(int64(currentLockVersion)))
-	}
 
 	return form
 }

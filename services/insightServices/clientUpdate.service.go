@@ -25,7 +25,7 @@ func (cus *ClientUpdateService) Execute() error {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	form := validators.NewClientFormValidator(
+	form := validators.NewClientUpdateFormValidator(
 		&cus.Args.Input,
 		repo,
 		cus.Client,

@@ -18,7 +18,7 @@ type ClientCreateService struct {
 }
 
 func (ccs *ClientCreateService) Execute() error {
-	form := validators.NewClientFormValidator(
+	form := validators.NewClientCreateFormValidator(
 		&ccs.Args.Input,
 		repository.NewClientRepository(ccs.Ctx, ccs.Db),
 		ccs.Client,

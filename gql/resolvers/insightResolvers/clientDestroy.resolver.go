@@ -21,13 +21,13 @@ func (r *Resolver) ClientDelete(ctx context.Context, args insightInputs.ClientIn
 		return nil, exceptions.NewBadRequestError("Invalid Id")
 	}
 
-	requestId, err := helpers.GqlIdToInt32(args.Id)
+	clientId, err := helpers.GqlIdToInt32(args.Id)
 	if err != nil {
 		return nil, err
 	}
 
 	client := models.Client{
-		Id:     requestId,
+		Id:     clientId,
 	}
 	repo := repository.NewClientRepository(&ctx, r.Db)
 

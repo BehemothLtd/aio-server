@@ -60,13 +60,14 @@ func (r *ClientRepository) Create(client *models.Client) error {
 	return r.db.Model(&client).Create(&client).First(&client).Error
 }
 
-func (r *ClientRepository) Update(client *models.Client) error {
-	originalClient := models.Client{Id: client.Id}
-	r.db.Model(&originalClient).First(&originalClient)
+func (r *ClientRepository) Update(client *models.Client, updateClient models.Client) error {
+	if err := r.db.Model(&client).Updates(&updateClient).Error; err != nil {
+		return err
+	}
 
-	return r.db.Model(&originalClient).Save(&client).Error
+	return r.db.Model(&client).Where("id = ?", client.Id).First(&client).Error
 }
 
-func (ldr *ClientRepository) Destroy(client *models.Client) error {
-	return ldr.db.Table("clients").Delete(&client).Error
+func (r *ClientRepository) Destroy(client *models.Client) error {
+	return r.db.Table("clients").Delete(&client).Error
 }
