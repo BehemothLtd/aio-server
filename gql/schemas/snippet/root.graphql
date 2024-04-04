@@ -49,6 +49,7 @@ type Mutation {
   CollectionCreate(input: CollectionInput!): CollectionModification!
   CollectionUpdate(id: ID!, input: CollectionInput!): CollectionModification!
   CollectionDelete(id: ID!): String
+  CollectionAddSnippet(id: ID!, snippetId: ID!): Boolean!
 
   # Pins
   SnippetPin(id: ID!): Boolean

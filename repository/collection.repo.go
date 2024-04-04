@@ -46,6 +46,12 @@ func (cr *CollectionRepository) FindByUser(collection *models.Collection, userId
 	return dbTables.Where(gorm.Expr(`user_id = ?`, userId)).First(&collection).Error
 }
 
+func (cr *CollectionRepository) FindById(collection *models.Collection, id int32) error {
+	dbTables := cr.db.Model(&models.Collection{})
+
+	return dbTables.First(&collection, id).Error
+}
+
 // Mutating Functions
 func (cr *CollectionRepository) Create(collection *models.Collection) error {
 	return cr.db.Table("collections").Create(&collection).Error
