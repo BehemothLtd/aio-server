@@ -6,8 +6,8 @@ import (
 	"context"
 )
 
-func (r *Resolver) CollectionAddSnippet(ctx context.Context, args msInputs.CollectionAddSnippetInput) (bool, error) {
-	service := msServices.CollectionAddSnippetService{
+func (r *Resolver) CollectionRemoveSnippet(ctx context.Context, args msInputs.CollectionRemoveSnippetInput) (bool, error) {
+	service := msServices.CollectionRemoveSnippetService{
 		Ctx:  ctx,
 		Db:   *r.Db,
 		Args: args,

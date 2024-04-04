@@ -50,6 +50,7 @@ type Mutation {
   CollectionUpdate(id: ID!, input: CollectionInput!): CollectionModification!
   CollectionDelete(id: ID!): String
   CollectionAddSnippet(id: ID!, snippetId: ID!): Boolean!
+  CollectionRemoveSnippet(id: ID!, snippetId: ID!): Boolean!
 
   # Pins
   SnippetPin(id: ID!): Boolean
