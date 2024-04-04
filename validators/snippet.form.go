@@ -133,8 +133,8 @@ func (form *SnippetForm) validateSnippetPrivateContent() *SnippetForm {
 		// Private
 		PasskeyAttr.ValidateRequired()
 
-		PasskeyAttr.ValidateMin(interface{}(8))
-		PasskeyAttr.ValidateMax(interface{}(32))
+		PasskeyAttr.ValidateMin(interface{}(int64(8)))
+		PasskeyAttr.ValidateMax(interface{}(int64(32)))
 	}
 
 	return form

@@ -13,7 +13,7 @@ type Query {
     input: PagyInput
     query: SnippetsQuery
   ): SnippetsCollection!
-  SnippetDecryptContent(id: ID!, Passkey: String!): String
+  SnippetDecryptContent(id: ID!, passkey: String!): String
 
   SelfFavoritedSnippets(
     input: PagyInput
