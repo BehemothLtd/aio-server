@@ -3,6 +3,7 @@ type Client {
   name: String
   createdAt: Time
   updatedAt: Time
+  lockVersion: Int
 }
 
 input ClientsQuery {
@@ -12,4 +13,19 @@ input ClientsQuery {
 type ClientCollection {
   collection: [Client!]
   metadata: Metadata!
+}
+
+input ClientCreateInput {
+  name: String
+  showOnHomePage: Boolean
+}
+
+input ClientUpdateInput {
+  name: String
+  showOnHomePage: Boolean
+  lockVersion: Int
+}
+
+type ClientModification {
+  client: Client
 }

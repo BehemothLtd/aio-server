@@ -71,6 +71,10 @@ type Mutation {
   
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
+
+  ClientCreate(input: ClientCreateInput!): ClientModification!
+  ClientUpdate(id: ID!, input: ClientUpdateInput!): ClientModification!
+  ClientDelete(id: ID!): String
   
   MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 }
