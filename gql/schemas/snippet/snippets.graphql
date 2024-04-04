@@ -6,6 +6,7 @@ type Snippet {
   slug: String
   snippetType: String
   favoritesCount: Int
+  tags: [Tag]
   favorited: Boolean!
   pinned: Boolean!
   createdAt: Time

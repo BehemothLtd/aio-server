@@ -21,7 +21,7 @@ func (r *Resolver) Snippet(ctx context.Context, args msInputs.SnippetInput) (*gl
 		Slug: args.Slug,
 	}
 
-	repo := repository.NewSnippetRepository(&ctx, r.Db.Preload("FavoritedUsers").Preload("Pins"))
+	repo := repository.NewSnippetRepository(&ctx, r.Db.Preload("FavoritedUsers").Preload("Pins").Preload("Tags"))
 	err := repo.FindSnippetByAttr(&snippet)
 
 	if err != nil {

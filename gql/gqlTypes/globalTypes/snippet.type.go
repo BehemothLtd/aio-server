@@ -81,3 +81,14 @@ func (st *SnippetType) Pinned(ctx context.Context) bool {
 	pinned := slices.ContainsFunc(st.Snippet.Pins, func(p models.Pin) bool { return p.UserId == user.Id })
 	return pinned
 }
+
+func (st *SnippetType) Tags(ctx context.Context) *[]*TagType {
+	result := make([]*TagType, len(st.Snippet.Tags))
+
+	for i, tag := range st.Snippet.Tags {
+		result[i] = &TagType{
+			Tag: tag,
+		}
+	}
+	return &result
+}
