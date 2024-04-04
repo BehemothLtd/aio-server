@@ -38,11 +38,7 @@ func (form *ClientCreateForm) Save() error {
 		return err
 	}
 
-	if form.Client.Id == 0 {
-		return form.Repo.Create(form.Client)
-	}
-
-	return nil
+	return form.Repo.Create(form.Client)
 }
 
 func (form *ClientCreateForm) assignAttributes() {
