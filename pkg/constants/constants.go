@@ -20,7 +20,8 @@ const (
 	UnprocessableContentErrorCode = 422
 	UnprocessableContentErrorMsg  = "Please check your input"
 
-	DDMMYYY_DateFormat            = "2-1-2006" // "Month-Date-Year"
+	DDMMYYYY_DateFormat           = "2-1-2006" // "Month-Date-Year"
+	YYYYMMDD_DateFormat           = "2006-1-2" // "Month-Date-Year"
 	YYMMDD_DateFormat             = "2006-01-02"
 	HUMAN_DD_MM_YY_DateFormat     = "%d-%m-%y"
 	DDMMYYY_HHMM_DateFormat       = "2-1-2006 15:04"

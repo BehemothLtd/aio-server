@@ -216,11 +216,11 @@ func (form *ProjectModifyIssueForm) validateDeadlineAndStartDate() *ProjectModif
 	startDateField := form.FindAttrByCode("startDate")
 
 	if form.Deadline != nil && strings.TrimSpace(*form.Deadline) != "" {
-		deadlineField.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+		deadlineField.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 	}
 
 	if form.StartDate != nil && strings.TrimSpace(*form.StartDate) != "" {
-		startDateField.ValidateFormat(constants.DDMMYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+		startDateField.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
 	}
 
 	if !deadlineField.IsClean() || !startDateField.IsClean() {

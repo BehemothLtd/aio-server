@@ -1,0 +1,15 @@
+type SelfAttendanceCollection {
+  collection: [SelfAttendance!]
+  metadata: Metadata!
+}
+
+input SelfAttendancesQuery {
+  checkinAtLteq: String
+  checkinAtGteq: String
+}
+
+type SelfAttendance {
+  checkinAt: Time
+  checkoutAt: Time
+  createdAt: Time
+}

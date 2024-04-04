@@ -6,6 +6,7 @@ schema {
 type Query {
   SelfGeneralInfo(): SelfGeneralInfo!
   SelfRecentTasks(): [SelfRecentTask]!
+  SelfAttendances(input: PagyInput, query: SelfAttendancesQuery): SelfAttendanceCollection!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!

@@ -18,6 +18,14 @@ func (r *Resolver) UserGroupSliceToTypes(userGroups []*models.UserGroup) *[]*glo
 	return &resolvers
 }
 
+func (r *Resolver) AttendanceSliceToType(attendances []*models.Attendance) *[]*globalTypes.AttendanceType {
+	resolvers := make([]*globalTypes.AttendanceType, len(attendances))
+	for i, attendance := range attendances {
+		resolvers[i] = &globalTypes.AttendanceType{Attendance: attendance}
+	}
+	return &resolvers
+}
+
 func (r *Resolver) Authorize(ctx context.Context, target string, action string) (*models.User, error) {
 	user, err := auths.AuthInsightUserFromCtx(ctx)
 

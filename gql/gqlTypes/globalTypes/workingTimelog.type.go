@@ -34,7 +34,7 @@ func (wtt *WorkingTimelogType) Minutes(ctx context.Context) int32 {
 func (wtt *WorkingTimelogType) LoggedAt(ctx context.Context) string {
 	loggedAt := helpers.GqlTimePointer(&wtt.WorkingTimelog.LoggedAt)
 
-	return loggedAt.Format(constants.DDMMYYY_DateFormat)
+	return loggedAt.Format(constants.DDMMYYYY_DateFormat)
 }
 
 func (wtt *WorkingTimelogType) CreatedAt(ctx context.Context) *graphql.Time {
