@@ -13,6 +13,7 @@ type Snippet struct {
 	Title          string `gorm:"not null;type:varchar(255);default:null"`
 	Content        string `gorm:"not null;type:longtext;default:null"`
 	UserId         int32  `gorm:"not null;type:bigint;default:null"`
+	User           User   `gorm:"foreignKey:UserId"`
 	Slug           string
 	SnippetType    enums.SnippetType `gorm:"not null;"`
 	FavoritesCount int               `gorm:"not null;default:0"`
