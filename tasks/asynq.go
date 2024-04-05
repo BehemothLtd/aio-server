@@ -9,7 +9,7 @@ import (
 
 const (
 	TypeDemoTask                        = "demo"
-	SlackSendLeaveDayRequestMessagetask = "slackSendLeaveDayRequest"
+	SlackSendLeaveDayRequestMessageTask = "slackSendLeaveDayRequest"
 	SlackUpdateLeaveDayRequestStateTask = "slackUpdteLeaveDayRequestState"
 )
 

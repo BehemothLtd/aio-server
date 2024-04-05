@@ -20,7 +20,7 @@ func NewSlackSendLeaveDayRequestTask(requestId int32, mentions *[]*string) (*asy
 	if payload, err := json.Marshal(SlackSendLeaveDayRequestTaskPayload{RequestId: requestId, Mentions: mentions}); err != nil {
 		return nil, err
 	} else {
-		return asynq.NewTask(SlackSendLeaveDayRequestMessagetask, payload), nil
+		return asynq.NewTask(SlackSendLeaveDayRequestMessageTask, payload), nil
 	}
 }
 
