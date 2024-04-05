@@ -43,6 +43,7 @@ type Mutation {
 
   SelfUpdateProfile(input: SelfUpdateProfileInput!): SelfUpdateProfileRes!
   SelfUpdatePassword(input: SelfUpdatePassword!): String
+  SelfAttend(): SelfAttendance!
 
   UserToggleActive(id: ID!): UserActiveState
 

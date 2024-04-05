@@ -37,11 +37,11 @@ func (at *AttendanceType) CreatedUser(ctx context.Context) *UserType {
 }
 
 func (at *AttendanceType) CheckinAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&at.Attendance.CheckinAt)
+	return helpers.GqlTimePointer(at.Attendance.CheckinAt)
 }
 
 func (at *AttendanceType) CheckoutAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&at.Attendance.CheckoutAt)
+	return helpers.GqlTimePointer(at.Attendance.CheckoutAt)
 }
 
 func (at *AttendanceType) CreatedAt(ctx context.Context) *graphql.Time {
