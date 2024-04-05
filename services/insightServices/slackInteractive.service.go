@@ -2,7 +2,9 @@ package insightServices
 
 import (
 	"aio-server/models"
+	"aio-server/tasks"
 	"fmt"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -42,8 +44,17 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 	}
 
 	if user.IsBod() {
-		// approverId := user.Id
-		// TODO : trigger request - change state job & reply to request thread
+		// Update request state job
+		task, err := tasks.NewSlackUpdateLeaveDayRequestStateTask(payload, user)
+		if err != nil {
+			log.Fatalf("could not create task: %v", err)
+		}
+
+		info, err := tasks.AsynqClient.Enqueue(task)
+		if err != nil {
+			log.Fatalf("could not enqueue task: %v", err)
+		}
+		fmt.Print(info)
 
 		action := payload.Action[0].Value
 		text := payload.OriginalMessage.Text
