@@ -7,14 +7,11 @@ import (
 	"aio-server/tasks"
 	"fmt"
 	"log"
-	"time"
 
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"context"
-
-	"github.com/hibiken/asynq"
 )
 
 func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs.LeaveDayRequestCreateInput) (*insightTypes.LeaveDayRequestCreatedType, error) {
@@ -35,22 +32,22 @@ func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs
 	}
 
 	if err := service.Excecute(); err != nil {
+		return nil, err
+	} else {
 		// Send slack message
-		var mentions []*string
-		task, err := tasks.NewSlackSendLeaveDayRequestTask(request.Id, &mentions)
+		mentions := args.Input.Mentions
+		task, err := tasks.NewSlackSendLeaveDayRequestTask(request.Id, mentions)
 		if err != nil {
 			log.Fatalf("could not create task: %v", err)
 		}
 
-		info, err := tasks.AsynqClient.Enqueue(task, asynq.ProcessIn(5*time.Second))
+		info, err := tasks.AsynqClient.Enqueue(task)
 		if err != nil {
 			log.Fatalf("could not enqueue task: %v", err)
 		}
 
 		fmt.Print(info)
 
-		return nil, err
-	} else {
 		return &insightTypes.LeaveDayRequestCreatedType{
 			LeaveDayRequest: &globalTypes.LeaveDayRequestType{
 				LeaveDayRequest: &request,

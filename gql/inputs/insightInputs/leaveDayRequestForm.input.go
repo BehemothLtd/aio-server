@@ -5,6 +5,7 @@ type LeaveDayRequestFormInput struct {
 	To          string
 	TimeOff     float64
 	RequestType string
+	Mentions    *[]*string
 	Reason      *string
 	LockVersion *int32
 }

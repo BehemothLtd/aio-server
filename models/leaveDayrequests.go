@@ -61,16 +61,16 @@ func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]*string) str
 		message += fmt.Sprintf("\nReason: %+v", reason)
 	}
 	if mentions != nil {
-		message += MentionText(*mentions)
+		message += MentionText(mentions)
 	}
 
 	return message
 }
 
-func MentionText(mentions []string) string {
-	mentionText := ""
-	for _, value := range mentions {
-		mentionText += fmt.Sprintf("<@%s>", value)
+func MentionText(mentions *[]*string) string {
+	mentionText := "\n"
+	for _, value := range *mentions {
+		mentionText += fmt.Sprintf("<@%+v>", *value)
 	}
 
 	return mentionText
