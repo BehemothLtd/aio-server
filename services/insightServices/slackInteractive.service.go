@@ -54,7 +54,7 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 		if err != nil {
 			log.Fatalf("could not enqueue task: %v", err)
 		}
-		fmt.Print(info)
+		fmt.Printf("Task ID: %+v - completed at: %+v\n", info.ID, info.CompletedAt)
 
 		action := payload.Action[0].Value
 		text := payload.OriginalMessage.Text

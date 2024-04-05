@@ -47,7 +47,6 @@ func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]*string) str
 	from := request.From.Format(constants.DDMMYYY_HHMM_DateFormat)
 	to := request.To.Format(constants.DDMMYYY_HHMM_DateFormat)
 
-	reason := request.Reason
 	groupId := os.Getenv("SLACK_GROUP_VN_MEMBER_ID")
 	insightFrontDomain := os.Getenv("MM_FRONT_DOMAIN")
 
@@ -57,8 +56,8 @@ func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]*string) str
 	requetLink := fmt.Sprintf("%+s/leave_day_requests?id=%+d", insightFrontDomain, request.Id)
 
 	message := fmt.Sprintf("<!subteam^%+s>\n<@%+v> requested %+s.\nFrom: %+s to: %+s\n%+s", groupId, *user.SlackId, requestType, from, to, requetLink)
-	if reason != nil {
-		message += fmt.Sprintf("\nReason: %+v", reason)
+	if request.Reason != nil {
+		message += fmt.Sprintf("\nReason: %+s", *request.Reason)
 	}
 	if mentions != nil {
 		message += MentionText(mentions)
