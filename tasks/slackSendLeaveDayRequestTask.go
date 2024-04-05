@@ -37,9 +37,9 @@ func HandleSlackSendLeaveDayRequestTask(ctx context.Context, t *asynq.Task) erro
 	message := request.GetMessage(db, p.Mentions)
 
 	callback := "change_state_rq"
-	slacClient := models.NewSlackClient()
+	slackClient := models.NewSlackClient()
 
-	slacClient.SendMessage(message, os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), &callback)
+	slackClient.SendMessage(message, os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), &callback)
 
 	return nil
 }
