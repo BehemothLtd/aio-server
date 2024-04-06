@@ -5,7 +5,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/tasks"
 	"fmt"
-	"log"
 
 	"gorm.io/gorm"
 )
@@ -19,7 +18,7 @@ func (sis *SlackInteractiveService) Excecute() (*models.SlackInteractiveResponse
 	callbackId := sis.Args.CallbackId
 
 	switch callbackId {
-	case constants.ChangeStateRQ:
+	case constants.SlackChangeStateRq:
 		return sis.ChangeStateRequestResponse()
 	default:
 		return nil, nil
@@ -48,12 +47,12 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 		// Update request state job
 		task, err := tasks.NewSlackUpdateLeaveDayRequestStateTask(payload, user)
 		if err != nil {
-			log.Fatalf("could not create task: %v", err)
+			return nil, err
 		}
 
 		info, err := tasks.AsynqClient.Enqueue(task)
 		if err != nil {
-			log.Fatalf("could not enqueue task: %v", err)
+			return nil, err
 		}
 		fmt.Printf("Task ID: %+v - completed at: %+v\n", info.ID, info.CompletedAt)
 

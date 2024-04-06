@@ -63,7 +63,7 @@ type SlackChannel struct {
 
 func NewMessageAttachment(callback string) *[]MessageAttachment {
 	switch callback {
-	case constants.ChangeStateRQ:
+	case constants.SlackChangeStateRq:
 		return ChangeStateRequest()
 	default:
 		return nil
@@ -74,7 +74,7 @@ func ChangeStateRequest() *[]MessageAttachment {
 	attachments := []MessageAttachment{
 		{
 			Text:           "Descision",
-			CallbackId:     constants.ChangeStateRQ,
+			CallbackId:     constants.SlackChangeStateRq,
 			Color:          "#3AA3E3",
 			AttachmentType: "default",
 			Actions: []AttachedAction{

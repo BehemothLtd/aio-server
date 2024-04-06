@@ -36,7 +36,7 @@ const (
 	BODGroup = "BOD"
 
 	// Slack callback id
-	ChangeStateRQ = "change_state_rq"
+	SlackChangeStateRq = "change_state_rq"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
