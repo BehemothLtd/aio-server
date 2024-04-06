@@ -1,5 +1,9 @@
 package models
 
+import (
+	"aio-server/pkg/constants"
+)
+
 type SlackMessage struct {
 	Ok       bool      `json:"ok"`
 	Latest   string    `json:"latest"`
@@ -59,7 +63,7 @@ type SlackChannel struct {
 
 func NewMessageAttachment(callback string) *[]MessageAttachment {
 	switch callback {
-	case "change_state_rq":
+	case constants.ChangeStateRQ:
 		return ChangeStateRequest()
 	default:
 		return nil
@@ -70,7 +74,7 @@ func ChangeStateRequest() *[]MessageAttachment {
 	attachments := []MessageAttachment{
 		{
 			Text:           "Descision",
-			CallbackId:     "change_state_rq",
+			CallbackId:     constants.ChangeStateRQ,
 			Color:          "#3AA3E3",
 			AttachmentType: "default",
 			Actions: []AttachedAction{

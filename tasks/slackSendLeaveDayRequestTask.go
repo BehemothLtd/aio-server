@@ -3,6 +3,7 @@ package tasks
 import (
 	"aio-server/database"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -36,7 +37,7 @@ func HandleSlackSendLeaveDayRequestTask(ctx context.Context, t *asynq.Task) erro
 	db.Model(&request).First(&request)
 	message := request.GetMessage(db, p.Mentions)
 
-	callback := "change_state_rq"
+	callback := constants.ChangeStateRQ
 	slackClient := models.NewSlackClient()
 
 	slackClient.SendMessage(message, os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), &callback)

@@ -2,6 +2,7 @@ package insightServices
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/tasks"
 	"fmt"
 	"log"
@@ -18,7 +19,7 @@ func (sis *SlackInteractiveService) Excecute() (*models.SlackInteractiveResponse
 	callbackId := sis.Args.CallbackId
 
 	switch callbackId {
-	case "change_state_rq":
+	case constants.ChangeStateRQ:
 		return sis.ChangeStateRequestResponse()
 	default:
 		return nil, nil
