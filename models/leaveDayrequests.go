@@ -57,7 +57,7 @@ func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]*string) str
 
 	message := fmt.Sprintf("<!subteam^%+s>\n<@%+v> requested %+s.\nFrom: %+s to: %+s\n%+s", groupId, *user.SlackId, requestType, from, to, requetLink)
 	if request.Reason != nil {
-		message += fmt.Sprintf("\nReason: %+s", *request.Reason)
+		message += fmt.Sprintf("\nReason: %s", *request.Reason)
 	}
 	if mentions != nil {
 		message += MentionText(mentions)
@@ -69,7 +69,7 @@ func (request *LeaveDayRequest) GetMessage(db *gorm.DB, mentions *[]*string) str
 func MentionText(mentions *[]*string) string {
 	mentionText := "\n"
 	for _, value := range *mentions {
-		mentionText += fmt.Sprintf("<@%+s>", *value)
+		mentionText += fmt.Sprintf("<@%s>", *value)
 	}
 
 	return mentionText
