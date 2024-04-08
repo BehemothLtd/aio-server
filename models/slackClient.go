@@ -168,6 +168,19 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 		return err
 	}
 	defer response.Body.Close()
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return err
+	}
+
+	message := SlackMessage{}
+	err = json.Unmarshal(body, &message)
+	if err != nil {
+		return err
+	}
+	// timestamp := message.Ts
+
+	// requestMessage := RequestMessage{UnixTimestamp: &timestamp}
 
 	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
 
