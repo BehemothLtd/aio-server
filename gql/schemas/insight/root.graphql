@@ -69,7 +69,8 @@ type Mutation {
 
   DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
   DeviceTypeUpdate(id: ID!, input: DeviceTypeInput!): DeviceTypeModification!
-  
+  DeviceTypeDestroy(id: ID!): String
+
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
 
