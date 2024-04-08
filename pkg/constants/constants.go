@@ -46,3 +46,7 @@ func RequiredIssueStatusIdsForKanbanProject() []int32 {
 func RequiredIssueStatusIdsForScrumProject() []int32 {
 	return []int32{1, 2, 3, 7}
 }
+
+func ScrumDefaultIssueStatus() []string {
+	return []string{"Backlog", "To Do", "Doing", "Done"}
+}

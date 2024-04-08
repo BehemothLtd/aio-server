@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"aio-server/enums"
 	"aio-server/models"
 	"context"
 
@@ -39,7 +40,7 @@ func (r *ProjectRepository) Update(project *models.Project, updateProject models
 	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Where("id = ?", project.Id).First(&project).Error
 }
 
-func (r *Repository) UpdateFiles(project *models.Project) error {
+func (r *ProjectRepository) UpdateFiles(project *models.Project) error {
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
 		if project.Logo != nil {
 			if err := r.db.Model(&models.Project{Id: project.Id}).Unscoped().Where("name = 'logo'").Association("Logo").Unscoped().Clear(); err != nil {
@@ -62,4 +63,16 @@ func (r *Repository) UpdateFiles(project *models.Project) error {
 		Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
 		Preload("Files", "name = 'files'").Preload("Files.AttachmentBlob").
 		First(&project).Error
+}
+
+func (r *ProjectRepository) ActiveHighPriorityProjects(projects *[]models.Project) error {
+	return r.db.Model(&models.Project{}).
+		Where(
+			"state = ? and project_priority = ?",
+			enums.ProjectStateActive, enums.ProjectPriorityHigh,
+		).
+		Select("id, name").
+		Order("id desc").
+		Scan(&projects).
+		Error
 }

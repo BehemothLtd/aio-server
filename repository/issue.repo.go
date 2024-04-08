@@ -69,3 +69,24 @@ func (r *IssueRepository) Update(issue *models.Issue) error {
 
 	return nil
 }
+
+type IssueCountingOnProjectAndState struct {
+	Count         int
+	ProjectId     int32
+	IssueStatusId int32
+}
+
+func (r *IssueRepository) IssueCountingOnProjectAndState(
+	issueCountingOnProjectAndState *[]IssueCountingOnProjectAndState,
+	issueStatusIds []interface{},
+	projectIds []interface{},
+) error {
+	return r.db.
+		Model(models.Issue{}).
+		Select("Count(id) as count, project_id, issue_status_id").
+		Where("issue_status_id IN ? and project_id IN ?", issueStatusIds, projectIds).
+		Group("project_id, issue_status_id").
+		Order("project_id desc, issue_status_id asc").
+		Scan(&issueCountingOnProjectAndState).
+		Error
+}

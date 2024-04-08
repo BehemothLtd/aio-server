@@ -36,6 +36,7 @@ type Query {
   LeaveDayRequest(id: ID!): LeaveDayRequest!
 
   AnalysesTotalSummarize(): AnalysesTotalSummarize!
+  AnalysesProjectsIssueStatus(): AnalysesProjectsIssueStatus!
 }
 
 type Mutation {
