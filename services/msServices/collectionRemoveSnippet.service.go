@@ -27,16 +27,17 @@ func (sats *CollectionRemoveSnippetService) Execute() (bool, error) {
 		return false, err
 	}
 
+	snippetId, _ := helpers.GqlIdToInt32(sats.Args.SnippetId)
+	collectionId, _ := helpers.GqlIdToInt32(sats.Args.Id)
+
 	snippetsCollection := models.SnippetsCollection{
-		SnippetId:    sats.snippet.Id,
-		CollectionId: sats.collection.Id,
+		SnippetId:    snippetId,
+		CollectionId: collectionId,
 	}
 
 	repo := repository.NewSnippetsCollectionRepository(&sats.Ctx, &sats.Db)
 
-	repo.FindBySnippetAndCollection(&snippetsCollection)
-
-	if snippetsCollection.Id == 0 {
+	if err := repo.Find(&snippetsCollection); err != nil {
 		return false, exceptions.NewUnprocessableContentError("doesn't has this snippet", nil)
 	} else {
 		if err := repo.Delete(&snippetsCollection); err != nil {

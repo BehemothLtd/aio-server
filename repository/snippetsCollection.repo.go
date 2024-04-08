@@ -20,10 +20,8 @@ func NewSnippetsCollectionRepository(c *context.Context, db *gorm.DB) *SnippetsC
 	}
 }
 
-func (str *SnippetsCollectionRepository) FindBySnippetAndCollection(snippetsCollection *models.SnippetsCollection) error {
-	dbTable := str.db.Model(&models.SnippetsCollection{})
-
-	return dbTable.Where("snippet_id = ? AND collection_id = ?", snippetsCollection.SnippetId, snippetsCollection.CollectionId).First(&snippetsCollection).Error
+func (str *SnippetsCollectionRepository) Find(snippetsCollection *models.SnippetsCollection) error {
+	return str.db.Model(&models.SnippetsCollection{}).Where(&snippetsCollection).First(&snippetsCollection).Error
 }
 
 func (str *SnippetsCollectionRepository) Create(snippetsCollection *models.SnippetsCollection) error {

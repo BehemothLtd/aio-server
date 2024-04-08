@@ -27,16 +27,17 @@ func (sats *CollectionAddSnippetService) Execute() (bool, error) {
 		return false, err
 	}
 
+	snippetId, _ := helpers.GqlIdToInt32(sats.Args.SnippetId)
+	collectionId, _ := helpers.GqlIdToInt32(sats.Args.Id)
+
 	snippetsCollection := models.SnippetsCollection{
-		SnippetId:    sats.snippet.Id,
-		CollectionId: sats.collection.Id,
+		SnippetId:    snippetId,
+		CollectionId: collectionId,
 	}
 
 	repo := repository.NewSnippetsCollectionRepository(&sats.Ctx, &sats.Db)
 
-	repo.FindBySnippetAndCollection(&snippetsCollection)
-
-	if snippetsCollection.Id != 0 {
+	if err := repo.Find(&snippetsCollection); err != nil {
 		return false, exceptions.NewUnprocessableContentError("already has this snippet", nil)
 	} else {
 		if err := repo.Create(&snippetsCollection); err != nil {
@@ -78,9 +79,9 @@ func (sats *CollectionAddSnippetService) validate() error {
 		return err
 	}
 
-	collection := models.Collection{}
+	collection := models.Collection{Id: collectionId}
 	collectionRepo := repository.NewCollectionRepository(&sats.Ctx, &sats.Db)
-	err = collectionRepo.FindById(&collection, collectionId)
+	err = collectionRepo.Find(&collection)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
