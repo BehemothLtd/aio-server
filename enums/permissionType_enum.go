@@ -7,8 +7,10 @@
 package enums
 
 import (
+	"database/sql/driver"
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 const (
@@ -69,6 +71,114 @@ func (x *PermissionActionType) UnmarshalText(text []byte) error {
 	return nil
 }
 
+var errPermissionActionTypeNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+var sqlIntPermissionActionTypeMap = map[int64]PermissionActionType{
+	0: PermissionActionTypeAll,
+	1: PermissionActionTypeRead,
+	2: PermissionActionTypeWrite,
+	3: PermissionActionTypeDelete,
+	4: PermissionActionTypeChangeState,
+}
+
+var sqlIntPermissionActionTypeValue = map[PermissionActionType]int64{
+	PermissionActionTypeAll:         0,
+	PermissionActionTypeRead:        1,
+	PermissionActionTypeWrite:       2,
+	PermissionActionTypeDelete:      3,
+	PermissionActionTypeChangeState: 4,
+}
+
+func lookupSqlIntPermissionActionType(val int64) (PermissionActionType, error) {
+	x, ok := sqlIntPermissionActionTypeMap[val]
+	if !ok {
+		return x, fmt.Errorf("%v is not %w", val, ErrInvalidPermissionActionType)
+	}
+	return x, nil
+}
+
+// Scan implements the Scanner interface.
+func (x *PermissionActionType) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = PermissionActionType("")
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x, err = lookupSqlIntPermissionActionType(v)
+	case string:
+		*x, err = ParsePermissionActionType(v)
+	case []byte:
+		if val, verr := strconv.ParseInt(string(v), 10, 64); verr == nil {
+			*x, err = lookupSqlIntPermissionActionType(val)
+		} else {
+			// try parsing the value as a string
+			*x, err = ParsePermissionActionType(string(v))
+		}
+	case PermissionActionType:
+		*x = v
+	case int:
+		*x, err = lookupSqlIntPermissionActionType(int64(v))
+	case *PermissionActionType:
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x = *v
+	case uint:
+		*x, err = lookupSqlIntPermissionActionType(int64(v))
+	case uint64:
+		*x, err = lookupSqlIntPermissionActionType(int64(v))
+	case *int:
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionActionType(int64(*v))
+	case *int64:
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionActionType(int64(*v))
+	case float64: // json marshals everything as a float64 if it's a number
+		*x, err = lookupSqlIntPermissionActionType(int64(v))
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionActionType(int64(*v))
+	case *uint:
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionActionType(int64(*v))
+	case *uint64:
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionActionType(int64(*v))
+	case *string:
+		if v == nil {
+			return errPermissionActionTypeNilPtr
+		}
+		*x, err = ParsePermissionActionType(*v)
+	default:
+		return errors.New("invalid type for PermissionActionType")
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x PermissionActionType) Value() (driver.Value, error) {
+	val, ok := sqlIntPermissionActionTypeValue[x]
+	if !ok {
+		return nil, ErrInvalidPermissionActionType
+	}
+	return int64(val), nil
+}
+
 const (
 	// PermissionTargetTypeAll is a PermissionTargetType of type all.
 	PermissionTargetTypeAll PermissionTargetType = "all"
@@ -122,6 +232,7 @@ var _PermissionTargetTypeValue = map[string]PermissionTargetType{
 	"issue_statuses":      PermissionTargetTypeIssueStatuses,
 	"devices":             PermissionTargetTypeDevices,
 	"timesheet_templates": PermissionTargetTypeTimesheetTemplates,
+	"attendances":         PermissionTargetTypeAttendances,
 }
 
 // ParsePermissionTargetType attempts to convert a string to a PermissionTargetType.
@@ -145,4 +256,126 @@ func (x *PermissionTargetType) UnmarshalText(text []byte) error {
 	}
 	*x = tmp
 	return nil
+}
+
+var errPermissionTargetTypeNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+var sqlIntPermissionTargetTypeMap = map[int64]PermissionTargetType{
+	0:  PermissionTargetTypeAll,
+	1:  PermissionTargetTypeUsers,
+	2:  PermissionTargetTypeUserGroups,
+	3:  PermissionTargetTypeProjects,
+	4:  PermissionTargetTypeProjectIssues,
+	5:  PermissionTargetTypeProjectAssignees,
+	6:  PermissionTargetTypeLeaveDayRequests,
+	7:  PermissionTargetTypeClients,
+	8:  PermissionTargetTypeIssueStatuses,
+	9:  PermissionTargetTypeDevices,
+	10: PermissionTargetTypeTimesheetTemplates,
+	11: PermissionTargetTypeAttendances,
+}
+
+var sqlIntPermissionTargetTypeValue = map[PermissionTargetType]int64{
+	PermissionTargetTypeAll:                0,
+	PermissionTargetTypeUsers:              1,
+	PermissionTargetTypeUserGroups:         2,
+	PermissionTargetTypeProjects:           3,
+	PermissionTargetTypeProjectIssues:      4,
+	PermissionTargetTypeProjectAssignees:   5,
+	PermissionTargetTypeLeaveDayRequests:   6,
+	PermissionTargetTypeClients:            7,
+	PermissionTargetTypeIssueStatuses:      8,
+	PermissionTargetTypeDevices:            9,
+	PermissionTargetTypeTimesheetTemplates: 10,
+	PermissionTargetTypeAttendances:        11,
+}
+
+func lookupSqlIntPermissionTargetType(val int64) (PermissionTargetType, error) {
+	x, ok := sqlIntPermissionTargetTypeMap[val]
+	if !ok {
+		return x, fmt.Errorf("%v is not %w", val, ErrInvalidPermissionTargetType)
+	}
+	return x, nil
+}
+
+// Scan implements the Scanner interface.
+func (x *PermissionTargetType) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = PermissionTargetType("")
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x, err = lookupSqlIntPermissionTargetType(v)
+	case string:
+		*x, err = ParsePermissionTargetType(v)
+	case []byte:
+		if val, verr := strconv.ParseInt(string(v), 10, 64); verr == nil {
+			*x, err = lookupSqlIntPermissionTargetType(val)
+		} else {
+			// try parsing the value as a string
+			*x, err = ParsePermissionTargetType(string(v))
+		}
+	case PermissionTargetType:
+		*x = v
+	case int:
+		*x, err = lookupSqlIntPermissionTargetType(int64(v))
+	case *PermissionTargetType:
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x = *v
+	case uint:
+		*x, err = lookupSqlIntPermissionTargetType(int64(v))
+	case uint64:
+		*x, err = lookupSqlIntPermissionTargetType(int64(v))
+	case *int:
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionTargetType(int64(*v))
+	case *int64:
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionTargetType(int64(*v))
+	case float64: // json marshals everything as a float64 if it's a number
+		*x, err = lookupSqlIntPermissionTargetType(int64(v))
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionTargetType(int64(*v))
+	case *uint:
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionTargetType(int64(*v))
+	case *uint64:
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x, err = lookupSqlIntPermissionTargetType(int64(*v))
+	case *string:
+		if v == nil {
+			return errPermissionTargetTypeNilPtr
+		}
+		*x, err = ParsePermissionTargetType(*v)
+	default:
+		return errors.New("invalid type for PermissionTargetType")
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x PermissionTargetType) Value() (driver.Value, error) {
+	val, ok := sqlIntPermissionTargetTypeValue[x]
+	if !ok {
+		return nil, ErrInvalidPermissionTargetType
+	}
+	return int64(val), nil
 }
