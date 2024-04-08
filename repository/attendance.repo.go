@@ -5,6 +5,7 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
+	"fmt"
 	"time"
 
 	"gorm.io/gorm"
@@ -41,6 +42,19 @@ func (r *AttendanceRepository) List(
 	).Order("id desc").Find(&attendances).Error
 }
 
+func (r *AttendanceRepository) AtDateOfUser(
+	attendance *models.Attendance,
+	user models.User,
+	time time.Time,
+) error {
+	dbTable := r.db.Model(&models.Attendance{})
+
+	return dbTable.Scopes(
+		r.AtDate(time),
+		r.OfUser(user.Id),
+	).First(&attendance).Error
+}
+
 func (r *AttendanceRepository) ListByUser(
 	attendances *[]*models.Attendance,
 	paginateData *models.PaginationData,
@@ -72,6 +86,14 @@ func (r *AttendanceRepository) OfUser(userId int32) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
+func (r *AttendanceRepository) AtDate(time time.Time) func(db *gorm.DB) *gorm.DB {
+	dateOfTime := fmt.Sprintf("%d-%d-%d", time.Year(), time.Month(), time.Day())
+
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("DATE(checkin_at) = ?", dateOfTime)
+	}
+}
+
 func (r *AttendanceRepository) checkinAtGteq(checkinAtGteq *time.Time) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if checkinAtGteq == nil {
@@ -100,4 +122,12 @@ func (r *AttendanceRepository) userIdEq(userIdEq *int32) func(db *gorm.DB) *gorm
 			return db.Where("user_id = ?", userIdEq)
 		}
 	}
+}
+
+func (r *AttendanceRepository) Create(attendance *models.Attendance) error {
+	return r.db.Model(&attendance).Create(&attendance).Error
+}
+
+func (r *AttendanceRepository) Update(attendance *models.Attendance, updateAttendance models.Attendance) error {
+	return r.db.Model(&attendance).Updates(updateAttendance).First(&attendance).Error
 }

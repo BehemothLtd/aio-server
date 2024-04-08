@@ -31,7 +31,9 @@ func (sai *SelfAttendancesInput) ToPaginationAndQueryData() (SelfAttendancesQuer
 		if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *sai.Query.CheckinAtGteq); err != nil {
 			query.CheckinAtGteq = nil
 		} else {
-			query.CheckinAtGteq = &timeValue
+			year, month, day := timeValue.Date()
+			value := time.Date(year, month, day, 0, 0, 0, 0, time.Local)
+			query.CheckinAtGteq = &value
 		}
 	}
 
@@ -39,7 +41,10 @@ func (sai *SelfAttendancesInput) ToPaginationAndQueryData() (SelfAttendancesQuer
 		if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *sai.Query.CheckinAtLteq); err != nil {
 			query.CheckinAtLteq = nil
 		} else {
-			query.CheckinAtLteq = &timeValue
+			year, month, day := timeValue.Date()
+			value := time.Date(year, month, day, 23, 59, 59, 59, time.Local)
+
+			query.CheckinAtLteq = &value
 		}
 	}
 

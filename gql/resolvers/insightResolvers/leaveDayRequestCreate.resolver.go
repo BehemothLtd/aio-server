@@ -4,6 +4,8 @@ import (
 	"aio-server/enums"
 	"aio-server/models"
 	"aio-server/services/insightServices"
+	"aio-server/tasks"
+	"fmt"
 
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/gqlTypes/insightTypes"
@@ -31,6 +33,20 @@ func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs
 	if err := service.Excecute(); err != nil {
 		return nil, err
 	} else {
+		// Send slack message
+		mentions := args.Input.Mentions
+		task, err := tasks.NewSlackSendLeaveDayRequestTask(request.Id, mentions)
+		if err != nil {
+			return nil, err
+		}
+
+		info, err := tasks.AsynqClient.Enqueue(task)
+		if err != nil {
+			return nil, err
+		}
+
+		fmt.Printf("Task ID: %+v => completed at %v\n", info.ID, info.CompletedAt)
+
 		return &insightTypes.LeaveDayRequestCreatedType{
 			LeaveDayRequest: &globalTypes.LeaveDayRequestType{
 				LeaveDayRequest: &request,

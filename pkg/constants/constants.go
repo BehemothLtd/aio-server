@@ -34,6 +34,9 @@ const (
 	MaximumLogMinutesPerDay = 840
 
 	BODGroup = "BOD"
+
+	// Slack callback id
+	SlackChangeStateRq = "change_state_rq"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {

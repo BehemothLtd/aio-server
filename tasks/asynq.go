@@ -8,7 +8,9 @@ import (
 )
 
 const (
-	TypeDemoTask = "demo"
+	TypeDemoTask                        = "demo"
+	SlackSendLeaveDayRequestMessageTask = "slackSendLeaveDayRequest"
+	SlackUpdateLeaveDayRequestStateTask = "slackUpdteLeaveDayRequestState"
 )
 
 var AsynqClient *asynq.Client
