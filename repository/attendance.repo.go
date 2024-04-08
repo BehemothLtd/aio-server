@@ -23,6 +23,24 @@ func NewAttendanceRepository(c *context.Context, db *gorm.DB) *AttendanceReposit
 	}
 }
 
+func (r *AttendanceRepository) List(
+	attendances *[]*models.Attendance,
+	paginateData *models.PaginationData,
+	query insightInputs.AttendancesQueryInput,
+) error {
+	dbTables := r.db.Model(&models.Attendance{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(
+			dbTables.Scopes(
+				r.userIdEq(query.UserIdEq),
+				r.checkinAtGteq(query.CheckinAtGteq),
+				r.checkinAtLteq(query.CheckinAtLteq),
+			), paginateData,
+		),
+	).Order("id desc").Find(&attendances).Error
+}
+
 func (r *AttendanceRepository) ListByUser(
 	attendances *[]*models.Attendance,
 	paginateData *models.PaginationData,
@@ -40,6 +58,12 @@ func (r *AttendanceRepository) ListByUser(
 			), paginateData,
 		),
 	).Order("id desc").Find(&attendances).Error
+}
+
+func (r *AttendanceRepository) Find(attendance *models.Attendance) error {
+	dbTables := r.db.Model(&models.Attendance{})
+
+	return dbTables.Where(&attendance).First(&attendance).Error
 }
 
 func (r *AttendanceRepository) OfUser(userId int32) func(db *gorm.DB) *gorm.DB {
@@ -64,6 +88,16 @@ func (r *AttendanceRepository) checkinAtLteq(checkinAtLteq *time.Time) func(db *
 			return db
 		} else {
 			return db.Where("checkin_at <= ?", checkinAtLteq)
+		}
+	}
+}
+
+func (r *AttendanceRepository) userIdEq(userIdEq *int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if userIdEq == nil {
+			return db
+		} else {
+			return db.Where("user_id = ?", userIdEq)
 		}
 	}
 }

@@ -1,3 +1,23 @@
+type Attendance {
+  id: ID
+  userId: ID
+  checkinAt: Time
+  checkoutAt: Time
+  createdUserId: ID
+  createdAt: Time
+}
+
+type AttendancesCollection {
+  collection: [Attendance!]
+  metadata: Metadata!
+}
+
+input AttendancesQuery {
+  userIdEq: ID
+  checkinAtLteq: String
+  checkinAtGteq: String
+}
+
 type SelfAttendanceCollection {
   collection: [SelfAttendance!]
   metadata: Metadata!

@@ -92,6 +92,8 @@ const (
 	PermissionTargetTypeDevices PermissionTargetType = "devices"
 	// PermissionTargetTypeTimesheetTemplates is a PermissionTargetType of type timesheet_templates.
 	PermissionTargetTypeTimesheetTemplates PermissionTargetType = "timesheet_templates"
+	// PermissionTargetTypeAttendances is a PermissionTargetType of type attendances.
+	PermissionTargetTypeAttendances PermissionTargetType = "attendances"
 )
 
 var ErrInvalidPermissionTargetType = errors.New("not a valid PermissionTargetType")
