@@ -50,8 +50,11 @@ func (ai *AttendancesInput) ToPaginationAndQueryData() (AttendancesQueryInput, m
 		}
 
 		if ai.Query.UserIdEq != nil {
-			UserIdEq, _ := helpers.GqlIdToInt32(*ai.Query.UserIdEq)
-			query.UserIdEq = &UserIdEq
+			if UserIdEq, err := helpers.GqlIdToInt32(*ai.Query.UserIdEq); err != nil {
+				query.UserIdEq = nil
+			} else {
+				query.UserIdEq = &UserIdEq
+			}
 		}
 	}
 
