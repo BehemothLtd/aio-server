@@ -7,6 +7,7 @@ import (
 type SlackMessage struct {
 	Ok       bool      `json:"ok"`
 	Latest   string    `json:"latest"`
+	Ts       string    `json:"ts"`
 	Messages []Message `json:"messages"`
 	HasOne   bool      `json:"has_one"`
 	Error    string    `json:"error"`

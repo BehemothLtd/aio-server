@@ -1,10 +1,12 @@
 package insightServices
 
 import (
+	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/constants"
 	"aio-server/tasks"
 	"fmt"
+	"regexp"
 
 	"gorm.io/gorm"
 )
@@ -58,11 +60,26 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 
 		action := payload.Action[0].Value
 		text := payload.OriginalMessage.Text
-		text += fmt.Sprintf("\n%s by <@%s>", action, slackId)
 
-		result.ResponseType = "in_channel"
-		result.ReplaceOriginal = true
-		result.Text = text
+		re := regexp.MustCompile(`<@([^>]+)>`)
+		matchId := re.FindStringSubmatch(text)
+
+		if len(matchId) > 1 {
+			requesterId := matchId[1]
+			text += fmt.Sprintf("\n%s by <@%s>", action, slackId)
+
+			// Reply to request thread
+			slackClient := models.NewSlackClient()
+			replyText := fmt.Sprintf("<@%s> %s <@%s>'s request", *user.SlackId, action, requesterId)
+			slackClient.SendMessage(replyText, payload.Channel.Id, nil, &payload.OriginalMessage.Ts)
+
+			// Response to BOD's decision
+			result.ResponseType = "in_channel"
+			result.ReplaceOriginal = true
+			result.Text = text
+		} else {
+			return nil, exceptions.NewBadRequestError("Requester not found!")
+		}
 	}
 
 	return &result, nil

@@ -121,7 +121,7 @@ func (client *SlackClient) SetHeaders(additionHeaders *map[string]string) *Slack
 	return client
 }
 
-func (client *SlackClient) SendMessage(text string, channel string, callback *string) error {
+func (client *SlackClient) SendMessage(text string, channel string, callback *string, threadTs *string) error {
 	if text == "" || channel == "" {
 		return exceptions.NewBadRequestError("Text and channel are required")
 	}
@@ -133,6 +133,7 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 		"channel": channel,
 	}
 
+	// Set message's attachment
 	if callback != nil {
 		attachment := NewMessageAttachment(*callback)
 
@@ -141,6 +142,11 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 		} else {
 			payload["attachments"] = *attachment
 		}
+	}
+
+	// In case of reply to a message's thread
+	if threadTs != nil {
+		payload["thread_ts"] = *threadTs
 	}
 
 	payloadBytes, err := json.Marshal(payload)
@@ -164,6 +170,51 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 	defer response.Body.Close()
 
 	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
+
+	return nil
+}
+
+func (client *SlackClient) UpdateMessage(channel string, timestamp string, text string, callback *string) error {
+	if channel == "" || timestamp == "" || text == "" {
+		return exceptions.NewBadRequestError("Text and channel are required")
+	}
+	fmt.Print("\n\n============================\nStart update_message")
+
+	payload := map[string]interface{}{
+		"channel":   channel,
+		"text":      text,
+		"timestamp": timestamp,
+	}
+
+	if callback != nil {
+		attachment := NewMessageAttachment(*callback)
+
+		if _, err := json.Marshal(attachment); err != nil {
+			return exceptions.NewBadRequestError("invalid attachments")
+		} else {
+			payload["attachments"] = *attachment
+		}
+	}
+
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+	endPoint := "/chat.update"
+	request, err := client.Request(constants.Post, endPoint, payloadBytes)
+
+	if err != nil {
+		return err
+	}
+
+	response, err := client.Client.Do(request)
+
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	fmt.Printf("\nSuccess: update message to %+v\n\n", endPoint)
 
 	return nil
 }
