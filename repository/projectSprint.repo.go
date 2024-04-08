@@ -58,10 +58,24 @@ func (psr *ProjectSprintRepository) FindCollapsedSprints(projectSprint *models.P
 	startDate := projectSprint.StartDate.Format(constants.YYMMDD_DateFormat)
 	endDate := projectSprint.EndDate.Format(constants.YYMMDD_DateFormat)
 
-	dbError := psr.db.Where("project_id = ? AND ((start_date <= ? AND end_date >= ?) OR (start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?))", projectSprint.ProjectId, startDate, startDate, endDate, endDate, startDate, endDate).First(&models.ProjectSprint{}).Error
-	return dbError
+	query := psr.db.Where("project_id = ? AND ((start_date <= ? AND end_date >= ?) OR (start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?))", projectSprint.ProjectId, startDate, startDate, endDate, endDate, startDate, endDate)
+
+	if projectSprint.Id == 0 {
+		return query.First(&models.ProjectSprint{}).Error
+	} else {
+		return query.Not("id = ?", projectSprint.Id).First(&models.ProjectSprint{}).Error
+	}
+
 }
 
 func (cr *ProjectSprintRepository) Create(projectSprint *models.ProjectSprint) error {
 	return cr.db.Model(&projectSprint).Create(&projectSprint).First(&projectSprint).Error
+}
+
+func (psr *ProjectSprintRepository) Update(projectSprint *models.ProjectSprint, updateProjectSprint models.ProjectSprint) error {
+	if err := psr.db.Model(&projectSprint).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateProjectSprint).Error; err != nil {
+		return err
+	}
+
+	return psr.db.Model(&projectSprint).First(&projectSprint).Error
 }

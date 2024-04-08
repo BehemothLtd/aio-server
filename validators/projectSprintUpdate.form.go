@@ -8,25 +8,26 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"strings"
 )
 
-type ProjectSprintCreateForm struct {
+type ProjectSprintUpdateForm struct {
 	Form
 	insightInputs.ProjectSprintFormInput
-	ProjectSprint *models.ProjectSprint
-	Repo          *repository.ProjectSprintRepository
+	ProjectSprint       *models.ProjectSprint
+	UpdateProjectSprint models.ProjectSprint
+	Repo                *repository.ProjectSprintRepository
 }
 
-func NewProjectSprintCreateFormValidator(
+func NewProjectSprintUpdateFormValidator(
 	input *insightInputs.ProjectSprintFormInput,
 	repo *repository.ProjectSprintRepository,
 	projectSprint *models.ProjectSprint,
-) ProjectSprintCreateForm {
-	form := ProjectSprintCreateForm{
+) ProjectSprintUpdateForm {
+	form := ProjectSprintUpdateForm{
 		Form:                   Form{},
 		ProjectSprintFormInput: *input,
 		ProjectSprint:          projectSprint,
+		UpdateProjectSprint:    models.ProjectSprint{},
 		Repo:                   repo,
 	}
 	form.assignAttributes()
@@ -34,21 +35,22 @@ func NewProjectSprintCreateFormValidator(
 	return form
 }
 
-func (form *ProjectSprintCreateForm) Save() error {
-
+func (form *ProjectSprintUpdateForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
-	if err := form.Repo.Create(form.ProjectSprint); err != nil {
-		return err
+
+	if err := form.Repo.Update(form.ProjectSprint, form.UpdateProjectSprint); err != nil {
+		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+			"base": {err.Error()},
+		})
 	}
 
 	return nil
 }
-
-func (form *ProjectSprintCreateForm) validate() error {
-	form.validateTitle().
-		validateProjectId().
+func (form *ProjectSprintUpdateForm) validate() error {
+	form.validateProjectId().
+		validateTitle().
 		validateStartDate().
 		summaryErrors()
 
@@ -57,29 +59,32 @@ func (form *ProjectSprintCreateForm) validate() error {
 	}
 	return nil
 }
-
-func (form *ProjectSprintCreateForm) validateTitle() *ProjectSprintCreateForm {
+func (form *ProjectSprintUpdateForm) validateTitle() *ProjectSprintUpdateForm {
 
 	title := form.FindAttrByCode("title")
 
 	title.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
-	if form.Title != nil && strings.TrimSpace(*form.Title) != "" {
+	if title.IsClean() {
 		projectSprint := models.ProjectSprint{Title: *form.Title, ProjectId: *form.ProjectId}
+
 		if err := form.Repo.Find(&projectSprint); err == nil {
-			title.AddError("is already exists. Please use another name")
+
+			if projectSprint.Id != form.ProjectSprint.Id {
+				title.AddError("is already exists. Please use another name")
+			}
+
 		}
 
 		if title.IsClean() {
-			form.ProjectSprint.Title = *form.Title
-
+			form.UpdateProjectSprint.Title = *form.Title
 		}
 	}
 
 	return form
 }
 
-func (form *ProjectSprintCreateForm) validateProjectId() *ProjectSprintCreateForm {
+func (form *ProjectSprintUpdateForm) validateProjectId() *ProjectSprintUpdateForm {
 	projectId := form.FindAttrByCode("projectId")
 
 	projectId.ValidateRequired()
@@ -87,17 +92,17 @@ func (form *ProjectSprintCreateForm) validateProjectId() *ProjectSprintCreateFor
 	projectRepo := repository.NewProjectRepository(nil, database.Db)
 
 	if projectId.IsClean() {
-		if err := projectRepo.Find(&models.Project{Id: *form.ProjectId}); err != nil {
+		if err := projectRepo.Find(&models.Project{Id: *form.ProjectId}); err != nil || *form.ProjectId != form.ProjectSprint.ProjectId {
 			projectId.AddError("is invalid")
 		} else {
-			form.ProjectSprint.ProjectId = *form.ProjectId
+			form.UpdateProjectSprint.ProjectId = *form.ProjectId
 		}
 	}
 
 	return form
 }
 
-func (form *ProjectSprintCreateForm) validateStartDate() *ProjectSprintCreateForm {
+func (form *ProjectSprintUpdateForm) validateStartDate() *ProjectSprintUpdateForm {
 	startDate := form.FindAttrByCode("startDate")
 	startDate.ValidateRequired()
 	startDate.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
@@ -109,19 +114,19 @@ func (form *ProjectSprintCreateForm) validateStartDate() *ProjectSprintCreateFor
 
 	endDate := startDate.Time().AddDate(0, 0, int(*project.SprintDuration*7))
 
-	projectSprint := models.ProjectSprint{StartDate: *startDate.Time(), EndDate: &endDate, ProjectId: *form.ProjectId}
+	projectSprint := models.ProjectSprint{StartDate: *startDate.Time(), EndDate: &endDate, ProjectId: *form.ProjectId, Id: form.ProjectSprint.Id}
 
 	if err := form.Repo.FindCollapsedSprints(&projectSprint); err == nil {
 		startDate.AddError("is duplicate with another sprints")
 	} else {
-		form.ProjectSprint.StartDate = *startDate.Time()
-		form.ProjectSprint.EndDate = &endDate
+		form.UpdateProjectSprint.StartDate = *startDate.Time()
+		form.UpdateProjectSprint.EndDate = &endDate
 	}
 
 	return form
 }
 
-func (form *ProjectSprintCreateForm) assignAttributes() {
+func (form *ProjectSprintUpdateForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
