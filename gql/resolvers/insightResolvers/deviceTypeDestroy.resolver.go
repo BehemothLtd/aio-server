@@ -32,6 +32,12 @@ func (r *Resolver) DeviceTypeDestroy(ctx context.Context, args insightInputs.Dev
 		return nil, exceptions.NewRecordNotFoundError()
 	}
 
+	devicesCount := len(deviceType.Devices)
+
+	if devicesCount > 0 {
+		return nil, exceptions.NewBadRequestError("This device type is being used")
+	}
+
 	if err := repo.Destroy(&deviceType); err != nil {
 		return nil, exceptions.NewBadRequestError(fmt.Sprintf("Cant delete this device type %s", err.Error()))
 	} else {
