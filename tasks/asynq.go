@@ -1,7 +1,6 @@
 package tasks
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/hibiken/asynq"
@@ -21,7 +20,6 @@ func InitAsyncClient() *asynq.Client {
 	}
 
 	redisAddr := os.Getenv("REDIS_URL")
-	fmt.Printf("REDIS ADDR : %+v", redisAddr)
 
 	AsynqClient = asynq.NewClient(asynq.RedisClientOpt{Addr: redisAddr})
 	// defer AsynqClient.Close()

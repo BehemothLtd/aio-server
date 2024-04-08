@@ -108,3 +108,13 @@ type UserBasicInfo {
   name: String
   avatarUrl: String
 }
+
+type SelfThisWeekIssuesState {
+  labels: [String!]!
+  series: SelfThisWeekIssuesStateSeriesItem!
+}
+
+type SelfThisWeekIssuesStateSeriesItem {
+  done: [Int!]!
+  notDone: [Int!]!
+}

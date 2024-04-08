@@ -2,7 +2,9 @@ package repository
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -88,5 +90,24 @@ func (r *IssueRepository) IssueCountingOnProjectAndState(
 		Group("project_id, issue_status_id").
 		Order("project_id desc, issue_status_id asc").
 		Scan(&issueCountingOnProjectAndState).
+		Error
+}
+
+func (r *IssueRepository) UserAllWeekIssuesState(
+	user models.User,
+	issueDateBaseState *[]models.IssuesDeadlineBaseState,
+) error {
+	startTime, endTime := helpers.StartAndEndOfWeek(time.Now())
+
+	return r.db.
+		Model(models.Issue{}).
+		Select("deadline as date, SUM(if(issue_status_id = 7, 1, 0)) as done, SUM(if(issue_status_id != 7, 1, 0)) as not_done").
+		Preload("IssueStatus").
+		Joins("LEFT JOIN issue_assignees ON issue_assignees.issue_id = issues.id").
+		Where("deadline BETWEEN ? AND ?", startTime, endTime).
+		Where("issue_assignees.user_id = ?", user.Id).
+		Group("date").
+		Order("date asc").
+		Scan(&issueDateBaseState).
 		Error
 }
