@@ -147,6 +147,18 @@ func (ut *UserType) ProjectsCount(context.Context) *int32 {
 	return &projectsCount
 }
 
+func (ut *UserType) ProjectAssignees(context.Context) *[]*ProjectAssigneeType {
+	result := []*ProjectAssigneeType{}
+
+	for _, projectAssignee := range ut.User.ProjectAssignees {
+		result = append(result, &ProjectAssigneeType{
+			ProjectAssignee: &projectAssignee,
+		})
+	}
+
+	return &result
+}
+
 func (ut *UserType) ThisMonthWorkingHours(context.Context) *ThisMonthWorkingHoursType {
 	result := models.ThisMonthWorkingHours{}
 

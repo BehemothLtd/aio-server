@@ -30,6 +30,7 @@ type User struct {
 	State             enums.UserState
 	Timing            *UserTiming
 	WorkingTimelogs   []WorkingTimelog
+	ProjectAssignees  []ProjectAssignee
 }
 
 type UserClaims struct {

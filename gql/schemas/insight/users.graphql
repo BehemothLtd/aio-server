@@ -19,6 +19,7 @@ type User {
   timingActiveAt: Time
   timingDeactiveAt: Time
   slackId: String
+  projectAssignees: [ProjectAssigneeForSelfProfile]
 }
 
 type SelfGeneralInfo {
@@ -117,4 +118,24 @@ type SelfThisWeekIssuesState {
 type SelfThisWeekIssuesStateSeriesItem {
   done: [Int!]!
   notDone: [Int!]!
+}
+
+type SelfProfile {
+  id: ID
+  email: String
+  fullName: String
+  name: String
+  about: String
+  avatarUrl: String
+  createdAt: Time
+  companyLevelId: ID
+  state: String!
+  address: String
+  birthday: Time
+  gender: String
+  phone: String
+  timingActiveAt: Time
+  timingDeactiveAt: Time
+  slackId: String
+  projectAssignees: [ProjectAssigneeForSelfProfile]
 }

@@ -49,6 +49,18 @@ func (tt *ProjectAssigneeType) DevelopmentRole(ctx context.Context) *DevelopentR
 	}
 }
 
+func (tt *ProjectAssigneeType) Title(ctx context.Context) *string {
+	if developmentRole := systems.FindDevelopmentRoleById(tt.ProjectAssignee.DevelopmentRoleId); developmentRole != nil {
+		return &developmentRole.Title
+	} else {
+		return nil
+	}
+}
+
+func (tt *ProjectAssigneeType) Name(ctx context.Context) *string {
+	return &tt.ProjectAssignee.User.Name
+}
+
 func (tt *ProjectAssigneeType) LockVersion(ctx context.Context) *int32 {
 	return &tt.ProjectAssignee.LockVersion
 }
