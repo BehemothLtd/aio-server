@@ -1,6 +1,7 @@
 package insightServices
 
 import (
+	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/repository"
@@ -10,19 +11,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type ProjectSprintCreateService struct {
+type ProjectSprintUpdateService struct {
 	Ctx           *context.Context
 	Db            *gorm.DB
-	Args          insightInputs.ProjectSprintCreateInput
+	Args          insightInputs.ProjectSprintUpdateInput
 	ProjectSprint *models.ProjectSprint
 }
 
-func (pscs *ProjectSprintCreateService) Execute() error {
+func (psus *ProjectSprintUpdateService) Execute() error {
+	repo := repository.NewProjectSprintRepository(psus.Ctx, psus.Db)
+
+	if err := repo.Find(psus.ProjectSprint); err != nil {
+		return exceptions.NewRecordNotFoundError()
+	}
 
 	form := validators.NewProjectSprintFormValidator(
-		&pscs.Args.Input,
-		repository.NewProjectSprintRepository(pscs.Ctx, pscs.Db),
-		pscs.ProjectSprint,
+		&psus.Args.Input,
+		repo,
+		psus.ProjectSprint,
 	)
 
 	if err := form.Save(); err != nil {

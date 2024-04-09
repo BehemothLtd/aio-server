@@ -10,6 +10,11 @@ type ProjectSprintCreateInput struct {
 	Input ProjectSprintFormInput
 }
 
+type ProjectSprintUpdateInput struct {
+	Id    graphql.ID
+	Input ProjectSprintFormInput
+}
+
 type ProjectSprintFormInput struct {
 	Title     *string
 	ProjectId *int32

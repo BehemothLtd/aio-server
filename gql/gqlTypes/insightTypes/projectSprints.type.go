@@ -2,6 +2,6 @@ package insightTypes
 
 import "aio-server/gql/gqlTypes/globalTypes"
 
-type ProjectSprintCreatedType struct {
+type ProjectSprintType struct {
 	ProjectSprint *globalTypes.ProjectSprintType
 }
