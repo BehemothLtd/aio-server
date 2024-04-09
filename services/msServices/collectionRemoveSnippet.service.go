@@ -79,9 +79,9 @@ func (sats *CollectionRemoveSnippetService) validate() error {
 		return err
 	}
 
-	collection := models.Collection{}
+	collection := models.Collection{Id: collectionId}
 	collectionRepo := repository.NewCollectionRepository(&sats.Ctx, &sats.Db)
-	err = collectionRepo.FindById(&collection, collectionId)
+	err = collectionRepo.Find(&collection)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
