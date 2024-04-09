@@ -25,7 +25,7 @@ func (psus *ProjectSprintUpdateService) Execute() error {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	form := validators.NewProjectSprintUpdateFormValidator(
+	form := validators.NewProjectSprintFormValidator(
 		&psus.Args.Input,
 		repo,
 		psus.ProjectSprint,

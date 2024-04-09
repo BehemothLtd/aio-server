@@ -19,7 +19,7 @@ type ProjectSprintCreateService struct {
 
 func (pscs *ProjectSprintCreateService) Execute() error {
 
-	form := validators.NewProjectSprintCreateFormValidator(
+	form := validators.NewProjectSprintFormValidator(
 		&pscs.Args.Input,
 		repository.NewProjectSprintRepository(pscs.Ctx, pscs.Db),
 		pscs.ProjectSprint,

@@ -18,7 +18,7 @@ type ProjectSprintUpdateForm struct {
 	Repo                *repository.ProjectSprintRepository
 }
 
-func NewProjectSprintUpdateFormValidator(
+func NewProjectSprintFormValidator(
 	input *insightInputs.ProjectSprintFormInput,
 	repo *repository.ProjectSprintRepository,
 	projectSprint *models.ProjectSprint,
@@ -40,10 +40,19 @@ func (form *ProjectSprintUpdateForm) Save() error {
 		return err
 	}
 
-	if err := form.Repo.Update(form.ProjectSprint, form.UpdateProjectSprint); err != nil {
-		return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
-			"base": {err.Error()},
-		})
+	if form.ProjectSprint.Id == 0 {
+		if err := form.Repo.Create(form.ProjectSprint); err != nil {
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
+		}
+	} else {
+
+		if err := form.Repo.Update(form.ProjectSprint, form.UpdateProjectSprint); err != nil {
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
+		}
 	}
 
 	return nil
@@ -70,35 +79,40 @@ func (form *ProjectSprintUpdateForm) validateTitle() *ProjectSprintUpdateForm {
 
 		if err := form.Repo.Find(&projectSprint); err == nil {
 
-			if projectSprint.Id != form.ProjectSprint.Id {
+			if form.ProjectSprint.Id == 0 || projectSprint.Id != form.ProjectSprint.Id {
 				title.AddError("is already exists. Please use another name")
 			}
-
 		}
 
 		if title.IsClean() {
-			form.UpdateProjectSprint.Title = *form.Title
+			if form.ProjectSprint.Id == 0 {
+				form.ProjectSprint.Title = *form.Title
+			} else {
+				form.UpdateProjectSprint.Title = *form.Title
+			}
 		}
 	}
 
 	return form
 }
-
 func (form *ProjectSprintUpdateForm) validateProjectId() *ProjectSprintUpdateForm {
 	projectId := form.FindAttrByCode("projectId")
-
 	projectId.ValidateRequired()
 
 	projectRepo := repository.NewProjectRepository(nil, database.Db)
+	err := projectRepo.Find(&models.Project{Id: *form.ProjectId})
 
 	if projectId.IsClean() {
-		if err := projectRepo.Find(&models.Project{Id: *form.ProjectId}); err != nil || *form.ProjectId != form.ProjectSprint.ProjectId {
+		if err != nil || (form.ProjectSprint.Id != 0 && *form.ProjectId != form.ProjectSprint.ProjectId) {
 			projectId.AddError("is invalid")
 		} else {
-			form.UpdateProjectSprint.ProjectId = *form.ProjectId
+			if form.ProjectSprint.Id == 0 {
+				form.ProjectSprint.ProjectId = *form.ProjectId
+			} else {
+				form.UpdateProjectSprint.ProjectId = *form.ProjectId
+			}
 		}
 	}
-
 	return form
 }
 
@@ -111,16 +125,26 @@ func (form *ProjectSprintUpdateForm) validateStartDate() *ProjectSprintUpdateFor
 	projectRepo := repository.NewProjectRepository(nil, database.Db)
 
 	projectRepo.Find(&project)
-
 	endDate := startDate.Time().AddDate(0, 0, int(*project.SprintDuration*7))
 
-	projectSprint := models.ProjectSprint{StartDate: *startDate.Time(), EndDate: &endDate, ProjectId: *form.ProjectId, Id: form.ProjectSprint.Id}
+	var projectSprint models.ProjectSprint
+
+	if form.ProjectSprint.Id != 0 {
+		projectSprint = models.ProjectSprint{StartDate: *startDate.Time(), EndDate: &endDate, ProjectId: *form.ProjectId, Id: form.ProjectSprint.Id}
+	} else {
+		projectSprint = models.ProjectSprint{StartDate: *startDate.Time(), EndDate: &endDate, ProjectId: *form.ProjectId}
+	}
 
 	if err := form.Repo.FindCollapsedSprints(&projectSprint); err == nil {
 		startDate.AddError("is duplicate with another sprints")
 	} else {
-		form.UpdateProjectSprint.StartDate = *startDate.Time()
-		form.UpdateProjectSprint.EndDate = &endDate
+		if form.ProjectSprint.Id != 0 {
+			form.UpdateProjectSprint.StartDate = *startDate.Time()
+			form.UpdateProjectSprint.EndDate = &endDate
+		} else {
+			form.ProjectSprint.StartDate = *startDate.Time()
+			form.ProjectSprint.EndDate = &endDate
+		}
 	}
 
 	return form
