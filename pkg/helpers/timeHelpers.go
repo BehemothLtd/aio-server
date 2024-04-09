@@ -18,7 +18,7 @@ func EndOfDay(t *time.Time) time.Time {
 		t = &now
 	}
 
-	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 999999999, t.Location())
+	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 59, t.Location())
 }
 
 func StartAndEndOfWeek(t time.Time) (startOfWeek, endOfWeek time.Time) {

@@ -37,7 +37,8 @@ func (ai *AttendancesInput) ToPaginationAndQueryData() (AttendancesQueryInput, m
 			if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *ai.Query.CheckinAtGteq); err != nil {
 				query.CheckinAtGteq = nil
 			} else {
-				query.CheckinAtGteq = &timeValue
+				beginOfDay := helpers.BeginningOfDay(&timeValue)
+				query.CheckinAtGteq = &beginOfDay
 			}
 		}
 
@@ -45,7 +46,8 @@ func (ai *AttendancesInput) ToPaginationAndQueryData() (AttendancesQueryInput, m
 			if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *ai.Query.CheckinAtLteq); err != nil {
 				query.CheckinAtLteq = nil
 			} else {
-				query.CheckinAtLteq = &timeValue
+				endOfDay := helpers.EndOfDay(&timeValue)
+				query.CheckinAtLteq = &endOfDay
 			}
 		}
 
