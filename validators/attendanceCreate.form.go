@@ -8,7 +8,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"time"
 )
 
 type AttendanceCreateForm struct {
@@ -85,23 +84,19 @@ func (form *AttendanceCreateForm) validateCheckinAt() *AttendanceCreateForm {
 	checkinAt := form.FindAttrByCode("checkinAt")
 	checkinAt.ValidateRequired()
 	checkinAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
-	checkinAtTime, err := time.Parse(constants.DDMMYYY_HHMM_DateFormat, form.CheckinAt)
-	if err != nil {
-		checkinAt.AddError(err)
-	}
+	var checkinAtTime = *checkinAt.Time()
 
 	repo := repository.NewAttendanceRepository(nil, database.Db)
 	var count int64
 
 	if checkinAt.IsClean() {
-		err := repo.CountAtDateOfUser(&count, form.UserId, checkinAtTime)
-		if err != nil {
+		if err := repo.CountAtDateOfUser(&count, form.UserId, checkinAtTime); err != nil {
 			checkinAt.AddError(err)
+		} else if count > 0 {
+			checkinAt.AddError("user already checkin at this day")
+		} else {
+			form.Attendance.CheckinAt = checkinAt.Time()
 		}
-		if count > 0 {
-			checkinAt.AddError("already checkin at this day")
-		}
-		form.Attendance.CheckinAt = checkinAt.Time()
 	}
 	return form
 }
@@ -112,13 +107,11 @@ func (form *AttendanceCreateForm) validateCheckOutAt() *AttendanceCreateForm {
 	checkoutAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
 	checkinAt := form.FindAttrByCode("checkinAt")
-	checkinAtTime, err := time.Parse(constants.DDMMYYY_HHMM_DateFormat, form.CheckinAt)
-	if err != nil {
-		checkinAt.AddError(err)
-	}
-	endOfDay := helpers.EndOfDay(&checkinAtTime)
 
+	var checkinAtTime = *checkinAt.Time()
 	checkoutAt.ValidateMin(interface{}(checkinAtTime))
+
+	endOfDay := helpers.EndOfDay(&checkinAtTime)
 	checkoutAt.ValidateMax(interface{}(endOfDay))
 
 	if checkoutAt.IsClean() {
