@@ -84,10 +84,10 @@ func (form *AttendanceCreateForm) validateCheckinAt() *AttendanceCreateForm {
 	checkinAt := form.FindAttrByCode("checkinAt")
 	checkinAt.ValidateRequired()
 	checkinAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
-	var checkinAtTime = *checkinAt.Time()
 
 	repo := repository.NewAttendanceRepository(nil, database.Db)
 	var count int64
+	var checkinAtTime = *checkinAt.Time()
 
 	if checkinAt.IsClean() {
 		if err := repo.CountAtDateOfUser(&count, form.UserId, checkinAtTime); err != nil {
