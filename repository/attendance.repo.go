@@ -55,6 +55,19 @@ func (r *AttendanceRepository) AtDateOfUser(
 	).First(&attendance).Error
 }
 
+func (r *AttendanceRepository) CountAtDateOfUser(
+	count *int64,
+	userId int32,
+	time time.Time,
+) error {
+	dbTable := r.db.Model(&models.Attendance{})
+
+	return dbTable.Scopes(
+		r.AtDate(time),
+		r.OfUser(userId),
+	).Count(count).Error
+}
+
 func (r *AttendanceRepository) ListByUser(
 	attendances *[]*models.Attendance,
 	paginateData *models.PaginationData,
