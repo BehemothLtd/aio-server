@@ -52,7 +52,7 @@ func (wtr *WorkingTimelogRepository) FindByAttr(workingTimeLog *models.WorkingTi
 	dbTables := wtr.db.Model(&findRecord)
 
 	if !workingTimeLog.LoggedAt.IsZero() {
-		dateOfLogging := workingTimeLog.LoggedAt.Format(constants.YYMMDD_DateFormat)
+		dateOfLogging := workingTimeLog.LoggedAt.Format(constants.YYYYMMDD_DateFormat)
 		dbTables = dbTables.Where("logged_at = ?", dateOfLogging)
 
 	}
@@ -71,7 +71,7 @@ func (wtr *WorkingTimelogRepository) Create(workingTimelog *models.WorkingTimelo
 func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLogs *[]*models.WorkingTimelog, loggedAt time.Time, id int32) error {
 	dbTables := wtr.db.Model(&models.WorkingTimelog{})
 
-	dateOfLogging := loggedAt.Format(constants.YYMMDD_DateFormat)
+	dateOfLogging := loggedAt.Format(constants.YYYYMMDD_DateFormat)
 
 	return dbTables.Where("logged_at = ? AND id != ?", dateOfLogging, id).Find(&workingTimeLogs).Error
 }

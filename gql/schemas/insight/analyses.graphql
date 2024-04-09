@@ -4,3 +4,13 @@ type AnalysesTotalSummarize {
   ProjectCount: Int!
   WorkingTimeCount: Int!
 }
+
+type AnalysesProjectsIssueStatus {
+  Categories: [String!]!
+  Series: [AnalysesProjectsIssueStatusCounting!]!
+}
+
+type AnalysesProjectsIssueStatusCounting {
+  data: [Int!]!
+  name: String!
+}

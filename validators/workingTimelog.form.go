@@ -90,7 +90,7 @@ func (form *WorkingTimelogForm) validateAndFindRecordWithLoggedAt() *WorkingTime
 	field := form.FindAttrByCode("loggedAt")
 
 	field.ValidateRequired()
-	field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+	field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
 	if field.IsClean() {
 		form.WorkingTimelog.LoggedAt = *field.Time()
