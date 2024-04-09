@@ -10,7 +10,7 @@ import (
 	"aio-server/repository"
 )
 
-type ProjectSprintUpdateForm struct {
+type ProjectSprintForm struct {
 	Form
 	insightInputs.ProjectSprintFormInput
 	ProjectSprint       *models.ProjectSprint
@@ -22,8 +22,8 @@ func NewProjectSprintFormValidator(
 	input *insightInputs.ProjectSprintFormInput,
 	repo *repository.ProjectSprintRepository,
 	projectSprint *models.ProjectSprint,
-) ProjectSprintUpdateForm {
-	form := ProjectSprintUpdateForm{
+) ProjectSprintForm {
+	form := ProjectSprintForm{
 		Form:                   Form{},
 		ProjectSprintFormInput: *input,
 		ProjectSprint:          projectSprint,
@@ -35,7 +35,7 @@ func NewProjectSprintFormValidator(
 	return form
 }
 
-func (form *ProjectSprintUpdateForm) Save() error {
+func (form *ProjectSprintForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (form *ProjectSprintUpdateForm) Save() error {
 
 	return nil
 }
-func (form *ProjectSprintUpdateForm) validate() error {
+func (form *ProjectSprintForm) validate() error {
 	form.validateProjectId().
 		validateTitle().
 		validateStartDate().
@@ -68,7 +68,7 @@ func (form *ProjectSprintUpdateForm) validate() error {
 	}
 	return nil
 }
-func (form *ProjectSprintUpdateForm) validateTitle() *ProjectSprintUpdateForm {
+func (form *ProjectSprintForm) validateTitle() *ProjectSprintForm {
 
 	title := form.FindAttrByCode("title")
 
@@ -95,7 +95,7 @@ func (form *ProjectSprintUpdateForm) validateTitle() *ProjectSprintUpdateForm {
 
 	return form
 }
-func (form *ProjectSprintUpdateForm) validateProjectId() *ProjectSprintUpdateForm {
+func (form *ProjectSprintForm) validateProjectId() *ProjectSprintForm {
 	projectId := form.FindAttrByCode("projectId")
 	projectId.ValidateRequired()
 
@@ -116,7 +116,7 @@ func (form *ProjectSprintUpdateForm) validateProjectId() *ProjectSprintUpdateFor
 	return form
 }
 
-func (form *ProjectSprintUpdateForm) validateStartDate() *ProjectSprintUpdateForm {
+func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	startDate := form.FindAttrByCode("startDate")
 	startDate.ValidateRequired()
 	startDate.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
@@ -150,7 +150,7 @@ func (form *ProjectSprintUpdateForm) validateStartDate() *ProjectSprintUpdateFor
 	return form
 }
 
-func (form *ProjectSprintUpdateForm) assignAttributes() {
+func (form *ProjectSprintForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
