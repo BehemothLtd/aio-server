@@ -84,13 +84,13 @@ func (u *Uploader) uploadLocally(file *multipart.FileHeader, fileName string) (*
 		Filename: fileName,
 	}
 
-	if err := database.Db.Create(&newBlob); err != nil {
+	if result := database.Db.Create(&newBlob); result.Error != nil {
+		return nil, result.Error
+	} else {
 		return &UploadedBlob{
 			Url: uploadDst,
 			Key: newBlob.Key,
 		}, nil
-	} else {
-		return nil, err.Error
 	}
 }
 
@@ -133,10 +133,10 @@ func (u *Uploader) uploadToGCS(file *multipart.FileHeader, fileName string) (*Up
 		Filename: fileName,
 	}
 
-	if err := database.Db.Create(&newBlob); err != nil {
+	if result := database.Db.Create(&newBlob); result.Error != nil {
 		uploadClient.DeleteFile(blobKey)
 
-		return nil, err.Error
+		return nil, result.Error
 	} else {
 		filePublicUrl := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, newBlob.Key)
 

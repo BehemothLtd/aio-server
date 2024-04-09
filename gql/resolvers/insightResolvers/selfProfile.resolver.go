@@ -16,8 +16,13 @@ func (r *Resolver) SelfProfile(ctx context.Context) (*globalTypes.UserType, erro
 		return nil, exceptions.NewUnauthorizedError("")
 	}
 
-	repo := repository.NewUserRepository(&ctx, r.Db.Preload("ProjectAssignees.User"))
-	user = models.User{Id: 1}
+	repo := repository.NewUserRepository(
+		&ctx,
+		r.Db.Preload("Avatar.AttachmentBlob").
+			Preload("ProjectAssignees.User").
+			Preload("ProjectAssignees.Project"),
+	)
+	user = models.User{Id: user.Id}
 	repo.Find(&user)
 
 	return &globalTypes.UserType{

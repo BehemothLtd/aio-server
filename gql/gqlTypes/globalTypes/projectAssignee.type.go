@@ -64,3 +64,9 @@ func (tt *ProjectAssigneeType) Name(ctx context.Context) *string {
 func (tt *ProjectAssigneeType) LockVersion(ctx context.Context) *int32 {
 	return &tt.ProjectAssignee.LockVersion
 }
+
+func (tt *ProjectAssigneeType) Project(ctx context.Context) *ProjectType {
+	return &ProjectType{
+		Project: &tt.ProjectAssignee.Project,
+	}
+}

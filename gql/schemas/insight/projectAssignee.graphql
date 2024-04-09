@@ -6,6 +6,7 @@ type ProjectAssignee {
   developmentRoleId: ID
   userId: ID
   developmentRole: DevelopmentRole
+  project: Project
   name: String
   title: String
   lockVersion: Int
@@ -18,6 +19,7 @@ type ProjectAssigneeForSelfProfile {
   joinDate: Time
   leaveDate: Time
   title: String
+  project: Project
 }
 
 input ProjectAssigneeInputForProjectCreate {

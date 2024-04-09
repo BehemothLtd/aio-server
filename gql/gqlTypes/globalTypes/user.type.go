@@ -2,6 +2,7 @@ package globalTypes
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
 	"time"
@@ -112,8 +113,14 @@ func (ut *UserType) Gender(context.Context) *string {
 }
 
 // Birthday returns the Birthday of the user.
-func (ut *UserType) Birthday(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&ut.User.Birthday)
+func (ut *UserType) Birthday(context.Context) *string {
+	if ut.User.Birthday != nil {
+		birthday := ut.User.Birthday.Format(constants.YYYYMMDD_DateFormat)
+
+		return &birthday
+	} else {
+		return nil
+	}
 }
 
 // State returns the State of the user.
@@ -150,9 +157,9 @@ func (ut *UserType) ProjectsCount(context.Context) *int32 {
 func (ut *UserType) ProjectAssignees(context.Context) *[]*ProjectAssigneeType {
 	result := []*ProjectAssigneeType{}
 
-	for _, projectAssignee := range ut.User.ProjectAssignees {
+	for i := range ut.User.ProjectAssignees {
 		result = append(result, &ProjectAssigneeType{
-			ProjectAssignee: &projectAssignee,
+			ProjectAssignee: &ut.User.ProjectAssignees[i],
 		})
 	}
 
