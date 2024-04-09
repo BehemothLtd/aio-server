@@ -26,7 +26,7 @@ func (r *Resolver) DeviceTypeDestroy(ctx context.Context, args insightInputs.Dev
 
 	deviceType := models.DeviceType{Id: deviceTypeId}
 
-	repo := repository.NewDeviceTypeRepository(&ctx, r.Db)
+	repo := repository.NewDeviceTypeRepository(&ctx, r.Db.Preload("Devices"))
 
 	if err := repo.Find(&deviceType); err != nil {
 		return nil, exceptions.NewRecordNotFoundError()

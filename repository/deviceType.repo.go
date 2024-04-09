@@ -25,7 +25,7 @@ func (r *DeviceTypeRepository) List(
 	deviceTypes *[]*models.DeviceType,
 	paginateData *models.PaginationData,
 ) error {
-	dbTable := r.db.Model(&models.DeviceType{}).Preload("Devices")
+	dbTable := r.db.Model(&models.DeviceType{})
 
 	return dbTable.Scopes(
 		helpers.Paginate(dbTable.Scopes(), paginateData),
@@ -33,13 +33,13 @@ func (r *DeviceTypeRepository) List(
 }
 
 func (r *DeviceTypeRepository) Find(deviceType *models.DeviceType) error {
-	dbTables := r.db.Model(&models.DeviceType{}).Preload("Devices")
+	dbTables := r.db.Model(&models.DeviceType{})
 
 	return dbTables.Where(&deviceType).First(&deviceType).Error
 }
 
 func (r *DeviceTypeRepository) FindById(deviceType *models.DeviceType, id int32) error {
-	dbTables := r.db.Model(&models.DeviceType{}).Preload("Devices")
+	dbTables := r.db.Model(&models.DeviceType{})
 
 	return dbTables.First(&deviceType, id).Error
 }
