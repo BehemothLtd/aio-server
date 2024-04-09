@@ -66,7 +66,7 @@ func (attribute *TimeAttribute) ValidateMax(max interface{}) {
 	switch v := max.(type) {
 	case time.Time:
 		if attribute.TimeValue != nil && v.Before(*attribute.TimeValue) {
-			attribute.AddError(fmt.Sprintf("is invalid. Need to be after %+v", v))
+			attribute.AddError(fmt.Sprintf("is invalid. Need to be before %+v", v))
 		}
 	default:
 		panic("Need to provide time interface{} as params")
