@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"gorm.io/gorm"
 )
 
 type User struct {
@@ -25,7 +26,7 @@ type User struct {
 	Address           *string
 	Phone             *string
 	Gender            *enums.UserGenderType
-	Birthday          time.Time
+	Birthday          *time.Time
 	SlackId           *string
 	State             enums.UserState
 	Timing            *UserTiming
@@ -75,4 +76,12 @@ func (user *User) IsBod() bool {
 		}
 	}
 	return result
+}
+
+func (u *User) BeforeUpdate(tx *gorm.DB) (err error) {
+	if tx.Statement.Changed() {
+		tx.Statement.SetColumn("lock_version", u.LockVersion+1)
+	}
+
+	return
 }

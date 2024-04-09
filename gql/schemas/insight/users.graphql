@@ -13,7 +13,7 @@ type User {
   companyLevelId: ID
   state: String!
   address: String
-  birthday: Time
+  birthday: String
   gender: String
   phone: String
   timingActiveAt: Time
@@ -71,6 +71,7 @@ input SelfUpdateProfileInput {
   birthday: String
   gender: String
   phone: String
+  fullName: String
 }
 
 type SelfUpdateProfileRes {
@@ -85,11 +86,15 @@ type SelfUpdateProfile {
   about: String
   avatarUrl: String
   createdAt: Time
+  companyLevelId: ID
+  address: String
+  birthday: String
   gender: String
   phone: String
+  timingActiveAt: Time
+  timingDeactiveAt: Time
   slackId: String
-  birthday: Time
-  address: String
+  projectAssignees: [ProjectAssigneeForSelfProfile]
 }
 
 input SelfUpdatePassword {
@@ -129,9 +134,8 @@ type SelfProfile {
   avatarUrl: String
   createdAt: Time
   companyLevelId: ID
-  state: String!
   address: String
-  birthday: Time
+  birthday: String
   gender: String
   phone: String
   timingActiveAt: Time

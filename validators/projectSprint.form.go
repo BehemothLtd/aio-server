@@ -119,7 +119,7 @@ func (form *ProjectSprintForm) validateProjectId() *ProjectSprintForm {
 func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 	startDate := form.FindAttrByCode("startDate")
 	startDate.ValidateRequired()
-	startDate.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DD_MM_YY_DateFormat)
+	startDate.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
 	project := models.Project{Id: *form.ProjectId}
 	projectRepo := repository.NewProjectRepository(nil, database.Db)
