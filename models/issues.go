@@ -36,6 +36,12 @@ type Issue struct {
 	UpdatedAt       time.Time
 }
 
+type IssuesDeadlineBaseState struct {
+	Date    time.Time
+	Done    int32
+	NotDone int32
+}
+
 func (i *Issue) BeforeCreate(tx *gorm.DB) (err error) {
 	i.SetPosition(tx).SetCode(tx)
 

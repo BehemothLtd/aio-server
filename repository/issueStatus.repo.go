@@ -4,6 +4,7 @@ import (
 	"aio-server/enums"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
 	"strings"
@@ -82,4 +83,11 @@ func (r *IssueStatusRepository) List(
 			r.statusTypeEq(query.StatusTypeEq),
 		), paginateData),
 	).Order("id desc").Find(&issueStatuses).Error
+}
+
+func (r *IssueStatusRepository) DefaultScrum(issueStatus *[]models.IssueStatus) error {
+	return r.db.Model(models.IssueStatus{}).
+		Where("title IN ?", constants.ScrumDefaultIssueStatus()).
+		Find(&issueStatus).
+		Error
 }
