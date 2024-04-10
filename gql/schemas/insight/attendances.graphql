@@ -33,3 +33,13 @@ type SelfAttendance {
   checkoutAt: Time
   createdAt: Time
 }
+
+input AttendanceInput {
+  checkinAt: Time!
+  checkoutAt: Time!
+  userId: ID!
+}
+
+type AttendanceModification {
+  attendance: Attendance
+}
