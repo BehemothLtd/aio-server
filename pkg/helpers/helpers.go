@@ -107,7 +107,7 @@ func RubyTimeParser(timeString string) (*time.Time, error) {
 	layout := "2006-01-02 15:04:05 -0700"
 
 	// Parse the string to time.Time object
-	if t, err := time.Parse(layout, timeString); err != nil {
+	if t, err := time.ParseInLocation(layout, timeString, time.Local); err != nil {
 		fmt.Println("Error parsing time:", err)
 		return nil, errors.New("invalid time string")
 	} else {

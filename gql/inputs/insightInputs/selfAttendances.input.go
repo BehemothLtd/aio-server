@@ -28,7 +28,7 @@ func (sai *SelfAttendancesInput) ToPaginationAndQueryData() (SelfAttendancesQuer
 	query := SelfAttendancesQueryInput{}
 
 	if sai.Query != nil && sai.Query.CheckinAtGteq != nil && strings.TrimSpace(*sai.Query.CheckinAtGteq) != "" {
-		if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *sai.Query.CheckinAtGteq); err != nil {
+		if timeValue, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *sai.Query.CheckinAtGteq, time.Local); err != nil {
 			query.CheckinAtGteq = nil
 		} else {
 			year, month, day := timeValue.Date()
@@ -38,7 +38,7 @@ func (sai *SelfAttendancesInput) ToPaginationAndQueryData() (SelfAttendancesQuer
 	}
 
 	if sai.Query != nil && sai.Query.CheckinAtLteq != nil && strings.TrimSpace(*sai.Query.CheckinAtLteq) != "" {
-		if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *sai.Query.CheckinAtLteq); err != nil {
+		if timeValue, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *sai.Query.CheckinAtLteq, time.Local); err != nil {
 			query.CheckinAtLteq = nil
 		} else {
 			year, month, day := timeValue.Date()

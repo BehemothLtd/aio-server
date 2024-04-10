@@ -34,7 +34,7 @@ func (ai *AttendancesInput) ToPaginationAndQueryData() (AttendancesQueryInput, m
 
 	if ai.Query != nil {
 		if ai.Query.CheckinAtGteq != nil && strings.TrimSpace(*ai.Query.CheckinAtGteq) != "" {
-			if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *ai.Query.CheckinAtGteq); err != nil {
+			if timeValue, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *ai.Query.CheckinAtGteq, time.Local); err != nil {
 				query.CheckinAtGteq = nil
 			} else {
 				beginOfDay := helpers.BeginningOfDay(&timeValue)
@@ -43,7 +43,7 @@ func (ai *AttendancesInput) ToPaginationAndQueryData() (AttendancesQueryInput, m
 		}
 
 		if ai.Query.CheckinAtLteq != nil && strings.TrimSpace(*ai.Query.CheckinAtLteq) != "" {
-			if timeValue, err := time.Parse(constants.YYYYMMDD_DateFormat, *ai.Query.CheckinAtLteq); err != nil {
+			if timeValue, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *ai.Query.CheckinAtLteq, time.Local); err != nil {
 				query.CheckinAtLteq = nil
 			} else {
 				endOfDay := helpers.EndOfDay(&timeValue)

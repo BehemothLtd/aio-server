@@ -35,7 +35,7 @@ func (attribute *TimeAttribute) ValidateRequired() {
 
 func (attribute *TimeAttribute) ValidateFormat(formatter string, formatterRemind string) {
 	if attribute.Value != "" {
-		if timeValue, err := time.Parse(formatter, attribute.Value); err != nil {
+		if timeValue, err := time.ParseInLocation(formatter, attribute.Value, time.Local); err != nil {
 			attribute.AddError(fmt.Sprintf("need to be formatted as %s", formatterRemind))
 		} else {
 			attribute.TimeValue = &timeValue
