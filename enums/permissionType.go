@@ -25,6 +25,7 @@ clients
 issue_statuses
 devices
 timesheet_templates
+attendances
 )
 */
 type PermissionTargetType string

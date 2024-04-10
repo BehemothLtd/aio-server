@@ -12,6 +12,15 @@ func BeginningOfDay(t *time.Time) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
 }
 
+func EndOfDay(t *time.Time) time.Time {
+	if t == nil {
+		now := time.Now()
+		t = &now
+	}
+
+	return time.Date(t.Year(), t.Month(), t.Day(), 23, 59, 59, 59, t.Location())
+}
+
 func StartAndEndOfWeek(t time.Time) (startOfWeek, endOfWeek time.Time) {
 	// Start of week (Monday 00:00:00)
 	// Assuming week starts on Monday, subtract the weekday number from the current date.
