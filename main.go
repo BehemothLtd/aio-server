@@ -14,9 +14,8 @@ import (
 )
 
 func main() {
-	initializers.LoadEnv()
-
 	os.Setenv("TZ", "Asia/Ho_Chi_Minh")
+	initializers.LoadEnv()
 
 	// Load DB
 	db := database.InitDb()
