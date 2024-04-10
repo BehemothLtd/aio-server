@@ -59,13 +59,20 @@ func (r *AttendanceRepository) CountAtDateOfUser(
 	count *int64,
 	userId int32,
 	time time.Time,
+	id *int32,
 ) error {
 	dbTable := r.db.Model(&models.Attendance{})
 
-	return dbTable.Scopes(
+	dbTable = dbTable.Scopes(
 		r.AtDate(time),
 		r.OfUser(userId),
-	).Count(count).Error
+	)
+
+	if id != nil {
+		dbTable = dbTable.Scopes(r.FilterOutByID(*id))
+	}
+
+	return dbTable.Count(count).Error
 }
 
 func (r *AttendanceRepository) ListByUser(
@@ -107,6 +114,12 @@ func (r *AttendanceRepository) AtDate(time time.Time) func(db *gorm.DB) *gorm.DB
 	}
 }
 
+func (r *AttendanceRepository) FilterOutByID(id int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("id != ?", id)
+	}
+}
+
 func (r *AttendanceRepository) checkinAtGteq(checkinAtGteq *time.Time) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if checkinAtGteq == nil {
@@ -143,4 +156,8 @@ func (r *AttendanceRepository) Create(attendance *models.Attendance) error {
 
 func (r *AttendanceRepository) Update(attendance *models.Attendance, updateAttendance models.Attendance) error {
 	return r.db.Model(&attendance).Updates(updateAttendance).First(&attendance).Error
+}
+
+func (r *AttendanceRepository) Destroy(attendance *models.Attendance) error {
+	return r.db.Model(&attendance).Delete(&attendance).Error
 }
