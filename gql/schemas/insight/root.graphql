@@ -88,6 +88,7 @@ type Mutation {
   MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 
   AttendanceCreate(input: AttendanceInput!): AttendanceModification!
+  AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!
 }
 
 scalar Time

@@ -18,7 +18,7 @@ type AttendanceCreateService struct {
 }
 
 func (acs *AttendanceCreateService) Execute() error {
-	form := validators.NewAttendanceCreateFormValidator(
+	form := validators.NewAttendanceFormValidator(
 		&acs.Args.Input,
 		repository.NewAttendanceRepository(acs.Ctx, acs.Db),
 		acs.Attendance,
