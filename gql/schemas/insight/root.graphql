@@ -43,6 +43,8 @@ type Query {
   Attendance(id: ID!): Attendance!
   
   AnalysesProjectsIssueStatus(): AnalysesProjectsIssueStatus!
+
+  Devices(input: PagyInput, query: DevicesQuery): DeviceCollection
 }
 
 type Mutation {
