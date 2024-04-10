@@ -24,7 +24,7 @@ func (r *Resolver) DeviceType(ctx context.Context, args insightInputs.DeviceType
 	}
 
 	deviceType := models.DeviceType{}
-	repo := repository.NewDeviceTypeRepository(&ctx, r.Db)
+	repo := repository.NewDeviceTypeRepository(&ctx, r.Db.Preload("Devices"))
 	err = repo.FindById(&deviceType, deviceTypeId)
 
 	if err != nil {
