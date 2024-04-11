@@ -2,6 +2,7 @@ package validators
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -36,7 +37,13 @@ func (attribute *StringAttribute) ValidateRequired() {
 }
 
 func (attribute *StringAttribute) ValidateFormat(formatter string, formatterRemind string) {
-	// No need to implement yet
+	if attribute.Value != "" {
+		_, err := regexp.MatchString(formatter, attribute.Value)
+
+		if err != nil {
+			attribute.AddError(fmt.Sprintf("invalid with data formatter %s", formatterRemind))
+		}
+	}
 }
 
 func (attribute *StringAttribute) Time() *time.Time {

@@ -78,6 +78,10 @@ type SelfUpdateProfileRes {
   user: SelfUpdateProfile
 }
 
+type UserType {
+  user: User
+}
+
 type SelfUpdateProfile {
   id: ID
   email: String
@@ -142,4 +146,20 @@ type SelfProfile {
   timingDeactiveAt: Time
   slackId: String
   projectAssignees: [ProjectAssigneeForSelfProfile]
+}
+
+input UserUpdateInput {
+  fullName: String
+  email: String
+  phone: String
+  address: String
+  birthday: String
+  gender: String
+  slackId: String
+  state: String
+  companyLevelId: Int
+  password: String
+  about: String
+  avatarKey: String
+  lockVersion: Int
 }
