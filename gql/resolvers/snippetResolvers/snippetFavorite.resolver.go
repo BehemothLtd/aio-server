@@ -21,6 +21,6 @@ func (r *Resolver) SnippetFavorite(ctx context.Context, args msInputs.SnippetFav
 	}
 
 	return &snippetTypes.SnippetFavoriteType{
-		Favorited: *&service.Result.Favorited,
+		Favorited: service.Favorited,
 	}, nil
 }
