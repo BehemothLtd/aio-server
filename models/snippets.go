@@ -9,20 +9,20 @@ import (
 )
 
 type Snippet struct {
-	Id             int32  `gorm:"not null;"`
-	Title          string `gorm:"not null;type:varchar(255);default:null"`
-	Content        string `gorm:"not null;type:longtext;default:null"`
-	UserId         int32  `gorm:"not null;type:bigint;default:null"`
-	Slug           string
-	SnippetType    enums.SnippetType `gorm:"not null;"`
-	FavoritesCount int               `gorm:"not null;default:0"`
-	FavoritedUsers []User            `gorm:"many2many:snippets_favorites"`
-	Pins           []Pin             `gorm:"polymorphic:Parent;polymorphicValue:1"`
-	Tags           []*Tag            `gorm:"many2many:snippets_tags;"`
-	Favorited      bool
-	CreatedAt      time.Time
-	UpdatedAt      time.Time
-	LockVersion    int32 `gorm:"not null;default:0"`
+	Id                int32  `gorm:"not null;"`
+	Title             string `gorm:"not null;type:varchar(255);default:null"`
+	Content           string `gorm:"not null;type:longtext;default:null"`
+	UserId            int32  `gorm:"not null;type:bigint;default:null"`
+	Slug              string
+	SnippetType       enums.SnippetType `gorm:"not null;"`
+	FavoritesCount    int               `gorm:"not null;default:0"`
+	FavoritedUsers    []User            `gorm:"many2many:snippets_favorites"`
+	Pins              []Pin             `gorm:"polymorphic:Parent;polymorphicValue:1"`
+	Tags              []*Tag            `gorm:"many2many:snippets_tags;"`
+	SnippetsFavorites []*SnippetsFavorite
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	LockVersion       int32 `gorm:"not null;default:0"`
 }
 
 func (s *Snippet) EncryptContent(Passkey string) error {

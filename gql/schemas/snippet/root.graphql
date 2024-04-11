@@ -15,6 +15,11 @@ type Query {
   ): SnippetsCollection!
   SnippetDecryptContent(id: ID!, Passkey: String!): String
 
+  SelfFavoritedSnippets(
+    input: PagyInput
+    query: SnippetsQuery
+  ): SnippetsCollection!
+
   Tag(id: ID!): Tag!
   Tags(input: PagyInput, query: TagsQuery): TagsCollection!
   TagsAll: [TagForSelection!]

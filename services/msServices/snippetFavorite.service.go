@@ -20,7 +20,7 @@ type SnippetFavoriteService struct {
 
 	user    models.User
 	snippet models.Snippet
-	Result  models.Snippet
+	Favorited bool
 }
 
 // Execute performs the favoriting or unfavoriting action.
@@ -37,7 +37,7 @@ func (sfs *SnippetFavoriteService) Execute() error {
 		return exceptions.NewUnprocessableContentError("Unable to perform this action", nil)
 	}
 
-	sfs.Result = *result
+	sfs.Favorited = result
 	return nil
 }
 

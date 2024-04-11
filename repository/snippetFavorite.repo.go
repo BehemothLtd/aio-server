@@ -39,7 +39,9 @@ func (r *SnippetFavoriteRepository) FindByUserAndSnippet(
 }
 
 // Toggle toggles a snippet favorite.
-func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (result *models.Snippet, err error) {
+func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models.User) (result bool, err error) {
+	favorited := false
+
 	err = r.db.Transaction(func(tx *gorm.DB) error {
 		snippetFavorited := models.SnippetsFavorite{UserId: user.Id, SnippetId: snippet.Id}
 		found, err := r.FindByUserAndSnippet(&snippetFavorited)
@@ -49,6 +51,7 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 
 		snippetFavoriteDb := tx.Table("snippets_favorites")
 		snippetDb := tx.Table("snippets")
+
 		if found != nil {
 			// Found -> delete -> unfavorited
 			deleteResult := snippetFavoriteDb.Where(&snippetFavorited).Delete(&snippetFavorited)
@@ -61,9 +64,7 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 				return updateResult.Error
 			}
 
-			result = &models.Snippet{
-				Favorited: false,
-			}
+			favorited = false
 		} else {
 			// Not Found -> create -> favorited
 			createResult := snippetFavoriteDb.Create(&snippetFavorited)
@@ -76,13 +77,11 @@ func (r *SnippetFavoriteRepository) Toggle(snippet *models.Snippet, user *models
 				return updateResult.Error
 			}
 
-			result = &models.Snippet{
-				Favorited: true,
-			}
+			favorited = true
 		}
 
 		return nil
 	})
 
-	return result, err
+	return favorited, err
 }
