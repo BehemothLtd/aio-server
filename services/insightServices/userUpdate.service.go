@@ -19,7 +19,10 @@ type UserUpdateService struct {
 
 func (us *UserUpdateService) Execute() error {
 	repo := repository.NewUserRepository(us.Ctx, us.Db)
-	repo.Find(us.User)
+	err := repo.FindWithAvatar(us.User)
+	if err != nil {
+		return err
+	}
 
 	form := validators.NewUserUpdateFormValidator(
 		&us.Args.Input,

@@ -41,7 +41,7 @@ func (attribute *StringAttribute) ValidateFormat(formatter string, formatterRemi
 		_, err := regexp.MatchString(formatter, attribute.Value)
 
 		if err != nil {
-			attribute.AddError(fmt.Sprintf("invalid with data formatter $s", formatterRemind))
+			attribute.AddError(fmt.Sprintf("invalid with data formatter %s", formatterRemind))
 		}
 	}
 }
