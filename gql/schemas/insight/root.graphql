@@ -9,6 +9,7 @@ type Query {
   SelfAttendances(input: PagyInput, query: SelfAttendancesQuery): SelfAttendanceCollection!
   SelfThisWeekIssuesState(): SelfThisWeekIssuesState!
   SelfProfile(): SelfProfile!
+  SelfPermission(): [Permission]!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!

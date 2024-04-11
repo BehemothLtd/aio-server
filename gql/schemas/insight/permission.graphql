@@ -1,0 +1,5 @@
+type Permission {
+  id: ID
+  Target: String
+  Action: String
+}
