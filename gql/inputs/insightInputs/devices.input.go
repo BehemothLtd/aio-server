@@ -29,7 +29,7 @@ func (di *DevicesInput) ToPaginationDataAndQuery() (DevicesQueryInput, models.Pa
 			query.StateIn = di.Query.StateIn
 
 			for _, state := range *di.Query.StateIn {
-				_, err := enums.ParseDeviceStateType(*state)
+				_, err := enums.ParseDeviceStateType(state)
 				if err != nil {
 					query.StateIn = nil
 				}

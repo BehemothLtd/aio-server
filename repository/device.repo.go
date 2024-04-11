@@ -24,9 +24,9 @@ func NewDeviceRepository(c *context.Context, db *gorm.DB) *DeviceRepository {
 	}
 }
 
-func (dr *DeviceRepository) deviceTypeIdIn(deviceTypeIdIn *[]*int32) func(db *gorm.DB) *gorm.DB {
+func (dr *DeviceRepository) deviceTypeIdIn(deviceTypeIdIn *[]int32) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if deviceTypeIdIn == nil || len(*deviceTypeIdIn) == 0 {
+		if deviceTypeIdIn == nil {
 			return db
 		} else {
 			return db.Where(gorm.Expr(`device_type_id IN (?)`, *deviceTypeIdIn))
@@ -44,14 +44,14 @@ func (dr *DeviceRepository) nameCont(nameCont *string) func(db *gorm.DB) *gorm.D
 	}
 }
 
-func (dr *DeviceRepository) stateIn(stateIn *[]*string) func(db *gorm.DB) *gorm.DB {
+func (dr *DeviceRepository) stateIn(stateIn *[]string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if stateIn == nil || len(*stateIn) == 0 {
+		if stateIn == nil {
 			return db
 		} else {
 			stateInInInt := []enums.DeviceStateType{}
 			for _, state := range *stateIn {
-				stateInInt, err := enums.ParseDeviceStateType(*state)
+				stateInInt, err := enums.ParseDeviceStateType(state)
 				if err == nil {
 					stateInInInt = append(stateInInInt, stateInInt)
 				}
@@ -62,9 +62,9 @@ func (dr *DeviceRepository) stateIn(stateIn *[]*string) func(db *gorm.DB) *gorm.
 	}
 }
 
-func (dr *DeviceRepository) userIdIn(userIdIn *[]*int32) func(db *gorm.DB) *gorm.DB {
+func (dr *DeviceRepository) userIdIn(userIdIn *[]int32) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if userIdIn == nil || len(*userIdIn) == 0 {
+		if userIdIn == nil {
 			return db
 		} else {
 			return db.Where(gorm.Expr(`devices.user_id IN (?)`, *userIdIn))

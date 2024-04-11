@@ -15,8 +15,8 @@ type DeviceCollection {
 }
 
 input DevicesQuery {
-  deviceTypeIdIn: [Int]
+  deviceTypeIdIn: [Int!]
   nameCont: String
-  stateIn: [String]
-  userIdIn: [Int]
+  stateIn: [String!]
+  userIdIn: [Int!]
 }

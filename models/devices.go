@@ -8,14 +8,14 @@ import (
 )
 
 type Device struct {
-	Id                    int32  `gorm:"not null;autoIncrement"`
-	UserId                int32  `gorm:"not null;type:bigint;default:null"`
-	User                  User   `gorm:"foreignKey:UserId"`
-	Name                  string `gorm:"not null;"`
-	Code                  string `gorm:"not null;"`
+	Id                    int32
+	UserId                int32
+	User                  User
+	Name                  string
+	Code                  string
 	Description           string
-	State                 enums.DeviceStateType `gorm:"not null;"`
-	DeviceTypeId          int32                 `gorm:"not null;"`
+	State                 enums.DeviceStateType
+	DeviceTypeId          int32
 	Seller                string
 	BuyAt                 time.Time
 	CreatedAt             time.Time
