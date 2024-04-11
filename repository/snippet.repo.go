@@ -80,6 +80,22 @@ func (r *SnippetRepository) ListByUserPinned(
 	).Order("id desc").Find(&snippets).Error
 }
 
+func (r *SnippetRepository) ListByUserFavorited(
+	snippets *[]*models.Snippet,
+	paginateData *models.PaginationData,
+	query msInputs.SnippetsQueryInput,
+	user *models.User,
+) error {
+	snippetsDb := r.db.Model(&models.Snippet{}).Preload("FavoritedUsers").Preload("Pins")
+	dbTables := snippetsDb.InnerJoins("SnippetsFavorites", r.db.Where(&models.SnippetsFavorite{UserId: user.Id}))
+
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Scopes(
+			r.titleLike(query.TitleCont),
+		), paginateData),
+	).Order("id desc").Find(&snippets).Error
+}
+
 // titleLike returns a function that filters snippets by title.
 func (r *SnippetRepository) titleLike(titleLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
