@@ -2,18 +2,16 @@ package insightInputs
 
 type UserFormInput struct {
 	FullName       *string
-	Password       *string
-	Name           *string
 	Email          *string
 	Phone          *string
+	Address        *string
 	Birthday       *string
+	Gender         *string
 	SlackId        *string
+	State          *string
+	CompanyLevelId *int32
+	Password       *string
 	About          *string
 	AvatarKey      *string
-	Address        *string
-	Gender         *string
-	State          *string
 	LockVersion    *int32
-	Active         *bool
-	CompanyLevelId *int32
 }

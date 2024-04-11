@@ -149,19 +149,17 @@ type SelfProfile {
 }
 
 input UserUpdateInput {
-  about: String
-  avatarKey: String
-  slackId: String
+  fullName: String
+  email: String
+  phone: String
   address: String
   birthday: String
   gender: String
-  phone: String
-  fullName: String
-  name: String
-  password: String
-  companyLevelId: Int
-  active: Boolean
-  lockVersion: Int
+  slackId: String
   state: String
-  email: String
+  companyLevelId: Int
+  password: String
+  about: String
+  avatarKey: String
+  lockVersion: Int
 }

@@ -33,5 +33,7 @@ func (r *Resolver) UserUpdate(ctx context.Context, args insightInputs.UserUpdate
 		return nil, err
 	}
 
-	return nil, nil
+	return &globalTypes.UserUpdatedType{
+		User: &globalTypes.UserType{User: &updatedUser},
+	}, nil
 }
