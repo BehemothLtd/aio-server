@@ -25,7 +25,9 @@ func (lt *LeaveDayRequestType) UserId(ctx context.Context) *graphql.ID {
 }
 
 func (lt *LeaveDayRequestType) ApproverId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(*lt.LeaveDayRequest.ApproverId)
+	defaultIdValue := helpers.GetInt32OrDefault(lt.LeaveDayRequest.ApproverId)
+
+	return helpers.GqlIDP(defaultIdValue)
 }
 
 func (lt *LeaveDayRequestType) User(ctx context.Context) *UserType {
@@ -33,7 +35,11 @@ func (lt *LeaveDayRequestType) User(ctx context.Context) *UserType {
 }
 
 func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {
-	return &UserType{User: lt.LeaveDayRequest.Approver}
+	if lt.LeaveDayRequest.ApproverId != nil {
+		return &UserType{User: lt.LeaveDayRequest.Approver}
+	} else {
+		return nil
+	}
 }
 
 func (lt *LeaveDayRequestType) From(ctx context.Context) *graphql.Time {
