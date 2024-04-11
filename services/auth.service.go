@@ -56,7 +56,7 @@ func (a *AuthService) findUser() (*models.User, error) {
 
 	if err != nil {
 		return nil, exceptions.NewUnprocessableContentError("base", exceptions.ResourceModificationError{
-			"base": {"User Or Password is incorrect"},
+			"password": {"User Or Password is incorrect"},
 		})
 	}
 	return user, nil
