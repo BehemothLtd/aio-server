@@ -69,7 +69,7 @@ func (r *UserRepository) Auth(email string, password string) (user *models.User,
 	return &u, nil
 }
 
-func (r *Repository) List(
+func (r *UserRepository) List(
 	users *[]*models.User,
 	paginateData *models.PaginationData,
 	query insightInputs.UserQueryInput,
@@ -87,7 +87,7 @@ func (r *Repository) List(
 	).Order("id desc").Find(&users).Error
 }
 
-func (r *Repository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
+func (r *UserRepository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if nameLike == nil {
 			return db
@@ -97,7 +97,7 @@ func (r *Repository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func (r *Repository) fullNameLike(fullNameLike *string) func(db *gorm.DB) *gorm.DB {
+func (r *UserRepository) fullNameLike(fullNameLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if fullNameLike == nil {
 			return db
@@ -107,7 +107,7 @@ func (r *Repository) fullNameLike(fullNameLike *string) func(db *gorm.DB) *gorm.
 	}
 }
 
-func (r *Repository) emailLike(emailLike *string) func(db *gorm.DB) *gorm.DB {
+func (r *UserRepository) emailLike(emailLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if emailLike == nil {
 			return db
@@ -117,7 +117,7 @@ func (r *Repository) emailLike(emailLike *string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func (r *Repository) slackIdLike(slackIdLike *string) func(db *gorm.DB) *gorm.DB {
+func (r *UserRepository) slackIdLike(slackIdLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if slackIdLike == nil {
 			return db
@@ -127,7 +127,7 @@ func (r *Repository) slackIdLike(slackIdLike *string) func(db *gorm.DB) *gorm.DB
 	}
 }
 
-func (r *Repository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
+func (r *UserRepository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if stateEq == nil {
 			return db

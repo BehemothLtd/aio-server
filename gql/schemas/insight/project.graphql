@@ -2,6 +2,7 @@ type Project {
   id: ID
   name: String
   code: String
+  description: String
   projectType: String
   projectPriority: String
   state: String!
@@ -28,7 +29,7 @@ input ProjectsQuery {
   nameCont: String
   descriptionCont: String
   projectTypeEq: String
-  activeEq: String
+  stateEq: String
 }
 
 input ProjectCreateInput {

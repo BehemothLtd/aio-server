@@ -11,7 +11,7 @@ type ProjectsQueryInput struct {
 	NameCont        *string
 	DescriptionCont *string
 	ProjectTypeEq   *string
-	ActiveEq        *string
+	StateEq         *string
 }
 
 type ProjectsInput struct {
@@ -38,9 +38,9 @@ func (pi *ProjectsInput) ToPaginationDataAndQuery() (ProjectsQueryInput, models.
 			}
 		}
 
-		if pi.Query.ActiveEq != nil && strings.TrimSpace(*pi.Query.ActiveEq) != "" {
-			if activeEq, err := enums.ParseProjectState(*pi.Query.ActiveEq); err == nil {
-				query.ActiveEq = (*string)(&activeEq)
+		if pi.Query.StateEq != nil && strings.TrimSpace(*pi.Query.StateEq) != "" {
+			if stateEq, err := enums.ParseProjectState(*pi.Query.StateEq); err == nil {
+				query.StateEq = (*string)(&stateEq)
 			}
 		}
 	}

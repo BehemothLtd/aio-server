@@ -34,7 +34,7 @@ func (r *ProjectRepository) Find(project *models.Project) error {
 // NameCont        *string
 // DescriptionCont *string
 // ProjectTypeEq   *string
-// ActiveEq        *string
+// StateEq        *string
 
 func (r *ProjectRepository) List(
 	projects *[]*models.Project,
@@ -48,12 +48,12 @@ func (r *ProjectRepository) List(
 			r.nameCont(query.NameCont),
 			r.DescriptionCont(query.DescriptionCont),
 			r.projectTypeEq(query.ProjectTypeEq),
-			r.activeEq(query.ActiveEq),
+			r.stateEq(query.StateEq),
 		), paginateData),
 	).Order("id desc").Find(&projects).Error
 }
 
-func (r *Repository) nameCont(nameLike *string) func(db *gorm.DB) *gorm.DB {
+func (r *ProjectRepository) nameCont(nameLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if nameLike == nil {
 			return db
@@ -63,7 +63,7 @@ func (r *Repository) nameCont(nameLike *string) func(db *gorm.DB) *gorm.DB {
 	}
 }
 
-func (r *Repository) DescriptionCont(descriptionCont *string) func(db *gorm.DB) *gorm.DB {
+func (r *ProjectRepository) DescriptionCont(descriptionCont *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if descriptionCont == nil {
 			return db
@@ -73,7 +73,7 @@ func (r *Repository) DescriptionCont(descriptionCont *string) func(db *gorm.DB) 
 	}
 }
 
-func (r *Repository) projectTypeEq(projectTypeEq *string) func(db *gorm.DB) *gorm.DB {
+func (r *ProjectRepository) projectTypeEq(projectTypeEq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if projectTypeEq == nil {
 			return db
@@ -85,14 +85,14 @@ func (r *Repository) projectTypeEq(projectTypeEq *string) func(db *gorm.DB) *gor
 	}
 }
 
-func (r *Repository) activeEq(activeEq *string) func(db *gorm.DB) *gorm.DB {
+func (r *ProjectRepository) stateEq(stateEq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if activeEq == nil {
+		if stateEq == nil {
 			return db
 		} else {
-			activeEqInInt, _ := enums.ParseProjectState(*activeEq)
+			stateEqInInt, _ := enums.ParseProjectState(*stateEq)
 
-			return db.Where(gorm.Expr(`projects.state = ?`, activeEqInInt))
+			return db.Where(gorm.Expr(`projects.state = ?`, stateEqInInt))
 		}
 	}
 }
