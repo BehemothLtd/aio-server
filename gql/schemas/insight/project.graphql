@@ -19,6 +19,18 @@ type Project {
   lockVersion: Int!
 }
 
+type ProjectCollection {
+  collection: [Project!]
+  metadata: Metadata!
+}
+
+input ProjectsQuery {
+  nameCont: String
+  descriptionCont: String
+  projectTypeEq: String
+  activeEq: String
+}
+
 input ProjectCreateInput {
   name: String
   code: String

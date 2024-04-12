@@ -95,3 +95,13 @@ func (r *Resolver) DeviceSlideToTypes(devices []*models.Device) *[]*globalTypes.
 
 	return &resolvers
 }
+
+func (r *Resolver) ProjectsSliceToTypes(projects []*models.Project) *[]*globalTypes.ProjectType {
+	resolvers := make([]*globalTypes.ProjectType, len(projects))
+
+	for i, p := range projects {
+		resolvers[i] = &globalTypes.ProjectType{Project: p}
+	}
+
+	return &resolvers
+}

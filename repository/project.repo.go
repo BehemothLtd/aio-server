@@ -2,8 +2,11 @@ package repository
 
 import (
 	"aio-server/enums"
+	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"context"
+	"strings"
 
 	"gorm.io/gorm"
 )
@@ -26,6 +29,72 @@ func (r *ProjectRepository) Find(project *models.Project) error {
 	dbTables := r.db.Model(&models.Project{})
 
 	return dbTables.Where(&project).First(&project).Error
+}
+
+// NameCont        *string
+// DescriptionCont *string
+// ProjectTypeEq   *string
+// ActiveEq        *string
+
+func (r *ProjectRepository) List(
+	projects *[]*models.Project,
+	paginateData *models.PaginationData,
+	query insightInputs.ProjectsQueryInput,
+) error {
+	dbTables := r.db.Model(&models.Project{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Scopes(
+			r.nameCont(query.NameCont),
+			r.DescriptionCont(query.DescriptionCont),
+			r.projectTypeEq(query.ProjectTypeEq),
+			r.activeEq(query.ActiveEq),
+		), paginateData),
+	).Order("id desc").Find(&projects).Error
+}
+
+func (r *Repository) nameCont(nameLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if nameLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(projects.name) LIKE ?`, strings.ToLower("%"+*nameLike+"%")))
+		}
+	}
+}
+
+func (r *Repository) DescriptionCont(descriptionCont *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if descriptionCont == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(projects.description) LIKE ?`, strings.ToLower("%"+*descriptionCont+"%")))
+		}
+	}
+}
+
+func (r *Repository) projectTypeEq(projectTypeEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if projectTypeEq == nil {
+			return db
+		} else {
+			projectTypeEqInInt, _ := enums.ParseProjectType(*projectTypeEq)
+
+			return db.Where(gorm.Expr(`projects.project_type = ?`, projectTypeEqInInt))
+		}
+	}
+}
+
+func (r *Repository) activeEq(activeEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if activeEq == nil {
+			return db
+		} else {
+			activeEqInInt, _ := enums.ParseProjectState(*activeEq)
+
+			return db.Where(gorm.Expr(`projects.state = ?`, activeEqInInt))
+		}
+	}
 }
 
 func (r *ProjectRepository) Create(project *models.Project) error {
