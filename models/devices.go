@@ -20,8 +20,8 @@ type Device struct {
 	BuyAt                 time.Time
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
-	DeviceType            DeviceType `gorm:"foreignKey:DeviceTypeId"`
-	LockVersion           int32      `gorm:"not null;autoIncrement;default:0"`
+	DeviceType            DeviceType
+	LockVersion           int32
 	DevicesUsingHistories []*DevicesUsingHistory
 }
 
