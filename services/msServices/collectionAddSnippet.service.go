@@ -37,7 +37,7 @@ func (sats *CollectionAddSnippetService) Execute() (bool, error) {
 
 	repo := repository.NewSnippetsCollectionRepository(&sats.Ctx, &sats.Db)
 
-	if err := repo.Find(&snippetsCollection); err != nil {
+	if err := repo.Find(&snippetsCollection); err == nil {
 		return false, exceptions.NewUnprocessableContentError("already has this snippet", nil)
 	} else {
 		if err := repo.Create(&snippetsCollection); err != nil {
