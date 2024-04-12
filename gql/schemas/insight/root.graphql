@@ -26,6 +26,7 @@ type Query {
   DevelopmentRoles(): [DevelopmentRole]
 
   MmWorkingTimelog(id: ID!): WorkingTimelog
+  MmWorkingTimelogByAttributes(projectId: ID, issueId: ID, loggedAt: String): WorkingTimelogByAttribute
   MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
 
   DeviceType(id: ID!): DeviceType!
