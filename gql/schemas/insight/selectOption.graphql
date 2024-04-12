@@ -1,0 +1,9 @@
+input SelectOptionInput {
+  key: String!
+  options: String
+}
+
+type SelectOptionType {
+  label: String
+  value: String
+}
