@@ -1,0 +1,22 @@
+type Device {
+  id: ID
+  code: String
+  name: String
+  seller: String
+  state: String
+  deviceTypeId: ID
+  deviceType: DeviceType
+  description: String
+}
+
+type DeviceCollection {
+  collection: [Device!]
+  metadata: Metadata
+}
+
+input DevicesQuery {
+  deviceTypeIdIn: [Int!]
+  nameCont: String
+  stateIn: [String!]
+  userIdIn: [Int!]
+}
