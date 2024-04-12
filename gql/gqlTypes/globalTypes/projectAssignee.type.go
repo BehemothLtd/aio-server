@@ -25,48 +25,54 @@ func (pt *ProjectAssigneeType) Active(ctx context.Context) bool {
 	return pt.ProjectAssignee.Active
 }
 
-func (tt *ProjectAssigneeType) JoinDate(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.ProjectAssignee.JoinDate)
+func (pat *ProjectAssigneeType) JoinDate(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(pat.ProjectAssignee.JoinDate)
 }
 
-func (tt *ProjectAssigneeType) LeaveDate(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.ProjectAssignee.LeaveDate)
+func (pat *ProjectAssigneeType) LeaveDate(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(pat.ProjectAssignee.LeaveDate)
 }
 
-func (tt *ProjectAssigneeType) UserId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(tt.ProjectAssignee.UserId)
+func (pat *ProjectAssigneeType) UserId(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(pat.ProjectAssignee.UserId)
 }
 
-func (tt *ProjectAssigneeType) DevelopmentRoleId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(tt.ProjectAssignee.DevelopmentRoleId)
+func (pat *ProjectAssigneeType) DevelopmentRoleId(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(pat.ProjectAssignee.DevelopmentRoleId)
 }
 
-func (tt *ProjectAssigneeType) DevelopmentRole(ctx context.Context) *DevelopentRoleType {
-	developmentRole := systems.FindDevelopmentRoleById(tt.ProjectAssignee.DevelopmentRoleId)
+func (pat *ProjectAssigneeType) DevelopmentRole(ctx context.Context) *DevelopentRoleType {
+	developmentRole := systems.FindDevelopmentRoleById(pat.ProjectAssignee.DevelopmentRoleId)
 
 	return &DevelopentRoleType{
 		DevelopmentRole: developmentRole,
 	}
 }
 
-func (tt *ProjectAssigneeType) Title(ctx context.Context) *string {
-	if developmentRole := systems.FindDevelopmentRoleById(tt.ProjectAssignee.DevelopmentRoleId); developmentRole != nil {
+func (pat *ProjectAssigneeType) Title(ctx context.Context) *string {
+	if developmentRole := systems.FindDevelopmentRoleById(pat.ProjectAssignee.DevelopmentRoleId); developmentRole != nil {
 		return &developmentRole.Title
 	} else {
 		return nil
 	}
 }
 
-func (tt *ProjectAssigneeType) Name(ctx context.Context) *string {
-	return &tt.ProjectAssignee.User.Name
+func (pat *ProjectAssigneeType) Name(ctx context.Context) *string {
+	return &pat.ProjectAssignee.User.Name
 }
 
-func (tt *ProjectAssigneeType) LockVersion(ctx context.Context) *int32 {
-	return &tt.ProjectAssignee.LockVersion
+func (pat *ProjectAssigneeType) LockVersion(ctx context.Context) *int32 {
+	return &pat.ProjectAssignee.LockVersion
 }
 
-func (tt *ProjectAssigneeType) Project(ctx context.Context) *ProjectType {
+func (pat *ProjectAssigneeType) Project(ctx context.Context) *ProjectType {
 	return &ProjectType{
-		Project: &tt.ProjectAssignee.Project,
+		Project: &pat.ProjectAssignee.Project,
+	}
+}
+
+func (pat *ProjectAssigneeType) User(ctx context.Context) *UserType {
+	return &UserType{
+		User: &pat.ProjectAssignee.User,
 	}
 }

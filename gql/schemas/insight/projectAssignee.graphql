@@ -5,6 +5,7 @@ type ProjectAssignee {
   leaveDate: Time
   developmentRoleId: ID
   userId: ID
+  user: User
   developmentRole: DevelopmentRole
   project: Project
   name: String
