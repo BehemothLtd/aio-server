@@ -78,6 +78,8 @@ type Mutation {
   ClientDelete(id: ID!): String
   
   MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
+
+  TimeSheet(query: TimeSheetQuery): TimeSheet!
 }
 
 scalar Time

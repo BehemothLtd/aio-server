@@ -1,0 +1,10 @@
+type TimeSheet {
+  projectData: Project
+  userData: [User]
+}
+
+input TimeSheetQuery {
+  loggedAtBetween: String
+  projectIdIn: String
+  projectClientIdEq: String
+}
