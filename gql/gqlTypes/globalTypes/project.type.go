@@ -125,6 +125,14 @@ func (pt *ProjectType) Logo(ctx context.Context) *AttachmentType {
 	}
 }
 
+func (pt *ProjectType) LogoUrl(ctx context.Context) *string {
+	if pt.Project.Logo == nil {
+		return nil
+	}
+
+	return pt.Project.Logo.Url()
+}
+
 func (pt *ProjectType) Files(ctx context.Context) *[]*AttachmentType {
 	if len(pt.Project.Files) == 0 {
 		return nil

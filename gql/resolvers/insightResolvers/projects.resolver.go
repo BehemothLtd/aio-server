@@ -20,7 +20,12 @@ func (r *Resolver) Projects(ctx context.Context, args insightInputs.ProjectsInpu
 
 	projectsQuery, paginationData := args.ToPaginationDataAndQuery()
 
-	repo := repository.NewProjectRepository(&ctx, r.Db.Preload("ProjectAssignees.User.Avatar.AttachmentBlob"))
+	repo := repository.NewProjectRepository(
+		&ctx,
+		r.Db.
+			Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
+			Preload("ProjectAssignees.User.Avatar.AttachmentBlob"),
+	)
 
 	err := repo.List(&projects, &paginationData, projectsQuery)
 
