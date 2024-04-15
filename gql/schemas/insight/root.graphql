@@ -49,6 +49,7 @@ type Query {
   AnalysesProjectsIssueStatus(): AnalysesProjectsIssueStatus!
 
   Devices(input: PagyInput, query: DevicesQuery): DeviceCollection
+  Device(id: ID!): Device!
 }
 
 type Mutation {
