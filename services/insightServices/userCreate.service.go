@@ -5,30 +5,23 @@ import (
 	"aio-server/models"
 	"aio-server/repository"
 	"aio-server/validators"
-	"context"
 
+	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )
 
-type UserUpdateService struct {
+type UserCreateService struct {
 	Ctx  *context.Context
 	Db   *gorm.DB
-	Args insightInputs.UserUpdateInput
+	Args insightInputs.UserFormInput
 	User *models.User
 }
 
-func (us *UserUpdateService) Execute() error {
-	repo := repository.NewUserRepository(us.Ctx, us.Db)
-
-	err := repo.FindWithAvatar(us.User)
-	if err != nil {
-		return err
-	}
-
+func (uc *UserCreateService) Execute() error {
 	form := validators.NewUserFormValidator(
-		&us.Args.Input,
-		repo,
-		us.User,
+		&uc.Args,
+		repository.NewUserRepository(uc.Ctx, uc.Db),
+		uc.User,
 	)
 
 	if err := form.Save(); err != nil {

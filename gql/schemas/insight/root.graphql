@@ -61,8 +61,9 @@ type Mutation {
   SelfUpdatePassword(input: SelfUpdatePassword!): String
   SelfAttend(): SelfAttendance!
 
+  UserCreate(input: AdminUserInput!): User
   UserToggleActive(id: ID!): UserActiveState
-  UserUpdate(id: ID!, input: UserUpdateInput!): UserType
+  UserUpdate(id: ID!, input: AdminUserInput!): UserType
 
   ProjectSprintCreate(input: ProjectSprintFormInput!): ProjectSprintModification!
   ProjectSprintUpdate(id: ID!, input: ProjectSprintFormInput!): ProjectSprintModification!

@@ -20,7 +20,7 @@ type UserUpdateForm struct {
 	Repo        *repository.UserRepository
 }
 
-func NewUserUpdateFormValidator(
+func NewUserFormValidator(
 	input *insightInputs.UserFormInput,
 	repo *repository.UserRepository,
 	user *models.User,
@@ -38,6 +38,11 @@ func NewUserUpdateFormValidator(
 }
 
 func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput) {
+	var companyLevelId int32
+	if input.CompanyLevelId != nil {
+		companyLevelId, _ = helpers.GqlIdToInt32(*input.CompanyLevelId)
+	}
+
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -91,7 +96,7 @@ func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput)
 			FieldAttribute: FieldAttribute{
 				Code: "companyLevelId",
 			},
-			Value: helpers.GetInt32OrDefault(form.CompanyLevelId),
+			Value: helpers.GetInt32OrDefault(&companyLevelId),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -124,6 +129,10 @@ func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput)
 func (form *UserUpdateForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
+	}
+
+	if form.User.Id == 0 {
+		// return form.Repo.
 	}
 
 	return form.Repo.UpdateProfile(form.User, form.UpdatedUser)
@@ -302,12 +311,17 @@ func (form *UserUpdateForm) validateState() *UserUpdateForm {
 func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 	level := form.FindAttrByCode("companyLevelId")
 
-	if level != nil {
+	if form.CompanyLevelId != nil {
 		level.ValidateMin(interface{}(int64(1)))
 		level.ValidateMax(interface{}(int64(4)))
 
+		companyLevelId, err := helpers.GqlIdToInt32(*form.CompanyLevelId)
+		if err != nil {
+			level.AddError("is invalid")
+		}
+
 		if level.IsClean() {
-			form.UpdatedUser.CompanyLevelId = form.CompanyLevelId
+			form.UpdatedUser.CompanyLevelId = &companyLevelId
 		}
 	}
 
@@ -317,7 +331,7 @@ func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 func (form *UserUpdateForm) validatePassword() *UserUpdateForm {
 	password := form.FindAttrByCode("password")
 
-	if password != nil {
+	if form.Password != nil {
 		password.ValidateMin(interface{}(int64(6)))
 		password.ValidateMax(interface{}(int64(20)))
 	}

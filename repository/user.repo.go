@@ -185,3 +185,7 @@ func (r *UserRepository) UpdateProfile(user *models.User, updateUser models.User
 		Preload("ProjectAssignees.Project").
 		First(&user).Error
 }
+
+func (r *Repository) Create(user *models.User) error {
+	return nil
+}

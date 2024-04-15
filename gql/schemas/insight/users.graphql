@@ -148,7 +148,7 @@ type SelfProfile {
   projectAssignees: [ProjectAssigneeForSelfProfile]
 }
 
-input UserUpdateInput {
+input AdminUserInput {
   fullName: String
   email: String
   phone: String
@@ -157,7 +157,7 @@ input UserUpdateInput {
   gender: String
   slackId: String
   state: String
-  companyLevelId: Int
+  companyLevelId: ID
   password: String
   about: String
   avatarKey: String
