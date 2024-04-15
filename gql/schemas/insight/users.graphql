@@ -58,7 +58,7 @@ type UserCollection {
 input UsersQuery {
   nameCont: String
   fullNameCont: String
-  emailcont: String
+  emailCont: String
   slackIdCont: String
   stateEq: String
 }
