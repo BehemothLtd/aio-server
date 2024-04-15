@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"fmt"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -106,7 +107,7 @@ func RubyTimeParser(timeString string) (*time.Time, error) {
 	layout := "2006-01-02 15:04:05 -0700"
 
 	// Parse the string to time.Time object
-	if t, err := time.Parse(layout, timeString); err != nil {
+	if t, err := time.ParseInLocation(layout, timeString, time.Local); err != nil {
 		fmt.Println("Error parsing time:", err)
 		return nil, errors.New("invalid time string")
 	} else {
@@ -133,4 +134,40 @@ func GetFloat64OrDefault(num *float64) float64 {
 		return 0.0
 	}
 	return *num
+}
+
+// pluck extracts the field with the given name from each struct in the slice.
+// It returns a slice of the extracted values as []interface{}.
+func Pluck(slice interface{}, fieldName string) ([]interface{}, error) {
+	sliceVal := reflect.ValueOf(slice)
+	if sliceVal.Kind() != reflect.Slice {
+		return nil, fmt.Errorf("expected slice type, got %s", sliceVal.Kind())
+	}
+
+	var result []interface{}
+	for i := 0; i < sliceVal.Len(); i++ {
+		elem := sliceVal.Index(i)
+		if elem.Kind() != reflect.Struct {
+			return nil, fmt.Errorf("expected slice of structs, got slice of %s", elem.Kind())
+		}
+		field := elem.FieldByName(fieldName)
+		if !field.IsValid() {
+			return nil, fmt.Errorf("no such field: %s in element %d", fieldName, i)
+		}
+		result = append(result, field.Interface())
+	}
+
+	return result, nil
+}
+
+// GroupByProperty groups a slice of structs by a specific property.
+func GroupByProperty[T any, K comparable](items []T, getProperty func(T) K) map[K][]T {
+	grouped := make(map[K][]T)
+
+	for _, item := range items {
+		key := getProperty(item)
+		grouped[key] = append(grouped[key], item)
+	}
+
+	return grouped
 }

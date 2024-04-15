@@ -19,6 +19,11 @@ type WorkingTimelogModification {
   workingTimelog: WorkingTimelog
 }
 
+type WorkingTimelogByAttribute {
+  workingTimelog: WorkingTimelog
+  dataExisted: Boolean!
+}
+
 input WorkingTimelogsQuery {
   descriptionCont: String
   issueCodeEq: String

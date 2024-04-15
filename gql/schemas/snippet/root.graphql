@@ -13,7 +13,12 @@ type Query {
     input: PagyInput
     query: SnippetsQuery
   ): SnippetsCollection!
-  SnippetDecryptContent(id: ID!, Passkey: String!): String
+  SnippetDecryptContent(id: ID!, passkey: String!): String
+
+  SelfFavoritedSnippets(
+    input: PagyInput
+    query: SnippetsQuery
+  ): SnippetsCollection!
 
   Tag(id: ID!): Tag!
   Tags(input: PagyInput, query: TagsQuery): TagsCollection!
@@ -44,6 +49,8 @@ type Mutation {
   CollectionCreate(input: CollectionInput!): CollectionModification!
   CollectionUpdate(id: ID!, input: CollectionInput!): CollectionModification!
   CollectionDelete(id: ID!): String
+  CollectionAddSnippet(id: ID!, snippetId: ID!): Boolean!
+  CollectionRemoveSnippet(id: ID!, snippetId: ID!): Boolean!
 
   # Pins
   SnippetPin(id: ID!): Boolean

@@ -35,6 +35,7 @@ input LeaveDayRequestInput {
   to: Time!
   timeOff: Float!
   requestType: String!
+  mentions: [String]
   reason: String
   lockVersion: Int
 }

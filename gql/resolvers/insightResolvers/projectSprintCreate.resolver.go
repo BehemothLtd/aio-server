@@ -10,7 +10,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) ProjectSprintCreate(ctx context.Context, args insightInputs.ProjectSprintCreateInput) (*insightTypes.ProjectSprintCreatedType, error) {
+func (r *Resolver) ProjectSprintCreate(ctx context.Context, args insightInputs.ProjectSprintCreateInput) (*insightTypes.ProjectSprintType, error) {
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjects.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
@@ -25,7 +25,7 @@ func (r *Resolver) ProjectSprintCreate(ctx context.Context, args insightInputs.P
 	if err := services.Execute(); err != nil {
 		return nil, err
 	} else {
-		return &insightTypes.ProjectSprintCreatedType{
+		return &insightTypes.ProjectSprintType{
 			ProjectSprint: &globalTypes.ProjectSprintType{
 				ProjectSprint: &projectSprint,
 			},

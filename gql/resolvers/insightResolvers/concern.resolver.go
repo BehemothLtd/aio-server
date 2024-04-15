@@ -18,6 +18,14 @@ func (r *Resolver) UserGroupSliceToTypes(userGroups []*models.UserGroup) *[]*glo
 	return &resolvers
 }
 
+func (r *Resolver) AttendanceSliceToType(attendances []*models.Attendance) *[]*globalTypes.AttendanceType {
+	resolvers := make([]*globalTypes.AttendanceType, len(attendances))
+	for i, attendance := range attendances {
+		resolvers[i] = &globalTypes.AttendanceType{Attendance: attendance}
+	}
+	return &resolvers
+}
+
 func (r *Resolver) Authorize(ctx context.Context, target string, action string) (*models.User, error) {
 	user, err := auths.AuthInsightUserFromCtx(ctx)
 
@@ -75,5 +83,25 @@ func (r *Resolver) ClientSliceToTypes(clients []*models.Client) *[]*globalTypes.
 	for i, c := range clients {
 		resolvers[i] = &globalTypes.ClientType{Client: c}
 	}
+	return &resolvers
+}
+
+func (r *Resolver) DeviceSlideToTypes(devices []*models.Device) *[]*globalTypes.DeviceType {
+	resolvers := make([]*globalTypes.DeviceType, len(devices))
+
+	for i, d := range devices {
+		resolvers[i] = &globalTypes.DeviceType{Device: d}
+	}
+
+	return &resolvers
+}
+
+func (r *Resolver) ProjectsSliceToTypes(projects []*models.Project) *[]*globalTypes.ProjectType {
+	resolvers := make([]*globalTypes.ProjectType, len(projects))
+
+	for i, p := range projects {
+		resolvers[i] = &globalTypes.ProjectType{Project: p}
+	}
+
 	return &resolvers
 }

@@ -13,12 +13,13 @@ type User {
   companyLevelId: ID
   state: String!
   address: String
-  birthday: Time
+  birthday: String
   gender: String
   phone: String
   timingActiveAt: Time
   timingDeactiveAt: Time
   slackId: String
+  projectAssignees: [ProjectAssigneeForSelfProfile]
 }
 
 type SelfGeneralInfo {
@@ -70,10 +71,15 @@ input SelfUpdateProfileInput {
   birthday: String
   gender: String
   phone: String
+  fullName: String
 }
 
 type SelfUpdateProfileRes {
   user: SelfUpdateProfile
+}
+
+type UserType {
+  user: User
 }
 
 type SelfUpdateProfile {
@@ -84,11 +90,15 @@ type SelfUpdateProfile {
   about: String
   avatarUrl: String
   createdAt: Time
+  companyLevelId: ID
+  address: String
+  birthday: String
   gender: String
   phone: String
+  timingActiveAt: Time
+  timingDeactiveAt: Time
   slackId: String
-  birthday: Time
-  address: String
+  projectAssignees: [ProjectAssigneeForSelfProfile]
 }
 
 input SelfUpdatePassword {
@@ -107,4 +117,49 @@ type UserBasicInfo {
   id: ID
   name: String
   avatarUrl: String
+}
+
+type SelfThisWeekIssuesState {
+  labels: [String!]!
+  series: SelfThisWeekIssuesStateSeriesItem!
+}
+
+type SelfThisWeekIssuesStateSeriesItem {
+  done: [Int!]!
+  notDone: [Int!]!
+}
+
+type SelfProfile {
+  id: ID
+  email: String
+  fullName: String
+  name: String
+  about: String
+  avatarUrl: String
+  createdAt: Time
+  companyLevelId: ID
+  address: String
+  birthday: String
+  gender: String
+  phone: String
+  timingActiveAt: Time
+  timingDeactiveAt: Time
+  slackId: String
+  projectAssignees: [ProjectAssigneeForSelfProfile]
+}
+
+input UserUpdateInput {
+  fullName: String
+  email: String
+  phone: String
+  address: String
+  birthday: String
+  gender: String
+  slackId: String
+  state: String
+  companyLevelId: Int
+  password: String
+  about: String
+  avatarKey: String
+  lockVersion: Int
 }

@@ -2,6 +2,7 @@ type Project {
   id: ID
   name: String
   code: String
+  description: String
   projectType: String
   projectPriority: String
   state: String!
@@ -16,7 +17,20 @@ type Project {
   currentSprintId: ID
   projectAssignees: [ProjectAssignee!]
   projectIssueStatuses: [ProjectIssueStatus!]
+  logoUrl: String
   lockVersion: Int!
+}
+
+type ProjectCollection {
+  collection: [Project!]
+  metadata: Metadata!
+}
+
+input ProjectsQuery {
+  nameCont: String
+  descriptionCont: String
+  projectTypeEq: String
+  stateEq: String
 }
 
 input ProjectCreateInput {

@@ -33,9 +33,11 @@ func (r *UserGroupRepository) List(
 	dbTables := r.db.Model(&models.UserGroup{})
 
 	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Scopes(
-			r.titleLike(query.TitleCont),
-		), paginateData),
+		helpers.Paginate(
+			dbTables.Scopes(
+				r.titleLike(query.TitleCont),
+			), paginateData,
+		),
 	).Order("id desc").Find(&userGroups).Error
 }
 

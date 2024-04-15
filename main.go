@@ -7,12 +7,14 @@ import (
 	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
 	"aio-server/tasks"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	os.Setenv("TZ", "Asia/Ho_Chi_Minh")
 	initializers.LoadEnv()
 
 	// Load DB

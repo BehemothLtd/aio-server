@@ -2,6 +2,8 @@ package insightServices
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/constants"
+	"aio-server/tasks"
 	"fmt"
 
 	"gorm.io/gorm"
@@ -16,7 +18,7 @@ func (sis *SlackInteractiveService) Excecute() (*models.SlackInteractiveResponse
 	callbackId := sis.Args.CallbackId
 
 	switch callbackId {
-	case "change_state_rq":
+	case constants.SlackChangeStateRq:
 		return sis.ChangeStateRequestResponse()
 	default:
 		return nil, nil
@@ -42,8 +44,17 @@ func (sis *SlackInteractiveService) ChangeStateRequestResponse() (*models.SlackI
 	}
 
 	if user.IsBod() {
-		// approverId := user.Id
-		// TODO : trigger request - change state job & reply to request thread
+		// Update request state job
+		task, err := tasks.NewSlackUpdateLeaveDayRequestStateTask(payload, user)
+		if err != nil {
+			return nil, err
+		}
+
+		info, err := tasks.AsynqClient.Enqueue(task)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Printf("Task ID: %+v - completed at: %+v\n", info.ID, info.CompletedAt)
 
 		action := payload.Action[0].Value
 		text := payload.OriginalMessage.Text

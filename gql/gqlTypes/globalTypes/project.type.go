@@ -21,57 +21,61 @@ func (pt *ProjectType) ID(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(pt.Project.Id)
 }
 
-func (tt *ProjectType) Name(ctx context.Context) *string {
-	return &tt.Project.Name
+func (pt *ProjectType) Name(ctx context.Context) *string {
+	return &pt.Project.Name
 }
 
-func (tt *ProjectType) Code(ctx context.Context) *string {
-	return &tt.Project.Code
+func (pt *ProjectType) Code(ctx context.Context) *string {
+	return &pt.Project.Code
 }
 
-func (tt *ProjectType) ProjectType(ctx context.Context) *string {
-	projectType := tt.Project.ProjectType.String()
+func (pt *ProjectType) Description(ctx context.Context) *string {
+	return pt.Project.Description
+}
+
+func (pt *ProjectType) ProjectType(ctx context.Context) *string {
+	projectType := pt.Project.ProjectType.String()
 	return &projectType
 }
 
-func (tt *ProjectType) ProjectPriority(ctx context.Context) *string {
-	projectPriority := tt.Project.ProjectPriority.String()
+func (pt *ProjectType) ProjectPriority(ctx context.Context) *string {
+	projectPriority := pt.Project.ProjectPriority.String()
 	return &projectPriority
 }
 
-func (tt *ProjectType) State(ctx context.Context) string {
-	return tt.Project.State.String()
+func (pt *ProjectType) State(ctx context.Context) string {
+	return pt.Project.State.String()
 }
 
-func (tt *ProjectType) ActivedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.ActivedAt)
+func (pt *ProjectType) ActivedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(pt.Project.ActivedAt)
 }
 
-func (tt *ProjectType) InactivedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.InactivedAt)
+func (pt *ProjectType) InactivedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(pt.Project.InactivedAt)
 }
 
-func (tt *ProjectType) StartedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.StartedAt)
+func (pt *ProjectType) StartedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(pt.Project.StartedAt)
 }
 
-func (tt *ProjectType) EndedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(tt.Project.EndedAt)
+func (pt *ProjectType) EndedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(pt.Project.EndedAt)
 }
 
-func (tt *ProjectType) CreatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&tt.Project.CreatedAt)
+func (pt *ProjectType) CreatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(&pt.Project.CreatedAt)
 }
 
-func (tt *ProjectType) UpdatedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&tt.Project.UpdatedAt)
+func (pt *ProjectType) UpdatedAt(ctx context.Context) *graphql.Time {
+	return helpers.GqlTimePointer(&pt.Project.UpdatedAt)
 }
 
-func (tt *ProjectType) SprintDuration(ctx context.Context) *int32 {
-	if tt.Project.ProjectType == enums.ProjectTypeKanban {
+func (pt *ProjectType) SprintDuration(ctx context.Context) *int32 {
+	if pt.Project.ProjectType == enums.ProjectTypeKanban {
 		return nil
 	} else {
-		return helpers.Int32Pointer(int32(*tt.Project.SprintDuration))
+		return helpers.Int32Pointer(int32(*pt.Project.SprintDuration))
 	}
 }
 
@@ -121,6 +125,14 @@ func (pt *ProjectType) Logo(ctx context.Context) *AttachmentType {
 	}
 }
 
+func (pt *ProjectType) LogoUrl(ctx context.Context) *string {
+	if pt.Project.Logo == nil {
+		return nil
+	}
+
+	return pt.Project.Logo.Url()
+}
+
 func (pt *ProjectType) Files(ctx context.Context) *[]*AttachmentType {
 	if len(pt.Project.Files) == 0 {
 		return nil
@@ -128,9 +140,9 @@ func (pt *ProjectType) Files(ctx context.Context) *[]*AttachmentType {
 
 	result := make([]*AttachmentType, len(pt.Project.Files))
 
-	for i, attachment := range pt.Project.Files {
+	for i, aptachment := range pt.Project.Files {
 		result[i] = &AttachmentType{
-			Attachment: attachment,
+			Attachment: aptachment,
 		}
 	}
 

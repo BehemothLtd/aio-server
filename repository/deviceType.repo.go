@@ -54,3 +54,7 @@ func (r *DeviceTypeRepository) Update(deviceType *models.DeviceType) error {
 
 	return r.db.Model(&originalDeviceType).Save(&deviceType).Error
 }
+
+func (r *DeviceTypeRepository) Destroy(deviceType *models.DeviceType) error {
+	return r.db.Table("device_types").Delete(&deviceType).Error
+}

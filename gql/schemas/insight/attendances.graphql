@@ -1,0 +1,45 @@
+type Attendance {
+  id: ID
+  userId: ID
+  checkinAt: Time
+  checkoutAt: Time
+  createdUserId: ID
+  createdAt: Time
+}
+
+type AttendancesCollection {
+  collection: [Attendance!]
+  metadata: Metadata!
+}
+
+input AttendancesQuery {
+  userIdEq: ID
+  checkinAtLteq: String
+  checkinAtGteq: String
+}
+
+type SelfAttendanceCollection {
+  collection: [SelfAttendance!]
+  metadata: Metadata!
+}
+
+input SelfAttendancesQuery {
+  checkinAtLteq: String
+  checkinAtGteq: String
+}
+
+type SelfAttendance {
+  checkinAt: Time
+  checkoutAt: Time
+  createdAt: Time
+}
+
+input AttendanceInput {
+  checkinAt: Time!
+  checkoutAt: Time!
+  userId: ID!
+}
+
+type AttendanceModification {
+  attendance: Attendance
+}

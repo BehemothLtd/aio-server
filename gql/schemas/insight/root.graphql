@@ -6,6 +6,10 @@ schema {
 type Query {
   SelfGeneralInfo(): SelfGeneralInfo!
   SelfRecentTasks(): [SelfRecentTask]!
+  SelfAttendances(input: PagyInput, query: SelfAttendancesQuery): SelfAttendanceCollection!
+  SelfThisWeekIssuesState(): SelfThisWeekIssuesState!
+  SelfProfile(): SelfProfile!
+  SelfPermission(): [Permission]!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
@@ -13,6 +17,8 @@ type Query {
   User(id: ID!): User!
   Users(input: PagyInput, query: UsersQuery): UserCollection!
   UsersAll(): [UsersAllInfo]
+
+  Projects(input: PagyInput, query: ProjectsQuery): ProjectCollection!
 
   ProjectSprint(id: ID!): ProjectSprint!
 
@@ -23,18 +29,26 @@ type Query {
   DevelopmentRoles(): [DevelopmentRole]
 
   MmWorkingTimelog(id: ID!): WorkingTimelog
+  MmWorkingTimelogByAttributes(projectId: ID, issueId: ID, loggedAt: String): WorkingTimelogByAttribute
   MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
 
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
 
-  Clients(input: PagyInput, query: ClientsQuery ): ClientCollection!
+  Clients(input: PagyInput, query: ClientsQuery): ClientCollection!
   Client(id: ID!): Client!
 
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
   LeaveDayRequest(id: ID!): LeaveDayRequest!
 
   AnalysesTotalSummarize(): AnalysesTotalSummarize!
+
+  Attendances(input: PagyInput, query: AttendancesQuery): AttendancesCollection!
+  Attendance(id: ID!): Attendance!
+
+  AnalysesProjectsIssueStatus(): AnalysesProjectsIssueStatus!
+
+  Devices(input: PagyInput, query: DevicesQuery): DeviceCollection
 }
 
 type Mutation {
@@ -42,12 +56,15 @@ type Mutation {
 
   SelfUpdateProfile(input: SelfUpdateProfileInput!): SelfUpdateProfileRes!
   SelfUpdatePassword(input: SelfUpdatePassword!): String
+  SelfAttend(): SelfAttendance!
 
   UserToggleActive(id: ID!): UserActiveState
+  UserUpdate(id: ID!, input: UserUpdateInput!): UserType
 
-  ProjectSprintCreate(input: ProjectSprintCreateInput!): ProjectSprintModification!
+  ProjectSprintCreate(input: ProjectSprintFormInput!): ProjectSprintModification!
+  ProjectSprintUpdate(id: ID!, input: ProjectSprintFormInput!): ProjectSprintModification!
   ProjectSprintDestroy (id: ID!): String
-  
+
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
 
@@ -67,11 +84,20 @@ type Mutation {
 
   DeviceTypeCreate(input: DeviceTypeInput!): DeviceTypeModification!
   DeviceTypeUpdate(id: ID!, input: DeviceTypeInput!): DeviceTypeModification!
-  
+  DeviceTypeDestroy(id: ID!): String
+
   IssueStatusCreate(input: IssueStatusCreateInput!): IssueStatusModification!
   IssueStatusUpdate(id: ID!, input: IssueStatusUpdateInput!): IssueStatusModification!
-  
+
+  ClientCreate(input: ClientCreateInput!): ClientModification!
+  ClientUpdate(id: ID!, input: ClientUpdateInput!): ClientModification!
+  ClientDelete(id: ID!): String
+
   MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
+
+  AttendanceCreate(input: AttendanceInput!): AttendanceModification!
+  AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!
+  AttendanceDelete(id: ID!): String
 }
 
 scalar Time
