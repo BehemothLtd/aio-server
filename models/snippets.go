@@ -13,12 +13,7 @@ type Snippet struct {
 	Title             string `gorm:"not null;type:varchar(255);default:null"`
 	Content           string `gorm:"not null;type:longtext;default:null"`
 	UserId            int32  `gorm:"not null;type:bigint;default:null"`
-<<<<<<< Updated upstream
-	User              User   `gorm:"foreignKey:UserId"`
-||||||| Stash base
-=======
 	User              User
->>>>>>> Stashed changes
 	Slug              string
 	SnippetType       enums.SnippetType `gorm:"not null;"`
 	FavoritesCount    int               `gorm:"not null;default:0"`
