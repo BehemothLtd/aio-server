@@ -3,6 +3,7 @@ package insightServices
 import (
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/models"
+	"aio-server/pkg/systems"
 	"aio-server/repository"
 	"fmt"
 	"slices"
@@ -11,7 +12,7 @@ import (
 )
 
 func availableKeys() []string {
-	return []string{"issueStatus"}
+	return []string{"issueStatus", "developmentRole"}
 }
 
 type FetchSelectOptionsService struct {
@@ -32,7 +33,12 @@ func (fsos *FetchSelectOptionsService) Execute() error {
 					if err := fsos.handleIssueStatusOptions(); err != nil {
 						return nil
 					}
+				case "developmentRole":
+					if err := fsos.handleDevelopmentRoleOptions(); err != nil {
+						return nil
+					}
 				}
+
 			} else {
 				return fmt.Errorf("invalid key %s", key)
 			}
@@ -57,6 +63,19 @@ func (fsos *FetchSelectOptionsService) handleIssueStatusOptions() error {
 				Value: fmt.Sprintf("%d", issueStatus.Id),
 			},
 			Color: issueStatus.Color,
+		})
+	}
+
+	return nil
+}
+
+func (fsos *FetchSelectOptionsService) handleDevelopmentRoleOptions() error {
+	developmentRoles := systems.GetDevelopmentRoles()
+
+	for i := range developmentRoles {
+		fsos.Result.DevelopmentRoleOptions = append(fsos.Result.DevelopmentRoleOptions, insightTypes.CommonSelectOption{
+			Label: developmentRoles[i].Title,
+			Value: fmt.Sprintf("%d", developmentRoles[i].Id),
 		})
 	}
 

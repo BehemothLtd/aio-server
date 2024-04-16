@@ -8,6 +8,17 @@ type IssueStatusSelectOption {
   color: String!
 }
 
+type CommonSelectOption {
+  label: String!
+  value: String!
+}
+
+type DevelopmentRoleSelectOption {
+  label: String!
+  value: String!
+}
+
 type SelectOptions {
   IssueStatusOptions: [IssueStatusSelectOption!]!
+  DevelopmentRoleOptions: [CommonSelectOption!]!
 }
