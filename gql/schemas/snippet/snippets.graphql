@@ -17,6 +17,7 @@ type Snippet {
 
 input SnippetsQuery {
   titleCont: String
+  snippetTypeEq: String
 }
 
 input SelfSnippetsQuery {
