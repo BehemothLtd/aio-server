@@ -1,0 +1,13 @@
+input SelectOptionsInput {
+  for: [String!]
+}
+
+type IssueStatusSelectOption {
+  label: String
+  value: String
+  color: String
+}
+
+type SelectOptions {
+  IssueStatuses: [IssueStatusSelectOption]
+}
