@@ -88,3 +88,9 @@ func (dr *DeviceRepository) List(
 		), paginationData),
 	).Order("id desc").Find(&devices).Error
 }
+
+func (r *DeviceRepository) Find(device *models.Device) error {
+	dbTables := r.db.Model(&models.Device{})
+
+	return dbTables.Where(&device).First(&device).Error
+}
