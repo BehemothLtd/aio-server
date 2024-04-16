@@ -42,7 +42,7 @@ func (r *SnippetRepository) List(
 
 	return r.db.Scopes(
 		helpers.Paginate(r.db.Scopes(
-			r.titleLike(query.TitleCont),
+			r.titleLike(query.TitleCont), r.snippetTypeEq(query.SnippetTypeEq),
 		), paginateData),
 	).Order("id desc").Find(&snippets).Error
 }

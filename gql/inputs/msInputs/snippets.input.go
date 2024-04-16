@@ -21,5 +21,9 @@ func (msi *SnippetsInput) ToPaginationDataAndQuery() (SnippetsQueryInput, models
 		query.TitleCont = msi.Query.TitleCont
 	}
 
+	if msi.Query != nil && msi.Query.SnippetTypeEq != nil && strings.TrimSpace(*msi.Query.SnippetTypeEq) != "" {
+		query.SnippetTypeEq = msi.Query.SnippetTypeEq
+	}
+
 	return query, paginationData
 }
