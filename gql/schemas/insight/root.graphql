@@ -50,6 +50,8 @@ type Query {
 
   Devices(input: PagyInput, query: DevicesQuery): DeviceCollection
   Device(id: ID!): Device!
+
+  SelectOptions(input: SelectOptionsInput!): SelectOptions
 }
 
 type Mutation {
