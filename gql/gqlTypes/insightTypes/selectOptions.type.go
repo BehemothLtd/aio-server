@@ -3,6 +3,7 @@ package insightTypes
 type SelectOptionsType struct {
 	IssueStatusOptions     []IssueStatusSelectOption
 	DevelopmentRoleOptions []CommonSelectOption
+	UserOptions            []CommonSelectOption
 }
 
 type IssueStatusSelectOption struct {

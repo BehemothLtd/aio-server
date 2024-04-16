@@ -12,7 +12,7 @@ import (
 )
 
 func availableKeys() []string {
-	return []string{"issueStatus", "developmentRole"}
+	return []string{"issueStatus", "developmentRole", "user"}
 }
 
 type FetchSelectOptionsService struct {
@@ -37,8 +37,11 @@ func (fsos *FetchSelectOptionsService) Execute() error {
 					if err := fsos.handleDevelopmentRoleOptions(); err != nil {
 						return nil
 					}
+				case "user":
+					if err := fsos.handleUserOptions(); err != nil {
+						return nil
+					}
 				}
-
 			} else {
 				return fmt.Errorf("invalid key %s", key)
 			}
@@ -76,6 +79,24 @@ func (fsos *FetchSelectOptionsService) handleDevelopmentRoleOptions() error {
 		fsos.Result.DevelopmentRoleOptions = append(fsos.Result.DevelopmentRoleOptions, insightTypes.CommonSelectOption{
 			Label: developmentRoles[i].Title,
 			Value: fmt.Sprintf("%d", developmentRoles[i].Id),
+		})
+	}
+
+	return nil
+}
+
+func (fsos *FetchSelectOptionsService) handleUserOptions() error {
+	users := []*models.User{}
+	repo := repository.NewUserRepository(nil, fsos.Db)
+
+	if err := repo.All(&users); err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		fsos.Result.UserOptions = append(fsos.Result.UserOptions, insightTypes.CommonSelectOption{
+			Label: user.Name,
+			Value: fmt.Sprintf("%d", user.Id),
 		})
 	}
 
