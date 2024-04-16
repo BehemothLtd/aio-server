@@ -5,5 +5,5 @@ type SelectOptionsInput struct {
 }
 
 type SelectOptionsInputType struct {
-	For *[]string
+	Keys *[]string
 }

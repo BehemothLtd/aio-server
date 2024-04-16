@@ -8,6 +8,7 @@ import (
 	"aio-server/pkg/auths"
 	"aio-server/services/insightServices"
 	"context"
+	"fmt"
 )
 
 func (r *Resolver) SelectOptions(ctx context.Context, args insightInputs.SelectOptionsInput) (*insightTypes.SelectOptionsType, error) {
@@ -19,12 +20,12 @@ func (r *Resolver) SelectOptions(ctx context.Context, args insightInputs.SelectO
 
 	service := insightServices.FetchSelectOptionsService{
 		Db:   database.Db,
-		Args: args,
+		Keys: args.Input.Keys,
 	}
 
 	if err := service.Execute(); err != nil {
-		return nil, exceptions.NewBadRequestError("Error fetching options")
+		return nil, exceptions.NewBadRequestError(fmt.Sprintf("Error fetching options : %s", err.Error()))
 	}
 
-	return nil, nil
+	return &service.Result, nil
 }
