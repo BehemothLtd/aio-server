@@ -52,8 +52,10 @@ func (fsos *FetchSelectOptionsService) handleIssueStatusOptions() error {
 
 	for _, issueStatus := range issueStatuses {
 		fsos.Result.IssueStatusOptions = append(fsos.Result.IssueStatusOptions, insightTypes.IssueStatusSelectOption{
-			Label: issueStatus.Title,
-			Value: fmt.Sprintf("%d", issueStatus.Id),
+			CommonSelectOption: insightTypes.CommonSelectOption{
+				Label: issueStatus.Title,
+				Value: fmt.Sprintf("%d", issueStatus.Id),
+			},
 			Color: issueStatus.Color,
 		})
 	}
