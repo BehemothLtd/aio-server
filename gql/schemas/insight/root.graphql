@@ -61,7 +61,7 @@ type Mutation {
   SelfUpdatePassword(input: SelfUpdatePassword!): String
   SelfAttend(): SelfAttendance!
 
-  UserCreate(input: AdminUserInput!): User
+  UserCreate(input: AdminUserInput!): String
   UserToggleActive(id: ID!): UserActiveState
   UserUpdate(id: ID!, input: AdminUserInput!): UserType
 

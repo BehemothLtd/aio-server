@@ -3,6 +3,7 @@ package models
 import (
 	"aio-server/enums"
 	"aio-server/pkg/constants"
+	"regexp"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -83,5 +84,26 @@ func (u *User) BeforeUpdate(tx *gorm.DB) (err error) {
 		tx.Statement.SetColumn("lock_version", u.LockVersion+1)
 	}
 
+	return
+}
+
+func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
+	u.assignDefaultData()
+	return
+}
+
+func (u *User) assignDefaultData() (err error) {
+	re := regexp.MustCompile(`(.*)@`)
+
+	matches := re.FindStringSubmatch(u.Email)
+	if len(matches) >= 2 {
+		u.Name = matches[1]
+	}
+
+	timing := UserTiming{
+		ActiveAt: time.Now().Format("2006-01-02 15:04:05"),
+	}
+
+	u.Timing = &timing
 	return
 }

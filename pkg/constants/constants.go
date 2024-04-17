@@ -40,6 +40,8 @@ const (
 
 	// Slack callback id
 	SlackChangeStateRq = "change_state_rq"
+
+	Charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {

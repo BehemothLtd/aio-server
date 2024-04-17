@@ -3,8 +3,10 @@ package insightServices
 import (
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/utilities"
 	"aio-server/repository"
 	"aio-server/validators"
+	"fmt"
 
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
@@ -17,7 +19,10 @@ type UserCreateService struct {
 	User *models.User
 }
 
-func (uc *UserCreateService) Execute() error {
+func (uc *UserCreateService) Execute() (string, error) {
+	password := utilities.RandomToken(8)
+	uc.Args.Password = &password
+
 	form := validators.NewUserFormValidator(
 		&uc.Args,
 		repository.NewUserRepository(uc.Ctx, uc.Db),
@@ -25,8 +30,8 @@ func (uc *UserCreateService) Execute() error {
 	)
 
 	if err := form.Save(); err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return fmt.Sprintf("Email: %s, Password: %s", password, *uc.Args.Email), nil
 }

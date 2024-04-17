@@ -186,6 +186,32 @@ func (r *UserRepository) UpdateProfile(user *models.User, updateUser models.User
 		First(&user).Error
 }
 
-func (r *Repository) Create(user *models.User) error {
-	return nil
+func (ur *UserRepository) Create(user *models.User) error {
+	return ur.db.Table("users").Create(&user).Error
+}
+
+func (r *UserRepository) UpdateUser(user *models.User) error {
+	originalUser := models.User{Id: user.Id}
+
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := r.db.Model(&originalUser).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+			return err
+		}
+
+		if err := r.db.Model(&originalUser).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return r.db.
+		Model(&models.User{}).
+		Where("id = ?", &originalUser.Id).
+		Preload("Avatar.AttachmentBlob").
+		Preload("ProjectAssignees.User").
+		Preload("ProjectAssignees.Project").
+		First(&user).Error
 }
