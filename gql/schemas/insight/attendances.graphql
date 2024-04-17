@@ -5,6 +5,7 @@ type Attendance {
   checkoutAt: Time
   createdUserId: ID
   createdAt: Time
+  user: User
 }
 
 type AttendancesCollection {
