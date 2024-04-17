@@ -15,12 +15,12 @@ type ProjectCreateFormInput struct {
 }
 
 type ProjectIssueStatusInputForProjectCreate struct {
-	IssueStatusId int32
+	IssueStatusId *int32
 }
 
 type ProjectAssigneeInputForProjectCreate struct {
-	UserId            int32
-	DevelopmentRoleId int32
+	UserId            *int32
+	DevelopmentRoleId *int32
 	Active            bool
-	JoinDate          string
+	JoinDate          *string
 }

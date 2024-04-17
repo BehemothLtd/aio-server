@@ -38,7 +38,7 @@ func (form *ProjectCreateProjectIssueStatusForm) assignAttributes() {
 			FieldAttribute: FieldAttribute{
 				Code: "issueStatusId",
 			},
-			Value: helpers.GetInt32OrDefault(&form.IssueStatusId),
+			Value: helpers.GetInt32OrDefault(form.IssueStatusId),
 		},
 	)
 }
@@ -57,14 +57,14 @@ func (form *ProjectCreateProjectIssueStatusForm) validateIssueStatusId() *Projec
 	field := form.FindAttrByCode("issueStatusId")
 	field.ValidateRequired()
 
-	if form.IssueStatusId != 0 {
-		if err := form.IssueStatusRepo.Find(&models.IssueStatus{Id: form.IssueStatusId}); err != nil {
+	if field.IsClean() {
+		if err := form.IssueStatusRepo.Find(&models.IssueStatus{Id: *form.IssueStatusId}); err != nil {
 			field.AddError("is invalid")
 		}
 	}
 
 	if field.IsClean() {
-		form.ProjectIssueStatus.IssueStatusId = form.IssueStatusId
+		form.ProjectIssueStatus.IssueStatusId = *form.IssueStatusId
 	}
 
 	return form

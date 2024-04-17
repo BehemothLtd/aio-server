@@ -24,10 +24,10 @@ type ProjectAssigneeForSelfProfile {
 }
 
 input ProjectAssigneeInputForProjectCreate {
-  userId: ID!
-  developmentRoleId: Int!
+  userId: Int
+  developmentRoleId: Int
   active: Boolean!
-  joinDate: Time!
+  joinDate: String
 }
 
 type ProjectAssigneeModification {

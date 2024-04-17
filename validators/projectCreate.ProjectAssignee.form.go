@@ -40,19 +40,19 @@ func (form *ProjectCreateProjectAssigneeForm) assignAttributes() {
 			FieldAttribute: FieldAttribute{
 				Code: "userId",
 			},
-			Value: helpers.GetInt32OrDefault(&form.UserId),
+			Value: helpers.GetInt32OrDefault(form.UserId),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
 				Code: "developmentRoleId",
 			},
-			Value: helpers.GetInt32OrDefault(&form.DevelopmentRoleId),
+			Value: helpers.GetInt32OrDefault(form.DevelopmentRoleId),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
 				Code: "joinDate",
 			},
-			Value: helpers.GetStringOrDefault(&form.JoinDate),
+			Value: helpers.GetStringOrDefault(form.JoinDate),
 		},
 	)
 }
@@ -74,8 +74,8 @@ func (form *ProjectCreateProjectAssigneeForm) validateUserId() *ProjectCreatePro
 	field := form.FindAttrByCode("userId")
 	field.ValidateRequired()
 
-	if form.UserId != 0 {
-		if err := form.UserRepo.Find(&models.User{Id: form.UserId}); err != nil {
+	if field.IsClean() {
+		if err := form.UserRepo.Find(&models.User{Id: *form.UserId}); err != nil {
 			field.AddError("is invalid")
 		}
 	}
@@ -87,8 +87,8 @@ func (form *ProjectCreateProjectAssigneeForm) validateDevelopmentId() *ProjectCr
 	field := form.FindAttrByCode("developmentRoleId")
 	field.ValidateRequired()
 
-	if form.DevelopmentRoleId != 0 {
-		if developmentRole := systems.FindDevelopmentRoleById(form.DevelopmentRoleId); developmentRole == nil {
+	if field.IsClean() {
+		if developmentRole := systems.FindDevelopmentRoleById(*form.DevelopmentRoleId); developmentRole == nil {
 			field.AddError("is invalid")
 		}
 	}

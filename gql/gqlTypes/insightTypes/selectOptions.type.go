@@ -13,5 +13,5 @@ type IssueStatusSelectOption struct {
 
 type CommonSelectOption struct {
 	Label string
-	Value string
+	Value int32
 }

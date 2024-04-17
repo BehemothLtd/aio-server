@@ -6,5 +6,5 @@ type ProjectIssueStatus {
 }
 
 input ProjectIssueStatusInputForProjectCreate {
-  issueStatusId: ID!
+  issueStatusId: Int
 }

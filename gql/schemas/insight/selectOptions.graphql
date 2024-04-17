@@ -4,18 +4,18 @@ input SelectOptionsInput {
 
 type IssueStatusSelectOption {
   label: String!
-  value: String!
+  value: Int!
   color: String!
 }
 
 type CommonSelectOption {
   label: String!
-  value: String!
+  value: Int!
 }
 
 type DevelopmentRoleSelectOption {
   label: String!
-  value: String!
+  value: Int!
 }
 
 type SelectOptions {

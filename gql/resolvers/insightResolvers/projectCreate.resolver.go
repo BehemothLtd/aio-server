@@ -16,6 +16,7 @@ func (r *Resolver) ProjectCreate(ctx context.Context, args insightInputs.Project
 	}
 
 	project := models.Project{}
+
 	service := insightServices.ProjectCreateService{
 		Ctx:     &ctx,
 		Db:      r.Db,

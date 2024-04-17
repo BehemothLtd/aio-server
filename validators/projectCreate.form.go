@@ -220,9 +220,14 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 		for i, projectIssueStatusInput := range form.ProjectIssueStatuses {
 			issueStatusId := projectIssueStatusInput.IssueStatusId
 
+			if issueStatusId == nil {
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "issueStatusId"), []interface{}{"is required"})
+				continue
+			}
+
 			// Check duplicated in input
 			if foundIdx := slices.IndexFunc(projectIssueStatuses, func(pis *models.ProjectIssueStatus) bool {
-				return pis.IssueStatusId == issueStatusId
+				return pis.IssueStatusId == *issueStatusId
 			}); foundIdx != -1 {
 				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "issueStatusId"), []interface{}{"is duplicated"})
 			} else {
@@ -240,7 +245,7 @@ func (form *ProjectCreateForm) validateProjectIssueStatuses() *ProjectCreateForm
 				} else {
 					// only push to final result when nested form has no error
 					projectIssueStatuses = append(projectIssueStatuses, &models.ProjectIssueStatus{
-						IssueStatusId: issueStatusId,
+						IssueStatusId: *issueStatusId,
 						Position:      position,
 					})
 					position += 1
@@ -274,28 +279,38 @@ func (form *ProjectCreateForm) validateProjectAssignees() *ProjectCreateForm {
 
 		for i, projectAssigneeInput := range form.ProjectAssignees {
 			userId := projectAssigneeInput.UserId
-			developentRoleId := projectAssigneeInput.DevelopmentRoleId
+			developmentRoleId := projectAssigneeInput.DevelopmentRoleId
 			active := projectAssigneeInput.Active
 
-			// Check duplicated in input
-			if foundIdx := slices.IndexFunc(projectAssignees, func(pa *models.ProjectAssignee) bool {
-				return pa.UserId == userId && pa.DevelopmentRoleId == developentRoleId
-			}); foundIdx != -1 {
-				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "userId"), []interface{}{"is duplicated in role"})
+			if userId == nil {
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "userId"), []interface{}{"is required"})
+			} else if developmentRoleId == nil {
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "developmentRoleId"), []interface{}{"is required"})
 			} else {
-				projectAssignee := models.ProjectAssignee{UserId: userId, Active: active, DevelopmentRoleId: developentRoleId}
-				projectAssigneeForm := NewProjectCreateProjectAssigneeFormValidator(
-					&projectAssigneeInput,
-					userRepo,
-					&projectAssignee,
-				)
-
-				if err := projectAssigneeForm.Validate(); err != nil {
-					for key, innerErr := range err {
-						form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, key), innerErr)
-					}
+				// Check duplicated in input
+				if foundIdx := slices.IndexFunc(projectAssignees, func(pa *models.ProjectAssignee) bool {
+					return pa.UserId == *userId && pa.DevelopmentRoleId == *developmentRoleId
+				}); foundIdx != -1 {
+					form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "userId"), []interface{}{"is duplicated in role"})
 				} else {
-					projectAssignees = append(projectAssignees, &projectAssignee)
+					projectAssignee := models.ProjectAssignee{
+						UserId:            *userId,
+						Active:            active,
+						DevelopmentRoleId: *developmentRoleId,
+					}
+					projectAssigneeForm := NewProjectCreateProjectAssigneeFormValidator(
+						&projectAssigneeInput,
+						userRepo,
+						&projectAssignee,
+					)
+
+					if err := projectAssigneeForm.Validate(); err != nil {
+						for key, innerErr := range err {
+							form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, key), innerErr)
+						}
+					} else {
+						projectAssignees = append(projectAssignees, &projectAssignee)
+					}
 				}
 			}
 		}

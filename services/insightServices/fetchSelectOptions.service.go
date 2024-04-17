@@ -63,7 +63,7 @@ func (fsos *FetchSelectOptionsService) handleIssueStatusOptions() error {
 		fsos.Result.IssueStatusOptions = append(fsos.Result.IssueStatusOptions, insightTypes.IssueStatusSelectOption{
 			CommonSelectOption: insightTypes.CommonSelectOption{
 				Label: issueStatus.Title,
-				Value: fmt.Sprintf("%d", issueStatus.Id),
+				Value: issueStatus.Id,
 			},
 			Color: issueStatus.Color,
 		})
@@ -78,7 +78,7 @@ func (fsos *FetchSelectOptionsService) handleDevelopmentRoleOptions() error {
 	for i := range developmentRoles {
 		fsos.Result.DevelopmentRoleOptions = append(fsos.Result.DevelopmentRoleOptions, insightTypes.CommonSelectOption{
 			Label: developmentRoles[i].Title,
-			Value: fmt.Sprintf("%d", developmentRoles[i].Id),
+			Value: developmentRoles[i].Id,
 		})
 	}
 
@@ -96,7 +96,7 @@ func (fsos *FetchSelectOptionsService) handleUserOptions() error {
 	for _, user := range users {
 		fsos.Result.UserOptions = append(fsos.Result.UserOptions, insightTypes.CommonSelectOption{
 			Label: user.Name,
-			Value: fmt.Sprintf("%d", user.Id),
+			Value: user.Id,
 		})
 	}
 
