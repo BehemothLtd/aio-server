@@ -18,7 +18,7 @@ func (r *Resolver) Attendances(ctx context.Context, args insightInputs.Attendanc
 	var attendances []*models.Attendance
 	query, paginationData := args.ToPaginationAndQueryData()
 
-	repo := repository.NewAttendanceRepository(&ctx, r.Db)
+	repo := repository.NewAttendanceRepository(&ctx, r.Db.Preload("User"))
 	if err := repo.List(&attendances, &paginationData, query); err != nil {
 		return nil, err
 	}

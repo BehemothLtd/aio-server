@@ -103,9 +103,9 @@ func (form *AttendanceForm) validateCheckinAt() *AttendanceForm {
 
 	repo := repository.NewAttendanceRepository(nil, database.Db)
 	var count int64
-	var checkinAtTime = *checkinAt.Time()
 
 	if checkinAt.IsClean() {
+		var checkinAtTime = *checkinAt.Time()
 		var err error
 		if form.Attendance.Id == 0 {
 			err = repo.CountAtDateOfUser(&count, form.UserId, checkinAtTime, nil)
@@ -133,13 +133,13 @@ func (form *AttendanceForm) validateCheckOutAt() *AttendanceForm {
 
 	checkinAt := form.FindAttrByCode("checkinAt")
 
-	var checkinAtTime = *checkinAt.Time()
-	checkoutAt.ValidateMin(interface{}(checkinAtTime))
-
-	endOfDay := helpers.EndOfDay(&checkinAtTime)
-	checkoutAt.ValidateMax(interface{}(endOfDay))
-
 	if checkoutAt.IsClean() {
+		var checkinAtTime = *checkinAt.Time()
+		checkoutAt.ValidateMin(interface{}(checkinAtTime))
+
+		endOfDay := helpers.EndOfDay(&checkinAtTime)
+		checkoutAt.ValidateMax(interface{}(endOfDay))
+
 		if form.Attendance.Id == 0 {
 			form.Attendance.CheckoutAt = checkoutAt.Time()
 		} else {
