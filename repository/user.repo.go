@@ -37,7 +37,13 @@ func (r *UserRepository) Find(user *models.User) error {
 
 // FindWithAvatar finds an user includes his avatar data
 func (r *UserRepository) FindWithAvatar(user *models.User) error {
-	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob")
+	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").Preload("ProjectAssignees")
+
+	return dbTables.Where("id = ?", user.Id).First(&user).Error
+}
+
+func (r *Repository) FindWithProjectAssignees(user *models.User) error {
+	dbTables := r.db.Table("users").Preload("ProjectAssignees")
 
 	return dbTables.Where("id = ?", user.Id).First(&user).Error
 }
@@ -180,6 +186,36 @@ func (r *UserRepository) UpdateProfile(user *models.User, updateUser models.User
 	return r.db.
 		Model(&models.User{}).
 		Where("id = ?", &user.Id).
+		Preload("Avatar.AttachmentBlob").
+		Preload("ProjectAssignees.User").
+		Preload("ProjectAssignees.Project").
+		First(&user).Error
+}
+
+func (ur *UserRepository) Create(user *models.User) error {
+	return ur.db.Table("users").Create(&user).Error
+}
+
+func (r *UserRepository) UpdateUser(user *models.User) error {
+	originalUser := models.User{Id: user.Id}
+
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := r.db.Model(&originalUser).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+			return err
+		}
+
+		if err := r.db.Model(&originalUser).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return r.db.
+		Model(&models.User{}).
+		Where("id = ?", &originalUser.Id).
 		Preload("Avatar.AttachmentBlob").
 		Preload("ProjectAssignees.User").
 		Preload("ProjectAssignees.Project").

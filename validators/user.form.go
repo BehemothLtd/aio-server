@@ -10,17 +10,18 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"strings"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserUpdateForm struct {
 	Form
 	insightInputs.UserFormInput
-	User        *models.User
-	UpdatedUser models.User
-	Repo        *repository.UserRepository
+	User *models.User
+	Repo *repository.UserRepository
 }
 
-func NewUserUpdateFormValidator(
+func NewUserFormValidator(
 	input *insightInputs.UserFormInput,
 	repo *repository.UserRepository,
 	user *models.User,
@@ -29,7 +30,6 @@ func NewUserUpdateFormValidator(
 		Form:          Form{},
 		UserFormInput: *input,
 		User:          user,
-		UpdatedUser:   models.User{},
 		Repo:          repo,
 	}
 
@@ -38,6 +38,11 @@ func NewUserUpdateFormValidator(
 }
 
 func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput) {
+	var companyLevelId int32
+	if input.CompanyLevelId != nil {
+		companyLevelId, _ = helpers.GqlIdToInt32(*input.CompanyLevelId)
+	}
+
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -91,7 +96,7 @@ func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput)
 			FieldAttribute: FieldAttribute{
 				Code: "companyLevelId",
 			},
-			Value: helpers.GetInt32OrDefault(form.CompanyLevelId),
+			Value: helpers.GetInt32OrDefault(&companyLevelId),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -126,7 +131,11 @@ func (form *UserUpdateForm) Save() error {
 		return err
 	}
 
-	return form.Repo.UpdateProfile(form.User, form.UpdatedUser)
+	if form.User.Id == 0 {
+		return form.Repo.Create(form.User)
+	}
+
+	return form.Repo.UpdateUser(form.User)
 }
 
 func (form *UserUpdateForm) validate() error {
@@ -158,7 +167,7 @@ func (form *UserUpdateForm) validateGender() *UserUpdateForm {
 		genderValue := enums.UserGenderType(*form.Gender)
 
 		if genderValue.IsValid() {
-			form.UpdatedUser.Gender = &genderValue
+			form.User.Gender = &genderValue
 		} else {
 			gender.AddError("is invalid")
 		}
@@ -174,7 +183,7 @@ func (form *UserUpdateForm) validateBirthday() *UserUpdateForm {
 		field.ValidateFormat(constants.YYYYMMDD_DateFormat, constants.HUMAN_YYYYMMDD_DateFormat)
 
 		if field.IsClean() {
-			form.UpdatedUser.Birthday = field.Time()
+			form.User.Birthday = field.Time()
 		}
 	}
 
@@ -186,7 +195,7 @@ func (form *UserUpdateForm) validateAbout() *UserUpdateForm {
 	about.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if about.IsClean() {
-		form.UpdatedUser.About = form.About
+		form.User.About = form.About
 	}
 
 	return form
@@ -200,7 +209,7 @@ func (form *UserUpdateForm) validateFullName() *UserUpdateForm {
 	fullName.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if fullName.IsClean() {
-		form.UpdatedUser.FullName = *form.FullName
+		form.User.FullName = *form.FullName
 	}
 
 	return form
@@ -214,7 +223,7 @@ func (form *UserUpdateForm) validateSlackId() *UserUpdateForm {
 	slackId.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if slackId.IsClean() {
-		form.UpdatedUser.SlackId = form.SlackId
+		form.User.SlackId = form.SlackId
 	}
 
 	return form
@@ -228,7 +237,7 @@ func (form *UserUpdateForm) validatePhone() *UserUpdateForm {
 		phone.ValidateMax(interface{}(int64(13)))
 
 		if phone.IsClean() {
-			form.UpdatedUser.Phone = form.Phone
+			form.User.Phone = form.Phone
 		}
 	}
 
@@ -243,7 +252,7 @@ func (form *UserUpdateForm) validateAddress() *UserUpdateForm {
 		address.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 		if address.IsClean() {
-			form.UpdatedUser.Address = form.Address
+			form.User.Address = form.Address
 		}
 	}
 
@@ -279,7 +288,7 @@ func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
 	emailField.ValidateFormat(emailFormat, "")
 
 	if emailField.IsClean() {
-		form.UpdatedUser.Email = *form.Email
+		form.User.Email = *form.Email
 	}
 
 	return form
@@ -287,27 +296,44 @@ func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateState() *UserUpdateForm {
 	userState := form.FindAttrByCode("state")
+
+	if form.User.Id == 0 {
+		form.User.State = enums.UserStateActive
+
+		return form
+	}
+
 	userState.ValidateRequired()
 
 	if userState.IsClean() {
 		if userStateEnum, err := enums.ParseUserState(*form.State); err != nil {
 			userState.AddError("is invalid")
 		} else {
-			form.UpdatedUser.State = userStateEnum
+			if userStateEnum == enums.UserStateInactive && !form.User.Inactiveable() {
+				userState.AddError("State is invalid")
+			} else {
+				form.User.State = userStateEnum
+			}
 		}
 	}
+
 	return form
 }
 
 func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 	level := form.FindAttrByCode("companyLevelId")
 
-	if level != nil {
+	if form.CompanyLevelId != nil {
 		level.ValidateMin(interface{}(int64(1)))
 		level.ValidateMax(interface{}(int64(4)))
 
+		companyLevelId, err := helpers.GqlIdToInt32(*form.CompanyLevelId)
+		if err != nil {
+			level.AddError("is invalid")
+		}
+
 		if level.IsClean() {
-			form.UpdatedUser.CompanyLevelId = form.CompanyLevelId
+			form.User.CompanyLevelId = &companyLevelId
 		}
 	}
 
@@ -317,9 +343,15 @@ func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 func (form *UserUpdateForm) validatePassword() *UserUpdateForm {
 	password := form.FindAttrByCode("password")
 
-	if password != nil {
+	if form.Password != nil {
 		password.ValidateMin(interface{}(int64(6)))
 		password.ValidateMax(interface{}(int64(20)))
+
+		if encryptPassword, err := bcrypt.GenerateFromPassword([]byte(*form.Password), 10); err != nil {
+			password.AddError(err)
+		} else {
+			form.User.EncryptedPassword = string(encryptPassword)
+		}
 	}
 
 	return form

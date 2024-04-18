@@ -1,5 +1,7 @@
 package insightInputs
 
+import "github.com/graph-gophers/graphql-go"
+
 type UserFormInput struct {
 	FullName       *string
 	Email          *string
@@ -9,7 +11,7 @@ type UserFormInput struct {
 	Gender         *string
 	SlackId        *string
 	State          *string
-	CompanyLevelId *int32
+	CompanyLevelId *graphql.ID
 	Password       *string
 	About          *string
 	AvatarKey      *string

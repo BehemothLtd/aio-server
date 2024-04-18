@@ -6,6 +6,7 @@ import (
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"aio-server/services/insightServices"
 	"context"
 )
@@ -20,7 +21,11 @@ func (r *Resolver) UserUpdate(ctx context.Context, args insightInputs.UserUpdate
 		return nil, exceptions.NewUnauthorizedError("")
 	}
 
-	userId := args.Id
+	userId, err := helpers.GqlIdToInt32(args.Id)
+	if err != nil {
+		return nil, err
+	}
+
 	updatedUser := models.User{Id: userId}
 
 	service := insightServices.UserUpdateService{
