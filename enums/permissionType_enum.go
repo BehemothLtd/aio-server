@@ -204,6 +204,8 @@ const (
 	PermissionTargetTypeTimesheetTemplates PermissionTargetType = "timesheet_templates"
 	// PermissionTargetTypeAttendances is a PermissionTargetType of type attendances.
 	PermissionTargetTypeAttendances PermissionTargetType = "attendances"
+	// PermissionTargetTypeProjectExperiences is a PermissionTargetType of type project_experiences.
+	PermissionTargetTypeProjectExperiences PermissionTargetType = "project_experiences"
 )
 
 var ErrInvalidPermissionTargetType = errors.New("not a valid PermissionTargetType")
@@ -233,6 +235,7 @@ var _PermissionTargetTypeValue = map[string]PermissionTargetType{
 	"devices":             PermissionTargetTypeDevices,
 	"timesheet_templates": PermissionTargetTypeTimesheetTemplates,
 	"attendances":         PermissionTargetTypeAttendances,
+	"project_experiences": PermissionTargetTypeProjectExperiences,
 }
 
 // ParsePermissionTargetType attempts to convert a string to a PermissionTargetType.
@@ -273,6 +276,7 @@ var sqlIntPermissionTargetTypeMap = map[int64]PermissionTargetType{
 	9:  PermissionTargetTypeDevices,
 	10: PermissionTargetTypeTimesheetTemplates,
 	11: PermissionTargetTypeAttendances,
+	12: PermissionTargetTypeProjectExperiences,
 }
 
 var sqlIntPermissionTargetTypeValue = map[PermissionTargetType]int64{
@@ -288,6 +292,7 @@ var sqlIntPermissionTargetTypeValue = map[PermissionTargetType]int64{
 	PermissionTargetTypeDevices:            9,
 	PermissionTargetTypeTimesheetTemplates: 10,
 	PermissionTargetTypeAttendances:        11,
+	PermissionTargetTypeProjectExperiences: 12,
 }
 
 func lookupSqlIntPermissionTargetType(val int64) (PermissionTargetType, error) {
