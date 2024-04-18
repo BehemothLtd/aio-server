@@ -1,13 +1,11 @@
 package insightInputs
 
-import "github.com/graph-gophers/graphql-go"
-
 type DeviceFormInput struct {
 	Name         string
 	Code         string
 	State        string
-	UserId       *graphql.ID
-	DeviceTypeId graphql.ID
+	UserId       *int32
+	DeviceTypeId int32
 	Description  *string
 	Seller       *string
 }
