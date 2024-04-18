@@ -24,7 +24,12 @@ func (r *Resolver) User(ctx context.Context, args insightInputs.UserInput) (*glo
 	}
 
 	user := models.User{Id: userId}
-	repo := repository.NewUserRepository(&ctx, r.Db)
+	repo := repository.NewUserRepository(
+		&ctx,
+		r.Db.Preload("Avatar.AttachmentBlob").
+			Preload("ProjectAssignees.User").
+			Preload("ProjectAssignees.Project"))
+
 	err = repo.Find(&user)
 
 	if err != nil {

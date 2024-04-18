@@ -37,7 +37,13 @@ func (r *UserRepository) Find(user *models.User) error {
 
 // FindWithAvatar finds an user includes his avatar data
 func (r *UserRepository) FindWithAvatar(user *models.User) error {
-	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob")
+	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").Preload("ProjectAssignees")
+
+	return dbTables.Where("id = ?", user.Id).First(&user).Error
+}
+
+func (r *Repository) FindWithProjectAssignees(user *models.User) error {
+	dbTables := r.db.Table("users").Preload("ProjectAssignees")
 
 	return dbTables.Where("id = ?", user.Id).First(&user).Error
 }

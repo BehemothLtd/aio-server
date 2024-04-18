@@ -18,7 +18,6 @@ type UserUpdateForm struct {
 	Form
 	insightInputs.UserFormInput
 	User *models.User
-	// UpdatedUser models.User
 	Repo *repository.UserRepository
 }
 

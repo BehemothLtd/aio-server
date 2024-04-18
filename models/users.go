@@ -101,7 +101,7 @@ func (u *User) assignDefaultData() (err error) {
 	}
 
 	timing := UserTiming{
-		ActiveAt: time.Now().Format("2006-01-02 15:04:05"),
+		ActiveAt: time.Now().Format(constants.DateTimeZoneFormat),
 	}
 
 	u.Timing = &timing
