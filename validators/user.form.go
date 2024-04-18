@@ -297,15 +297,27 @@ func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateState() *UserUpdateForm {
 	userState := form.FindAttrByCode("state")
+
+	if form.User.Id == 0 {
+		form.User.State = enums.UserStateActive
+
+		return form
+	}
+
 	userState.ValidateRequired()
 
 	if userState.IsClean() {
 		if userStateEnum, err := enums.ParseUserState(*form.State); err != nil {
 			userState.AddError("is invalid")
 		} else {
-			form.User.State = userStateEnum
+			if userStateEnum == enums.UserStateInactive && !form.User.Inactiveable() {
+				userState.AddError("is invalid")
+			} else {
+				form.User.State = userStateEnum
+			}
 		}
 	}
+
 	return form
 }
 

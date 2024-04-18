@@ -107,3 +107,15 @@ func (u *User) assignDefaultData() (err error) {
 	u.Timing = &timing
 	return
 }
+
+func (u *User) Inactiveable() bool {
+	result := true
+	for _, pa := range u.ProjectAssignees {
+		if pa.Active {
+			result = false
+			break
+		}
+	}
+
+	return result
+}
