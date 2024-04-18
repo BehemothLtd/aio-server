@@ -86,9 +86,14 @@ func (form *AttendanceForm) Save() error {
 }
 
 func (form *AttendanceForm) validate() error {
-	form.validateCheckinAt().validateCheckOutAt().validateUserId()
+	form.validateCheckinAt().validateUserId()
 
 	form.summaryErrors()
+
+	if form.Errors == nil {
+		form.validateCheckOutAt()
+		form.summaryErrors()
+	}
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -128,26 +133,33 @@ func (form *AttendanceForm) validateCheckinAt() *AttendanceForm {
 
 func (form *AttendanceForm) validateCheckOutAt() *AttendanceForm {
 	checkoutAt := form.FindAttrByCode("checkoutAt")
-	checkoutAt.ValidateRequired()
-	checkoutAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
-
-	checkinAt := form.FindAttrByCode("checkinAt")
-
-	if checkoutAt.IsClean() {
-		var checkinAtTime = *checkinAt.Time()
-		checkoutAt.ValidateMin(interface{}(checkinAtTime))
-
-		endOfDay := helpers.EndOfDay(&checkinAtTime)
-		checkoutAt.ValidateMax(interface{}(endOfDay))
-
+	if form.CheckoutAt == "" {
 		if form.Attendance.Id == 0 {
-			form.Attendance.CheckoutAt = checkoutAt.Time()
+			form.Attendance.CheckoutAt = nil
 		} else {
-			form.UpdateAttendance.CheckoutAt = checkoutAt.Time()
+			form.UpdateAttendance.CheckoutAt = nil
 		}
-	}
+		return form
+	} else {
+		checkoutAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
-	return form
+		if checkoutAt.IsClean() {
+			checkinAt := form.FindAttrByCode("checkinAt")
+			var checkinAtTime = *checkinAt.Time()
+			checkoutAt.ValidateMin(interface{}(checkinAtTime))
+
+			endOfDay := helpers.EndOfDay(&checkinAtTime)
+			checkoutAt.ValidateMax(interface{}(endOfDay))
+
+			if form.Attendance.Id == 0 {
+				form.Attendance.CheckoutAt = checkoutAt.Time()
+			} else {
+				form.UpdateAttendance.CheckoutAt = checkoutAt.Time()
+			}
+		}
+
+		return form
+	}
 }
 
 func (form *AttendanceForm) validateUserId() *AttendanceForm {

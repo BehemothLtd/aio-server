@@ -155,7 +155,14 @@ func (r *AttendanceRepository) Create(attendance *models.Attendance) error {
 }
 
 func (r *AttendanceRepository) Update(attendance *models.Attendance, updateAttendance models.Attendance) error {
-	return r.db.Model(&attendance).Updates(updateAttendance).First(&attendance).Error
+	return r.db.Transaction(func(tx *gorm.DB) error {
+		if updateAttendance.CheckoutAt == nil {
+			if err := tx.Model(attendance).Select("checkout_at").Update("checkout_at", gorm.Expr("NULL")).Error; err != nil {
+				return err
+			}
+		}
+		return tx.Model(attendance).Updates(updateAttendance).Error
+	})
 }
 
 func (r *AttendanceRepository) Destroy(attendance *models.Attendance) error {
