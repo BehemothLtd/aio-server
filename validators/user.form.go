@@ -310,7 +310,7 @@ func (form *UserUpdateForm) validateState() *UserUpdateForm {
 			userState.AddError("is invalid")
 		} else {
 			if userStateEnum == enums.UserStateInactive && !form.User.Inactiveable() {
-				userState.AddError("is invalid")
+				userState.AddError("State is invalid")
 			} else {
 				form.User.State = userStateEnum
 			}

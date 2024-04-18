@@ -6,7 +6,6 @@ import (
 	"aio-server/repository"
 	"aio-server/validators"
 	"context"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -19,8 +18,7 @@ type UserUpdateService struct {
 }
 
 func (us *UserUpdateService) Execute() error {
-	fmt.Print(">>>>>>>>>>>>>>>>> query user")
-	repo := repository.NewUserRepository(us.Ctx, us.Db) // .Preload("ProjectAssignees")
+	repo := repository.NewUserRepository(us.Ctx, us.Db)
 
 	err := repo.FindWithAvatar(us.User)
 	if err != nil {
