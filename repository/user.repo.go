@@ -196,69 +196,8 @@ func (r *UserRepository) UpdateProfile(user *models.User, updates map[string]int
 		First(&user).Error
 }
 
-// func (ur *UserRepository) Create(user *models.User, attributes map[string]interface{}) error {
-// 	if err := ur.db.Transaction(func(tx *gorm.DB) error {
-// 		ur.getDefaultData(attributes)
-
-// 		if err := tx.Model(&user).
-// 			Session(&gorm.Session{FullSaveAssociations: true}).
-// 			Select(helpers.GetKeys(attributes)).Create(attributes).Error; err != nil {
-// 			return err
-// 		}
-
-// 		attachment := attributes["Avatar"]
-
-// 		if attachment != nil {
-// 			avatar := models.Attachment{
-// 				OwnerID: user.Id,
-// 			}
-
-// 			if err := tx.Model(&avatar).Create(attachment).Error; err != nil {
-// 				return err
-// 			}
-// 		}
-// 		return nil
-// 	}); err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-// func (ur *UserRepository) getDefaultData(attributes map[string]interface{}) {
-// 	re := regexp.MustCompile(`(.*)@`)
-
-// 	email := attributes["Email"].(string)
-// 	matches := re.FindStringSubmatch(email)
-
-// 	if len(matches) >= 2 {
-// 		attributes["Name"] = matches[1]
-// 	}
-
-// 	timing := models.UserTiming{
-// 		ActiveAt: time.Now().Format(constants.DateTimeZoneFormat),
-// 	}
-
-// 	attributes["Timing"] = &timing
-// 	attributes["CreatedAt"] = time.Now().Format(constants.DataTimeMilisFormat)
-// 	attributes["UpdatedAt"] = time.Now().Format(constants.DataTimeMilisFormat)
-// 	attributes["LockVersion"] = 1
-// }
-
-//
-
 func (ur *UserRepository) Create(user *models.User) error {
 	return ur.db.Model(&user).Create(&user).Error
-	// if err := ur.db.Transaction(func(tx *gorm.DB) error {
-	// 	if err := tx.Model(&user).Create(&user).Error; err != nil {
-	// 		return err
-	// 	}
-	// 	return nil
-	// }); err != nil {
-	// 	return err
-	// }
-
-	// return nil
 }
 
 func (r *UserRepository) UpdateUser(user *models.User, attributes map[string]interface{}) error {

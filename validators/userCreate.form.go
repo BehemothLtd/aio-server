@@ -27,10 +27,10 @@ func NewUserCreateFormValidator(
 	user *models.User,
 ) UserCreateForm {
 	form := UserCreateForm{
-		Form:                Form{},
+		Form:          Form{},
 		UserFormInput: *input,
-		User:                user,
-		Repo:                repo,
+		User:          user,
+		Repo:          repo,
 	}
 
 	form.assignAttributes(input)
@@ -40,9 +40,8 @@ func NewUserCreateFormValidator(
 	return form
 }
 
-func (form UserCreateForm) assignAttributes(input *insightInputs.UserFormInput) {
+func (form *UserCreateForm) assignAttributes(input *insightInputs.UserFormInput) {
 
-	fmt.Printf("input>>>>>>>>>>>> %+v\n\n", form.FullName)
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -74,6 +73,12 @@ func (form UserCreateForm) assignAttributes(input *insightInputs.UserFormInput) 
 				Code: "avatarKey",
 			},
 			Value: helpers.GetStringOrDefault(input.AvatarKey),
+		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "password",
+			},
+			Value: helpers.GetStringOrDefault(input.Password),
 		},
 	)
 
@@ -181,7 +186,7 @@ func (form *UserCreateForm) validateEmail() *UserCreateForm {
 
 func (form *UserCreateForm) validatePassword() *UserCreateForm {
 	password := form.FindAttrByCode("password")
-
+	fmt.Printf("passowrd>>>>>>>>>>>> %+v\n\n", password)
 	if form.Password != nil {
 		password.ValidateMin(interface{}(int64(6)))
 		password.ValidateMax(interface{}(int64(20)))

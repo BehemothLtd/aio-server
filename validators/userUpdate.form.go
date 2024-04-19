@@ -303,13 +303,6 @@ func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateState() *UserUpdateForm {
 	userState := form.FindAttrByCode("state")
-
-	if form.User.Id == 0 {
-		form.UpdatedAttrs["State"] = enums.UserStateActive
-
-		return form
-	}
-
 	userState.ValidateRequired()
 
 	if userState.IsClean() {
