@@ -13,9 +13,9 @@ import (
 type AttendanceForm struct {
 	Form
 	insightInputs.AttendanceFormInput
-	Attendance       *models.Attendance
-	Repo             *repository.AttendanceRepository
-	UpdateAttendance models.Attendance
+	Attendance  *models.Attendance
+	Repo        *repository.AttendanceRepository
+	UpdatesForm map[string]interface{}
 }
 
 func NewAttendanceFormValidator(
@@ -27,7 +27,7 @@ func NewAttendanceFormValidator(
 		Form:                Form{},
 		AttendanceFormInput: *input,
 		Attendance:          Attendance,
-		UpdateAttendance:    models.Attendance{},
+		UpdatesForm:         map[string]interface{}{},
 		Repo:                repo,
 	}
 
@@ -41,22 +41,19 @@ func (form *AttendanceForm) assignAttributes() {
 	form.AddAttributes(
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "checkinAt",
-				Name: "checkin_at",
+				Code: "CheckinAt",
 			},
 			Value: helpers.GetStringOrDefault(&form.CheckinAt),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "checkoutAt",
-				Name: "checkout_at",
+				Code: "CheckoutAt",
 			},
 			Value: helpers.GetStringOrDefault(&form.CheckoutAt),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "userId",
-				Name: "user_id",
+				Code: "UserId",
 			},
 			Value: helpers.GetInt32OrDefault(&form.UserId),
 		},
@@ -75,7 +72,7 @@ func (form *AttendanceForm) Save() error {
 			})
 		}
 	} else {
-		if err := form.Repo.Update(form.Attendance, form.UpdateAttendance); err != nil {
+		if err := form.Repo.Update(form.Attendance, form.UpdatesForm); err != nil {
 			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 				"base": {err.Error()},
 			})
@@ -86,9 +83,13 @@ func (form *AttendanceForm) Save() error {
 }
 
 func (form *AttendanceForm) validate() error {
-	form.validateCheckinAt().validateCheckOutAt().validateUserId()
-
+	form.validateCheckinAt().validateUserId()
 	form.summaryErrors()
+
+	if form.Errors == nil {
+		form.validateCheckOutAt()
+		form.summaryErrors()
+	}
 
 	if form.Errors != nil {
 		return exceptions.NewUnprocessableContentError("", form.Errors)
@@ -97,7 +98,8 @@ func (form *AttendanceForm) validate() error {
 }
 
 func (form *AttendanceForm) validateCheckinAt() *AttendanceForm {
-	checkinAt := form.FindAttrByCode("checkinAt")
+	fieldCode := "CheckinAt"
+	checkinAt := form.FindAttrByCode(fieldCode)
 	checkinAt.ValidateRequired()
 	checkinAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
 
@@ -112,7 +114,7 @@ func (form *AttendanceForm) validateCheckinAt() *AttendanceForm {
 			form.Attendance.CheckinAt = checkinAt.Time()
 		} else {
 			err = repo.CountAtDateOfUser(&count, form.UserId, checkinAtTime, &form.Attendance.Id)
-			form.UpdateAttendance.CheckinAt = checkinAt.Time()
+			form.UpdatesForm[fieldCode] = checkinAt.Time()
 		}
 
 		if err != nil {
@@ -127,31 +129,39 @@ func (form *AttendanceForm) validateCheckinAt() *AttendanceForm {
 }
 
 func (form *AttendanceForm) validateCheckOutAt() *AttendanceForm {
-	checkoutAt := form.FindAttrByCode("checkoutAt")
-	checkoutAt.ValidateRequired()
-	checkoutAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
+	fieldCode := "CheckoutAt"
+	checkoutAt := form.FindAttrByCode(fieldCode)
 
-	checkinAt := form.FindAttrByCode("checkinAt")
-
-	if checkoutAt.IsClean() {
+	if form.CheckoutAt == "" {
+		if form.Attendance.Id == 0 {
+			form.Attendance.CheckoutAt = nil
+		} else {
+			form.UpdatesForm[fieldCode] = nil
+		}
+		return form
+	} else {
+		checkoutAt.ValidateFormat(constants.DDMMYYY_HHMM_DateFormat, constants.HUMAN_DDMMYYY_HHMM_DateFormat)
+		checkinAt := form.FindAttrByCode("CheckinAt")
 		var checkinAtTime = *checkinAt.Time()
-		checkoutAt.ValidateMin(interface{}(checkinAtTime))
 
+		checkoutAt.ValidateMin(interface{}(checkinAtTime))
 		endOfDay := helpers.EndOfDay(&checkinAtTime)
 		checkoutAt.ValidateMax(interface{}(endOfDay))
 
-		if form.Attendance.Id == 0 {
-			form.Attendance.CheckoutAt = checkoutAt.Time()
-		} else {
-			form.UpdateAttendance.CheckoutAt = checkoutAt.Time()
+		if checkoutAt.IsClean() {
+			if form.Attendance.Id == 0 {
+				form.Attendance.CheckoutAt = checkoutAt.Time()
+			} else {
+				form.UpdatesForm[fieldCode] = checkoutAt.Time()
+			}
 		}
+		return form
 	}
-
-	return form
 }
 
 func (form *AttendanceForm) validateUserId() *AttendanceForm {
-	field := form.FindAttrByCode("userId")
+	fieldCode := "UserId"
+	field := form.FindAttrByCode(fieldCode)
 	field.ValidateRequired()
 
 	userRepo := repository.NewUserRepository(nil, database.Db)
@@ -163,7 +173,7 @@ func (form *AttendanceForm) validateUserId() *AttendanceForm {
 		if form.Attendance.Id == 0 {
 			form.Attendance.UserId = form.UserId
 		} else {
-			form.UpdateAttendance.UserId = form.UserId
+			form.UpdatesForm[fieldCode] = form.UserId
 		}
 	}
 
