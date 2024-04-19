@@ -9,7 +9,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -37,8 +36,6 @@ func NewUserFormValidator(
 	}
 
 	form.assignAttributes(input)
-
-	fmt.Printf("form before assign %+v\n\n", form)
 
 	return form
 }
@@ -130,9 +127,6 @@ func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput)
 			Value: helpers.GetInt32OrDefault(form.LockVersion),
 		},
 	)
-
-	fmt.Printf("form after assign %+v\n\n", form)
-
 }
 
 func (form *UserUpdateForm) Save() error {
@@ -144,9 +138,6 @@ func (form *UserUpdateForm) Save() error {
 }
 
 func (form *UserUpdateForm) validate() error {
-
-	fmt.Printf("form insight validate %+v\n\n", form)
-
 	form.validateFullName().
 		validateEmail().
 		validatePhone().

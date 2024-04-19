@@ -8,7 +8,6 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 	"strings"
 
 	"golang.org/x/crypto/bcrypt"
@@ -34,8 +33,6 @@ func NewUserCreateFormValidator(
 	}
 
 	form.assignAttributes(input)
-
-	fmt.Printf("form after assign %+v\n\n", form)
 
 	return form
 }
@@ -81,8 +78,6 @@ func (form *UserCreateForm) assignAttributes(input *insightInputs.UserFormInput)
 			Value: helpers.GetStringOrDefault(input.Password),
 		},
 	)
-
-	fmt.Printf("form after assign %+v\n\n", form)
 }
 
 func (form *UserCreateForm) Save() error {
@@ -93,7 +88,6 @@ func (form *UserCreateForm) Save() error {
 }
 
 func (form *UserCreateForm) validate() error {
-	fmt.Printf("form before validate %+v", form)
 	form.validateFullName().
 		validateEmail().
 		validateSlackId().
@@ -121,8 +115,6 @@ func (form *UserCreateForm) validateAbout() *UserCreateForm {
 }
 
 func (form *UserCreateForm) validateFullName() *UserCreateForm {
-	fmt.Printf("form insight validate %+v", form)
-
 	fullName := form.FindAttrByCode("fullName")
 
 	fullName.ValidateRequired()
@@ -186,7 +178,7 @@ func (form *UserCreateForm) validateEmail() *UserCreateForm {
 
 func (form *UserCreateForm) validatePassword() *UserCreateForm {
 	password := form.FindAttrByCode("password")
-	fmt.Printf("passowrd>>>>>>>>>>>> %+v\n\n", password)
+
 	if form.Password != nil {
 		password.ValidateMin(interface{}(int64(6)))
 		password.ValidateMax(interface{}(int64(20)))
