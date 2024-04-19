@@ -31,5 +31,4 @@ func (r *Resolver) SelfProjectExperiences(ctx context.Context, args insightInput
 			Metadata: &paginationData.Metadata,
 		},
 	}, nil
-
 }

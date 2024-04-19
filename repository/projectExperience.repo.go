@@ -55,3 +55,9 @@ func (r *ProjectExperienceRepository) ProjectIdEq(ProjectIdEq *int32) func(db *g
 		}
 	}
 }
+
+func (r *ProjectExperienceRepository) Find(projectExperience *models.ProjectExperience) error {
+	dbTables := r.db.Model(&models.ProjectExperience{})
+
+	return dbTables.Where(&projectExperience).First(&projectExperience).Error
+}
