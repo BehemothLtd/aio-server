@@ -44,6 +44,9 @@ var defaultPermissions = []Permission{
 
 	{Id: 800, Target: enums.PermissionTargetTypeAttendances, Action: enums.PermissionActionTypeRead},
 	{Id: 801, Target: enums.PermissionTargetTypeAttendances, Action: enums.PermissionActionTypeWrite},
+
+	{Id: 1000, Target: enums.PermissionTargetTypeProjectExperiences, Action: enums.PermissionActionTypeRead},
+	{Id: 1001, Target: enums.PermissionTargetTypeProjectExperiences, Action: enums.PermissionActionTypeWrite},
 }
 
 // GetPermissions returns a copy of the default permissions slice.

@@ -10,6 +10,7 @@ type Query {
   SelfThisWeekIssuesState(): SelfThisWeekIssuesState!
   SelfProfile(): SelfProfile!
   SelfPermission(): [Permission]!
+  SelfProjectExperiences(input: PagyInput, query: ProjectExperiencesQuery): SelfProjectExperiencesCollection!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
@@ -52,6 +53,8 @@ type Query {
   Device(id: ID!): Device!
 
   SelectOptions(input: SelectOptionsInput!): SelectOptions
+
+  ProjectExperience(id: ID!): ProjectExperience!
 }
 
 type Mutation {
