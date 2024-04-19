@@ -168,13 +168,13 @@ func (r *UserRepository) All(users *[]*models.User) error {
 	return r.db.Table("users").Order("id ASC").Find(&users).Error
 }
 
-func (r *UserRepository) UpdateProfile(user *models.User, updateUser models.User) error {
+func (r *UserRepository) UpdateProfile(user *models.User, updates map[string]interface{}) error {
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+		if err := tx.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
 			return err
 		}
 
-		if err := r.db.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateUser).Error; err != nil {
+		if err := tx.Model(&user).Select(append(helpers.GetKeys(updates), "Avatar")).Updates(updates).Error; err != nil {
 			return err
 		}
 

@@ -40,7 +40,10 @@ func (r *Resolver) SelfAttend(ctx context.Context) (*globalTypes.AttendanceType,
 			return nil, exceptions.NewBadRequestError("Cant perform this action")
 		}
 		// if didnt checkout -> execute checkout
-		if updateErr := repo.Update(&attendance, models.Attendance{CheckoutAt: &currentTime}); updateErr != nil {
+		attendanceUpdate := map[string]interface{}{
+			"CheckoutAt": currentTime,
+		}
+		if updateErr := repo.Update(&attendance, attendanceUpdate); updateErr != nil {
 			return nil, exceptions.NewBadRequestError(updateErr.Error())
 		}
 

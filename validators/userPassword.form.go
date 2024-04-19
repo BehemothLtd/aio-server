@@ -35,28 +35,24 @@ func NewUserPasswordFormValidator(
 }
 
 func (form *UserPasswordForm) assignAttributes(input *insightInputs.SelfUpdatePasswordFormInput) {
-	currentPassword := helpers.GetStringOrDefault(&input.CurrentPassword)
-	password := helpers.GetStringOrDefault(&input.Password)
-	passwordConfirmation := helpers.GetStringOrDefault(&input.PasswordConfirmation)
-
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "currentPassword",
+				Code: "CurrentPassword",
 			},
-			Value: currentPassword,
+			Value: helpers.GetStringOrDefault(form.CurrentPassword),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "password",
+				Code: "Password",
 			},
-			Value: password,
+			Value: helpers.GetStringOrDefault(form.Password),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "passwordConfirmation",
+				Code: "PasswordConfirmation",
 			},
-			Value: passwordConfirmation,
+			Value: helpers.GetStringOrDefault(form.PasswordConfirmation),
 		},
 	)
 }
@@ -65,7 +61,7 @@ func (form *UserPasswordForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	} else {
-		if password, err := bcrypt.GenerateFromPassword([]byte(form.Password), 10); err != nil {
+		if password, err := bcrypt.GenerateFromPassword([]byte(*form.Password), 10); err != nil {
 			return err
 		} else {
 			form.User.EncryptedPassword = string(password)
@@ -88,31 +84,35 @@ func (form *UserPasswordForm) validate() error {
 }
 
 func (form *UserPasswordForm) validatePassword() *UserPasswordForm {
-	passwordField := form.FindAttrByCode("currentPassword")
+	passwordField := form.FindAttrByCode("CurrentPassword")
 
 	passwordField.ValidateRequired()
 
-	if err := bcrypt.CompareHashAndPassword([]byte(form.User.EncryptedPassword), []byte(form.CurrentPassword)); err != nil {
-		passwordField.AddError("is incorrect")
+	if passwordField.IsClean() {
+		if err := bcrypt.CompareHashAndPassword([]byte(form.User.EncryptedPassword), []byte(*form.CurrentPassword)); err != nil {
+			passwordField.AddError("is incorrect")
+		}
 	}
 
 	return form
 }
 
 func (form *UserPasswordForm) validateNewPassword() *UserPasswordForm {
-	newPasswordField := form.FindAttrByCode("password")
-	newPasswordConfirmationField := form.FindAttrByCode("passwordConfirmation")
+	newPasswordField := form.FindAttrByCode("Password")
+	newPasswordConfirmationField := form.FindAttrByCode("PasswordConfirmation")
 
 	newPasswordField.ValidateRequired()
-	newPasswordConfirmationField.ValidateMin(interface{}(int64(8)))
-	newPasswordConfirmationField.ValidateMax(interface{}(int64(20)))
+	newPasswordField.ValidateMin(interface{}(int64(8)))
+	newPasswordField.ValidateMax(interface{}(int64(20)))
 
 	newPasswordConfirmationField.ValidateRequired()
 	newPasswordConfirmationField.ValidateMin(interface{}(int64(8)))
 	newPasswordConfirmationField.ValidateMax(interface{}(int64(20)))
 
-	if form.Password != form.PasswordConfirmation {
-		newPasswordConfirmationField.AddError("needs to be the same with new password")
+	if newPasswordField.IsClean() && newPasswordConfirmationField.IsClean() {
+		if *form.Password != *form.PasswordConfirmation {
+			newPasswordConfirmationField.AddError("needs to be the same with new password")
+		}
 	}
 
 	return form

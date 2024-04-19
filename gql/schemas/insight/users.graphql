@@ -102,9 +102,9 @@ type SelfUpdateProfile {
 }
 
 input SelfUpdatePassword {
-  currentPassword: String!
-  password: String!
-  passwordConfirmation: String!
+  currentPassword: String
+  password: String
+  passwordConfirmation: String
 }
 
 type UserActiveState {

@@ -13,7 +13,7 @@ import (
 )
 
 func (r *Resolver) AttendanceUpdate(ctx context.Context, args insightInputs.AttendanceUpdateInput) (*insightTypes.AttendanceType, error) {
-	currentUser, err := r.Authorize(ctx, enums.PermissionTargetTypeClients.String(), enums.PermissionActionTypeWrite.String())
+	_, err := r.Authorize(ctx, enums.PermissionTargetTypeClients.String(), enums.PermissionActionTypeWrite.String())
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (r *Resolver) AttendanceUpdate(ctx context.Context, args insightInputs.Atte
 		return nil, err
 	}
 
-	attendance := models.Attendance{Id: attendanceId, CreatedUserId: currentUser.Id}
+	attendance := models.Attendance{Id: attendanceId}
 
 	service := insightServices.AttendanceUpdateService{
 		Ctx:        &ctx,

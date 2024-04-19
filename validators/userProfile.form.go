@@ -15,9 +15,9 @@ import (
 type UserProfileForm struct {
 	Form
 	insightInputs.SelfUpdateFormInput
-	User       *models.User
-	UpdateUser models.User
-	Repo       *repository.UserRepository
+	User    *models.User
+	updates map[string]interface{}
+	Repo    *repository.UserRepository
 }
 
 // NewUserProfileFormValidator creates a new UserProfileForm validator.
@@ -30,7 +30,7 @@ func NewUserProfileFormValidator(
 		Form:                Form{},
 		SelfUpdateFormInput: *input,
 		User:                user,
-		UpdateUser:          models.User{},
+		updates:             map[string]interface{}{},
 		Repo:                repo,
 	}
 	form.assignAttributes(input)
@@ -42,49 +42,49 @@ func (form *UserProfileForm) assignAttributes(input *insightInputs.SelfUpdateFor
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "about",
+				Code: "About",
 			},
 			Value: helpers.GetStringOrDefault(input.About),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "slackId",
+				Code: "SlackId",
 			},
 			Value: helpers.GetStringOrDefault(input.SlackId),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "gender",
+				Code: "Gender",
 			},
 			Value: helpers.GetStringOrDefault(input.Gender),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "birthday",
+				Code: "Birthday",
 			},
 			Value: helpers.GetStringOrDefault(input.Birthday),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "phone",
+				Code: "Phone",
 			},
 			Value: helpers.GetStringOrDefault(input.Phone),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "address",
+				Code: "Address",
 			},
 			Value: helpers.GetStringOrDefault(input.Address),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "avatarKey",
+				Code: "AvatarKey",
 			},
 			Value: helpers.GetStringOrDefault(input.AvatarKey),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "fullName",
+				Code: "FullName",
 			},
 			Value: helpers.GetStringOrDefault(input.FullName),
 		},
@@ -96,7 +96,7 @@ func (form *UserProfileForm) Save() error {
 		return err
 	}
 
-	return form.Repo.UpdateProfile(form.User, form.UpdateUser)
+	return form.Repo.UpdateProfile(form.User, form.updates)
 }
 
 // validate validates the snippet form.
@@ -125,7 +125,7 @@ func (form *UserProfileForm) validateGender() *UserProfileForm {
 		genderValue := enums.UserGenderType(*form.Gender)
 
 		if genderValue.IsValid() {
-			form.UpdateUser.Gender = &genderValue
+			form.updates["Gender"] = &genderValue
 		} else {
 			gender.AddError("is invalid")
 		}
@@ -135,13 +135,15 @@ func (form *UserProfileForm) validateGender() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateBirthday() *UserProfileForm {
+	key := "Birthday"
+
 	if form.Birthday != nil {
-		field := form.FindAttrByCode("birthday")
+		field := form.FindAttrByCode(key)
 
 		field.ValidateFormat(constants.YYYYMMDD_DateFormat, constants.HUMAN_YYYYMMDD_DateFormat)
 
 		if field.IsClean() {
-			form.UpdateUser.Birthday = field.Time()
+			form.updates["Birthday"] = field.Time()
 		}
 	}
 
@@ -149,53 +151,58 @@ func (form *UserProfileForm) validateBirthday() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateAbout() *UserProfileForm {
-	about := form.FindAttrByCode("about")
+	key := "About"
+	about := form.FindAttrByCode(key)
 	about.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if about.IsClean() {
-		form.UpdateUser.About = form.About
+		form.updates[key] = form.About
 	}
 
 	return form
 }
 
 func (form *UserProfileForm) validateFullName() *UserProfileForm {
-	fullName := form.FindAttrByCode("fullName")
+	key := "FullName"
+	fullName := form.FindAttrByCode(key)
 
 	fullName.ValidateRequired()
 	fullName.ValidateMin(interface{}(int64(10)))
 	fullName.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if fullName.IsClean() {
-		form.UpdateUser.FullName = *form.FullName
+		form.updates[key] = *form.FullName
 	}
 
 	return form
 }
 
 func (form *UserProfileForm) validateSlackId() *UserProfileForm {
-	slackId := form.FindAttrByCode("slackId")
+	key := "SlackId"
+	slackId := form.FindAttrByCode(key)
 
 	slackId.ValidateRequired()
 	slackId.ValidateMin(interface{}(int64(11)))
 	slackId.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if slackId.IsClean() {
-		form.UpdateUser.SlackId = form.SlackId
+		form.updates[key] = form.SlackId
 	}
 
 	return form
 }
 
 func (form *UserProfileForm) validatePhone() *UserProfileForm {
+	key := "Phone"
+
 	if form.Phone != nil {
-		phone := form.FindAttrByCode("phone")
+		phone := form.FindAttrByCode(key)
 
 		phone.ValidateMin(interface{}(int64(10)))
 		phone.ValidateMax(interface{}(int64(13)))
 
 		if phone.IsClean() {
-			form.UpdateUser.Phone = form.Phone
+			form.updates[key] = form.Phone
 		}
 	}
 
@@ -203,14 +210,16 @@ func (form *UserProfileForm) validatePhone() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateAddress() *UserProfileForm {
+	key := "Address"
+
 	if form.Address != nil {
-		address := form.FindAttrByCode("address")
+		address := form.FindAttrByCode(key)
 
 		address.ValidateMin(interface{}(int64(20)))
 		address.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 		if address.IsClean() {
-			form.UpdateUser.Address = form.Address
+			form.updates[key] = form.Address
 		}
 	}
 
@@ -218,7 +227,7 @@ func (form *UserProfileForm) validateAddress() *UserProfileForm {
 }
 
 func (form *UserProfileForm) validateAvatarKey() *UserProfileForm {
-	avatar := form.FindAttrByCode("avatarKey")
+	avatar := form.FindAttrByCode("AvatarKey")
 
 	if form.AvatarKey != nil && strings.TrimSpace(*form.AvatarKey) != "" {
 		blob := models.AttachmentBlob{Key: *form.AvatarKey}
