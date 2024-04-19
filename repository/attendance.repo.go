@@ -154,8 +154,8 @@ func (r *AttendanceRepository) Create(attendance *models.Attendance) error {
 	return r.db.Model(&attendance).Create(&attendance).Error
 }
 
-func (r *AttendanceRepository) Update(attendance *models.Attendance, updateAttendance models.Attendance) error {
-	return r.db.Model(&attendance).Updates(updateAttendance).First(&attendance).Error
+func (r *AttendanceRepository) Update(attendance *models.Attendance, updates map[string]interface{}) error {
+	return r.db.Model(&attendance).Updates(updates).First(&attendance).Error
 }
 
 func (r *AttendanceRepository) Destroy(attendance *models.Attendance) error {
