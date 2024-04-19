@@ -23,7 +23,7 @@ func (uc *UserCreateService) Execute() (string, error) {
 	password := utilities.RandomToken(8)
 	uc.Args.Password = &password
 
-	form := validators.NewUserFormValidator(
+	form := validators.NewUserCreateFormValidator(
 		&uc.Args,
 		repository.NewUserRepository(uc.Ctx, uc.Db),
 		uc.User,

@@ -82,15 +82,19 @@ func (r *UserRepository) List(
 ) error {
 	dbTables := r.db.Model(&models.User{})
 
-	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Scopes(
-			r.nameLike(query.NameCont),
-			r.fullNameLike(query.FullNameCont),
-			r.emailLike(query.EmailCont),
-			r.slackIdLike(query.SlackIdCont),
-			r.stateEq(query.StateEq),
-		), paginateData),
-	).Order("id desc").Find(&users).Error
+	return dbTables.
+		Scopes(
+			helpers.Paginate(dbTables.Scopes(
+				r.nameLike(query.NameCont),
+				r.fullNameLike(query.FullNameCont),
+				r.emailLike(query.EmailCont),
+				r.slackIdLike(query.SlackIdCont),
+				r.stateEq(query.StateEq),
+			), paginateData),
+		).
+		Preload("Avatar", "name = 'avatar'").
+		Preload("Avatar.AttachmentBlob").
+		Order("id desc").Find(&users).Error
 }
 
 func (r *UserRepository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
@@ -192,19 +196,78 @@ func (r *UserRepository) UpdateProfile(user *models.User, updates map[string]int
 		First(&user).Error
 }
 
+// func (ur *UserRepository) Create(user *models.User, attributes map[string]interface{}) error {
+// 	if err := ur.db.Transaction(func(tx *gorm.DB) error {
+// 		ur.getDefaultData(attributes)
+
+// 		if err := tx.Model(&user).
+// 			Session(&gorm.Session{FullSaveAssociations: true}).
+// 			Select(helpers.GetKeys(attributes)).Create(attributes).Error; err != nil {
+// 			return err
+// 		}
+
+// 		attachment := attributes["Avatar"]
+
+// 		if attachment != nil {
+// 			avatar := models.Attachment{
+// 				OwnerID: user.Id,
+// 			}
+
+// 			if err := tx.Model(&avatar).Create(attachment).Error; err != nil {
+// 				return err
+// 			}
+// 		}
+// 		return nil
+// 	}); err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
+
+// func (ur *UserRepository) getDefaultData(attributes map[string]interface{}) {
+// 	re := regexp.MustCompile(`(.*)@`)
+
+// 	email := attributes["Email"].(string)
+// 	matches := re.FindStringSubmatch(email)
+
+// 	if len(matches) >= 2 {
+// 		attributes["Name"] = matches[1]
+// 	}
+
+// 	timing := models.UserTiming{
+// 		ActiveAt: time.Now().Format(constants.DateTimeZoneFormat),
+// 	}
+
+// 	attributes["Timing"] = &timing
+// 	attributes["CreatedAt"] = time.Now().Format(constants.DataTimeMilisFormat)
+// 	attributes["UpdatedAt"] = time.Now().Format(constants.DataTimeMilisFormat)
+// 	attributes["LockVersion"] = 1
+// }
+
+//
+
 func (ur *UserRepository) Create(user *models.User) error {
-	return ur.db.Table("users").Create(&user).Error
+	return ur.db.Model(&user).Create(&user).Error
+	// if err := ur.db.Transaction(func(tx *gorm.DB) error {
+	// 	if err := tx.Model(&user).Create(&user).Error; err != nil {
+	// 		return err
+	// 	}
+	// 	return nil
+	// }); err != nil {
+	// 	return err
+	// }
+
+	// return nil
 }
 
-func (r *UserRepository) UpdateUser(user *models.User) error {
-	originalUser := models.User{Id: user.Id}
-
+func (r *UserRepository) UpdateUser(user *models.User, attributes map[string]interface{}) error {
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Model(&originalUser).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+		if err := tx.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
 			return err
 		}
 
-		if err := r.db.Model(&originalUser).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+		if err := tx.Model(&user).Select(append(helpers.GetKeys(attributes), "Avatar")).Updates(attributes).Error; err != nil {
 			return err
 		}
 
@@ -215,7 +278,7 @@ func (r *UserRepository) UpdateUser(user *models.User) error {
 
 	return r.db.
 		Model(&models.User{}).
-		Where("id = ?", &originalUser.Id).
+		Where("id = ?", &user.Id).
 		Preload("Avatar.AttachmentBlob").
 		Preload("ProjectAssignees.User").
 		Preload("ProjectAssignees.Project").
