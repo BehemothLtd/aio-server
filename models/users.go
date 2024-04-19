@@ -93,9 +93,11 @@ func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 }
 
 func (u *User) assignDefaultData() (err error) {
-	re := regexp.MustCompile(`(.*)@`)
+	u.State = enums.UserStateActive
 
+	re := regexp.MustCompile(`(.*)@`)
 	matches := re.FindStringSubmatch(u.Email)
+
 	if len(matches) >= 2 {
 		u.Name = matches[1]
 	}
@@ -103,8 +105,8 @@ func (u *User) assignDefaultData() (err error) {
 	timing := UserTiming{
 		ActiveAt: time.Now().Format(constants.DateTimeZoneFormat),
 	}
-
 	u.Timing = &timing
+
 	return
 }
 

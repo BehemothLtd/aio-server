@@ -44,7 +44,8 @@ const (
 	// Slack callback id
 	SlackChangeStateRq = "change_state_rq"
 
-	Charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	Charset     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	EmailFormat = `\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z`
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {

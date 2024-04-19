@@ -82,15 +82,19 @@ func (r *UserRepository) List(
 ) error {
 	dbTables := r.db.Model(&models.User{})
 
-	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Scopes(
-			r.nameLike(query.NameCont),
-			r.fullNameLike(query.FullNameCont),
-			r.emailLike(query.EmailCont),
-			r.slackIdLike(query.SlackIdCont),
-			r.stateEq(query.StateEq),
-		), paginateData),
-	).Order("id desc").Find(&users).Error
+	return dbTables.
+		Scopes(
+			helpers.Paginate(dbTables.Scopes(
+				r.nameLike(query.NameCont),
+				r.fullNameLike(query.FullNameCont),
+				r.emailLike(query.EmailCont),
+				r.slackIdLike(query.SlackIdCont),
+				r.stateEq(query.StateEq),
+			), paginateData),
+		).
+		Preload("Avatar", "name = 'avatar'").
+		Preload("Avatar.AttachmentBlob").
+		Order("id desc").Find(&users).Error
 }
 
 func (r *UserRepository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
@@ -193,18 +197,16 @@ func (r *UserRepository) UpdateProfile(user *models.User, updates map[string]int
 }
 
 func (ur *UserRepository) Create(user *models.User) error {
-	return ur.db.Table("users").Create(&user).Error
+	return ur.db.Model(&user).Create(&user).Error
 }
 
-func (r *UserRepository) UpdateUser(user *models.User) error {
-	originalUser := models.User{Id: user.Id}
-
+func (r *UserRepository) UpdateUser(user *models.User, attributes map[string]interface{}) error {
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Model(&originalUser).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+		if err := tx.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
 			return err
 		}
 
-		if err := r.db.Model(&originalUser).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&user).Error; err != nil {
+		if err := tx.Model(&user).Select(append(helpers.GetKeys(attributes), "Avatar")).Updates(attributes).Error; err != nil {
 			return err
 		}
 
@@ -215,7 +217,7 @@ func (r *UserRepository) UpdateUser(user *models.User) error {
 
 	return r.db.
 		Model(&models.User{}).
-		Where("id = ?", &originalUser.Id).
+		Where("id = ?", &user.Id).
 		Preload("Avatar.AttachmentBlob").
 		Preload("ProjectAssignees.User").
 		Preload("ProjectAssignees.Project").

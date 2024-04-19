@@ -17,8 +17,9 @@ import (
 type UserUpdateForm struct {
 	Form
 	insightInputs.UserFormInput
-	User *models.User
-	Repo *repository.UserRepository
+	User         *models.User
+	UpdatedAttrs map[string]interface{}
+	Repo         *repository.UserRepository
 }
 
 func NewUserFormValidator(
@@ -30,10 +31,12 @@ func NewUserFormValidator(
 		Form:          Form{},
 		UserFormInput: *input,
 		User:          user,
+		UpdatedAttrs:  map[string]interface{}{},
 		Repo:          repo,
 	}
 
 	form.assignAttributes(input)
+
 	return form
 }
 
@@ -131,11 +134,7 @@ func (form *UserUpdateForm) Save() error {
 		return err
 	}
 
-	if form.User.Id == 0 {
-		return form.Repo.Create(form.User)
-	}
-
-	return form.Repo.UpdateUser(form.User)
+	return form.Repo.UpdateUser(form.User, form.UpdatedAttrs)
 }
 
 func (form *UserUpdateForm) validate() error {
@@ -167,7 +166,7 @@ func (form *UserUpdateForm) validateGender() *UserUpdateForm {
 		genderValue := enums.UserGenderType(*form.Gender)
 
 		if genderValue.IsValid() {
-			form.User.Gender = &genderValue
+			form.UpdatedAttrs["Gender"] = &genderValue
 		} else {
 			gender.AddError("is invalid")
 		}
@@ -183,7 +182,7 @@ func (form *UserUpdateForm) validateBirthday() *UserUpdateForm {
 		field.ValidateFormat(constants.YYYYMMDD_DateFormat, constants.HUMAN_YYYYMMDD_DateFormat)
 
 		if field.IsClean() {
-			form.User.Birthday = field.Time()
+			form.UpdatedAttrs["Birthday"] = field.Time()
 		}
 	}
 
@@ -195,7 +194,7 @@ func (form *UserUpdateForm) validateAbout() *UserUpdateForm {
 	about.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if about.IsClean() {
-		form.User.About = form.About
+		form.UpdatedAttrs["About"] = form.About
 	}
 
 	return form
@@ -209,7 +208,7 @@ func (form *UserUpdateForm) validateFullName() *UserUpdateForm {
 	fullName.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if fullName.IsClean() {
-		form.User.FullName = *form.FullName
+		form.UpdatedAttrs["FullName"] = *form.FullName
 	}
 
 	return form
@@ -223,7 +222,7 @@ func (form *UserUpdateForm) validateSlackId() *UserUpdateForm {
 	slackId.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if slackId.IsClean() {
-		form.User.SlackId = form.SlackId
+		form.UpdatedAttrs["SlackId"] = form.SlackId
 	}
 
 	return form
@@ -237,7 +236,7 @@ func (form *UserUpdateForm) validatePhone() *UserUpdateForm {
 		phone.ValidateMax(interface{}(int64(13)))
 
 		if phone.IsClean() {
-			form.User.Phone = form.Phone
+			form.UpdatedAttrs["Phone"] = form.Phone
 		}
 	}
 
@@ -252,7 +251,7 @@ func (form *UserUpdateForm) validateAddress() *UserUpdateForm {
 		address.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 		if address.IsClean() {
-			form.User.Address = form.Address
+			form.UpdatedAttrs["Address"] = form.Address
 		}
 	}
 
@@ -270,7 +269,7 @@ func (form *UserUpdateForm) validateAvatarKey() *UserUpdateForm {
 
 			avatar.AddError("is invalid")
 		} else {
-			form.User.Avatar = &models.Attachment{
+			form.UpdatedAttrs["Avatar"] = &models.Attachment{
 				AttachmentBlob:   blob,
 				AttachmentBlobId: blob.Id,
 				Name:             "avatar",
@@ -282,13 +281,12 @@ func (form *UserUpdateForm) validateAvatarKey() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
 	emailField := form.FindAttrByCode("email")
-	emailField.ValidateRequired()
 
-	emailFormat := `\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z`
-	emailField.ValidateFormat(emailFormat, "")
+	emailField.ValidateRequired()
+	emailField.ValidateFormat(constants.EmailFormat, "")
 
 	if emailField.IsClean() {
-		form.User.Email = *form.Email
+		form.UpdatedAttrs["Email"] = *form.Email
 	}
 
 	return form
@@ -296,13 +294,6 @@ func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateState() *UserUpdateForm {
 	userState := form.FindAttrByCode("state")
-
-	if form.User.Id == 0 {
-		form.User.State = enums.UserStateActive
-
-		return form
-	}
-
 	userState.ValidateRequired()
 
 	if userState.IsClean() {
@@ -312,7 +303,7 @@ func (form *UserUpdateForm) validateState() *UserUpdateForm {
 			if userStateEnum == enums.UserStateInactive && !form.User.Inactiveable() {
 				userState.AddError("State is invalid")
 			} else {
-				form.User.State = userStateEnum
+				form.UpdatedAttrs["State"] = userStateEnum
 			}
 		}
 	}
@@ -333,7 +324,7 @@ func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 		}
 
 		if level.IsClean() {
-			form.User.CompanyLevelId = &companyLevelId
+			form.UpdatedAttrs["CompanyLevelId"] = &companyLevelId
 		}
 	}
 
@@ -350,7 +341,7 @@ func (form *UserUpdateForm) validatePassword() *UserUpdateForm {
 		if encryptPassword, err := bcrypt.GenerateFromPassword([]byte(*form.Password), 10); err != nil {
 			password.AddError(err)
 		} else {
-			form.User.EncryptedPassword = string(encryptPassword)
+			form.UpdatedAttrs["EncryptedPassword"] = string(encryptPassword)
 		}
 	}
 

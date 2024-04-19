@@ -23,7 +23,7 @@ func (uc *UserCreateService) Execute() (string, error) {
 	password := utilities.RandomToken(8)
 	uc.Args.Password = &password
 
-	form := validators.NewUserFormValidator(
+	form := validators.NewUserCreateFormValidator(
 		&uc.Args,
 		repository.NewUserRepository(uc.Ctx, uc.Db),
 		uc.User,
@@ -33,5 +33,5 @@ func (uc *UserCreateService) Execute() (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("Email: %s, Password: %s", password, *uc.Args.Email), nil
+	return fmt.Sprintf("Email: %s, Password: %s", *uc.Args.Email, password), nil
 }
