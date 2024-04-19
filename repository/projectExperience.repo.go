@@ -22,18 +22,36 @@ func NewProjectExperienceRepository(c *context.Context, db *gorm.DB) *ProjectExp
 	}
 }
 
-func (r *ProjectExperienceRepository) List(
+func (r *ProjectExperienceRepository) ListByUser(
 	projectExperiences *[]*models.ProjectExperience,
 	paginateData *models.PaginationData,
-	query insightInputs.AttendancesQueryInput,
+	query insightInputs.ProjectExperiencesQueryInput,
+	user models.User,
 ) error {
 	dbTables := r.db.Model(&models.ProjectExperience{})
 
 	return dbTables.Scopes(
 		helpers.Paginate(
 			dbTables.Scopes(
-				r.projectId(query.UserIdEq),
+				r.OfUser(user.Id),
+				r.ProjectIdEq(query.ProjectIdEq),
 			), paginateData,
 		),
-	).Order("id desc").Find(&attendances).Error
+	).Order("id desc").Find(&projectExperiences).Error
+}
+
+func (r *ProjectExperienceRepository) OfUser(userId int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.Where("user_id = ?", userId)
+	}
+}
+
+func (r *ProjectExperienceRepository) ProjectIdEq(ProjectIdEq *int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if ProjectIdEq == nil {
+			return db
+		} else {
+			return db.Where("project_id = ?", ProjectIdEq)
+		}
+	}
 }
