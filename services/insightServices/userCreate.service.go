@@ -33,5 +33,5 @@ func (uc *UserCreateService) Execute() (string, error) {
 		return "", err
 	}
 
-	return fmt.Sprintf("Email: %s, Password: %s", password, *uc.Args.Email), nil
+	return fmt.Sprintf("Email: %s, Password: %s", *uc.Args.Email, password), nil
 }
