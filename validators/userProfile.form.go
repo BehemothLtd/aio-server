@@ -140,7 +140,7 @@ func (form *UserProfileForm) validateBirthday() *UserProfileForm {
 	if form.Birthday != nil {
 		field := form.FindAttrByCode(key)
 
-		field.ValidateFormat(constants.YYYYMMDD_DateFormat, constants.HUMAN_YYYYMMDD_DateFormat)
+		field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
 		if field.IsClean() {
 			form.updates["Birthday"] = field.Time()
