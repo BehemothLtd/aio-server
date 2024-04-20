@@ -115,7 +115,7 @@ func (ut *UserType) Gender(context.Context) *string {
 // Birthday returns the Birthday of the user.
 func (ut *UserType) Birthday(context.Context) *string {
 	if ut.User.Birthday != nil {
-		birthday := ut.User.Birthday.Format(constants.YYYYMMDD_DateFormat)
+		birthday := ut.User.Birthday.Format(constants.DDMMYYYY_DateFormat)
 
 		return &birthday
 	} else {
