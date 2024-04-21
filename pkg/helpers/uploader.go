@@ -48,12 +48,6 @@ func (u *Uploader) Upload() ([]*UploadedBlob, error) {
 	form := u.Ctx.Request.MultipartForm
 	files := form.File["files[]"]
 
-	fmt.Print("AA\n\n")
-
-	fmt.Print(files)
-
-	fmt.Print("BB\n\n")
-
 	for _, file := range files {
 		filename := file.Filename
 
