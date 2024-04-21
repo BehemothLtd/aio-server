@@ -57,17 +57,58 @@ func (r *ClientRepository) Find(client *models.Client) error {
 }
 
 func (r *ClientRepository) Create(client *models.Client) error {
-	return r.db.Model(&client).Create(&client).First(&client).Error
-}
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&client).Create(&client).First(&client).Error; err != nil {
+			return err
+		}
 
-func (r *ClientRepository) Update(client *models.Client, updateClient models.Client) error {
-	if err := r.db.Model(&client).Updates(&updateClient).Error; err != nil {
+		return nil
+	}); err != nil {
 		return err
 	}
 
-	return r.db.Model(&client).Where("id = ?", client.Id).First(&client).Error
+	return r.db.Model(&client).Where("id = ?", client.Id).
+		Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").First(&client).Error
+}
+
+func (r *ClientRepository) Update(client *models.Client, updateClient models.Client) error {
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if client.Avatar != nil {
+			if err := tx.Model(&models.Client{Id: client.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+				return err
+			}
+		}
+
+		if err := tx.Model(&client).Updates(&updateClient).First(&client).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return r.db.Model(&client).Where("id = ?", client.Id).
+		Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").First(&client).Error
 }
 
 func (r *ClientRepository) Destroy(client *models.Client) error {
 	return r.db.Table("clients").Delete(&client).Error
+}
+
+func (r *ClientRepository) UpdateFiles(client *models.Client) error {
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if client.Avatar != nil {
+			if err := r.db.Model(&models.Client{Id: client.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+				return err
+			}
+		}
+
+		return r.db.Model(&client).Updates(&client).Error
+	}); err != nil {
+		return err
+	}
+
+	return r.db.Model(&client).Where("id = ?", client.Id).
+		Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").First(&client).Error
 }

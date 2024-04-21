@@ -12,10 +12,10 @@ import (
 )
 
 type ClientUpdateService struct {
-	Ctx         *context.Context
-	Db          *gorm.DB
-	Args        insightInputs.ClientUpdateInput
-	Client 			*models.Client
+	Ctx    *context.Context
+	Db     *gorm.DB
+	Args   insightInputs.ClientUpdateInput
+	Client *models.Client
 }
 
 func (cus *ClientUpdateService) Execute() error {
@@ -29,7 +29,8 @@ func (cus *ClientUpdateService) Execute() error {
 		&cus.Args.Input,
 		repo,
 		cus.Client,
-	) 
+		*repository.NewAttachmentBlobRepository(cus.Ctx, cus.Db),
+	)
 
 	if err := form.Save(); err != nil {
 		return err

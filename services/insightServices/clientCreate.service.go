@@ -22,6 +22,7 @@ func (ccs *ClientCreateService) Execute() error {
 		&ccs.Args.Input,
 		repository.NewClientRepository(ccs.Ctx, ccs.Db),
 		ccs.Client,
+		*repository.NewAttachmentBlobRepository(ccs.Ctx, ccs.Db),
 	)
 
 	if err := form.Save(); err != nil {

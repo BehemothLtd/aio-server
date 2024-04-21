@@ -33,6 +33,24 @@ func (ct *ClientType) LockVersion(ctx context.Context) *int32 {
 	return &ct.Client.LockVersion
 }
 
+func (ct *ClientType) Avatar(ctx context.Context) *AttachmentType {
+	if ct.Client.Avatar == nil {
+		return nil
+	}
+
+	return &AttachmentType{
+		Attachment: ct.Client.Avatar,
+	}
+}
+
+func (ct *ClientType) AvatarUrl(ctx context.Context) *string {
+	if ct.Client.Avatar == nil {
+		return nil
+	}
+
+	return ct.Client.Avatar.Url()
+}
+
 func (ct *ClientType) CreatedAt(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&ct.Client.CreatedAt)
 }
