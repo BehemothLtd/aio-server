@@ -11,7 +11,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) MmWorkingTimelogs(ctx context.Context, args insightInputs.WorkingTimelogsInput) (*insightTypes.WorkingTimelogsType, error) {
+func (r *Resolver) WorkingTimelogs(ctx context.Context, args insightInputs.WorkingTimelogsInput) (*insightTypes.WorkingTimelogsType, error) {
 	_, authErr := auths.AuthInsightUserFromCtx(ctx)
 
 	if authErr != nil {

@@ -29,9 +29,9 @@ type Query {
 
   DevelopmentRoles(): [DevelopmentRole]
 
-  MmWorkingTimelog(id: ID!): WorkingTimelog
-  MmWorkingTimelogByAttributes(projectId: ID, issueId: ID, loggedAt: String): WorkingTimelogByAttribute
-  MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
+  WorkingTimelog(id: ID!): WorkingTimelog
+  WorkingTimelogByAttributes(projectId: ID, issueId: ID, loggedAt: String): WorkingTimelogByAttribute
+  WorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
 
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
@@ -103,7 +103,7 @@ type Mutation {
   ClientUpdate(id: ID!, input: ClientUpdateInput!): ClientModification!
   ClientDelete(id: ID!): String
 
-  MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
+  SelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 
   AttendanceCreate(input: AttendanceInput!): AttendanceModification!
   AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!

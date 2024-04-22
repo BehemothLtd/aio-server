@@ -13,7 +13,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func (r *Resolver) MmWorkingTimelog(ctx context.Context, args insightInputs.WorkingTimelogInput) (*globalTypes.WorkingTimelogType, error) {
+func (r *Resolver) WorkingTimelog(ctx context.Context, args insightInputs.WorkingTimelogInput) (*globalTypes.WorkingTimelogType, error) {
 	_, err := auths.AuthInsightUserFromCtx(ctx)
 
 	if err != nil {
