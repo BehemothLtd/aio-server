@@ -70,7 +70,11 @@ func (form *ProjectExperienceForm) Save() error {
 			})
 		}
 	} else {
-
+		if err := form.repo.Update(form.ProjectExperience, form.UpdatesForm); err != nil {
+			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
+				"base": {err.Error()},
+			})
+		}
 	}
 
 	return nil
