@@ -49,80 +49,80 @@ func (form *UserUpdateForm) assignAttributes(input *insightInputs.UserFormInput)
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "fullName",
+				Code: "FullName",
 			},
 			Value: helpers.GetStringOrDefault(input.FullName),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "email",
+				Code: "Email",
 			},
 			Value: helpers.GetStringOrDefault(input.Email),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "phone",
+				Code: "Phone",
 			},
 			Value: helpers.GetStringOrDefault(input.Phone),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "address",
+				Code: "Address",
 			},
 			Value: helpers.GetStringOrDefault(input.Address),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "birthday",
+				Code: "Birthday",
 			},
 			Value: helpers.GetStringOrDefault(input.Birthday),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "gender",
+				Code: "Gender",
 			},
 			Value: helpers.GetStringOrDefault(input.Gender),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "slackId",
+				Code: "SlackId",
 			},
 			Value: helpers.GetStringOrDefault(input.SlackId),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "state",
+				Code: "State",
 			},
 			Value: helpers.GetStringOrDefault(input.State),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "companyLevelId",
+				Code: "CompanyLevelId",
 			},
 			Value: helpers.GetInt32OrDefault(&companyLevelId),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "password",
+				Code: "Password",
 			},
 			Value: helpers.GetStringOrDefault(input.Password),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "about",
+				Code: "About",
 			},
 			Value: helpers.GetStringOrDefault(input.About),
 		},
 
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "avatarKey",
+				Code: "AvatarKey",
 			},
 			Value: helpers.GetStringOrDefault(input.AvatarKey),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "lockVersion",
+				Code: "LockVersion",
 			},
 			Value: helpers.GetInt32OrDefault(form.LockVersion),
 		},
@@ -161,12 +161,13 @@ func (form *UserUpdateForm) validate() error {
 
 func (form *UserUpdateForm) validateGender() *UserUpdateForm {
 	if form.Gender != nil {
-		gender := form.FindAttrByCode("gender")
+		key := "Gender"
+		gender := form.FindAttrByCode(key)
 
 		genderValue := enums.UserGenderType(*form.Gender)
 
 		if genderValue.IsValid() {
-			form.UpdatedAttrs["Gender"] = &genderValue
+			form.UpdatedAttrs[key] = &genderValue
 		} else {
 			gender.AddError("is invalid")
 		}
@@ -177,12 +178,13 @@ func (form *UserUpdateForm) validateGender() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateBirthday() *UserUpdateForm {
 	if form.Birthday != nil {
-		field := form.FindAttrByCode("birthday")
+		key := "Birthday"
+		field := form.FindAttrByCode(key)
 
 		field.ValidateFormat(constants.YYYYMMDD_DateFormat, constants.HUMAN_YYYYMMDD_DateFormat)
 
 		if field.IsClean() {
-			form.UpdatedAttrs["Birthday"] = field.Time()
+			form.UpdatedAttrs[key] = field.Time()
 		}
 	}
 
@@ -190,39 +192,42 @@ func (form *UserUpdateForm) validateBirthday() *UserUpdateForm {
 }
 
 func (form *UserUpdateForm) validateAbout() *UserUpdateForm {
-	about := form.FindAttrByCode("about")
+	key := "About"
+	about := form.FindAttrByCode(key)
 	about.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if about.IsClean() {
-		form.UpdatedAttrs["About"] = form.About
+		form.UpdatedAttrs[key] = form.About
 	}
 
 	return form
 }
 
 func (form *UserUpdateForm) validateFullName() *UserUpdateForm {
-	fullName := form.FindAttrByCode("fullName")
+	key := "FullName"
+	fullName := form.FindAttrByCode(key)
 
 	fullName.ValidateRequired()
 	fullName.ValidateMin(interface{}(int64(10)))
 	fullName.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if fullName.IsClean() {
-		form.UpdatedAttrs["FullName"] = *form.FullName
+		form.UpdatedAttrs[key] = *form.FullName
 	}
 
 	return form
 }
 
 func (form *UserUpdateForm) validateSlackId() *UserUpdateForm {
-	slackId := form.FindAttrByCode("slackId")
+	key := "SlackId"
+	slackId := form.FindAttrByCode(key)
 
 	slackId.ValidateRequired()
 	slackId.ValidateMin(interface{}(int64(11)))
 	slackId.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if slackId.IsClean() {
-		form.UpdatedAttrs["SlackId"] = form.SlackId
+		form.UpdatedAttrs[key] = form.SlackId
 	}
 
 	return form
@@ -230,13 +235,14 @@ func (form *UserUpdateForm) validateSlackId() *UserUpdateForm {
 
 func (form *UserUpdateForm) validatePhone() *UserUpdateForm {
 	if form.Phone != nil {
-		phone := form.FindAttrByCode("phone")
+		key := "Phone"
+		phone := form.FindAttrByCode(key)
 
 		phone.ValidateMin(interface{}(int64(10)))
 		phone.ValidateMax(interface{}(int64(13)))
 
 		if phone.IsClean() {
-			form.UpdatedAttrs["Phone"] = form.Phone
+			form.UpdatedAttrs[key] = form.Phone
 		}
 	}
 
@@ -245,13 +251,14 @@ func (form *UserUpdateForm) validatePhone() *UserUpdateForm {
 
 func (form *UserUpdateForm) validateAddress() *UserUpdateForm {
 	if form.Address != nil {
-		address := form.FindAttrByCode("address")
+		key := "Address"
+		address := form.FindAttrByCode(key)
 
 		address.ValidateMin(interface{}(int64(20)))
 		address.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 		if address.IsClean() {
-			form.UpdatedAttrs["Address"] = form.Address
+			form.UpdatedAttrs[key] = form.Address
 		}
 	}
 
@@ -259,7 +266,7 @@ func (form *UserUpdateForm) validateAddress() *UserUpdateForm {
 }
 
 func (form *UserUpdateForm) validateAvatarKey() *UserUpdateForm {
-	avatar := form.FindAttrByCode("avatarKey")
+	avatar := form.FindAttrByCode("AvatarKey")
 
 	if form.AvatarKey != nil && strings.TrimSpace(*form.AvatarKey) != "" {
 		blob := models.AttachmentBlob{Key: *form.AvatarKey}
@@ -280,20 +287,22 @@ func (form *UserUpdateForm) validateAvatarKey() *UserUpdateForm {
 }
 
 func (form *UserUpdateForm) validateEmail() *UserUpdateForm {
-	emailField := form.FindAttrByCode("email")
+	key := "Email"
+	emailField := form.FindAttrByCode(key)
 
 	emailField.ValidateRequired()
 	emailField.ValidateFormat(constants.EmailFormat, "")
 
 	if emailField.IsClean() {
-		form.UpdatedAttrs["Email"] = *form.Email
+		form.UpdatedAttrs[key] = *form.Email
 	}
 
 	return form
 }
 
 func (form *UserUpdateForm) validateState() *UserUpdateForm {
-	userState := form.FindAttrByCode("state")
+	key := "State"
+	userState := form.FindAttrByCode(key)
 	userState.ValidateRequired()
 
 	if userState.IsClean() {
@@ -303,7 +312,7 @@ func (form *UserUpdateForm) validateState() *UserUpdateForm {
 			if userStateEnum == enums.UserStateInactive && !form.User.Inactiveable() {
 				userState.AddError("State is invalid")
 			} else {
-				form.UpdatedAttrs["State"] = userStateEnum
+				form.UpdatedAttrs[key] = userStateEnum
 			}
 		}
 	}
@@ -312,7 +321,8 @@ func (form *UserUpdateForm) validateState() *UserUpdateForm {
 }
 
 func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
-	level := form.FindAttrByCode("companyLevelId")
+	key := "CompanyLevelId"
+	level := form.FindAttrByCode(key)
 
 	if form.CompanyLevelId != nil {
 		level.ValidateMin(interface{}(int64(1)))
@@ -324,7 +334,7 @@ func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 		}
 
 		if level.IsClean() {
-			form.UpdatedAttrs["CompanyLevelId"] = &companyLevelId
+			form.UpdatedAttrs[key] = &companyLevelId
 		}
 	}
 
@@ -332,7 +342,7 @@ func (form *UserUpdateForm) validateCompanyLevelId() *UserUpdateForm {
 }
 
 func (form *UserUpdateForm) validatePassword() *UserUpdateForm {
-	password := form.FindAttrByCode("password")
+	password := form.FindAttrByCode("Password")
 
 	if form.Password != nil {
 		password.ValidateMin(interface{}(int64(6)))
