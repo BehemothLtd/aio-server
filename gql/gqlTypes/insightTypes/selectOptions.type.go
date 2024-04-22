@@ -4,6 +4,7 @@ type SelectOptionsType struct {
 	IssueStatusOptions     []IssueStatusSelectOption
 	DevelopmentRoleOptions []CommonSelectOption
 	UserOptions            []CommonSelectOption
+	ProjectOptions         []CommonSelectOption
 }
 
 type IssueStatusSelectOption struct {

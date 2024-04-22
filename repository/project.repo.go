@@ -145,3 +145,7 @@ func (r *ProjectRepository) ActiveHighPriorityProjects(projects *[]models.Projec
 		Scan(&projects).
 		Error
 }
+
+func (r *ProjectRepository) All(projects *[]*models.Project) error {
+	return r.db.Table("projects").Order("id ASC").Find(&projects).Error
+}
