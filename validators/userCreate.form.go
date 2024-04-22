@@ -42,38 +42,38 @@ func (form *UserCreateForm) assignAttributes(input *insightInputs.UserFormInput)
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "fullName",
+				Code: "FullName",
 			},
 			Value: helpers.GetStringOrDefault(input.FullName),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "email",
+				Code: "Email",
 			},
 			Value: helpers.GetStringOrDefault(input.Email),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "slackId",
+				Code: "SlackId",
 			},
 			Value: helpers.GetStringOrDefault(input.SlackId),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "about",
+				Code: "About",
 			},
 			Value: helpers.GetStringOrDefault(input.About),
 		},
 
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "avatarKey",
+				Code: "AvatarKey",
 			},
 			Value: helpers.GetStringOrDefault(input.AvatarKey),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "password",
+				Code: "Password",
 			},
 			Value: helpers.GetStringOrDefault(input.Password),
 		},
@@ -104,7 +104,7 @@ func (form *UserCreateForm) validate() error {
 }
 
 func (form *UserCreateForm) validateAbout() *UserCreateForm {
-	about := form.FindAttrByCode("about")
+	about := form.FindAttrByCode("About")
 	about.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if about.IsClean() {
@@ -115,7 +115,7 @@ func (form *UserCreateForm) validateAbout() *UserCreateForm {
 }
 
 func (form *UserCreateForm) validateFullName() *UserCreateForm {
-	fullName := form.FindAttrByCode("fullName")
+	fullName := form.FindAttrByCode("FullName")
 
 	fullName.ValidateRequired()
 	fullName.ValidateMin(interface{}(int64(10)))
@@ -129,7 +129,7 @@ func (form *UserCreateForm) validateFullName() *UserCreateForm {
 }
 
 func (form *UserCreateForm) validateSlackId() *UserCreateForm {
-	slackId := form.FindAttrByCode("slackId")
+	slackId := form.FindAttrByCode("SlackId")
 
 	slackId.ValidateRequired()
 	slackId.ValidateMin(interface{}(int64(11)))
@@ -143,7 +143,7 @@ func (form *UserCreateForm) validateSlackId() *UserCreateForm {
 }
 
 func (form *UserCreateForm) validateAvatarKey() *UserCreateForm {
-	avatar := form.FindAttrByCode("avatarKey")
+	avatar := form.FindAttrByCode("AvatarKey")
 
 	if form.AvatarKey != nil && strings.TrimSpace(*form.AvatarKey) != "" {
 		blob := models.AttachmentBlob{Key: *form.AvatarKey}
@@ -164,7 +164,7 @@ func (form *UserCreateForm) validateAvatarKey() *UserCreateForm {
 }
 
 func (form *UserCreateForm) validateEmail() *UserCreateForm {
-	emailField := form.FindAttrByCode("email")
+	emailField := form.FindAttrByCode("Email")
 
 	emailField.ValidateRequired()
 	emailField.ValidateFormat(constants.EmailFormat, "")
@@ -177,7 +177,7 @@ func (form *UserCreateForm) validateEmail() *UserCreateForm {
 }
 
 func (form *UserCreateForm) validatePassword() *UserCreateForm {
-	password := form.FindAttrByCode("password")
+	password := form.FindAttrByCode("Password")
 
 	if form.Password != nil {
 		password.ValidateMin(interface{}(int64(6)))
