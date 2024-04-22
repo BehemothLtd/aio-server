@@ -120,7 +120,7 @@ func (form *UserProfileForm) validate() error {
 
 func (form *UserProfileForm) validateGender() *UserProfileForm {
 	if form.Gender != nil {
-		gender := form.FindAttrByCode("gender")
+		gender := form.FindAttrByCode("Gender")
 
 		genderValue := enums.UserGenderType(*form.Gender)
 
