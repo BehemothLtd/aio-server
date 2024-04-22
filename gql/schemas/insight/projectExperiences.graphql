@@ -16,3 +16,13 @@ type SelfProjectExperiencesCollection {
 input ProjectExperiencesQuery {
   projectIdEq: ID
 }
+
+input ProjectExperienceInput {
+  title: String!
+  description: String!
+  projectId: ID!
+}
+
+type ProjectExperienceModification {
+  ProjectExperience: ProjectExperience
+}

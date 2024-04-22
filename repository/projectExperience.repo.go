@@ -61,3 +61,15 @@ func (r *ProjectExperienceRepository) Find(projectExperience *models.ProjectExpe
 
 	return dbTables.Where(&projectExperience).First(&projectExperience).Error
 }
+
+func (r *ProjectExperienceRepository) Create(projectExperience *models.ProjectExperience) error {
+	return r.db.Model(&projectExperience).Create(&projectExperience).Error
+}
+
+func (r *ProjectExperienceRepository) Update(projectExperience *models.ProjectExperience, updates map[string]interface{}) error {
+	return r.db.Model(&projectExperience).Updates(updates).First(&projectExperience).Error
+}
+
+func (r *ProjectExperienceRepository) Destroy(projectExperience *models.ProjectExperience) error {
+	return r.db.Model(&projectExperience).Delete(&projectExperience).Error
+}
