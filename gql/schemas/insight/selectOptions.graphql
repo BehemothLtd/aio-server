@@ -22,4 +22,5 @@ type SelectOptions {
   IssueStatusOptions: [IssueStatusSelectOption!]!
   DevelopmentRoleOptions: [CommonSelectOption!]!
   UserOptions: [CommonSelectOption!]!
+  ProjectOptions: [CommonSelectOption!]!
 }
