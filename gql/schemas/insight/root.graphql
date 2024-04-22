@@ -63,6 +63,7 @@ type Mutation {
   SelfUpdateProfile(input: SelfUpdateProfileInput!): SelfUpdateProfileRes!
   SelfUpdatePassword(input: SelfUpdatePassword!): String
   SelfAttend(): SelfAttendance!
+  SelfProjectExperienceCreate(input: ProjectExperienceInput!): ProjectExperienceModification!
 
   UserCreate(input: AdminUserInput!): String
   UserToggleActive(id: ID!): UserActiveState
