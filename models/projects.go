@@ -80,3 +80,11 @@ func (p *Project) BeforeUpdate(tx *gorm.DB) (err error) {
 
 	return
 }
+
+func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
+	timeNow := time.Now()
+
+	tx.Statement.SetColumn("actived_at", &timeNow)
+
+	return
+}
