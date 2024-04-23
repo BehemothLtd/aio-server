@@ -3,6 +3,8 @@ package insightResolvers
 import (
 	"aio-server/enums"
 	"aio-server/exceptions"
+	"aio-server/gql/gqlTypes/globalTypes"
+	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
@@ -11,7 +13,7 @@ import (
 	"fmt"
 )
 
-func (r *Resolver) LeaveDayRequestStateChange(ctx context.Context, args insightInputs.LeaveDayRequestStateChangeInput) (*string, error) {
+func (r *Resolver) LeaveDayRequestStateChange(ctx context.Context, args insightInputs.LeaveDayRequestStateChangeInput) (*insightTypes.LeaveDayRequestUpdatedType, error) {
 	user, err := r.Authorize(ctx, string(enums.PermissionTargetTypeLeaveDayRequests), string(enums.PermissionActionTypeChangeState))
 
 	if err != nil {
@@ -46,8 +48,13 @@ func (r *Resolver) LeaveDayRequestStateChange(ctx context.Context, args insightI
 		if err = repo.Update(&request); err != nil {
 			return nil, exceptions.NewBadRequestError(fmt.Sprintf("Can not change this request's state %s", err.Error()))
 		} else {
-			message := "State Changed"
-			return &message, nil
+
+			response := &insightTypes.LeaveDayRequestUpdatedType{
+				LeaveDayRequest: &globalTypes.LeaveDayRequestType{
+					LeaveDayRequest: &request,
+				}}
+
+			return response, nil
 		}
 	}
 }
