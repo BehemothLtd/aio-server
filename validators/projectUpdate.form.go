@@ -204,7 +204,7 @@ func (form *ProjectUpdateForm) validateClientId() *ProjectUpdateForm {
 		}
 
 		if field.IsClean() {
-			form.UpdateProject.ClientId = *form.ClientId
+			form.UpdateProject.ClientId = form.ClientId
 		}
 	}
 

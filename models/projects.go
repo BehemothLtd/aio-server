@@ -25,8 +25,9 @@ type Project struct {
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 	SprintDuration       *int32
-	ClientId             int32
-	CurrentSprintId      int32
+	ClientId             *int32
+	Client               Client
+	CurrentSprintId      *int32
 	ProjectAssignees     []*ProjectAssignee
 	ProjectIssueStatuses []*ProjectIssueStatus
 	ProjectSprints       []ProjectSprint

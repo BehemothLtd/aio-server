@@ -42,7 +42,7 @@ func (psr *ProjectSprintRepository) Destroy(projectSprint *models.ProjectSprint)
 		return err
 	}
 
-	if projectSprint.Id == project.CurrentSprintId {
+	if projectSprint.Id == *project.CurrentSprintId {
 		return exceptions.NewBadRequestError("Delete project sprint is not allowed")
 	}
 

@@ -79,12 +79,12 @@ func (pt *ProjectType) SprintDuration(ctx context.Context) *int32 {
 	}
 }
 
-func (pt *ProjectType) ClientId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(pt.Project.ClientId)
+func (pt *ProjectType) ClientId(ctx context.Context) *int32 {
+	return pt.Project.ClientId
 }
 
-func (pt *ProjectType) CurrentSprintId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(pt.Project.CurrentSprintId)
+func (pt *ProjectType) CurrentSprintId(ctx context.Context) *int32 {
+	return pt.Project.CurrentSprintId
 }
 
 func (pt *ProjectType) ProjectAssignees(ctx context.Context) *[]*ProjectAssigneeType {

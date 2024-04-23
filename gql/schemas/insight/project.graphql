@@ -13,8 +13,8 @@ type Project {
   createdAt: Time
   updatedAt: Time
   sprintDuration: Int
-  clientId: ID
-  currentSprintId: ID
+  clientId: Int
+  currentSprintId: Int
   projectAssignees: [ProjectAssignee!]
   projectIssueStatuses: [ProjectIssueStatus!]
   logoUrl: String
