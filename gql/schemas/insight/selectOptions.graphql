@@ -23,4 +23,5 @@ type SelectOptions {
   DevelopmentRoleOptions: [CommonSelectOption!]!
   UserOptions: [CommonSelectOption!]!
   ProjectOptions: [CommonSelectOption!]!
+  ClientOptions: [CommonSelectOption!]!
 }

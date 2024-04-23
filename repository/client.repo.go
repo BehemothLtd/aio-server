@@ -71,3 +71,7 @@ func (r *ClientRepository) Update(client *models.Client, updateClient models.Cli
 func (r *ClientRepository) Destroy(client *models.Client) error {
 	return r.db.Table("clients").Delete(&client).Error
 }
+
+func (r *ClientRepository) All(clients *[]*models.Client) error {
+	return r.db.Table("clients").Order("id ASC").Find(&clients).Error
+}

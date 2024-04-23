@@ -12,7 +12,13 @@ import (
 )
 
 func availableKeys() []string {
-	return []string{"issueStatus", "developmentRole", "user", "project"}
+	return []string{
+		"issueStatus",
+		"developmentRole",
+		"user",
+		"project",
+		"client",
+	}
 }
 
 type FetchSelectOptionsService struct {
@@ -43,6 +49,10 @@ func (fsos *FetchSelectOptionsService) Execute() error {
 					}
 				case "project":
 					if err := fsos.handleProjectOptions(); err != nil {
+						return nil
+					}
+				case "client":
+					if err := fsos.handleClientOptions(); err != nil {
 						return nil
 					}
 				}
@@ -119,6 +129,24 @@ func (fsos *FetchSelectOptionsService) handleProjectOptions() error {
 		fsos.Result.ProjectOptions = append(fsos.Result.ProjectOptions, insightTypes.CommonSelectOption{
 			Label: prj.Name,
 			Value: prj.Id,
+		})
+	}
+
+	return nil
+}
+
+func (fsos *FetchSelectOptionsService) handleClientOptions() error {
+	clients := []*models.Client{}
+	repo := repository.NewClientRepository(nil, fsos.Db)
+
+	if err := repo.All(&clients); err != nil {
+		return err
+	}
+
+	for _, client := range clients {
+		fsos.Result.ClientOptions = append(fsos.Result.ClientOptions, insightTypes.CommonSelectOption{
+			Label: client.Name,
+			Value: client.Id,
 		})
 	}
 
