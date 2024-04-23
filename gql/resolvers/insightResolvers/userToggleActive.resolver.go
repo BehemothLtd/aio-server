@@ -40,9 +40,6 @@ func (r *Resolver) UserToggleActive(ctx context.Context, args insightInputs.User
 	currentTime := time.Now().Format(constants.DateTimeZoneFormat)
 
 	if user.State == enums.UserStateActive {
-		if !user.Inactiveable() {
-			return nil, exceptions.NewBadRequestError("User is inactiveable!")
-		}
 		user.State = enums.UserStateInactive
 
 		user.Timing.InactiveAt = currentTime
