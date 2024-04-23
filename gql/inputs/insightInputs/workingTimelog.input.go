@@ -33,7 +33,7 @@ func (wti *WorkingTimelogsInput) ToPaginationDataAndQuery() (WorkingTimelogsQuer
 		query.DescriptionCont = wti.Query.DescriptionCont
 	}
 
-	if wti.Query != nil && wti.Query.IssueCodeEq != nil {
+	if wti.Query != nil && wti.Query.IssueCodeEq != nil && strings.TrimSpace(*wti.Query.IssueCodeEq) != "" {
 		query.IssueCodeEq = wti.Query.IssueCodeEq
 	}
 
