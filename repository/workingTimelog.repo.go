@@ -106,7 +106,7 @@ func (r *Repository) IssueCodeEq(IssueCodeEq *string) func(db *gorm.DB) *gorm.DB
 		if IssueCodeEq == nil {
 			return db
 		} else {
-			return db.Where("issues.code = ?", IssueCodeEq)
+			return db.Where(gorm.Expr("issues.code = ?", IssueCodeEq))
 		}
 	}
 }
