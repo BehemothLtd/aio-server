@@ -39,6 +39,14 @@ func (ldi *LeaveDayRequestsInput) ToPaginationDataAndQuery() (LeaveDayRequestsQu
 		if ldi.Query.UserIdEq != nil {
 			query.UserIdEq = ldi.Query.UserIdEq
 		}
+
+		if ldi.Query.FromGteq != nil {
+			query.FromGteq = ldi.Query.FromGteq
+		}
+
+		if ldi.Query.ToLteq != nil {
+			query.ToLteq = ldi.Query.ToLteq
+		}
 	}
 
 	return query, paginationData

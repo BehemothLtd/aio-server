@@ -42,6 +42,8 @@ func (ldr *LeaveDayRequestRepository) List(
 			ldr.requestTypeEq(query.RequestTypeEq),
 			ldr.requestStateEq(query.RequestStateEq),
 			ldr.userIdEq(query.UserIdEq),
+			ldr.fromGteq(query.FromGteq),
+			ldr.toLteq(query.ToLteq),
 		), paginationData),
 	).Order("id desc").Find(&leaveDayRequests).Error
 }
@@ -66,6 +68,26 @@ func (ldr *LeaveDayRequestRepository) requestStateEq(requestStateEq *string) fun
 			requestStateEqInInt, _ := enums.ParseRequestStateType(*requestStateEq)
 
 			return db.Where(gorm.Expr(`leave_day_requests.request_state = ?`, requestStateEqInInt))
+		}
+	}
+}
+
+func (ldr *LeaveDayRequestRepository) fromGteq(fromGteq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if fromGteq == nil {
+			return db
+		} else {
+			return db.Where("`from` >= ?", fromGteq)
+		}
+	}
+}
+
+func (ldr *LeaveDayRequestRepository) toLteq(toLteq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if toLteq == nil {
+			return db
+		} else {
+			return db.Where("`to` <= ?", toLteq)
 		}
 	}
 }
