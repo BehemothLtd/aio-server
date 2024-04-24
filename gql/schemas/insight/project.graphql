@@ -18,6 +18,8 @@ type Project {
   projectAssignees: [ProjectAssignee!]
   projectIssueStatuses: [ProjectIssueStatus!]
   logoUrl: String
+  logo: Attachment
+  files: [Attachment]
   lockVersion: Int!
 }
 

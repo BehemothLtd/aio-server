@@ -25,7 +25,12 @@ func (r *Resolver) Project(ctx context.Context, args struct{ Id graphql.ID }) (*
 
 	project := models.Project{Id: projectId}
 
-	repo := repository.NewProjectRepository(&ctx, r.Db.Preload("Client"))
+	repo := repository.NewProjectRepository(
+		&ctx,
+		r.Db.Preload("Client").
+			Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
+			Preload("Files", "name = 'files'").Preload("Files.AttachmentBlob"),
+	)
 
 	if err := repo.Find(&project); err != nil {
 		return nil, exceptions.NewRecordNotFoundError()
