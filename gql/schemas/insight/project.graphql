@@ -8,8 +8,8 @@ type Project {
   state: String!
   activedAt: Time
   inactivedAt: Time
-  startedAt: Time
-  endedAt: Time
+  startedAt: String
+  endedAt: String
   createdAt: Time
   updatedAt: Time
   sprintDuration: Int
