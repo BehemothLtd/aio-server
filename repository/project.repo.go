@@ -101,6 +101,10 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Create(&project).First(&project).Error
 }
 
+func (r *ProjectRepository) UpdateBasicInfo(project *models.Project, updates map[string]interface{}) error {
+	return r.db.Model(&project).Select(helpers.GetKeys(updates)).Updates(updates).Error
+}
+
 func (r *ProjectRepository) Update(project *models.Project, updateProject models.Project) error {
 	if err := r.db.Model(&project).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateProject).Error; err != nil {
 		return err
