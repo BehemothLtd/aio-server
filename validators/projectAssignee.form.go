@@ -43,36 +43,41 @@ func (form *ProjectAssigneeForm) assignAttributes() {
 	form.AddAttributes(
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "userId",
+				Code: "UserId",
 			},
-			Value: helpers.GetInt32OrDefault(&form.UserId),
+			Value: helpers.GetInt32OrDefault(form.UserId),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "developmentRoleId",
+				Code: "DevelopmentRoleId",
 			},
-			Value: helpers.GetInt32OrDefault(&form.UserId),
+			Value: helpers.GetInt32OrDefault(form.DevelopmentRoleId),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "joinDate",
+				Code: "JoinDate",
 			},
-			Value: helpers.GetStringOrDefault(&form.JoinDate),
+			Value: helpers.GetStringOrDefault(form.JoinDate),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "leaveDate",
+				Code: "LeaveDate",
 			},
 			Value: helpers.GetStringOrDefault(form.LeaveDate),
 		},
+		&BoolAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "Active",
+			},
+			Value: helpers.GetBoolOrDefault(form.Active),
+		},
 	)
-
-	form.ProjectAssignee.Active = form.Active
 }
 
 func (form *ProjectAssigneeForm) validate() error {
 	form.validateUserId().
 		validateDevelopmentId().
+		validateActive().
 		validateJoinDate().
 		validateLeaveDate().
 		validateDuplicate().
@@ -86,57 +91,81 @@ func (form *ProjectAssigneeForm) validate() error {
 }
 
 func (form *ProjectAssigneeForm) validateUserId() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("userId")
+	field := form.FindAttrByCode("UserId")
 	field.ValidateRequired()
 
-	userRepo := repository.NewUserRepository(nil, database.Db)
-	if err := userRepo.Find(&models.User{Id: form.UserId}); err != nil {
-		field.AddError("Invalid User")
-	}
-
 	if field.IsClean() {
-		form.ProjectAssignee.UserId = form.UserId
+		userRepo := repository.NewUserRepository(nil, database.Db)
+
+		if err := userRepo.Find(&models.User{Id: *form.UserId}); err != nil {
+			field.AddError("Invalid User")
+		}
+
+		if field.IsClean() {
+			form.ProjectAssignee.UserId = *form.UserId
+		}
 	}
 
 	return form
 }
 
 func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("developmentRoleId")
+	field := form.FindAttrByCode("DevelopmentRoleId")
 	field.ValidateRequired()
 
 	if field.IsClean() {
-		if developmentRole := systems.FindDevelopmentRoleById(form.DevelopmentRoleId); developmentRole == nil {
+		if developmentRole := systems.FindDevelopmentRoleById(*form.DevelopmentRoleId); developmentRole == nil {
 			field.AddError("is invalid")
+		}
+
+		if field.IsClean() {
+			form.ProjectAssignee.DevelopmentRoleId = *form.DevelopmentRoleId
 		}
 	}
 
-	if field.IsClean() {
-		form.ProjectAssignee.DevelopmentRoleId = form.DevelopmentRoleId
+	return form
+}
+
+func (form *ProjectAssigneeForm) validateActive() *ProjectAssigneeForm {
+	field := form.FindAttrByCode("Active")
+	field.ValidateRequired()
+
+	if form.Active == nil {
+		// form.ProjectAssignee.Active = *form.Active
+		field.AddError("is required")
+	} else {
+		form.ProjectAssignee.Active = *form.Active
 	}
 
 	return form
 }
 
 func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("joinDate")
+	field := form.FindAttrByCode("JoinDate")
 	field.ValidateRequired()
-	field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
 	if field.IsClean() {
-		form.ProjectAssignee.JoinDate = field.Time()
+		field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
+
+		if field.IsClean() {
+			form.ProjectAssignee.JoinDate = field.Time()
+		}
 	}
 
 	return form
 }
 
 func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("leaveDate")
+	field := form.FindAttrByCode("LeaveDate")
+
+	if form.Active != nil && !*form.Active {
+		field.ValidateRequired()
+	}
 
 	if form.LeaveDate != nil && *form.LeaveDate != "" && strings.TrimSpace(*form.LeaveDate) != "" {
 		field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
-		joinDateTime := form.FindAttrByCode("joinDate").Time()
+		joinDateTime := form.FindAttrByCode("JoinDate").Time()
 
 		if joinDateTime != nil {
 			field.ValidateMin(interface{}(*joinDateTime))
@@ -151,14 +180,14 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 }
 
 func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
-	userIdField := form.FindAttrByCode("userId")
-	developmentIdField := form.FindAttrByCode("developmentRoleId")
+	userIdField := form.FindAttrByCode("UserId")
+	developmentIdField := form.FindAttrByCode("DevelopmentRoleId")
 
 	if userIdField.IsClean() && developmentIdField.IsClean() {
 		presentedProjectAssignee := models.ProjectAssignee{
 			ProjectId:         form.Project.Id,
-			UserId:            form.UserId,
-			DevelopmentRoleId: form.DevelopmentRoleId,
+			UserId:            *form.UserId,
+			DevelopmentRoleId: *form.DevelopmentRoleId,
 		}
 
 		if err := form.Repo.Find(&presentedProjectAssignee); err == nil {

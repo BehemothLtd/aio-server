@@ -28,6 +28,8 @@ func (r *Resolver) Project(ctx context.Context, args struct{ Id graphql.ID }) (*
 	repo := repository.NewProjectRepository(
 		&ctx,
 		r.Db.Preload("Client").
+			Preload("ProjectAssignees.User").
+			Preload("ProjectAssignees.User.Avatar.AttachmentBlob").
 			Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
 			Preload("Files", "name = 'files'").Preload("Files.AttachmentBlob"),
 	)

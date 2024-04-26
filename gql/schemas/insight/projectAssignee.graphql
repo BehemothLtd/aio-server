@@ -35,10 +35,10 @@ type ProjectAssigneeModification {
 }
 
 input ProjectModifyProjectAssigneeInput {
-  userId: Int!
-  developmentRoleId: Int!
-  active: Boolean!
-  joinDate: Time!
+  userId: Int
+  developmentRoleId: Int
+  active: Boolean
+  joinDate: Time
   leaveDate: Time
   lockVersion: Int
 }

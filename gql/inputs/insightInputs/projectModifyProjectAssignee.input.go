@@ -19,10 +19,10 @@ type ProjectDeleteProjectAssigneeInput struct {
 }
 
 type ProjectModifyProjectAssigneeFormInput struct {
-	UserId            int32
-	DevelopmentRoleId int32
-	Active            bool
-	JoinDate          string
+	UserId            *int32
+	DevelopmentRoleId *int32
+	Active            *bool
+	JoinDate          *string
 	LeaveDate         *string
 	LockVersion       *int32
 }
