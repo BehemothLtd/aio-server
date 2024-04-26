@@ -30,8 +30,8 @@ input LeaveDayRequestsQuery {
   requestTypeEq: String
   requestStateEq: String
   userIdEq: Int
-  fromGteq: String
-  toLteq: String
+  fromGtEq: String
+  toLtEq: String
 }
 
 input LeaveDayRequestInput {
