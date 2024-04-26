@@ -57,3 +57,14 @@ input ProjectModifyIssueInput {
   projectSprintId: Int
   issueAssignees: [IssueAssigneeInput!]
 }
+
+type IssueCollection {
+  collection: [Issue!]
+  metadata: Metadata
+}
+
+input IssuesQuery {
+  titleCont: String
+  issueTypeEq: String
+  codeCont: String
+}

@@ -23,7 +23,7 @@ func (r *Resolver) Projects(ctx context.Context, args insightInputs.ProjectsInpu
 	repo := repository.NewProjectRepository(
 		&ctx,
 		r.Db.
-			Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
+			Preload("Logo").Preload("Logo.AttachmentBlob").
 			Preload("ProjectAssignees.User.Avatar.AttachmentBlob"),
 	)
 

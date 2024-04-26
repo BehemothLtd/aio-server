@@ -67,6 +67,15 @@ func (r *Resolver) IssueStatusSliceToTypes(issueStatuses []*models.IssueStatus) 
 	return &resolvers
 }
 
+func (r *Resolver) IssueSliceToTypes(issues []*models.Issue) *[]*globalTypes.IssueType {
+	resolvers := make([]*globalTypes.IssueType, len(issues))
+	for i, s := range issues {
+		resolvers[i] = &globalTypes.IssueType{Issue: s}
+	}
+
+	return &resolvers
+}
+
 func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayRequest) *[]*globalTypes.LeaveDayRequestType {
 	resolvers := make([]*globalTypes.LeaveDayRequestType, len(requests))
 

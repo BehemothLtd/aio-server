@@ -1,3 +1,4 @@
+
 schema {
   query: Query
   mutation: Mutation
@@ -27,6 +28,8 @@ type Query {
   IssueStatus(id: ID!): IssueStatus
   IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
   IssueStatusesAll(): [IssueStatus]
+  
+  Issues(input: PagyInput, query: IssuesQuery): IssueCollection!
 
   DevelopmentRoles(): [DevelopmentRole]
 

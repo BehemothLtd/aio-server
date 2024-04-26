@@ -1,9 +1,12 @@
 package repository
 
 import (
+	"aio-server/enums"
+	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -110,4 +113,46 @@ func (r *IssueRepository) UserAllWeekIssuesState(
 		Order("date asc").
 		Scan(&issueDateBaseState).
 		Error
+}
+func (r *IssueRepository) titleLike(titleLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if titleLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(issues.title) LIKE ?`, strings.ToLower("%"+*titleLike+"%")))
+		}
+	}
+}
+
+func (r *IssueRepository) codeLike(codeLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if codeLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(issues.code) LIKE ?`, strings.ToLower("%"+*codeLike+"%")))
+		}
+	}
+}
+
+func (r *Repository) issueTypeEq(IssueTypeEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if IssueTypeEq == nil {
+			return db
+		} else {
+			IssueTypeInInt, _ := enums.ParseIssueType(*IssueTypeEq)
+
+			return db.Where(gorm.Expr(`issues.Issue_type = ?`, IssueTypeInInt))
+		}
+	}
+}
+func (r *IssueRepository) List(
+	issues *[]*models.Issue,
+	paginateData *models.PaginationData,
+	query insightInputs.IssuesQueryInput,
+) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Scopes(r.titleLike(query.TitleCont), r.codeLike(query.CodeCont), r.issueTypeEq(query.IssueTypeEq)), paginateData),
+	).Order("id desc").Find(&issues).Error
 }
