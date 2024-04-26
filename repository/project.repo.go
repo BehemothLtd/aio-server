@@ -102,7 +102,16 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 }
 
 func (r *ProjectRepository) UpdateBasicInfo(project *models.Project, updates map[string]interface{}) error {
-	return r.db.Model(&project).Select(helpers.GetKeys(updates)).Updates(updates).Error
+	if err := r.db.Model(&project).Select(append(helpers.GetKeys(updates), "LockVersion")).Updates(updates).Error; err != nil {
+		return err
+	}
+
+	return r.db.Model(&models.Project{}).
+		Where("id = ?", project.Id).
+		Preload("Client").
+		Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
+		Preload("Files", "name = 'files'").Preload("Files.AttachmentBlob").
+		Find(&project).Error
 }
 
 func (r *ProjectRepository) Update(project *models.Project, updateProject models.Project) error {
