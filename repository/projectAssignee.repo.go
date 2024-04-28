@@ -2,6 +2,7 @@ package repository
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"context"
 
 	"gorm.io/gorm"
@@ -29,13 +30,15 @@ func (r *ProjectAssigneeRepository) Create(projectAssignee *models.ProjectAssign
 		return err
 	}
 
-	return r.db.Model(&models.ProjectAssignee{}).Where("id = ?", projectAssignee.Id).Preload("User").Find(&projectAssignee).Error
+	return r.db.Model(&models.ProjectAssignee{}).Where("id = ?", projectAssignee.Id).Preload("User.Avatar.AttachmentBlob").Find(&projectAssignee).Error
 }
 
-func (r *ProjectAssigneeRepository) Update(projectAssignee *models.ProjectAssignee) error {
-	projectAssignee.LockVersion += 1
+func (r *ProjectAssigneeRepository) Update(projectAssignee *models.ProjectAssignee, attributes map[string]interface{}) error {
+	if err := r.db.Model(&projectAssignee).Select(append(helpers.GetKeys(attributes), "LockVersion")).Updates(attributes).Error; err != nil {
+		return err
+	}
 
-	return r.db.Updates(&projectAssignee).Error
+	return r.db.Model(&models.ProjectAssignee{}).Where("id = ?", projectAssignee.Id).Preload("User.Avatar.AttachmentBlob").Find(&projectAssignee).Error
 }
 
 func (r *ProjectAssigneeRepository) Delete(projectAssignee *models.ProjectAssignee) error {

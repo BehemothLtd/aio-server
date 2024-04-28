@@ -17,6 +17,7 @@ type ProjectAssigneeForm struct {
 	insightInputs.ProjectModifyProjectAssigneeFormInput
 	Project         models.Project
 	ProjectAssignee *models.ProjectAssignee
+	formData        map[string]interface{}
 	Repo            *repository.ProjectAssigneeRepository
 }
 
@@ -31,6 +32,7 @@ func NewProjectAssigneeFormValidator(
 		ProjectModifyProjectAssigneeFormInput: input,
 		Project:                               project,
 		ProjectAssignee:                       projectAssignee,
+		formData:                              map[string]interface{}{"ProjectId": project.Id},
 		Repo:                                  repo,
 	}
 
@@ -91,7 +93,8 @@ func (form *ProjectAssigneeForm) validate() error {
 }
 
 func (form *ProjectAssigneeForm) validateUserId() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("UserId")
+	code := "UserId"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -102,7 +105,11 @@ func (form *ProjectAssigneeForm) validateUserId() *ProjectAssigneeForm {
 		}
 
 		if field.IsClean() {
-			form.ProjectAssignee.UserId = *form.UserId
+			form.formData[code] = *form.UserId
+
+			if form.ProjectAssignee.Id == 0 {
+				form.ProjectAssignee.UserId = *form.UserId
+			}
 		}
 	}
 
@@ -110,7 +117,8 @@ func (form *ProjectAssigneeForm) validateUserId() *ProjectAssigneeForm {
 }
 
 func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("DevelopmentRoleId")
+	code := "DevelopmentRoleId"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -119,7 +127,11 @@ func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
 		}
 
 		if field.IsClean() {
-			form.ProjectAssignee.DevelopmentRoleId = *form.DevelopmentRoleId
+			form.formData[code] = *form.DevelopmentRoleId
+
+			if form.ProjectAssignee.Id == 0 {
+				form.ProjectAssignee.DevelopmentRoleId = *form.DevelopmentRoleId
+			}
 		}
 	}
 
@@ -127,27 +139,37 @@ func (form *ProjectAssigneeForm) validateDevelopmentId() *ProjectAssigneeForm {
 }
 
 func (form *ProjectAssigneeForm) validateActive() *ProjectAssigneeForm {
+	code := "Active"
 	field := form.FindAttrByCode("Active")
 	field.ValidateRequired()
 
 	if form.Active == nil {
 		field.AddError("is required")
 	} else {
-		form.ProjectAssignee.Active = *form.Active
+		form.formData[code] = *form.Active
+
+		if form.ProjectAssignee.Id == 0 {
+			form.ProjectAssignee.Active = *form.Active
+		}
 	}
 
 	return form
 }
 
 func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("JoinDate")
+	code := "JoinDate"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	if field.IsClean() {
 		field.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
 		if field.IsClean() {
-			form.ProjectAssignee.JoinDate = field.Time()
+			form.formData[code] = field.Time()
+
+			if form.ProjectAssignee.Id == 0 {
+				form.ProjectAssignee.JoinDate = field.Time()
+			}
 		}
 	}
 
@@ -155,7 +177,8 @@ func (form *ProjectAssigneeForm) validateJoinDate() *ProjectAssigneeForm {
 }
 
 func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
-	field := form.FindAttrByCode("LeaveDate")
+	code := "LeaveDate"
+	field := form.FindAttrByCode(code)
 
 	if form.Active != nil && !*form.Active {
 		field.ValidateRequired()
@@ -171,7 +194,11 @@ func (form *ProjectAssigneeForm) validateLeaveDate() *ProjectAssigneeForm {
 		}
 
 		if field.IsClean() {
-			form.ProjectAssignee.LeaveDate = field.Time()
+			form.formData[code] = field.Time()
+
+			if form.ProjectAssignee.Id == 0 {
+				form.ProjectAssignee.LeaveDate = field.Time()
+			}
 		}
 	}
 
@@ -206,16 +233,18 @@ func (form *ProjectAssigneeForm) validateLockVersion() *ProjectAssigneeForm {
 		return form
 	}
 
+	code := "LockVersion"
+
 	field := IntAttribute[int32]{
 		FieldAttribute: FieldAttribute{
-			Code: "lockVersion",
+			Code: code,
 		},
 		Value: helpers.GetInt32OrDefault(form.LockVersion),
 	}
 	form.AddAttributes(&field)
 
 	field.ValidateRequired()
-	field.ValidateMin(interface{}(int64(form.ProjectAssignee.LockVersion)))
+	field.ValidateMin(interface{}(int64(*form.LockVersion)))
 
 	return form
 }
@@ -226,12 +255,13 @@ func (form *ProjectAssigneeForm) Save() error {
 	}
 
 	if form.ProjectAssignee.Id != 0 {
-		if err := form.Repo.Update(form.ProjectAssignee); err != nil {
+		if err := form.Repo.Update(form.ProjectAssignee, form.formData); err != nil {
 			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 				"base": {err.Error()},
 			})
 		}
 	} else {
+
 		if err := form.Repo.Create(form.ProjectAssignee); err != nil {
 			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 				"base": {err.Error()},

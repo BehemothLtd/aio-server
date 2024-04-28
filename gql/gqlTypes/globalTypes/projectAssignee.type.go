@@ -2,6 +2,7 @@ package globalTypes
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/pkg/systems"
 	"context"
@@ -25,20 +26,30 @@ func (pt *ProjectAssigneeType) Active(ctx context.Context) bool {
 	return pt.ProjectAssignee.Active
 }
 
-func (pat *ProjectAssigneeType) JoinDate(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pat.ProjectAssignee.JoinDate)
+func (pat *ProjectAssigneeType) JoinDate(ctx context.Context) *string {
+	if pat.ProjectAssignee.JoinDate != nil {
+		date := pat.ProjectAssignee.JoinDate.Format(constants.DDMMYYYY_DateFormat)
+		return &date
+	}
+
+	return nil
 }
 
-func (pat *ProjectAssigneeType) LeaveDate(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pat.ProjectAssignee.LeaveDate)
+func (pat *ProjectAssigneeType) LeaveDate(ctx context.Context) *string {
+	if pat.ProjectAssignee.LeaveDate != nil {
+		date := pat.ProjectAssignee.LeaveDate.Format(constants.DDMMYYYY_DateFormat)
+		return &date
+	}
+
+	return nil
 }
 
-func (pat *ProjectAssigneeType) UserId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(pat.ProjectAssignee.UserId)
+func (pat *ProjectAssigneeType) UserId(ctx context.Context) *int32 {
+	return &pat.ProjectAssignee.UserId
 }
 
-func (pat *ProjectAssigneeType) DevelopmentRoleId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(pat.ProjectAssignee.DevelopmentRoleId)
+func (pat *ProjectAssigneeType) DevelopmentRoleId(ctx context.Context) *int32 {
+	return &pat.ProjectAssignee.DevelopmentRoleId
 }
 
 func (pat *ProjectAssigneeType) DevelopmentRole(ctx context.Context) *DevelopentRoleType {

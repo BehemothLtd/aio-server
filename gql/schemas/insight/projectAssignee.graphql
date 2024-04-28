@@ -1,10 +1,10 @@
 type ProjectAssignee {
   id: ID
   active: Boolean!
-  joinDate: Time
-  leaveDate: Time
-  developmentRoleId: ID
-  userId: ID
+  joinDate: String
+  leaveDate: String
+  developmentRoleId: Int
+  userId: Int
   user: User
   developmentRole: DevelopmentRole
   project: Project
@@ -17,8 +17,8 @@ type ProjectAssigneeForSelfProfile {
   active: Boolean!
   title: String
   name: String
-  joinDate: Time
-  leaveDate: Time
+  joinDate: String
+  leaveDate: String
   title: String
   project: Project
 }
