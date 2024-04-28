@@ -25,7 +25,11 @@ func (r *ProjectAssigneeRepository) Find(projectAssignee *models.ProjectAssignee
 }
 
 func (r *ProjectAssigneeRepository) Create(projectAssignee *models.ProjectAssignee) error {
-	return r.db.Create(&projectAssignee).Error
+	if err := r.db.Create(&projectAssignee).Error; err != nil {
+		return err
+	}
+
+	return r.db.Model(&models.ProjectAssignee{}).Where("id = ?", projectAssignee.Id).Preload("User").Find(&projectAssignee).Error
 }
 
 func (r *ProjectAssigneeRepository) Update(projectAssignee *models.ProjectAssignee) error {

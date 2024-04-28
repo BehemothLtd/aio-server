@@ -131,7 +131,6 @@ func (form *ProjectAssigneeForm) validateActive() *ProjectAssigneeForm {
 	field.ValidateRequired()
 
 	if form.Active == nil {
-		// form.ProjectAssignee.Active = *form.Active
 		field.AddError("is required")
 	} else {
 		form.ProjectAssignee.Active = *form.Active
