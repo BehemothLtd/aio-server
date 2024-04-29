@@ -10,6 +10,7 @@ import (
 	"context"
 
 	graphql "github.com/graph-gophers/graphql-go"
+	"gorm.io/gorm"
 )
 
 func (r *Resolver) Project(ctx context.Context, args struct{ Id graphql.ID }) (*globalTypes.ProjectType, error) {
@@ -28,6 +29,10 @@ func (r *Resolver) Project(ctx context.Context, args struct{ Id graphql.ID }) (*
 	repo := repository.NewProjectRepository(
 		&ctx,
 		r.Db.Preload("Client").
+			Preload("ProjectIssueStatuses", func(db *gorm.DB) *gorm.DB {
+				return db.Order("project_issue_statuses.position ASC")
+			}).
+			Preload("ProjectIssueStatuses.IssueStatus").
 			Preload("ProjectAssignees.User").
 			Preload("ProjectAssignees.User.Avatar.AttachmentBlob").
 			Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
