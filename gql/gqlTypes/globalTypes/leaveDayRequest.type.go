@@ -3,6 +3,7 @@ package globalTypes
 import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
+	"aio-server/pkg/utilities"
 	"context"
 
 	"github.com/graph-gophers/graphql-go"
@@ -80,4 +81,16 @@ func (lt *LeaveDayRequestType) UpdatedAt(context.Context) *graphql.Time {
 
 func (lt *LeaveDayRequestType) LockVersion(ctx context.Context) int32 {
 	return lt.LeaveDayRequest.LockVersion
+}
+
+func (lt *LeaveDayRequestType) RequestTypeHumanize(ctx context.Context) *string {
+	value := utilities.SnakeCaseToHumanize(lt.LeaveDayRequest.RequestType.String())
+
+	return &value
+}
+
+func (lt *LeaveDayRequestType) RequestStateHumanize(ctx context.Context) *string {
+	value := utilities.SnakeCaseToHumanize(lt.LeaveDayRequest.RequestState.String())
+
+	return &value
 }
