@@ -1,9 +1,11 @@
 type Client {
   id: ID
   name: String
+  showOnHomePage: Boolean
   createdAt: Time
   updatedAt: Time
   lockVersion: Int
+  avatarUrl: String
 }
 
 input ClientsQuery {
@@ -18,14 +20,29 @@ type ClientCollection {
 input ClientCreateInput {
   name: String
   showOnHomePage: Boolean
+  avatarKey: String
 }
 
 input ClientUpdateInput {
   name: String
   showOnHomePage: Boolean
   lockVersion: Int
+  avatarKey: String
 }
 
 type ClientModification {
   client: Client
+}
+
+input ClientUploadImageInput {
+  avatarKey: String
+}
+
+type ClientWithImage {
+  client: ClientImageUploaded
+}
+
+type ClientImageUploaded {
+  id: ID
+  avatar: Attachment
 }

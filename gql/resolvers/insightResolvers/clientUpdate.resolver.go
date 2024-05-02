@@ -29,9 +29,9 @@ func (r *Resolver) ClientUpdate(ctx context.Context, args insightInputs.ClientUp
 
 	client := models.Client{Id: clientId}
 	service := insightServices.ClientUpdateService{
-		Ctx:         &ctx,
-		Db:          r.Db,
-		Args:        args,
+		Ctx:    &ctx,
+		Db:     r.Db,
+		Args:   args,
 		Client: &client,
 	}
 

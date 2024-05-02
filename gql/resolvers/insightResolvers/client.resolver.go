@@ -29,7 +29,7 @@ func (r *Resolver) Client(ctx context.Context, args insightInputs.ClientInput) (
 	}
 
 	client := models.Client{Id: clientId}
-	repo := repository.NewClientRepository(&ctx, r.Db)
+	repo := repository.NewClientRepository(&ctx, r.Db.Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob"))
 	err = repo.Find(&client)
 
 	if err != nil {

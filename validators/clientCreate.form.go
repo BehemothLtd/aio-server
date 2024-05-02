@@ -7,25 +7,29 @@ import (
 	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
+	"strings"
 )
 
 type ClientCreateForm struct {
 	Form
 	insightInputs.ClientFormInput
-	Client *models.Client
-	Repo   *repository.ClientRepository
+	Client             *models.Client
+	Repo               *repository.ClientRepository
+	AttachmentBlobRepo repository.AttachmentBlobRepository
 }
 
 func NewClientCreateFormValidator(
 	input *insightInputs.ClientFormInput,
 	repo *repository.ClientRepository,
 	client *models.Client,
+	attachmentBlobRepo repository.AttachmentBlobRepository,
 ) ClientCreateForm {
 	form := ClientCreateForm{
-		Form:            Form{},
-		ClientFormInput: *input,
-		Client:          client,
-		Repo:            repo,
+		Form:               Form{},
+		ClientFormInput:    *input,
+		Client:             client,
+		Repo:               repo,
+		AttachmentBlobRepo: attachmentBlobRepo,
 	}
 
 	form.assignAttributes()
@@ -61,11 +65,17 @@ func (form *ClientCreateForm) assignAttributes() {
 			},
 			Value: helpers.GetInt32OrDefault(form.LockVersion),
 		},
+		&StringAttribute{
+			FieldAttribute: FieldAttribute{
+				Code: "avatarKey",
+			},
+			Value: helpers.GetStringOrDefault(form.AvatarKey),
+		},
 	)
 }
 
 func (form *ClientCreateForm) validate() error {
-	form.validateName().validateShowOnHomePage()
+	form.validateName().validateShowOnHomePage().validateAvatar()
 
 	form.summaryErrors()
 
@@ -92,6 +102,25 @@ func (form *ClientCreateForm) validateName() *ClientCreateForm {
 
 func (form *ClientCreateForm) validateShowOnHomePage() *ClientCreateForm {
 	form.Client.ShowOnHomePage = helpers.GetBoolOrDefault(form.ShowOnHomePage)
+
+	return form
+}
+
+func (form *ClientCreateForm) validateAvatar() *ClientCreateForm {
+	if form.AvatarKey != nil && strings.TrimSpace(*form.AvatarKey) != "" {
+		field := form.FindAttrByCode("avatarKey")
+		blob := models.AttachmentBlob{Key: *form.AvatarKey}
+
+		if err := form.AttachmentBlobRepo.Find(&blob); err != nil {
+			field.AddError("is invalid")
+		} else {
+			form.Client.Avatar = &models.Attachment{
+				AttachmentBlob:   blob,
+				AttachmentBlobId: blob.Id,
+				Name:             "avatar",
+			}
+		}
+	}
 
 	return form
 }
