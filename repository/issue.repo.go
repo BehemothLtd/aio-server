@@ -72,6 +72,15 @@ func (r *IssueRepository) Update(issue *models.Issue) error {
 	return nil
 }
 
+func (r *IssueRepository) CountByProjectAndIssueStatus(projectId int32, issueStatusId int32, count *int32) error {
+	return r.db.
+		Model(&models.Issue{}).
+		Select("count(*)").
+		Where("project_id = ? AND issue_status_id = ?", projectId, issueStatusId).
+		Scan(&count).
+		Error
+}
+
 type IssueCountingOnProjectAndState struct {
 	Count         int
 	ProjectId     int32

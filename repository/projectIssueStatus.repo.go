@@ -20,6 +20,10 @@ func NewProjectIssueStatusRepository(c *context.Context, db *gorm.DB) *ProjectIs
 	}
 }
 
+func (r *ProjectIssueStatusRepository) Find(projectIssueStatus *models.ProjectIssueStatus) error {
+	return r.db.Model(&models.ProjectIssueStatus{}).Where(projectIssueStatus).Find(&projectIssueStatus).Error
+}
+
 func (r *ProjectIssueStatusRepository) FindIdsByProjectId(projectId int32, projectIssueStatusIds []int32, result *[]int32) error {
 	return r.db.Model(&models.ProjectIssueStatus{}).
 		Select("id").Where("project_id = ?", projectId).
@@ -42,4 +46,8 @@ func (r *ProjectIssueStatusRepository) UpdateBatchOfNewPositionsForAProject(proj
 		// return nil will commit the whole transaction
 		return nil
 	})
+}
+
+func (r *ProjectIssueStatusRepository) Delete(projectId int32, id int32) error {
+	return r.db.Delete(&models.ProjectIssueStatus{}, "project_id = ? AND id = ?", projectId, id).Error
 }

@@ -70,6 +70,8 @@ asynq dash
 
 ## Enum generator
 
+note that `--sqlint` is only for enums of DB model that need enum attribute to be present as string but stored as `int` in DB
+
 ```bash
 ./go-enum --sqlint --marshal -f ./enums/{path_to_enum_file}
 ```

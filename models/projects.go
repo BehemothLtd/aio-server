@@ -88,3 +88,11 @@ func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
 
 	return
 }
+
+func (p *Project) IsKanban() bool {
+	return p.ProjectType == enums.ProjectTypeKanban
+}
+
+func (p *Project) IsScrum() bool {
+	return p.ProjectType == enums.ProjectTypeScrum
+}
