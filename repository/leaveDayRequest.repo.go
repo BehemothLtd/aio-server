@@ -74,7 +74,7 @@ func (ldr *LeaveDayRequestRepository) requestStateEq(requestStateEq *string) fun
 
 func (ldr *LeaveDayRequestRepository) fromGteq(fromGteq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if fromGteq == nil {
+		if fromGteq == nil || *fromGteq == "" {
 			return db
 		} else {
 			return db.Where("`from` >= ?", fromGteq)
@@ -84,7 +84,7 @@ func (ldr *LeaveDayRequestRepository) fromGteq(fromGteq *string) func(db *gorm.D
 
 func (ldr *LeaveDayRequestRepository) toLteq(toLteq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		if toLteq == nil {
+		if toLteq == nil || *toLteq == "" {
 			return db
 		} else {
 			return db.Where("`to` <= ?", toLteq)
