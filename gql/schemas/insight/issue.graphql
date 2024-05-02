@@ -67,4 +67,5 @@ input IssuesQuery {
   titleCont: String
   issueTypeEq: String
   codeCont: String
+  projectIdEq: String
 }

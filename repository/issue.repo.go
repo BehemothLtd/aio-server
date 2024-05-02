@@ -145,6 +145,16 @@ func (r *Repository) issueTypeEq(IssueTypeEq *string) func(db *gorm.DB) *gorm.DB
 		}
 	}
 }
+
+func (r *Repository) projectIdEq(ProjectIdEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if ProjectIdEq == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`issues.project_id = ?`, ProjectIdEq))
+		}
+	}
+}
 func (r *IssueRepository) List(
 	issues *[]*models.Issue,
 	paginateData *models.PaginationData,
@@ -153,6 +163,6 @@ func (r *IssueRepository) List(
 	dbTables := r.db.Model(&models.Issue{})
 
 	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Scopes(r.titleLike(query.TitleCont), r.codeLike(query.CodeCont), r.issueTypeEq(query.IssueTypeEq)), paginateData),
+		helpers.Paginate(dbTables.Scopes(r.titleLike(query.TitleCont), r.codeLike(query.CodeCont), r.issueTypeEq(query.IssueTypeEq), r.projectIdEq(query.ProjectIdEq)), paginateData),
 	).Order("id desc").Find(&issues).Error
 }
