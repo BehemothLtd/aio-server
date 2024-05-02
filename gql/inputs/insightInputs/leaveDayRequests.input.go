@@ -20,19 +20,19 @@ func (ldi *LeaveDayRequestsInput) ToPaginationDataAndQuery() (LeaveDayRequestsQu
 		if ldi.Query.RequestStateEq != nil && strings.TrimSpace(*ldi.Query.RequestStateEq) != "" {
 			query.RequestStateEq = ldi.Query.RequestStateEq
 
-			_, err := enums.ParseRequestType(*ldi.Query.RequestTypeEq)
+			_, err := enums.ParseRequestStateType(*ldi.Query.RequestStateEq)
 
 			if err != nil {
-				query.RequestTypeEq = nil
+				query.RequestStateEq = nil
 			}
 		}
 
 		if ldi.Query.RequestTypeEq != nil && strings.TrimSpace(*ldi.Query.RequestTypeEq) != "" {
 			query.RequestTypeEq = ldi.Query.RequestTypeEq
 
-			_, err := enums.ParseRequestStateType(*ldi.Query.RequestStateEq)
+			_, err := enums.ParseRequestType(*ldi.Query.RequestTypeEq)
 			if err != nil {
-				query.RequestStateEq = nil
+				query.RequestTypeEq = nil
 			}
 		}
 
