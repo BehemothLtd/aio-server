@@ -12,7 +12,7 @@ import (
 )
 
 func (r *Resolver) Issues(ctx context.Context, args insightInputs.IssuesInput) (*insightTypes.IssuesType, error) {
-	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeIssueStatuses.String(), enums.PermissionActionTypeRead.String()); err != nil {
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectIssues.String(), enums.PermissionActionTypeRead.String()); err != nil {
 		return nil, err
 	}
 

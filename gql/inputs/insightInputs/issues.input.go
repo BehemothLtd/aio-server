@@ -24,6 +24,10 @@ func (is *IssuesInput) ToPaginationDataAndQuery() (IssuesQueryInput, models.Pagi
 		query.CodeCont = is.Query.CodeCont
 	}
 
+	if is.Query.ProjectIdEq != nil && strings.TrimSpace(*is.Query.ProjectIdEq) != "" {
+		query.ProjectIdEq = is.Query.ProjectIdEq
+	}
+
 	if is.Query != nil && is.Query.IssueTypeEq != nil {
 		query.IssueTypeEq = is.Query.IssueTypeEq
 
