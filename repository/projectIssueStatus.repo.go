@@ -51,3 +51,15 @@ func (r *ProjectIssueStatusRepository) UpdateBatchOfNewPositionsForAProject(proj
 func (r *ProjectIssueStatusRepository) Delete(projectId int32, id int32) error {
 	return r.db.Delete(&models.ProjectIssueStatus{}, "project_id = ? AND id = ?", projectId, id).Error
 }
+
+func (r *ProjectIssueStatusRepository) Create(projectId int32, issueStatusId int32) error {
+	var maxPosition int
+
+	if err := r.db.Select("MAX(position)").
+		Model(&models.ProjectIssueStatus{}).
+		Where("project_id = ?", projectId).Scan(&maxPosition).Error; err != nil {
+		return err
+	}
+
+	return r.db.Create(&models.ProjectIssueStatus{ProjectId: projectId, IssueStatusId: issueStatusId, Position: maxPosition + 1}).Error
+}

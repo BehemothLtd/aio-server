@@ -91,3 +91,11 @@ func (r *IssueStatusRepository) DefaultScrum(issueStatus *[]models.IssueStatus) 
 		Find(&issueStatus).
 		Error
 }
+
+func (r *IssueStatusRepository) FetchIdsOnProject(projectId int32, ids *[]int32) error {
+	return r.db.Model(&models.IssueStatus{}).
+		Select("DISTINCT issue_statuses.id").
+		Joins("LEFT JOIN project_issue_statuses ON project_issue_statuses.issue_status_id = issue_statuses.id").
+		Joins("LEFT JOIN projects ON projects.id = project_issue_statuses.project_id").
+		Where("projects.id = ?", projectId).Scan(&ids).Error
+}

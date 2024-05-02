@@ -82,6 +82,7 @@ type Mutation {
 
   ProjectUpdateProjectIssueStatusOrder(id: ID!, input: [Int!]!): String
   ProjectDeleteProjectIssueStatus(projectId: ID!, id: ID!): String
+  ProjectCreateProjectIssueStatus(projectId: ID!, id: ID!): String
 
   ProjectUploadImages(id: ID!, input: ProjectUploadImagesInput!): ProjectWithImages!
 
