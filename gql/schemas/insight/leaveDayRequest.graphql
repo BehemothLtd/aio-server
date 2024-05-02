@@ -8,7 +8,9 @@ type LeaveDayRequest {
   to: Time
   timeOff: Float
   requestType: String
+  requestTypeHumanize: String
   requestState: String
+  requestStateHumanize: String
   reason: String
   createdAt: Time
   updatedAt: Time
