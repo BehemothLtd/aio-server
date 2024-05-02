@@ -18,7 +18,7 @@ func (r *Resolver) Devices(ctx context.Context, args insightInputs.DevicesInput)
 	var devices []*models.Device
 	deviceQuery, paginationData := args.ToPaginationDataAndQuery()
 
-	repo := repository.NewDeviceRepository(&ctx, r.Db)
+	repo := repository.NewDeviceRepository(&ctx, r.Db.Preload("DeviceType"))
 
 	err := repo.List(&devices, &paginationData, deviceQuery)
 	if err != nil {
