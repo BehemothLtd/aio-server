@@ -37,7 +37,13 @@ func (r *UserRepository) Find(user *models.User) error {
 
 // FindWithAvatar finds an user includes his avatar data
 func (r *UserRepository) FindWithAvatar(user *models.User) error {
-	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob")
+	dbTables := r.db.Table("users").Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").Preload("ProjectAssignees")
+
+	return dbTables.Where("id = ?", user.Id).First(&user).Error
+}
+
+func (r *Repository) FindWithProjectAssignees(user *models.User) error {
+	dbTables := r.db.Table("users").Preload("ProjectAssignees")
 
 	return dbTables.Where("id = ?", user.Id).First(&user).Error
 }
@@ -76,15 +82,19 @@ func (r *UserRepository) List(
 ) error {
 	dbTables := r.db.Model(&models.User{})
 
-	return dbTables.Scopes(
-		helpers.Paginate(dbTables.Scopes(
-			r.nameLike(query.NameCont),
-			r.fullNameLike(query.FullNameCont),
-			r.emailLike(query.EmailCont),
-			r.slackIdLike(query.SlackIdCont),
-			r.stateEq(query.StateEq),
-		), paginateData),
-	).Order("id desc").Find(&users).Error
+	return dbTables.
+		Scopes(
+			helpers.Paginate(dbTables.Scopes(
+				r.nameLike(query.NameCont),
+				r.fullNameLike(query.FullNameCont),
+				r.emailLike(query.EmailCont),
+				r.slackIdLike(query.SlackIdCont),
+				r.stateEq(query.StateEq),
+			), paginateData),
+		).
+		Preload("Avatar", "name = 'avatar'").
+		Preload("Avatar.AttachmentBlob").
+		Order("id desc").Find(&users).Error
 }
 
 func (r *UserRepository) nameLike(nameLike *string) func(db *gorm.DB) *gorm.DB {
@@ -162,13 +172,41 @@ func (r *UserRepository) All(users *[]*models.User) error {
 	return r.db.Table("users").Order("id ASC").Find(&users).Error
 }
 
-func (r *UserRepository) UpdateProfile(user *models.User, updateUser models.User) error {
+func (r *UserRepository) UpdateProfile(user *models.User, updates map[string]interface{}) error {
 	if err := r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+		if err := tx.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
 			return err
 		}
 
-		if err := r.db.Model(&user).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateUser).Error; err != nil {
+		if err := tx.Model(&user).Select(append(helpers.GetKeys(updates), "Avatar")).Updates(updates).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
+
+	return r.db.
+		Model(&models.User{}).
+		Where("id = ?", &user.Id).
+		Preload("Avatar.AttachmentBlob").
+		Preload("ProjectAssignees.User").
+		Preload("ProjectAssignees.Project").
+		First(&user).Error
+}
+
+func (ur *UserRepository) Create(user *models.User) error {
+	return ur.db.Model(&user).Create(&user).Error
+}
+
+func (r *UserRepository) UpdateUser(user *models.User, attributes map[string]interface{}) error {
+	if err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&models.User{Id: user.Id}).Unscoped().Where("name = 'avatar'").Association("Avatar").Unscoped().Clear(); err != nil {
+			return err
+		}
+
+		if err := tx.Model(&user).Select(append(helpers.GetKeys(attributes), "Avatar")).Updates(attributes).Error; err != nil {
 			return err
 		}
 

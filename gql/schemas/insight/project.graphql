@@ -8,16 +8,18 @@ type Project {
   state: String!
   activedAt: Time
   inactivedAt: Time
-  startedAt: Time
-  endedAt: Time
+  startedAt: String
+  endedAt: String
   createdAt: Time
   updatedAt: Time
   sprintDuration: Int
-  clientId: ID
-  currentSprintId: ID
+  clientId: Int
+  currentSprintId: Int
   projectAssignees: [ProjectAssignee!]
   projectIssueStatuses: [ProjectIssueStatus!]
   logoUrl: String
+  logo: Attachment
+  files: [Attachment]
   lockVersion: Int!
 }
 

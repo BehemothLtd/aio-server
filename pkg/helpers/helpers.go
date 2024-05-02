@@ -99,7 +99,6 @@ func GqlTimePointer(val *time.Time) *graphql.Time {
 	} else {
 		return nil
 	}
-
 }
 
 // RubyTimeParser returns time.Time from string generated in Ruby
@@ -170,4 +169,14 @@ func GroupByProperty[T any, K comparable](items []T, getProperty func(T) K) map[
 	}
 
 	return grouped
+}
+
+func GetKeys(theMap map[string]interface{}) []string {
+	var keys []string
+
+	for key := range theMap {
+		keys = append(keys, key)
+	}
+
+	return keys
 }

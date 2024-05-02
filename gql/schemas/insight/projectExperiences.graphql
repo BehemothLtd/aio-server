@@ -1,0 +1,28 @@
+type ProjectExperience {
+  id: ID
+  title: String
+  description: String
+  projectId: ID
+  userId: ID
+  createdAt: Time
+  updatedAt: Time
+}
+
+type SelfProjectExperiencesCollection {
+  collection: [ProjectExperience!]
+  metadata: Metadata!
+}
+
+input ProjectExperiencesQuery {
+  projectIdEq: ID
+}
+
+input ProjectExperienceInput {
+  title: String!
+  description: String!
+  projectId: ID!
+}
+
+type ProjectExperienceModification {
+  ProjectExperience: ProjectExperience
+}

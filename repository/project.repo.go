@@ -101,6 +101,19 @@ func (r *ProjectRepository) Create(project *models.Project) error {
 	return r.db.Model(&project).Preload("ProjectIssueStatuses.IssueStatus").Preload("ProjectAssignees").Create(&project).First(&project).Error
 }
 
+func (r *ProjectRepository) UpdateBasicInfo(project *models.Project, updates map[string]interface{}) error {
+	if err := r.db.Model(&project).Select(append(helpers.GetKeys(updates), "LockVersion")).Updates(updates).Error; err != nil {
+		return err
+	}
+
+	return r.db.Model(&models.Project{}).
+		Where("id = ?", project.Id).
+		Preload("Client").
+		Preload("Logo", "name = 'logo'").Preload("Logo.AttachmentBlob").
+		Preload("Files", "name = 'files'").Preload("Files.AttachmentBlob").
+		Find(&project).Error
+}
+
 func (r *ProjectRepository) Update(project *models.Project, updateProject models.Project) error {
 	if err := r.db.Model(&project).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateProject).Error; err != nil {
 		return err
@@ -144,4 +157,41 @@ func (r *ProjectRepository) ActiveHighPriorityProjects(projects *[]models.Projec
 		Order("id desc").
 		Scan(&projects).
 		Error
+}
+
+func (r *ProjectRepository) All(projects *[]*models.Project) error {
+	return r.db.Table("projects").Order("id ASC").Find(&projects).Error
+}
+
+func (r *ProjectRepository) Delete(project *models.Project) error {
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Delete(&models.ProjectAssignee{}, "project_id = ?", project.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&models.ProjectIssueStatus{}, "project_id = ?", project.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&models.ProjectSprint{}, "project_id = ?", project.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&models.IssueAssignee{}, "id IN (SELECT id FROM issues WHERE project_id = ?)", project.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&models.Issue{}, "project_id = ?", project.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&models.Project{}, "id = ?", project.Id).Error; err != nil {
+			return err
+		}
+
+		// return nil will commit the whole transaction
+		return nil
+	})
+
+	return err
 }

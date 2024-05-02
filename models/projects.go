@@ -25,8 +25,9 @@ type Project struct {
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 	SprintDuration       *int32
-	ClientId             int32
-	CurrentSprintId      int32
+	ClientId             *int32
+	Client               Client
+	CurrentSprintId      *int32
 	ProjectAssignees     []*ProjectAssignee
 	ProjectIssueStatuses []*ProjectIssueStatus
 	ProjectSprints       []ProjectSprint
@@ -76,6 +77,14 @@ func (p *Project) BeforeUpdate(tx *gorm.DB) (err error) {
 			}
 		}
 	}
+
+	return
+}
+
+func (p *Project) BeforeCreate(tx *gorm.DB) (err error) {
+	timeNow := time.Now()
+
+	tx.Statement.SetColumn("actived_at", &timeNow)
 
 	return
 }

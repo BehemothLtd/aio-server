@@ -58,7 +58,7 @@ type UserCollection {
 input UsersQuery {
   nameCont: String
   fullNameCont: String
-  emailcont: String
+  emailCont: String
   slackIdCont: String
   stateEq: String
 }
@@ -102,9 +102,9 @@ type SelfUpdateProfile {
 }
 
 input SelfUpdatePassword {
-  currentPassword: String!
-  password: String!
-  passwordConfirmation: String!
+  currentPassword: String
+  password: String
+  passwordConfirmation: String
 }
 
 type UserActiveState {
@@ -148,7 +148,7 @@ type SelfProfile {
   projectAssignees: [ProjectAssigneeForSelfProfile]
 }
 
-input UserUpdateInput {
+input AdminUserInput {
   fullName: String
   email: String
   phone: String
@@ -157,7 +157,7 @@ input UserUpdateInput {
   gender: String
   slackId: String
   state: String
-  companyLevelId: Int
+  companyLevelId: ID
   password: String
   about: String
   avatarKey: String

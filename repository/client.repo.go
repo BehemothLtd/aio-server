@@ -112,3 +112,7 @@ func (r *ClientRepository) UpdateFiles(client *models.Client) error {
 	return r.db.Model(&client).Where("id = ?", client.Id).
 		Preload("Avatar", "name = 'avatar'").Preload("Avatar.AttachmentBlob").First(&client).Error
 }
+
+func (r *ClientRepository) All(clients *[]*models.Client) error {
+	return r.db.Table("clients").Order("id ASC").Find(&clients).Error
+}

@@ -3,6 +3,7 @@ package globalTypes
 import (
 	"aio-server/enums"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
 
@@ -55,12 +56,20 @@ func (pt *ProjectType) InactivedAt(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(pt.Project.InactivedAt)
 }
 
-func (pt *ProjectType) StartedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pt.Project.StartedAt)
+func (pt *ProjectType) StartedAt(ctx context.Context) *string {
+	if pt.Project.StartedAt != nil {
+		startedAt := pt.Project.StartedAt.Format(constants.DDMMYYYY_DateFormat)
+		return &startedAt
+	}
+	return nil
 }
 
-func (pt *ProjectType) EndedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(pt.Project.EndedAt)
+func (pt *ProjectType) EndedAt(ctx context.Context) *string {
+	if pt.Project.EndedAt != nil {
+		endedAt := pt.Project.EndedAt.Format(constants.DDMMYYYY_DateFormat)
+		return &endedAt
+	}
+	return nil
 }
 
 func (pt *ProjectType) CreatedAt(ctx context.Context) *graphql.Time {
@@ -79,12 +88,12 @@ func (pt *ProjectType) SprintDuration(ctx context.Context) *int32 {
 	}
 }
 
-func (pt *ProjectType) ClientId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(pt.Project.ClientId)
+func (pt *ProjectType) ClientId(ctx context.Context) *int32 {
+	return pt.Project.ClientId
 }
 
-func (pt *ProjectType) CurrentSprintId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(pt.Project.CurrentSprintId)
+func (pt *ProjectType) CurrentSprintId(ctx context.Context) *int32 {
+	return pt.Project.CurrentSprintId
 }
 
 func (pt *ProjectType) ProjectAssignees(ctx context.Context) *[]*ProjectAssigneeType {

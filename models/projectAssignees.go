@@ -1,6 +1,10 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type ProjectAssignee struct {
 	Id                int32
@@ -16,4 +20,12 @@ type ProjectAssignee struct {
 
 	CreatedAt time.Time
 	UpdatedAt time.Time
+}
+
+func (pa *ProjectAssignee) BeforeUpdate(tx *gorm.DB) (err error) {
+	if tx.Statement.Changed() {
+		tx.Statement.SetColumn("lock_version", pa.LockVersion+1)
+	}
+
+	return
 }

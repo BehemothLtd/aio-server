@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func (r *Resolver) MmWorkingTimelogByAttributes(ctx context.Context, args insightInputs.WorkingTimeLogInputByAttr) (*insightTypes.WorkingtimelogByAttributeType, error) {
+func (r *Resolver) WorkingTimelogByAttributes(ctx context.Context, args insightInputs.WorkingTimeLogInputByAttr) (*insightTypes.WorkingtimelogByAttributeType, error) {
 	_, err := auths.AuthInsightUserFromCtx(ctx)
 
 	if err != nil {

@@ -6,9 +6,11 @@ import (
 	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -26,7 +28,7 @@ func (r *Resolver) UserToggleActive(ctx context.Context, args insightInputs.User
 
 	user := models.User{Id: userId}
 	repo := repository.NewUserRepository(&ctx, r.Db)
-	err = repo.Find(&user)
+	err = repo.FindWithProjectAssignees(&user)
 
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -35,13 +37,23 @@ func (r *Resolver) UserToggleActive(ctx context.Context, args insightInputs.User
 		return nil, err
 	}
 
+	currentTime := time.Now().Format(constants.DateTimeZoneFormat)
+
 	if user.State == enums.UserStateActive {
 		user.State = enums.UserStateInactive
+
+		user.Timing.InactiveAt = currentTime
 	} else {
 		user.State = enums.UserStateActive
+
+		timing := models.UserTiming{
+			ActiveAt:   currentTime,
+			InactiveAt: "",
+		}
+		user.Timing = &timing
 	}
 
-	if err := repo.Update(&user, []string{"state"}); err != nil {
+	if err := repo.Update(&user, []string{"state", "timing"}); err != nil {
 		return nil, exceptions.NewUnprocessableContentError("Unable to toggle user state", nil)
 	}
 

@@ -10,6 +10,7 @@ type Query {
   SelfThisWeekIssuesState(): SelfThisWeekIssuesState!
   SelfProfile(): SelfProfile!
   SelfPermission(): [Permission]!
+  SelfProjectExperiences(input: PagyInput, query: ProjectExperiencesQuery): SelfProjectExperiencesCollection!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
@@ -19,6 +20,7 @@ type Query {
   UsersAll(): [UsersAllInfo]
 
   Projects(input: PagyInput, query: ProjectsQuery): ProjectCollection!
+  Project(id: ID!): Project!
 
   ProjectSprint(id: ID!): ProjectSprint!
 
@@ -28,9 +30,9 @@ type Query {
 
   DevelopmentRoles(): [DevelopmentRole]
 
-  MmWorkingTimelog(id: ID!): WorkingTimelog
-  MmWorkingTimelogByAttributes(projectId: ID, issueId: ID, loggedAt: String): WorkingTimelogByAttribute
-  MmWorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
+  WorkingTimelog(id: ID!): WorkingTimelog
+  WorkingTimelogByAttributes(projectId: ID, issueId: ID, loggedAt: String): WorkingTimelogByAttribute
+  WorkingTimelogs(input: PagyInput, query: WorkingTimelogsQuery): WorkingTimelogCollection
 
   DeviceType(id: ID!): DeviceType!
   DeviceTypes(input: PagyInput): DeviceTypeCollection!
@@ -52,6 +54,8 @@ type Query {
   Device(id: ID!): Device!
 
   SelectOptions(input: SelectOptionsInput!): SelectOptions
+
+  ProjectExperience(id: ID!): ProjectExperience!
 }
 
 type Mutation {
@@ -60,9 +64,13 @@ type Mutation {
   SelfUpdateProfile(input: SelfUpdateProfileInput!): SelfUpdateProfileRes!
   SelfUpdatePassword(input: SelfUpdatePassword!): String
   SelfAttend(): SelfAttendance!
+  SelfProjectExperienceCreate(input: ProjectExperienceInput!): ProjectExperienceModification!
+  SelfProjectExperienceUpdate(id: ID!, input: ProjectExperienceInput!): ProjectExperienceModification!
+  SelfProjectExperienceDestroy(id: ID!): String
 
+  UserCreate(input: AdminUserInput!): String
   UserToggleActive(id: ID!): UserActiveState
-  UserUpdate(id: ID!, input: UserUpdateInput!): UserType
+  UserUpdate(id: ID!, input: AdminUserInput!): UserType
 
   ProjectSprintCreate(input: ProjectSprintFormInput!): ProjectSprintModification!
   ProjectSprintUpdate(id: ID!, input: ProjectSprintFormInput!): ProjectSprintModification!
@@ -70,6 +78,8 @@ type Mutation {
 
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!
+  ProjectDestroy(id: ID!): String
+  ProjectUpdateProjectIssueStatusOrder(id: ID!, input: [Int!]!): String
 
   ProjectUploadImages(id: ID!, input: ProjectUploadImagesInput!): ProjectWithImages!
 
@@ -96,7 +106,7 @@ type Mutation {
   ClientUpdate(id: ID!, input: ClientUpdateInput!): ClientModification!
   ClientDelete(id: ID!): String
 
-  MmSelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
+  SelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
 
   AttendanceCreate(input: AttendanceInput!): AttendanceModification!
   AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!
