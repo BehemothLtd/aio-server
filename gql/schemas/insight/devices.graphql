@@ -20,3 +20,17 @@ input DevicesQuery {
   stateIn: [String!]
   userIdIn: [Int!]
 }
+
+input DeviceInput {
+  name: String!
+  code: String!
+  state: String!
+  userId: ID
+  deviceTypeId: ID!
+  description: String
+  seller: String
+}
+
+type DeviceModification {
+  device: Device
+}
