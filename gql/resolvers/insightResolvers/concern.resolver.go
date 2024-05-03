@@ -106,6 +106,16 @@ func (r *Resolver) ProjectsSliceToTypes(projects []*models.Project) *[]*globalTy
 	return &resolvers
 }
 
+func (r *Resolver) IssuesSliceToTypes(issues []*models.Issue) *[]*globalTypes.IssueType {
+	resolvers := make([]*globalTypes.IssueType, len(issues))
+
+	for i, issue := range issues {
+		resolvers[i] = &globalTypes.IssueType{Issue: issue}
+	}
+
+	return &resolvers
+}
+
 func (r *Resolver) ProjectExperiencesSliceToTypes(projectExperiences []*models.ProjectExperience) *[]*globalTypes.ProjectExperienceType {
 	resolvers := make([]*globalTypes.ProjectExperienceType, len(projectExperiences))
 
