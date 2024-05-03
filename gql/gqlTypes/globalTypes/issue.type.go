@@ -173,3 +173,11 @@ func (it *IssueType) ProjectSprint(ctx context.Context) *ProjectSprintType {
 
 	return nil
 }
+
+func (it *IssueType) StatusColorCode(ctx context.Context) *string {
+	if it.Issue.IssueStatus.Id != 0 {
+		return &it.Issue.IssueStatus.Color
+	}
+
+	return nil
+}

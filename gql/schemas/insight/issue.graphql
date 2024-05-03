@@ -31,6 +31,8 @@ type Issue {
 
   projectSprintId: ID
   projectSprint: ProjectSprint
+
+  statusColorCode: String
 }
 
 type ProjectIssueModification {

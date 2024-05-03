@@ -19,6 +19,7 @@ type Issue struct {
 	Code            string
 	Priority        enums.IssuePriority
 	IssueStatusId   int32
+	IssueStatus     IssueStatus
 	Position        int32
 	ProjectSprintId *int32
 	ProjectSprint   *ProjectSprint

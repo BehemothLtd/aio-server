@@ -41,7 +41,8 @@ func (r *Resolver) ProjectIssues(ctx context.Context, args insightInputs.Project
 	repo := repository.NewIssueRepository(
 		&ctx,
 		r.Db.Preload("IssueAssignees.User.Avatar.AttachmentBlob").
-			Preload("Creator.Avatar.AttachmentBlob"),
+			Preload("Creator.Avatar.AttachmentBlob").
+			Preload("IssueStatus"),
 	)
 
 	if err := repo.List(&issues, issuesQuery, &paginationData); err != nil {
