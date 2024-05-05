@@ -5,11 +5,11 @@ type DeviceCreateInput struct {
 }
 
 type DeviceCreateFormInput struct {
-	Name         string
-	Code         string
-	State        string
+	Name         *string
+	Code         *string
+	State        *string
 	UserId       *int32
-	DeviceTypeId int32
+	DeviceTypeId *int32
 	Description  *string
 	Seller       *string
 }

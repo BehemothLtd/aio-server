@@ -115,7 +115,7 @@ type Mutation {
   AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!
   AttendanceDelete(id: ID!): String
 
-  DeviceCreate(input: DeviceInput!): DeviceCollection
+  DeviceCreate(input: DeviceInput!): DeviceModification!
 }
 
 scalar Time

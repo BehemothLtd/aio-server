@@ -22,11 +22,11 @@ input DevicesQuery {
 }
 
 input DeviceInput {
-  name: String!
-  code: String!
-  state: String!
-  userId: ID
-  deviceTypeId: ID!
+  name: String
+  code: String
+  state: String
+  userId: Int
+  deviceTypeId: Int
   description: String
   seller: String
 }
