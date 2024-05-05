@@ -94,3 +94,7 @@ func (r *DeviceRepository) Find(device *models.Device) error {
 
 	return dbTables.Where(&device).First(&device).Error
 }
+
+func (r *DeviceRepository) Create(device *models.Device) error {
+	return r.db.Model(&device).Preload("DeviceType").Create(&device).First(&device).Error
+}

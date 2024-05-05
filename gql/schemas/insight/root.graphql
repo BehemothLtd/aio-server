@@ -114,6 +114,8 @@ type Mutation {
   AttendanceCreate(input: AttendanceInput!): AttendanceModification!
   AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!
   AttendanceDelete(id: ID!): String
+
+  DeviceCreate(input: DeviceInput!): DeviceModification!
 }
 
 scalar Time
