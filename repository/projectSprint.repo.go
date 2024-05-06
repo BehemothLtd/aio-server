@@ -29,6 +29,13 @@ func (r *ProjectSprintRepository) Find(projectSprint *models.ProjectSprint) erro
 	return dbTables.Where(&projectSprint).First(&projectSprint).Error
 }
 
+func (r *ProjectSprintRepository) FindAllByProject(projectId int32, sprints *[]models.ProjectSprint) error {
+	return r.db.Model(&models.ProjectSprint{}).
+		Where("project_id = ?", projectId).
+		Order("start_date DESC").
+		Find(&sprints).Error
+}
+
 func (psr *ProjectSprintRepository) Destroy(projectSprint *models.ProjectSprint) error {
 
 	project := models.Project{Id: projectSprint.ProjectId}
