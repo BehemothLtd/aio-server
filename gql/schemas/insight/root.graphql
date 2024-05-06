@@ -23,6 +23,7 @@ type Query {
   Project(id: ID!): Project!
 
   ProjectSprint(id: ID!): ProjectSprint!
+  ProjectSprints(id: ID!): [ProjectSprint]
 
   IssueStatus(id: ID!): IssueStatus
   IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
