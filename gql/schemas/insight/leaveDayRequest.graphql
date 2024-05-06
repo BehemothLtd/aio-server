@@ -17,6 +17,14 @@ type LeaveDayRequest {
   lockVersion: Int!
 }
 
+type RequestReport {
+  userId: ID
+  user: User
+  approvedTime: Float
+  peddingTime: Float
+  rejectedTime: Float
+}
+
 type LeaveDayRequestCollection {
   collection: [LeaveDayRequest!]
   metadata: Metadata!

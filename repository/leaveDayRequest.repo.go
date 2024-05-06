@@ -80,6 +80,27 @@ func (ldr *LeaveDayRequestRepository) userIdEq(userIdEq *int32) func(db *gorm.DB
 	}
 }
 
+func (ldr *LeaveDayRequestRepository) requestTypeIn(requestTypeIn *[]*string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if requestTypeIn == nil || len(*requestTypeIn) == 0 {
+			return db
+		} else {
+			var requestTypes []enums.RequestType
+
+			for _, requestType := range *requestTypeIn {
+				requestTypeInInt, err := enums.ParseRequestType(*requestType)
+
+				if err != nil {
+					continue
+				}
+
+				requestTypes = append(requestTypes, requestTypeInInt)
+			}
+			return db.Where("leave_day_requests.rquest_type IN (?)", requestTypes)
+		}
+	}
+}
+
 // Mutating Functions
 func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) error {
 	return ldr.db.Table("leave_day_requests").Create(&request).Error

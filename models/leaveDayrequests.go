@@ -28,6 +28,14 @@ type LeaveDayRequest struct {
 	LockVersion  int32 `gorm:"not null;autoIncrement;default:0"`
 }
 
+type RequestReport struct {
+	ApprovedTime float64
+	PeddingTime  float64
+	RejectedTime float64
+	User         User `gorm:"foreignKey:UserId"`
+	UserId       int32
+}
+
 func (r *LeaveDayRequest) BeforeUpdate(tx *gorm.DB) (err error) {
 	if tx.Statement.Changed() {
 		tx.Statement.SetColumn("lock_version", r.LockVersion+1)
