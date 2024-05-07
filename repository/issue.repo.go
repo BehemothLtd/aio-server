@@ -88,7 +88,7 @@ func (r *IssueRepository) issueTypeEq(issueTypeEq *string) func(db *gorm.DB) *go
 func (r *IssueRepository) projectSprintIdEq(projectSprintIdEq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if projectSprintIdEq == nil {
-			return db.Where("issues.project_sprint_id = null")
+			return db.Where("issues.project_sprint_id IS NULL")
 		} else if *projectSprintIdEq == "" {
 			return db
 		} else {
