@@ -9,7 +9,9 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/services/insightServices"
+	"aio-server/tasks"
 	"context"
+	"fmt"
 )
 
 func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs.LeaveDayRequestUpdateInput) (*insightTypes.LeaveDayRequestUpdatedType, error) {
@@ -38,6 +40,18 @@ func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs
 	if err := service.Execute(); err != nil {
 		return nil, err
 	} else {
+		// Update slack request message task
+		task, err := tasks.NewSlackUpdateLeaveDayRequestMessageTask(request)
+		if err != nil {
+			return nil, err
+		}
+
+		info, err := tasks.AsynqClient.Enqueue(task)
+		if err != nil {
+			return nil, err
+		}
+		fmt.Printf("Task ID: %+v => completed at %v\n", info.ID, info.CompletedAt)
+
 		return &insightTypes.LeaveDayRequestUpdatedType{
 			LeaveDayRequest: &globalTypes.LeaveDayRequestType{
 				LeaveDayRequest: &request,

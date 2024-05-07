@@ -3,6 +3,7 @@ package tasks
 import (
 	"aio-server/database"
 	"aio-server/models"
+	"aio-server/repository"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -32,13 +33,28 @@ func HandleSlackSendLeaveDayRequestTask(ctx context.Context, t *asynq.Task) erro
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
 
+	// Get message content
 	request := models.LeaveDayRequest{Id: p.RequestId}
 	db.Model(&request).First(&request)
 	message := request.GetMessage(db, p.Mentions)
 
+	// Send message to slack channel
 	slackClient := models.NewSlackClient()
+	slackMessage, err := slackClient.SendMessage(message, os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), nil, nil)
+	if err != nil {
+		return err
+	}
 
-	slackClient.SendMessage(message, os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), nil)
+	// Create request message
+	requestMessage := models.RequestMessage{
+		ParentId:  request.Id,
+		Content:   &message,
+		Timestamp: &slackMessage.Ts,
+	}
+	messageRepo := repository.NewMessageRepository(&ctx, db)
+	if err := messageRepo.Create(&requestMessage); err != nil {
+		return err
+	}
 
 	return nil
 }

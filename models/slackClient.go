@@ -121,9 +121,9 @@ func (client *SlackClient) SetHeaders(additionHeaders *map[string]string) *Slack
 	return client
 }
 
-func (client *SlackClient) SendMessage(text string, channel string, callback *string) error {
+func (client *SlackClient) SendMessage(text string, channel string, callback *string, threadTs *string) (*SlackMessage, error) {
 	if text == "" || channel == "" {
-		return exceptions.NewBadRequestError("Text and channel are required")
+		return nil, exceptions.NewBadRequestError("Text and channel are required")
 	}
 
 	fmt.Print("\n\n============================\nStart send_message")
@@ -131,6 +131,71 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 	payload := map[string]interface{}{
 		"text":    text,
 		"channel": channel,
+	}
+
+	// Set message's attachment
+	if callback != nil {
+		attachment := NewMessageAttachment(*callback)
+
+		if _, err := json.Marshal(attachment); err != nil {
+			return nil, exceptions.NewBadRequestError("invalid attachments")
+		} else {
+			payload["attachments"] = *attachment
+		}
+	}
+
+	// In case of reply to a message's thread
+	if threadTs != nil {
+		payload["thread_ts"] = *threadTs
+	}
+
+	payloadBytes, err := json.Marshal(payload)
+
+	if err != nil {
+		return nil, err
+	}
+
+	endPoint := "/chat.postMessage"
+	request, err := client.Request(constants.Post, endPoint, payloadBytes)
+
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := client.Client.Do(request)
+
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	message := SlackMessage{}
+	err = json.Unmarshal(body, &message)
+
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
+
+	return &message, nil
+}
+
+func (client *SlackClient) UpdateMessage(channel string, timestamp string, text string, callback *string) error {
+	if channel == "" || timestamp == "" || text == "" {
+		return exceptions.NewBadRequestError("Text and channel are required")
+	}
+	fmt.Print("\n\n============================\nStart update_message")
+
+	payload := map[string]interface{}{
+		"channel":   channel,
+		"text":      text,
+		"timestamp": timestamp,
 	}
 
 	if callback != nil {
@@ -144,12 +209,10 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 	}
 
 	payloadBytes, err := json.Marshal(payload)
-
 	if err != nil {
 		return err
 	}
-
-	endPoint := "/chat.postMessage"
+	endPoint := "/chat.update"
 	request, err := client.Request(constants.Post, endPoint, payloadBytes)
 
 	if err != nil {
@@ -163,7 +226,7 @@ func (client *SlackClient) SendMessage(text string, channel string, callback *st
 	}
 	defer response.Body.Close()
 
-	fmt.Printf("\nSuccess: send message to %+v\n\n", endPoint)
+	fmt.Printf("\nSuccess: update message to %+v\n\n", endPoint)
 
 	return nil
 }
