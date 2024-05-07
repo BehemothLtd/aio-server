@@ -31,10 +31,12 @@ func HandleSlackUpdateLeaveDayRequestMessageTask(ctx context.Context, t *asynq.T
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
 
+	// Get message content
 	request := p.Request
 	db.Model(&request).First(&request)
 	messageText := request.GetMessage(db, nil)
 
+	// Get request message
 	message := models.RequestMessage{Id: request.Id}
 	db.Model(&message).First(&message)
 

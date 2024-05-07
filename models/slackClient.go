@@ -193,9 +193,9 @@ func (client *SlackClient) UpdateMessage(channel string, timestamp string, text 
 	fmt.Print("\n\n============================\nStart update_message")
 
 	payload := map[string]interface{}{
-		"channel":   channel,
-		"text":      text,
-		"timestamp": timestamp,
+		"channel": channel,
+		"text":    text,
+		"ts":      timestamp,
 	}
 
 	if callback != nil {
