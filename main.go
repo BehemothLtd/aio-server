@@ -3,10 +3,12 @@ package main
 import (
 	"aio-server/controllers"
 	"aio-server/database"
+	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
 	"aio-server/tasks"
+	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -44,35 +46,26 @@ func main() {
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
 
-	// var result []struct {
-	// 		UserId            int32
-	// 		User              models.User
-	// 		TotalTimeApproved float64
-	// 		TotalTimePending  float64
-	// 		TotalTimeRejected float64
-	// 	}
-	// 	db.Raw(`
-	// 		SELECT
-	// 			user_id,
-	// 			MAX(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) AS total_time_pending,
-	// 			MAX(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) AS total_time_approved,
-	// 			MAX(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) AS total_time_rejected
-	// 		FROM
-	// 			(SELECT
-	// 				leave_day_requests.user_id,
-	// 				leave_day_requests.request_state,
-	// 				SUM(time_off) as total_time_off
-	// 			FROM
-	// 				leave_day_requests
-	// 			JOIN users ON
-	// 				leave_day_requests.user_id = users.id
-	// 			GROUP BY
-	// 				leave_day_requests.user_id,
-	// 				leave_day_requests.request_state) AS subquery
-	// 		GROUP BY
-	// 			user_id
-	// 		ORDER BY
-	// 			user_id;`).Scan(&result)
+	results := []models.RequestReport{}
+
+	requestSubQuery := db.Table("leave_day_requests").Select(`leave_day_requests.user_id, leave_day_requests.request_state, SUM(time_off) as total_time_off`).
+		Group("leave_day_requests.user_id, leave_day_requests.request_state")
+
+	db.Table("(?) as Subquery", requestSubQuery).
+		Select("user_id," +
+			"SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time, " +
+			"SUM(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) as pending_time, " +
+			"SUM(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) as rejected_time").
+		Preload("User").
+		Group("user_id").
+		Order("user_id").
+		Scan(&results)
+
+	for _, result := range results {
+		fmt.Printf("result : >>>>>>>>>> %+v \n\n", result)
+	}
+
+	fmt.Printf(">>>>>>>>>>> len results : \n %+v \n\n", len(results))
 
 	r.Run()
 }

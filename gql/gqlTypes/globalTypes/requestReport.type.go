@@ -29,7 +29,7 @@ func (rr *RequestReportType) ApprovedTime(ctx context.Context) *float64 {
 }
 
 func (rr *RequestReportType) PeddingTime(ctx context.Context) *float64 {
-	return helpers.Float64Pointer(rr.RequestReport.PeddingTime)
+	return helpers.Float64Pointer(rr.RequestReport.PendingTime)
 }
 
 func (rr *RequestReportType) RejectedTime(ctx context.Context) *float64 {

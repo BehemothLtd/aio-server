@@ -50,8 +50,8 @@ func (ldr *LeaveDayRequestRepository) Report(
 	requestReport *[]*models.RequestReport,
 	query insightInputs.RequestReportInput,
 ) error {
-	listRequestReports := []models.RequestReport{}
-	ldr.db.Table(models.LeaveDayRequest{}).Select("SUM( CASE When)")
+	// listRequestReports := []models.RequestReport{}
+	// ldr.db.Table(models.LeaveDayRequest{}).Select("SUM( CASE When)")
 
 	// return dbTables.Scopes(
 	// 	ldr.userIdEq(query.UserIdEq),
