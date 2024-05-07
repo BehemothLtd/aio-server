@@ -31,6 +31,8 @@ type Issue {
 
   projectSprintId: ID
   projectSprint: ProjectSprint
+
+  statusColorCode: String
 }
 
 type ProjectIssueModification {
@@ -56,4 +58,15 @@ input ProjectModifyIssueInput {
   parentId: Int
   projectSprintId: Int
   issueAssignees: [IssueAssigneeInput!]
+}
+
+type IssueCollection {
+  collection: [Issue!]
+  metadata: Metadata!
+}
+
+input ProjectIssuesQuery {
+  titleCont: String
+  codeCont: String
+  issueTypeEq: String
 }

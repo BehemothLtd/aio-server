@@ -1,9 +1,12 @@
 package repository
 
 import (
+	"aio-server/enums"
+	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"context"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -19,6 +22,65 @@ func NewIssueRepository(c *context.Context, db *gorm.DB) *IssueRepository {
 			db:  db,
 			ctx: c,
 		},
+	}
+}
+
+func (r *IssueRepository) List(
+	issues *[]*models.Issue,
+	query insightInputs.ProjectIssuesQueryInput,
+	paginateData *models.PaginationData,
+) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(dbTables.Scopes(
+			r.projectIdEq(query.ProjectIdEq),
+			r.titleLike(query.TitleCont),
+			r.codeLike(query.CodeCont),
+			r.issueTypeEq(query.IssueTypeEq),
+		), paginateData),
+	).Order("id desc").Find(&issues).Error
+}
+
+func (r *IssueRepository) projectIdEq(projectId *int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if projectId == nil {
+			return db
+		} else {
+			return db.Where("project_id = ?", projectId)
+		}
+	}
+}
+
+func (r *IssueRepository) titleLike(titleLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if titleLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(issues.title) LIKE ?`, strings.ToLower("%"+*titleLike+"%")))
+		}
+	}
+}
+
+func (r *IssueRepository) codeLike(codeLike *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if codeLike == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`lower(issues.code) LIKE ?`, strings.ToLower("%"+*codeLike+"%")))
+		}
+	}
+}
+
+func (r *IssueRepository) issueTypeEq(issueTypeEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if issueTypeEq == nil {
+			return db
+		} else {
+			issueTypeEqInInt, _ := enums.ParseIssueType(*issueTypeEq)
+
+			return db.Where(gorm.Expr(`issues.issue_type = ?`, issueTypeEqInInt))
+		}
 	}
 }
 

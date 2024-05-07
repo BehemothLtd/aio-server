@@ -58,7 +58,7 @@ func (it *IssueType) Priority(ctx context.Context) *string {
 }
 
 func (it *IssueType) Status(ctx context.Context) *string {
-	status := it.Issue.IssueType.String()
+	status := it.Issue.IssueStatus.Title
 	return &status
 }
 
@@ -169,6 +169,14 @@ func (it *IssueType) ProjectSprint(ctx context.Context) *ProjectSprintType {
 		return &ProjectSprintType{
 			ProjectSprint: it.Issue.ProjectSprint,
 		}
+	}
+
+	return nil
+}
+
+func (it *IssueType) StatusColorCode(ctx context.Context) *string {
+	if it.Issue.IssueStatus.Id != 0 {
+		return &it.Issue.IssueStatus.Color
 	}
 
 	return nil
