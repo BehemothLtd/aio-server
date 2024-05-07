@@ -50,3 +50,7 @@ func (pst *ProjectSprintType) Archived(context.Context) bool {
 func (pst *ProjectSprintType) LockVersion(context.Context) int32 {
 	return pst.ProjectSprint.LockVersion
 }
+
+func (pst *ProjectSprintType) Active(context.Context) bool {
+	return pst.ProjectSprint.Id == *pst.ProjectSprint.Project.CurrentSprintId
+}

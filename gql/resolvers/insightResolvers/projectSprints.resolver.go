@@ -39,7 +39,7 @@ func (r *Resolver) ProjectSprints(ctx context.Context, args struct{ Id graphql.I
 	}
 
 	var sprints []models.ProjectSprint
-	repo := repository.NewProjectSprintRepository(&ctx, r.Db)
+	repo := repository.NewProjectSprintRepository(&ctx, r.Db.Preload("Project"))
 
 	if err := repo.FindAllByProject(project.Id, &sprints); err != nil {
 		return nil, exceptions.NewUnprocessableContentError("Error happend", nil)

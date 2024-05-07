@@ -32,12 +32,12 @@ func (r *ProjectSprintRepository) Find(projectSprint *models.ProjectSprint) erro
 func (r *ProjectSprintRepository) FindAllByProject(projectId int32, sprints *[]models.ProjectSprint) error {
 	return r.db.Model(&models.ProjectSprint{}).
 		Where("project_id = ?", projectId).
+		Where("archived = false").
 		Order("start_date DESC").
 		Find(&sprints).Error
 }
 
 func (psr *ProjectSprintRepository) Destroy(projectSprint *models.ProjectSprint) error {
-
 	project := models.Project{Id: projectSprint.ProjectId}
 	repo := NewProjectRepository(psr.ctx, psr.db)
 	err := repo.Find(&project)

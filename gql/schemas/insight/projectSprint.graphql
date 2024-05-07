@@ -8,6 +8,7 @@ type ProjectSprint {
   updatedAt: Time
   archived: Boolean!
   lockVersion: Int!
+  active: Boolean!
 }
 
 type ProjectSprintModification {
