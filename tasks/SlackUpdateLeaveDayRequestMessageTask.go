@@ -3,6 +3,7 @@ package tasks
 import (
 	"aio-server/database"
 	"aio-server/models"
+	"aio-server/repository"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -37,15 +38,25 @@ func HandleSlackUpdateLeaveDayRequestMessageTask(ctx context.Context, t *asynq.T
 	messageText := request.GetMessage(db, nil)
 
 	// Get request message
-	message := models.RequestMessage{Id: request.Id}
-	db.Model(&message).First(&message)
+	message := models.RequestMessage{ParentId: request.Id}
+	messageRepo := repository.NewMessageRepository(&ctx, db)
+	err := messageRepo.Find(&message)
 
-	slackClient := models.NewSlackClient()
-
-	err := slackClient.UpdateMessage(os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), *message.Timestamp, messageText, nil)
 	if err != nil {
 		return err
 	}
+
+	// Update slack message
+	slackClient := models.NewSlackClient()
+	slackMessage, slackErr := slackClient.UpdateMessage(os.Getenv("SLACK_LEAVE_WFH_REQUEST_CHANNEL_ID"), *message.Timestamp, messageText, nil)
+	if slackErr != nil {
+		return slackErr
+	}
+
+	// Update request message
+	message.Content = &messageText
+	message.Timestamp = &slackMessage.Ts
+	messageRepo.Update(&message)
 
 	return nil
 }
