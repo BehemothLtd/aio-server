@@ -58,7 +58,7 @@ func (it *IssueType) Priority(ctx context.Context) *string {
 }
 
 func (it *IssueType) Status(ctx context.Context) *string {
-	status := it.Issue.IssueType.String()
+	status := it.Issue.IssueStatus.Title
 	return &status
 }
 
