@@ -46,6 +46,22 @@ func (ldr *LeaveDayRequestRepository) List(
 	).Order("id desc").Find(&leaveDayRequests).Error
 }
 
+func (ldr *LeaveDayRequestRepository) Report(
+	requestReport *[]*models.RequestReport,
+	query insightInputs.RequestReportInput,
+) error {
+	listRequestReports := []models.RequestReport{}
+	ldr.db.Table(models.LeaveDayRequest{}).Select("SUM( CASE When)")
+
+	// return dbTables.Scopes(
+	// 	ldr.userIdEq(query.UserIdEq),
+	// 	ldr.requestTypeIn(query.RequestTypeIn),
+	// 	ldr.createdAtBetween(query.CreatedAtBetween),
+	// ).Order("user_id asc").Find()
+
+	return nil
+}
+
 func (ldr *LeaveDayRequestRepository) requestTypeEq(requestTypeEq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if requestTypeEq == nil {
@@ -96,7 +112,32 @@ func (ldr *LeaveDayRequestRepository) requestTypeIn(requestTypeIn *[]*string) fu
 
 				requestTypes = append(requestTypes, requestTypeInInt)
 			}
-			return db.Where("leave_day_requests.rquest_type IN (?)", requestTypes)
+			return db.Where(gorm.Expr(`leave_day_requests.request_type IN (?)`, requestTypes))
+		}
+	}
+}
+
+func (ldr *LeaveDayRequestRepository) createdAtBetween(createdAtBetween *[]*string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if createdAtBetween == nil || len(*createdAtBetween) == 0 {
+			return db
+		} else {
+			if len(*createdAtBetween) == 2 {
+				dateRange := *createdAtBetween
+				startDateStr := dateRange[0]
+				endDateStr := dateRange[1]
+
+				query := db
+				if startDateStr != nil || *startDateStr != "" {
+					query = query.Where(gorm.Expr(`leave_day_requests.created_at >= ?`), startDateStr)
+				}
+				if endDateStr != nil || *endDateStr != "" {
+					query = query.Where(gorm.Expr(`leave_day_requests.created_at <= ?`), endDateStr)
+				}
+				return query
+			}
+
+			return db
 		}
 	}
 }

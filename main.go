@@ -44,5 +44,35 @@ func main() {
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
 
+	// var result []struct {
+	// 		UserId            int32
+	// 		User              models.User
+	// 		TotalTimeApproved float64
+	// 		TotalTimePending  float64
+	// 		TotalTimeRejected float64
+	// 	}
+	// 	db.Raw(`
+	// 		SELECT
+	// 			user_id,
+	// 			MAX(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) AS total_time_pending,
+	// 			MAX(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) AS total_time_approved,
+	// 			MAX(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) AS total_time_rejected
+	// 		FROM
+	// 			(SELECT
+	// 				leave_day_requests.user_id,
+	// 				leave_day_requests.request_state,
+	// 				SUM(time_off) as total_time_off
+	// 			FROM
+	// 				leave_day_requests
+	// 			JOIN users ON
+	// 				leave_day_requests.user_id = users.id
+	// 			GROUP BY
+	// 				leave_day_requests.user_id,
+	// 				leave_day_requests.request_state) AS subquery
+	// 		GROUP BY
+	// 			user_id
+	// 		ORDER BY
+	// 			user_id;`).Scan(&result)
+
 	r.Run()
 }
