@@ -4,12 +4,15 @@ import (
 	"aio-server/enums"
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
+	"aio-server/pkg/helpers"
 	"strings"
+	"time"
 )
 
 type LeaveDayRequestsInput struct {
 	Input *globalInputs.PagyInput
-	Query *LeaveDayRequestsQueryInput
+	Query *LeaveDayRequestsFrontQueryInput
 }
 
 func (ldi *LeaveDayRequestsInput) ToPaginationDataAndQuery() (LeaveDayRequestsQueryInput, models.PaginationData) {
@@ -37,15 +40,30 @@ func (ldi *LeaveDayRequestsInput) ToPaginationDataAndQuery() (LeaveDayRequestsQu
 		}
 
 		if ldi.Query.UserIdEq != nil {
-			query.UserIdEq = ldi.Query.UserIdEq
+			if UserIdEq, err := helpers.GqlIdToInt32(*ldi.Query.UserIdEq); err != nil {
+				query.UserIdEq = nil
+			} else {
+				query.UserIdEq = &UserIdEq
+			}
 		}
 
-		if ldi.Query.FromGteq != nil {
-			query.FromGteq = ldi.Query.FromGteq
+		if ldi.Query.FromGteq != nil && strings.TrimSpace(*ldi.Query.FromGteq) != "" {
+			if timeValue, err := time.ParseInLocation(constants.DateTimeFormat, *ldi.Query.FromGteq, time.Local); err != nil {
+				print(err.Error())
+				query.FromGteq = nil
+			} else {
+				query.FromGteq = &timeValue
+			}
 		}
 
-		if ldi.Query.ToLteq != nil {
-			query.ToLteq = ldi.Query.ToLteq
+		if ldi.Query.ToLteq != nil && strings.TrimSpace(*ldi.Query.ToLteq) != "" {
+			if timeValue, err := time.ParseInLocation(constants.DateTimeFormat, *ldi.Query.ToLteq, time.Local); err != nil {
+				print(err.Error())
+
+				query.ToLteq = nil
+			} else {
+				query.ToLteq = &timeValue
+			}
 		}
 	}
 

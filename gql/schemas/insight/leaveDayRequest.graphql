@@ -29,7 +29,7 @@ type LeaveDayRequestModification {
 input LeaveDayRequestsQuery {
   requestTypeEq: String
   requestStateEq: String
-  userIdEq: Int
+  userIdEq: ID
   fromGtEq: String
   toLtEq: String
 }
