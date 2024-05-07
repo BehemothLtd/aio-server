@@ -69,4 +69,6 @@ input ProjectIssuesQuery {
   titleCont: String
   codeCont: String
   issueTypeEq: String
+  # this is special case, '' to remove the condition on projectSprintId, null for NULL SQL search, 'id' for exact projectSprintId search
+  projectSprintIdEq: String
 }

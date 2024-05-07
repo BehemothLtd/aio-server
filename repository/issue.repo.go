@@ -38,6 +38,7 @@ func (r *IssueRepository) List(
 			r.titleLike(query.TitleCont),
 			r.codeLike(query.CodeCont),
 			r.issueTypeEq(query.IssueTypeEq),
+			r.projectSprintIdEq(query.ProjectSprintIdEq),
 		), paginateData),
 	).Order("id desc").Find(&issues).Error
 }
@@ -80,6 +81,18 @@ func (r *IssueRepository) issueTypeEq(issueTypeEq *string) func(db *gorm.DB) *go
 			issueTypeEqInInt, _ := enums.ParseIssueType(*issueTypeEq)
 
 			return db.Where(gorm.Expr(`issues.issue_type = ?`, issueTypeEqInInt))
+		}
+	}
+}
+
+func (r *IssueRepository) projectSprintIdEq(projectSprintIdEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if projectSprintIdEq == nil {
+			return db.Where("issues.project_sprint_id = null")
+		} else if *projectSprintIdEq == "" {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`issues.project_sprint_id = ?`, projectSprintIdEq))
 		}
 	}
 }
