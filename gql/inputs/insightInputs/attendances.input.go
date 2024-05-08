@@ -7,8 +7,6 @@ import (
 	"aio-server/pkg/helpers"
 	"strings"
 	"time"
-
-	"github.com/graph-gophers/graphql-go"
 )
 
 type AttendancesInput struct {
@@ -19,7 +17,7 @@ type AttendancesInput struct {
 type AttendancesFrontQueryInput struct {
 	CheckinAtGteq *string
 	CheckinAtLteq *string
-	UserIdEq      *graphql.ID
+	UserIdEq      *int32
 }
 
 type AttendancesQueryInput struct {
@@ -52,11 +50,7 @@ func (ai *AttendancesInput) ToPaginationAndQueryData() (AttendancesQueryInput, m
 		}
 
 		if ai.Query.UserIdEq != nil {
-			if UserIdEq, err := helpers.GqlIdToInt32(*ai.Query.UserIdEq); err != nil {
-				query.UserIdEq = nil
-			} else {
-				query.UserIdEq = &UserIdEq
-			}
+			query.UserIdEq = ai.Query.UserIdEq
 		}
 	}
 
