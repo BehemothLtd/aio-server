@@ -53,17 +53,19 @@ func (ldr *LeaveDayRequestRepository) Report(
 	query insightInputs.RequestReportQueryInput,
 ) error {
 	listRequestReports := []*models.RequestReport{}
-	dbTable := ldr.db.Model(&models.LeaveDayRequest{}).Select(
-		`leave_day_requests.user_id,
-		leave_day_requests.request_state,
-		SUM(time_off) as total_time_off`).Scopes(
-		ldr.requestTypeIn(query.RequestTypeIn),
-		ldr.createdAtBetween(query.CreatedAtBetween),
-		ldr.userIdEq(query.UserIdEq),
-	).Preload("User").
+	dbTable := ldr.db.Model(&models.LeaveDayRequest{}).
+		Select(
+			`leave_day_requests.user_id,
+			leave_day_requests.request_state,
+			SUM(time_off) as total_time_off`).
+		Scopes(
+			ldr.requestTypeIn(query.RequestTypeIn),
+			ldr.createdAtBetween(query.CreatedAtBetween),
+			ldr.userIdEq(query.UserIdEq),
+		).Preload("User").
 		Group("leave_day_requests.user_id, leave_day_requests.request_state")
 
-	ldr.db.Table("(?) as Subquery", dbTable).
+	return ldr.db.Table("(?) as Subquery", dbTable).
 		Select(
 			`user_id,
 			SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time,
@@ -73,9 +75,7 @@ func (ldr *LeaveDayRequestRepository) Report(
 		Preload("User").
 		Group("user_id").
 		Order("user_id").
-		Scan(&listRequestReports)
-
-	return nil
+		Scan(&listRequestReports).Error
 }
 
 func (ldr *LeaveDayRequestRepository) requestTypeEq(requestTypeEq *string) func(db *gorm.DB) *gorm.DB {

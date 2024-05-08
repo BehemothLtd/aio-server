@@ -21,7 +21,7 @@ type RequestReport {
   userId: ID
   user: User
   approvedTime: Float
-  peddingTime: Float
+  pendingTime: Float
   rejectedTime: Float
 }
 

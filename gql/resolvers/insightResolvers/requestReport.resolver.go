@@ -14,15 +14,17 @@ func (r *Resolver) RequestReport(ctx context.Context, args insightInputs.Request
 		return nil, err
 	}
 
-	var requestReport []*models.RequestReport
+	var requestReports []*models.RequestReport
 	requestReportQuery := args.ToQuery()
 
 	repo := repository.NewLeaveDayRequestRepository(&ctx, r.Db)
 
-	err := repo.Report(&requestReport, requestReportQuery)
+	err := repo.Report(&requestReports, requestReportQuery)
 	if err != nil {
 		return nil, err
 	}
 
-	return nil, nil
+	return &insightTypes.RequestReportType{
+		Collection: r.RequestReportSlideToTypes(requestReports),
+	}, nil
 }

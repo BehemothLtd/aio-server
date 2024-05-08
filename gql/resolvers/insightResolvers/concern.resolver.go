@@ -77,6 +77,16 @@ func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayReques
 	return &resolvers
 }
 
+func (r *Resolver) RequestReportSlideToTypes(reports []*models.RequestReport) *[]*globalTypes.RequestReportType {
+	resolvers := make([]*globalTypes.RequestReportType, len(reports))
+
+	for i, rp := range reports {
+		resolvers[i] = &globalTypes.RequestReportType{RequestReport: rp}
+	}
+
+	return &resolvers
+}
+
 // fromClients converts models.Client slice to []*ClientType.
 func (r *Resolver) ClientSliceToTypes(clients []*models.Client) *[]*globalTypes.ClientType {
 	resolvers := make([]*globalTypes.ClientType, len(clients))
