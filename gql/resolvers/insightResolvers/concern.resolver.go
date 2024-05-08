@@ -96,7 +96,7 @@ func (r *Resolver) RequestReportSlideToTypes(reports []*models.RequestReport) *[
 		Where(gorm.Expr(`users.id IN (?)`, userIds)).Find(&users)
 
 	for i, rp := range reports {
-		// Mapping user to report - remove later if findout the way handle preload data
+		// Mapping user to report
 		for _, user := range users {
 			if user.Id == rp.UserId {
 				rp.User = *user

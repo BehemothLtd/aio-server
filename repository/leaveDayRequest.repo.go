@@ -65,9 +65,9 @@ func (ldr *LeaveDayRequestRepository) Report(
 		Group("leave_day_requests.user_id, leave_day_requests.request_state")
 
 	return ldr.db.Table("(?) as Subquery", dbTable).
-		Preload("User").
-		Preload("User.Avatar", "name = 'avatar'").
-		Preload("User.Avatar.AttachmentBlob").
+		// Preload("User").
+		// Preload("User.Avatar", "name = 'avatar'").
+		// Preload("User.Avatar.AttachmentBlob").
 		Select(
 			`user_id,
 			SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time,
