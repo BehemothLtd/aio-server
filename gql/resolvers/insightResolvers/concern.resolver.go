@@ -91,9 +91,9 @@ func (r *Resolver) RequestReportSlideToTypes(reports []*models.RequestReport) *[
 	// Get users data
 	var users []*models.User
 	r.Db.Model(&models.User{}).
-		Preload("User.Avatar", "name = 'avatar'").
-		Preload("User.Avatar.AttachmentBlob").
-		Where(gorm.Expr(`users.id IN (?)`, userIds)).Scan(&users)
+		Preload("Avatar", "name = 'avatar'").
+		Preload("Avatar.AttachmentBlob").
+		Where(gorm.Expr(`users.id IN (?)`, userIds)).Find(&users)
 
 	for i, rp := range reports {
 		// Mapping user to report - remove later if findout the way handle preload data
