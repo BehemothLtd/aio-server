@@ -98,3 +98,7 @@ func (r *DeviceRepository) Find(device *models.Device) error {
 func (r *DeviceRepository) Create(device *models.Device) error {
 	return r.db.Model(&device).Preload("DeviceType").Create(&device).First(&device).Error
 }
+
+func (r *DeviceRepository) Delete(device *models.Device) error {
+	return r.db.Table("devices").Delete(&device).Error
+}
