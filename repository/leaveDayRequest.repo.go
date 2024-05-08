@@ -49,10 +49,9 @@ func (ldr *LeaveDayRequestRepository) List(
 }
 
 func (ldr *LeaveDayRequestRepository) Report(
-	requestReport *[]*models.RequestReport,
+	requestReports *[]*models.RequestReport,
 	query insightInputs.RequestReportQueryInput,
 ) error {
-	listRequestReports := []*models.RequestReport{}
 	dbTable := ldr.db.Model(&models.LeaveDayRequest{}).
 		Select(
 			`leave_day_requests.user_id,
@@ -75,7 +74,7 @@ func (ldr *LeaveDayRequestRepository) Report(
 		Preload("User").
 		Group("user_id").
 		Order("user_id").
-		Scan(&listRequestReports).Error
+		Scan(&requestReports).Error
 }
 
 func (ldr *LeaveDayRequestRepository) requestTypeEq(requestTypeEq *string) func(db *gorm.DB) *gorm.DB {

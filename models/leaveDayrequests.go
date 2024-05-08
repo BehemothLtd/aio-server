@@ -29,10 +29,10 @@ type LeaveDayRequest struct {
 }
 
 type RequestReport struct {
-	ApprovedTime float64 `gorm:"column:approved_time"`
-	PendingTime  float64 `gorm:"column:pending_time"`
-	RejectedTime float64 `gorm:"column:rejected_time"`
-	User         User    `gorm:"foreignKey:UserId"`
+	ApprovedTime float64
+	PendingTime  float64
+	RejectedTime float64
+	User         User `gorm:"foreignKey:UserId"`
 	UserId       int32
 }
 
