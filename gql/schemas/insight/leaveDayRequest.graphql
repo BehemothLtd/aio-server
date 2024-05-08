@@ -25,10 +25,6 @@ type RequestReport {
   rejectedTime: Float
 }
 
-type RequestReportCollection {
-  collection: [RequestReport]
-}
-
 type LeaveDayRequestCollection {
   collection: [LeaveDayRequest!]
   metadata: Metadata!

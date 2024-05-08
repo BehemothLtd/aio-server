@@ -2,14 +2,14 @@ package insightResolvers
 
 import (
 	"aio-server/enums"
-	"aio-server/gql/gqlTypes/insightTypes"
+	"aio-server/gql/gqlTypes/globalTypes"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/repository"
 	"context"
 )
 
-func (r *Resolver) RequestReport(ctx context.Context, args insightInputs.RequestReportInput) (*insightTypes.RequestReportType, error) {
+func (r *Resolver) RequestReport(ctx context.Context, args insightInputs.RequestReportInput) (*[]*globalTypes.RequestReportType, error) {
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeLeaveDayRequests.String(), enums.PermissionActionTypeRead.String()); err != nil {
 		return nil, err
 	}
@@ -24,7 +24,5 @@ func (r *Resolver) RequestReport(ctx context.Context, args insightInputs.Request
 		return nil, err
 	}
 
-	return &insightTypes.RequestReportType{
-		Collection: r.RequestReportSlideToTypes(requestReports),
-	}, nil
+	return r.RequestReportSlideToTypes(requestReports), nil
 }
