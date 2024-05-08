@@ -25,6 +25,10 @@ type RequestReport {
   rejectedTime: Float
 }
 
+type RequestReportCollection {
+  collection: [RequestReport]
+}
+
 type LeaveDayRequestCollection {
   collection: [LeaveDayRequest!]
   metadata: Metadata!
@@ -48,4 +52,10 @@ input LeaveDayRequestInput {
   mentions: [String]
   reason: String
   lockVersion: Int
+}
+
+input RequestReportInput {
+  requestTypeIn: [String]
+  createdAtBetween: [String]
+  userIdEq: Int
 }

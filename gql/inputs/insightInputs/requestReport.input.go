@@ -6,40 +6,47 @@ import (
 )
 
 type RequestReportInput struct {
+	Query *RequestReportQueryInput
+}
+
+type RequestReportQueryInput struct {
 	UserIdEq         *int32
 	RequestTypeIn    *[]*string
 	CreatedAtBetween *[]*string
 }
 
-func (rpi *RequestReportInput) ToQuery() RequestReportInput {
-	query := RequestReportInput{}
+func (rpi *RequestReportInput) ToQuery() RequestReportQueryInput {
+	query := RequestReportQueryInput{}
 
-	// Handle user_id_eq params
-	if rpi.UserIdEq != nil {
-		query.UserIdEq = rpi.UserIdEq
-	}
-	// Handle created_at_between params
-	if rpi.CreatedAtBetween != nil {
-		query.CreatedAtBetween = rpi.CreatedAtBetween
-	}
+	if rpi.Query != nil {
 
-	// Handle request_type_in params
-	requestTypes := rpi.RequestTypeIn
-
-	if requestTypes != nil && len(*requestTypes) > 0 {
-		listRequestTypes := []*string{}
-
-		for _, requestType := range *requestTypes {
-			if requestType != nil && strings.TrimSpace(*requestType) != "" {
-				_, err := enums.ParseRequestType(*requestType)
-
-				if err != nil {
-					continue
-				}
-				listRequestTypes = append(listRequestTypes, requestType)
-			}
+		// Handle user_id_eq params
+		if rpi.Query.UserIdEq != nil {
+			query.UserIdEq = rpi.Query.UserIdEq
 		}
-		query.RequestTypeIn = &listRequestTypes
+		// Handle created_at_between params
+		if rpi.Query.CreatedAtBetween != nil {
+			query.CreatedAtBetween = rpi.Query.CreatedAtBetween
+		}
+
+		// Handle request_type_in params
+		requestTypes := rpi.Query.RequestTypeIn
+
+		if requestTypes != nil && len(*requestTypes) > 0 {
+			listRequestTypes := []*string{}
+
+			for _, requestType := range *requestTypes {
+				if requestType != nil && strings.TrimSpace(*requestType) != "" {
+					_, err := enums.ParseRequestType(*requestType)
+
+					if err != nil {
+						continue
+					}
+					listRequestTypes = append(listRequestTypes, requestType)
+				}
+			}
+			query.RequestTypeIn = &listRequestTypes
+		}
 	}
 
 	return query

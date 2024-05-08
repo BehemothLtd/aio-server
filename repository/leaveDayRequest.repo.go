@@ -4,8 +4,10 @@ import (
 	"aio-server/enums"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -48,16 +50,30 @@ func (ldr *LeaveDayRequestRepository) List(
 
 func (ldr *LeaveDayRequestRepository) Report(
 	requestReport *[]*models.RequestReport,
-	query insightInputs.RequestReportInput,
+	query insightInputs.RequestReportQueryInput,
 ) error {
-	// listRequestReports := []models.RequestReport{}
-	// ldr.db.Table(models.LeaveDayRequest{}).Select("SUM( CASE When)")
+	listRequestReports := []*models.RequestReport{}
+	dbTable := ldr.db.Model(&models.LeaveDayRequest{}).Select(
+		`leave_day_requests.user_id,
+		leave_day_requests.request_state,
+		SUM(time_off) as total_time_off`).Scopes(
+		ldr.requestTypeIn(query.RequestTypeIn),
+		ldr.createdAtBetween(query.CreatedAtBetween),
+		ldr.userIdEq(query.UserIdEq),
+	).Preload("User").
+		Group("leave_day_requests.user_id, leave_day_requests.request_state")
 
-	// return dbTables.Scopes(
-	// 	ldr.userIdEq(query.UserIdEq),
-	// 	ldr.requestTypeIn(query.RequestTypeIn),
-	// 	ldr.createdAtBetween(query.CreatedAtBetween),
-	// ).Order("user_id asc").Find()
+	ldr.db.Table("(?) as Subquery", dbTable).
+		Select(
+			`user_id,
+			SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time,
+			SUM(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) as pending_time,
+			SUM(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) as rejected_time`,
+		).
+		Preload("User").
+		Group("user_id").
+		Order("user_id").
+		Scan(&listRequestReports)
 
 	return nil
 }
@@ -126,13 +142,17 @@ func (ldr *LeaveDayRequestRepository) createdAtBetween(createdAtBetween *[]*stri
 				dateRange := *createdAtBetween
 				startDateStr := dateRange[0]
 				endDateStr := dateRange[1]
-
 				query := db
+
 				if startDateStr != nil || *startDateStr != "" {
-					query = query.Where(gorm.Expr(`leave_day_requests.created_at >= ?`), startDateStr)
+					startDateTime, _ := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *startDateStr, time.Local)
+
+					query = query.Where(gorm.Expr(`leave_day_requests.created_at >= ?`, startDateTime))
 				}
 				if endDateStr != nil || *endDateStr != "" {
-					query = query.Where(gorm.Expr(`leave_day_requests.created_at <= ?`), endDateStr)
+					endDateTime, _ := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *endDateStr, time.Local)
+
+					query = query.Where(gorm.Expr(`leave_day_requests.created_at <= ?`, endDateTime))
 				}
 				return query
 			}
