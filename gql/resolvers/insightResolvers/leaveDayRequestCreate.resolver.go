@@ -33,7 +33,7 @@ func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs
 	if err := service.Excecute(); err != nil {
 		return nil, err
 	} else {
-		// Send slack message task
+		// Send slack message
 		mentions := args.Input.Mentions
 		task, err := tasks.NewSlackSendLeaveDayRequestTask(request.Id, mentions)
 		if err != nil {
@@ -45,7 +45,7 @@ func (r *Resolver) LeaveDayRequestCreate(ctx context.Context, args insightInputs
 			return nil, err
 		}
 
-		fmt.Printf("\nTask ID: %+v => completed at %v\n", info.ID, info.CompletedAt)
+		fmt.Printf("Task ID: %+v => completed at %v\n", info.ID, info.CompletedAt)
 
 		return &insightTypes.LeaveDayRequestCreatedType{
 			LeaveDayRequest: &globalTypes.LeaveDayRequestType{

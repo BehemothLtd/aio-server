@@ -27,6 +27,5 @@ func (rs *LeaveDayRequestService) Excecute() error {
 	if err := form.Save(); err != nil {
 		return err
 	}
-
 	return nil
 }
