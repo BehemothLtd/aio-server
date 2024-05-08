@@ -144,13 +144,19 @@ func (ldr *LeaveDayRequestRepository) createdAtBetween(createdAtBetween *[]*stri
 				endDateStr := dateRange[1]
 				query := db
 
-				if startDateStr != nil || *startDateStr != "" {
-					startDateTime, _ := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *startDateStr, time.Local)
+				if startDateStr != nil && *startDateStr != "" {
+					startDateTime, err := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *startDateStr, time.Local)
+					if err != nil {
+						return db
+					}
 
 					query = query.Where(gorm.Expr(`leave_day_requests.created_at >= ?`, startDateTime))
 				}
-				if endDateStr != nil || *endDateStr != "" {
-					endDateTime, _ := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *endDateStr, time.Local)
+				if endDateStr != nil && *endDateStr != "" {
+					endDateTime, err := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *endDateStr, time.Local)
+					if err != nil {
+						return db
+					}
 
 					query = query.Where(gorm.Expr(`leave_day_requests.created_at <= ?`, endDateTime))
 				}
