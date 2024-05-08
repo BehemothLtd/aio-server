@@ -7,6 +7,8 @@ import (
 	"aio-server/pkg/auths"
 	"aio-server/pkg/systems"
 	"context"
+
+	"gorm.io/gorm"
 )
 
 // fromSnippets converts models.Snippet slice to []*UserGroupType.
@@ -80,7 +82,29 @@ func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayReques
 func (r *Resolver) RequestReportSlideToTypes(reports []*models.RequestReport) *[]*globalTypes.RequestReportType {
 	resolvers := make([]*globalTypes.RequestReportType, len(reports))
 
+	// Get all reports's user_id
+	var userIds []int32
+	for _, report := range reports {
+		userIds = append(userIds, report.UserId)
+	}
+
+	// Get users data
+	var users []*models.User
+	r.Db.Model(&models.User{}).
+		Preload("User.Avatar", "name = 'avatar'").
+		Preload("User.Avatar.AttachmentBlob").
+		Where(gorm.Expr(`users.id IN (?)`, userIds)).Scan(&users)
+
 	for i, rp := range reports {
+		// Mapping user to report - remove later if findout the way handle preload data
+		for _, user := range users {
+			if user.Id == rp.UserId {
+				rp.User = *user
+
+				break
+			}
+		}
+
 		resolvers[i] = &globalTypes.RequestReportType{RequestReport: rp}
 	}
 

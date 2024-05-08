@@ -61,17 +61,19 @@ func (ldr *LeaveDayRequestRepository) Report(
 			ldr.requestTypeIn(query.RequestTypeIn),
 			ldr.createdAtBetween(query.CreatedAtBetween),
 			ldr.userIdEq(query.UserIdEq),
-		).Preload("User").
+		).
 		Group("leave_day_requests.user_id, leave_day_requests.request_state")
 
 	return ldr.db.Table("(?) as Subquery", dbTable).
+		Preload("User").
+		Preload("User.Avatar", "name = 'avatar'").
+		Preload("User.Avatar.AttachmentBlob").
 		Select(
 			`user_id,
 			SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time,
 			SUM(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) as pending_time,
 			SUM(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) as rejected_time`,
 		).
-		Preload("User").
 		Group("user_id").
 		Order("user_id").
 		Scan(&requestReports).Error
