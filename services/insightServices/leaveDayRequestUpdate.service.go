@@ -20,7 +20,7 @@ type LeaveDayRequestUpdateService struct {
 }
 
 func (rus *LeaveDayRequestUpdateService) Execute() error {
-	repo := repository.NewLeaveDayRequestRepository(rus.Ctx, rus.Db)
+	repo := repository.NewLeaveDayRequestRepository(rus.Ctx, rus.Db.Preload("User"))
 
 	if err := repo.Find(rus.Request); err != nil {
 		return exceptions.NewRecordNotFoundError()

@@ -50,7 +50,7 @@ func (r *Resolver) LeaveDayRequestUpdate(ctx context.Context, args insightInputs
 		if err != nil {
 			return nil, err
 		}
-		fmt.Printf("Task ID: %+v => completed at %v\n", info.ID, info.CompletedAt)
+		fmt.Printf("\nTask ID: %+v => completed at %v\n", info.ID, info.CompletedAt)
 
 		return &insightTypes.LeaveDayRequestUpdatedType{
 			LeaveDayRequest: &globalTypes.LeaveDayRequestType{

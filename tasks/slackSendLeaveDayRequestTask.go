@@ -52,9 +52,7 @@ func HandleSlackSendLeaveDayRequestTask(ctx context.Context, t *asynq.Task) erro
 		Timestamp: &slackMessage.Ts,
 	}
 	messageRepo := repository.NewMessageRepository(&ctx, db)
-	if err := messageRepo.Create(&requestMessage); err != nil {
-		return err
-	}
+	messageRepo.Create(&requestMessage)
 
 	return nil
 }
