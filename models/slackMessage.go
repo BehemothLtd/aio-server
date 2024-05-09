@@ -5,15 +5,15 @@ import (
 )
 
 type SlackMessage struct {
-	Ok       bool      `json:"ok"`
-	Latest   string    `json:"latest"`
-	Messages []Message `json:"messages"`
-	Ts       string    `json:"ts"`
-	HasOne   bool      `json:"has_one"`
-	Error    string    `json:"error"`
+	Ok       bool             `json:"ok"`
+	Latest   string           `json:"latest"`
+	Messages []MessageContent `json:"messages"`
+	Ts       string           `json:"ts"`
+	HasOne   bool             `json:"has_one"`
+	Error    string           `json:"error"`
 }
 
-type Message struct {
+type MessageContent struct {
 	Type string `json:"type"`
 	User string `json:"user"`
 	Text string `json:"text"`
@@ -47,7 +47,7 @@ type ActionDetail struct {
 type SlackInteractivePayload struct {
 	Type            string         `json:"type"`
 	CallbackId      string         `json:"callback_id"`
-	OriginalMessage Message        `json:"original_message"`
+	OriginalMessage MessageContent `json:"original_message"`
 	Action          []ActionDetail `json:"actions"`
 	User            SlackUser      `json:"user"`
 	Channel         SlackChannel   `json:"channel"`
