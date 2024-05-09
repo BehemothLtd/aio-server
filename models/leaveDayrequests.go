@@ -34,6 +34,9 @@ type RequestReport struct {
 	RejectedTime float64
 	User         User `gorm:"foreignKey:UserId"`
 	UserId       int32
+	UserName     string
+	FullName     string
+	AvatarKey    string
 }
 
 func (r *LeaveDayRequest) BeforeUpdate(tx *gorm.DB) (err error) {

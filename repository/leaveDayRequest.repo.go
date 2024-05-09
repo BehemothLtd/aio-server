@@ -65,16 +65,20 @@ func (ldr *LeaveDayRequestRepository) Report(
 		Group("leave_day_requests.user_id, leave_day_requests.request_state")
 
 	return ldr.db.Table("(?) as Subquery", dbTable).
-		// Preload("User").
-		// Preload("User.Avatar", "name = 'avatar'").
-		// Preload("User.Avatar.AttachmentBlob").
+		Joins("LEFT JOIN users ON users.id = user_id").
+		Joins("LEFT OUTER JOIN attachments on (attachments.owner_id = users.id AND attachments.name = 'avatar')").
+		Joins("LEFT OUTER JOIN attachment_blobs on attachment_blobs.id = attachments.attachment_blob_id").
 		Select(
 			`user_id,
 			SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time,
 			SUM(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) as pending_time,
-			SUM(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) as rejected_time`,
+			SUM(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) as rejected_time,
+			users.name as user_name,
+			users.full_name as full_name,
+			attachment_blobs.key as avatar_key
+			`,
 		).
-		Group("user_id").
+		Group("user_id, avatar_key").
 		Order("user_id").
 		Scan(&requestReports).Error
 }

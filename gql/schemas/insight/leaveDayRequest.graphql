@@ -23,6 +23,9 @@ type RequestReport {
   approvedTime: Float
   pendingTime: Float
   rejectedTime: Float
+  userName: String
+  fullName: String
+  avatarKey: String
 }
 
 type LeaveDayRequestCollection {
