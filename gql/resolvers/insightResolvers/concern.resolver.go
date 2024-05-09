@@ -7,8 +7,6 @@ import (
 	"aio-server/pkg/auths"
 	"aio-server/pkg/systems"
 	"context"
-
-	"gorm.io/gorm"
 )
 
 // fromSnippets converts models.Snippet slice to []*UserGroupType.
@@ -83,27 +81,27 @@ func (r *Resolver) RequestReportSlideToTypes(reports []*models.RequestReport) *[
 	resolvers := make([]*globalTypes.RequestReportType, len(reports))
 
 	// Get all reports's user_id
-	var userIds []int32
-	for _, report := range reports {
-		userIds = append(userIds, report.UserId)
-	}
+	// var userIds []int32
+	// for _, report := range reports {
+	// 	userIds = append(userIds, report.UserId)
+	// }
 
 	// Get users data
-	var users []*models.User
-	r.Db.Model(&models.User{}).
-		Preload("Avatar", "name = 'avatar'").
-		Preload("Avatar.AttachmentBlob").
-		Where(gorm.Expr(`users.id IN (?)`, userIds)).Find(&users)
+	// var users []*models.User
+	// r.Db.Model(&models.User{}).
+	// 	Preload("Avatar", "name = 'avatar'").
+	// 	Preload("Avatar.AttachmentBlob").
+	// 	Where(gorm.Expr(`users.id IN (?)`, userIds)).Find(&users)
 
 	for i, rp := range reports {
 		// Mapping user to report
-		for _, user := range users {
-			if user.Id == rp.UserId {
-				rp.User = *user
+		// for _, user := range users {
+		// 	if user.Id == rp.UserId {
+		// 		rp.User = *user
 
-				break
-			}
-		}
+		// 		break
+		// 	}
+		// }
 
 		resolvers[i] = &globalTypes.RequestReportType{RequestReport: rp}
 	}
