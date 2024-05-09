@@ -1,8 +1,7 @@
 package models
 
 import (
-	"fmt"
-	"os"
+	"aio-server/pkg/utilities"
 	"time"
 )
 
@@ -19,16 +18,7 @@ type Attachment struct {
 }
 
 func (a Attachment) Url() *string {
-	var url string
-
 	key := a.AttachmentBlob.Key
 
-	if os.Getenv("UPLOAD_LOCALLY_PATH") != "" {
-		url = os.Getenv("UPLOAD_LOCALLY_PATH") + key
-	} else {
-		bucketName := os.Getenv("GCS_BUCKET_NAME")
-		url = fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, key)
-	}
-
-	return &url
+	return utilities.GetAvatarUrl(key)
 }

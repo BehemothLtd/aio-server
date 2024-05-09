@@ -3,9 +3,8 @@ package globalTypes
 import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
+	"aio-server/pkg/utilities"
 	"context"
-	"fmt"
-	"os"
 
 	"github.com/graph-gophers/graphql-go"
 	"gorm.io/gorm"
@@ -47,20 +46,7 @@ func (rr *RequestReportType) FullName(ctx context.Context) *string {
 }
 
 func (rr *RequestReportType) AvatarKey(ctx context.Context) *string {
-	var url string
-
 	key := rr.RequestReport.AvatarKey
 
-	if key == "" {
-		return nil
-	}
-
-	if os.Getenv("UPLOAD_LOCALLY_PATH") != "" {
-		url = os.Getenv("UPLOAD_LOCALLY_PATH") + key
-	} else {
-		bucketName := os.Getenv("GCS_BUCKET_NAME")
-		url = fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, key)
-	}
-
-	return &url
+	return utilities.GetAvatarUrl(key)
 }
