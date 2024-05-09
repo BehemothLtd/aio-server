@@ -44,5 +44,22 @@ func main() {
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
 
+	// groupTitles := []string{"Super Admin", "BOD", "Team Leader", "Member", "test"}
+
+	// for _, title := range groupTitles {
+	// 	ug := models.UserGroup{Title: title}
+
+	// 	if err := db.Table("user_groups").Where(&ug).First(&ug).Error; err == gorm.ErrRecordNotFound {
+	// 		db.Table("user_groups").Create(&ug)
+	// 	}
+
+	// }
+	// abc := systems.GetPermissions()
+
+	// for _, p := range abc {
+	// 	fmt.Print(p.Id)
+	// }
+	// seeds.InitPermissions(ug models.UserGroup, tx *gorm.DB)
+
 	r.Run()
 }

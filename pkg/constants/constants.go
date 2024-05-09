@@ -46,6 +46,9 @@ const (
 
 	Charset     = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	EmailFormat = `\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z`
+
+	SuperAdmin    = "Super Admin"
+	SystemAdminId = 9999
 )
 
 func RequiredIssueStatusIdsForKanbanProject() []int32 {
