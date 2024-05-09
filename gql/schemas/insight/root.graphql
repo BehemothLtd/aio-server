@@ -45,6 +45,7 @@ type Query {
 
   LeaveDayRequests(input: PagyInput, query: LeaveDayRequestsQuery): LeaveDayRequestCollection!
   LeaveDayRequest(id: ID!): LeaveDayRequest!
+  RequestReport(query: RequestReportInput): [RequestReport]
 
   AnalysesTotalSummarize(): AnalysesTotalSummarize!
 

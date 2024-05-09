@@ -4,8 +4,10 @@ import (
 	"aio-server/enums"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -46,6 +48,41 @@ func (ldr *LeaveDayRequestRepository) List(
 	).Order("id desc").Find(&leaveDayRequests).Error
 }
 
+func (ldr *LeaveDayRequestRepository) Report(
+	requestReports *[]*models.RequestReport,
+	query insightInputs.RequestReportQueryInput,
+) error {
+	dbTable := ldr.db.Model(&models.LeaveDayRequest{}).
+		Select(
+			`leave_day_requests.user_id,
+			leave_day_requests.request_state,
+			SUM(time_off) as total_time_off`).
+		Scopes(
+			ldr.requestTypeIn(query.RequestTypeIn),
+			ldr.createdAtBetween(query.CreatedAtBetween),
+			ldr.userIdEq(query.UserIdEq),
+		).
+		Group("leave_day_requests.user_id, leave_day_requests.request_state")
+
+	return ldr.db.Table("(?) as Subquery", dbTable).
+		Joins("LEFT JOIN users ON users.id = user_id").
+		Joins("LEFT OUTER JOIN attachments on (attachments.owner_id = users.id AND attachments.name = 'avatar')").
+		Joins("LEFT OUTER JOIN attachment_blobs on attachment_blobs.id = attachments.attachment_blob_id").
+		Select(
+			`user_id,
+			SUM(CASE WHEN request_state = 1 THEN total_time_off ELSE 0 END) as approved_time,
+			SUM(CASE WHEN request_state = 2 THEN total_time_off ELSE 0 END) as pending_time,
+			SUM(CASE WHEN request_state = 3 THEN total_time_off ELSE 0 END) as rejected_time,
+			users.name as user_name,
+			users.full_name as full_name,
+			attachment_blobs.key as avatar_key
+			`,
+		).
+		Group("user_id, avatar_key").
+		Order("user_id").
+		Scan(&requestReports).Error
+}
+
 func (ldr *LeaveDayRequestRepository) requestTypeEq(requestTypeEq *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if requestTypeEq == nil {
@@ -76,6 +113,62 @@ func (ldr *LeaveDayRequestRepository) userIdEq(userIdEq *int32) func(db *gorm.DB
 			return db
 		} else {
 			return db.Where(gorm.Expr(`leave_day_requests.user_id = ?`, userIdEq))
+		}
+	}
+}
+
+func (ldr *LeaveDayRequestRepository) requestTypeIn(requestTypeIn *[]*string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if requestTypeIn == nil || len(*requestTypeIn) == 0 {
+			return db
+		} else {
+			var requestTypes []enums.RequestType
+
+			for _, requestType := range *requestTypeIn {
+				requestTypeInInt, err := enums.ParseRequestType(*requestType)
+
+				if err != nil {
+					continue
+				}
+
+				requestTypes = append(requestTypes, requestTypeInInt)
+			}
+			return db.Where(gorm.Expr(`leave_day_requests.request_type IN (?)`, requestTypes))
+		}
+	}
+}
+
+func (ldr *LeaveDayRequestRepository) createdAtBetween(createdAtBetween *[]*string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if createdAtBetween == nil || len(*createdAtBetween) == 0 {
+			return db
+		} else {
+			if len(*createdAtBetween) == 2 {
+				dateRange := *createdAtBetween
+				startDateStr := dateRange[0]
+				endDateStr := dateRange[1]
+				query := db
+
+				if startDateStr != nil && *startDateStr != "" {
+					startDateTime, err := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *startDateStr, time.Local)
+					if err != nil {
+						return db
+					}
+
+					query = query.Where(gorm.Expr(`leave_day_requests.created_at >= ?`, startDateTime))
+				}
+				if endDateStr != nil && *endDateStr != "" {
+					endDateTime, err := time.ParseInLocation(constants.DDMMYYY_HHMM_DateFormat, *endDateStr, time.Local)
+					if err != nil {
+						return db
+					}
+
+					query = query.Where(gorm.Expr(`leave_day_requests.created_at <= ?`, endDateTime))
+				}
+				return query
+			}
+
+			return db
 		}
 	}
 }

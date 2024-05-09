@@ -17,6 +17,17 @@ type LeaveDayRequest {
   lockVersion: Int!
 }
 
+type RequestReport {
+  userId: ID
+  user: User
+  approvedTime: Float
+  pendingTime: Float
+  rejectedTime: Float
+  userName: String
+  fullName: String
+  avatarKey: String
+}
+
 type LeaveDayRequestCollection {
   collection: [LeaveDayRequest!]
   metadata: Metadata!
@@ -40,4 +51,10 @@ input LeaveDayRequestInput {
   mentions: [String]
   reason: String
   lockVersion: Int
+}
+
+input RequestReportInput {
+  requestTypeIn: [String]
+  createdAtBetween: [String]
+  userIdEq: Int
 }
