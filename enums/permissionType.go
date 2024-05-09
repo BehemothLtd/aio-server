@@ -21,6 +21,7 @@ projects
 project_issues
 project_issue_statuses
 project_assignees
+project_sprints
 leave_day_requests
 clients
 issue_statuses

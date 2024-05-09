@@ -84,6 +84,8 @@ const (
 	PermissionTargetTypeProjectIssueStatuses PermissionTargetType = "project_issue_statuses"
 	// PermissionTargetTypeProjectAssignees is a PermissionTargetType of type project_assignees.
 	PermissionTargetTypeProjectAssignees PermissionTargetType = "project_assignees"
+	// PermissionTargetTypeProjectSprints is a PermissionTargetType of type project_sprints.
+	PermissionTargetTypeProjectSprints PermissionTargetType = "project_sprints"
 	// PermissionTargetTypeLeaveDayRequests is a PermissionTargetType of type leave_day_requests.
 	PermissionTargetTypeLeaveDayRequests PermissionTargetType = "leave_day_requests"
 	// PermissionTargetTypeClients is a PermissionTargetType of type clients.
@@ -122,6 +124,7 @@ var _PermissionTargetTypeValue = map[string]PermissionTargetType{
 	"project_issues":         PermissionTargetTypeProjectIssues,
 	"project_issue_statuses": PermissionTargetTypeProjectIssueStatuses,
 	"project_assignees":      PermissionTargetTypeProjectAssignees,
+	"project_sprints":        PermissionTargetTypeProjectSprints,
 	"leave_day_requests":     PermissionTargetTypeLeaveDayRequests,
 	"clients":                PermissionTargetTypeClients,
 	"issue_statuses":         PermissionTargetTypeIssueStatuses,
