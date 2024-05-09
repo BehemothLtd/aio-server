@@ -80,29 +80,7 @@ func (r *Resolver) LeaveDayRequestSliceToTypes(requests []*models.LeaveDayReques
 func (r *Resolver) RequestReportSlideToTypes(reports []*models.RequestReport) *[]*globalTypes.RequestReportType {
 	resolvers := make([]*globalTypes.RequestReportType, len(reports))
 
-	// Get all reports's user_id
-	// var userIds []int32
-	// for _, report := range reports {
-	// 	userIds = append(userIds, report.UserId)
-	// }
-
-	// Get users data
-	// var users []*models.User
-	// r.Db.Model(&models.User{}).
-	// 	Preload("Avatar", "name = 'avatar'").
-	// 	Preload("Avatar.AttachmentBlob").
-	// 	Where(gorm.Expr(`users.id IN (?)`, userIds)).Find(&users)
-
 	for i, rp := range reports {
-		// Mapping user to report
-		// for _, user := range users {
-		// 	if user.Id == rp.UserId {
-		// 		rp.User = *user
-
-		// 		break
-		// 	}
-		// }
-
 		resolvers[i] = &globalTypes.RequestReportType{RequestReport: rp}
 	}
 
