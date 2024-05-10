@@ -8,7 +8,9 @@ import (
 	"aio-server/pkg/logger"
 	"aio-server/tasks"
 	"os"
+	"regexp"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -43,6 +45,30 @@ func main() {
 
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
+
+	// message := models.Message{Id: 1}
+	// db.Table("messages").Find(&message)
+
+	input := "This is a <@{213412341}> test string <@{sdfasfsfas}> with <@{xasdfas54433445yz}> placeholders."
+
+	// Regular expression pattern to match "<@{%s}>"
+	pattern := `<@{([a-zA-Z0-9]+)}>`
+
+	// Compile the regular expression pattern
+	re := regexp.MustCompile(pattern)
+
+	// Find all matches in the input string
+	matches := re.FindAllStringSubmatch(input, -1)
+
+	var result []string
+	if len(matches) > 0 {
+		matches = matches[1:]
+		for _, match := range matches {
+			result = append(result, match[1])
+		}
+	}
+
+	spew.Dump(result)
 
 	r.Run()
 }

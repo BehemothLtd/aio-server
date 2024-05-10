@@ -309,7 +309,7 @@ func (form *UserUpdateForm) validateState() *UserUpdateForm {
 		if userStateEnum, err := enums.ParseUserState(*form.State); err != nil {
 			userState.AddError("is invalid")
 		} else {
-			if userStateEnum == enums.UserStateInactive && !form.User.Inactiveable() {
+			if userStateEnum == enums.UserStateInactive {
 				userState.AddError("State is invalid")
 			} else {
 				form.UpdatedAttrs[key] = userStateEnum
