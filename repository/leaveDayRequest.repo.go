@@ -180,7 +180,7 @@ func (ldr *LeaveDayRequestRepository) Create(request *models.LeaveDayRequest) er
 
 func (ldr *LeaveDayRequestRepository) Update(request *models.LeaveDayRequest) error {
 	originalRequest := models.LeaveDayRequest{Id: request.Id}
-	ldr.db.Model(&originalRequest).First(&originalRequest)
+	ldr.db.Model(&originalRequest).Unscoped().Association("User").Unscoped()
 
 	return ldr.db.Model(&originalRequest).Save(&request).Error
 }
