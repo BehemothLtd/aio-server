@@ -16,6 +16,10 @@ type DeviceType struct {
 	Device *models.Device
 }
 
+type DeviceUpdatedType struct {
+	Device *DeviceType
+}
+
 func (dt *DeviceType) ID(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(dt.Device.Id)
 }

@@ -123,6 +123,7 @@ type Mutation {
 
   DeviceCreate(input: DeviceInput!): DeviceModification!
   DeviceDestroy(id: ID!): String
+  DeviceUpdate(id: ID!, input: DeviceInput!) DeviceType
 }
 
 scalar Time
