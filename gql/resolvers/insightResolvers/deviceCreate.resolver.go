@@ -10,7 +10,7 @@ import (
 	"context"
 )
 
-func (r *Resolver) DeviceCreate(ctx context.Context, args insightInputs.DeviceCreateInput) (*insightTypes.DeviceCreatedType, error) {
+func (r *Resolver) DeviceCreate(ctx context.Context, args insightInputs.DeviceCreateInput) (*insightTypes.DeviceModifiedType, error) {
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeDevices.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (r *Resolver) DeviceCreate(ctx context.Context, args insightInputs.DeviceCr
 	if err := service.Execute(); err != nil {
 		return nil, err
 	} else {
-		return &insightTypes.DeviceCreatedType{
+		return &insightTypes.DeviceModifiedType{
 			Device: &globalTypes.DeviceType{
 				Device: &device,
 			},

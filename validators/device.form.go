@@ -12,19 +12,19 @@ import (
 	"strings"
 )
 
-type DeviceCreateForm struct {
+type DeviceForm struct {
 	Form
 	insightInputs.DeviceCreateFormInput
 	Device *models.Device
 	Repo   *repository.DeviceRepository
 }
 
-func NewDeviceCreateFormValidator(
+func NewDeviceFormValidator(
 	input *insightInputs.DeviceCreateFormInput,
 	repo *repository.DeviceRepository,
 	device *models.Device,
-) DeviceCreateForm {
-	form := DeviceCreateForm{
+) DeviceForm {
+	form := DeviceForm{
 		Form:                  Form{},
 		DeviceCreateFormInput: *input,
 		Device:                device,
@@ -36,7 +36,7 @@ func NewDeviceCreateFormValidator(
 	return form
 }
 
-func (form *DeviceCreateForm) assignAttributes() {
+func (form *DeviceForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
@@ -83,7 +83,7 @@ func (form *DeviceCreateForm) assignAttributes() {
 	)
 }
 
-func (form *DeviceCreateForm) validateName() *DeviceCreateForm {
+func (form *DeviceForm) validateName() *DeviceForm {
 	nameField := form.FindAttrByCode("name")
 
 	nameField.ValidateRequired()
@@ -95,7 +95,7 @@ func (form *DeviceCreateForm) validateName() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validateCode() *DeviceCreateForm {
+func (form *DeviceForm) validateCode() *DeviceForm {
 	codeField := form.FindAttrByCode("code")
 
 	codeField.ValidateRequired()
@@ -104,7 +104,9 @@ func (form *DeviceCreateForm) validateCode() *DeviceCreateForm {
 		device := models.Device{Code: *form.Code}
 
 		if err := form.Repo.Find(&device); err == nil {
-			codeField.AddError("is already exists. Please use another code")
+			if form.Device.Id == 0 || device.Id != form.Device.Id {
+				codeField.AddError("is already exists. Please use another code")
+			}
 		}
 
 		if codeField.IsClean() {
@@ -115,7 +117,7 @@ func (form *DeviceCreateForm) validateCode() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validateDescription() *DeviceCreateForm {
+func (form *DeviceForm) validateDescription() *DeviceForm {
 	descField := form.FindAttrByCode("description")
 
 	descField.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
@@ -127,7 +129,7 @@ func (form *DeviceCreateForm) validateDescription() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validateSeller() *DeviceCreateForm {
+func (form *DeviceForm) validateSeller() *DeviceForm {
 	sellerField := form.FindAttrByCode("seller")
 
 	sellerField.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
@@ -139,7 +141,7 @@ func (form *DeviceCreateForm) validateSeller() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validateState() *DeviceCreateForm {
+func (form *DeviceForm) validateState() *DeviceForm {
 	stateField := form.FindAttrByCode("state")
 	userIdField := form.FindAttrByCode("userId")
 
@@ -168,7 +170,7 @@ func (form *DeviceCreateForm) validateState() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validateUserId() *DeviceCreateForm {
+func (form *DeviceForm) validateUserId() *DeviceForm {
 	userIdField := form.FindAttrByCode("userId")
 
 	if form.UserId != nil {
@@ -186,7 +188,7 @@ func (form *DeviceCreateForm) validateUserId() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validateDeviceTypeId() *DeviceCreateForm {
+func (form *DeviceForm) validateDeviceTypeId() *DeviceForm {
 	deviceTypeIdField := form.FindAttrByCode("deviceTypeId")
 
 	deviceTypeIdField.ValidateRequired()
@@ -204,7 +206,7 @@ func (form *DeviceCreateForm) validateDeviceTypeId() *DeviceCreateForm {
 	return form
 }
 
-func (form *DeviceCreateForm) validate() error {
+func (form *DeviceForm) validate() error {
 	form.validateName().
 		validateCode().
 		validateState().
@@ -221,14 +223,14 @@ func (form *DeviceCreateForm) validate() error {
 	return nil
 }
 
-func (form *DeviceCreateForm) Save() error {
+func (form *DeviceForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
 
-	if err := form.Repo.Create(form.Device); err != nil {
-		return err
+	if form.Device.Id == 0 {
+		return form.Repo.Create(form.Device)
 	}
 
-	return nil
+	return form.Repo.Update(form.Device)
 }

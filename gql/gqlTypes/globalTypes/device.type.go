@@ -16,6 +16,10 @@ type DeviceType struct {
 	Device *models.Device
 }
 
+type DeviceUpdatedType struct {
+	Device *DeviceType
+}
+
 func (dt *DeviceType) ID(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(dt.Device.Id)
 }
@@ -57,7 +61,7 @@ func (dt *DeviceType) Seller(context.Context) *string {
 }
 
 func (dt *DeviceType) BuyAt(context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&dt.Device.BuyAt)
+	return helpers.GqlTimePointer(dt.Device.BuyAt)
 }
 
 func (dt *DeviceType) CreatedAt(context.Context) *graphql.Time {

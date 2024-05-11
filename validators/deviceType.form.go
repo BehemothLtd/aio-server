@@ -69,6 +69,14 @@ func (form *DeviceTypeForm) validateName() *DeviceTypeForm {
 	nameField.ValidateRequired()
 
 	if nameField.IsClean() {
+		deviceType := models.DeviceType{Name: *form.Name}
+
+		if err := form.Repo.Find(&deviceType); err == nil {
+			if form.DeviceType.Id == 0 || deviceType.Id != form.DeviceType.Id {
+				nameField.AddError("is already exists. Please use another name")
+			}
+		}
+
 		form.DeviceType.Name = *form.Name
 	}
 

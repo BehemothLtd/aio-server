@@ -18,7 +18,7 @@ type DeviceCreateService struct {
 }
 
 func (dcs *DeviceCreateService) Execute() error {
-	form := validators.NewDeviceCreateFormValidator(
+	form := validators.NewDeviceFormValidator(
 		&dcs.Args.Input,
 		repository.NewDeviceRepository(dcs.Ctx, dcs.Db),
 		dcs.Device,

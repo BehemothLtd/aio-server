@@ -102,3 +102,10 @@ func (r *DeviceRepository) Create(device *models.Device) error {
 func (r *DeviceRepository) Delete(device *models.Device) error {
 	return r.db.Table("devices").Delete(&device).Error
 }
+
+func (r *DeviceRepository) Update(device *models.Device) error {
+	originalDevice := models.Device{Id: device.Id}
+	r.db.Model(&originalDevice).First(&originalDevice)
+
+	return r.db.Model(&originalDevice).Save(&device).Error
+}
