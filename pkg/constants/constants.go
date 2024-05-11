@@ -26,6 +26,7 @@ const (
 	YYYYMMDD_DateFormat       = "2006-01-02" // "Month-Date-Year"
 	HUMAN_YYYYMMDD_DateFormat = "%y-%m-%d"
 
+	DateTimeFormat           = "2006-01-02 15:04:05.000"
 	DateTimeZoneFormat       = "2006-01-02 15:04:05 -0700"
 	HUMAN_DateTimeZoneFormat = "%d-%m-%y %H:%M -%Z"
 
