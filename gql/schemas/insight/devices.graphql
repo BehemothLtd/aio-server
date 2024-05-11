@@ -34,7 +34,3 @@ input DeviceInput {
 type DeviceModification {
   device: Device
 }
-
-type DeviceType {
-  device: Device
-}

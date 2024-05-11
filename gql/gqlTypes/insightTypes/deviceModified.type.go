@@ -2,6 +2,6 @@ package insightTypes
 
 import "aio-server/gql/gqlTypes/globalTypes"
 
-type DeviceCreatedType struct {
+type DeviceModifiedType struct {
 	Device *globalTypes.DeviceType
 }

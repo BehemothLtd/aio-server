@@ -17,7 +17,7 @@ type Device struct {
 	State                 enums.DeviceStateType
 	DeviceTypeId          int32
 	Seller                string
-	BuyAt                 time.Time `gorm:"default:null"`
+	BuyAt                 *time.Time
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
 	DeviceType            DeviceType
