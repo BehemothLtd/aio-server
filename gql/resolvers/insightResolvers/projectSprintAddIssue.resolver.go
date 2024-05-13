@@ -7,11 +7,11 @@ import (
 	"context"
 )
 
-func (r *Resolver) ProjectSprintRemoveIssue(ctx context.Context, args insightInputs.ProjectSprintIssueModifyInput) (*string, error) {
+func (r *Resolver) ProjectSprintAddIssue(ctx context.Context, args insightInputs.ProjectSprintIssueModifyInput) (*string, error) {
 	if _, err := r.Authorize(ctx, string(enums.PermissionTargetTypeProjectSprints), string(enums.PermissionActionTypeWrite)); err != nil {
 		return nil, err
 	}
-	service := insightServices.ProjectSprintRemoveIssueService{
+	service := insightServices.ProjectSprintAddIssueService{
 		Ctx:  &ctx,
 		Db:   r.Db,
 		Args: args,

@@ -81,6 +81,7 @@ type Mutation {
   ProjectSprintDestroy (id: ID!): String
 
   ProjectSprintRemoveIssue(projectId: ID!, id: ID!, issueId: ID!): String
+  ProjectSprintAddIssue(projectId: ID!, id: ID!, issueId: ID!): String
 
   ProjectCreate(input: ProjectCreateInput!): ProjectModification!
   ProjectUpdate(id: ID!, input: ProjectUpdateInput!): ProjectModification!

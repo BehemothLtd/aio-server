@@ -243,3 +243,10 @@ func (r *IssueRepository) UpdateRemoveSprint(
 ) error {
 	return r.db.Model(issue).Update("project_sprint_id", nil).Error
 }
+
+func (r *IssueRepository) UpdateSprint(
+	issue *models.Issue,
+	sprintId int32,
+) error {
+	return r.db.Model(issue).Update("project_sprint_id", sprintId).Error
+}
