@@ -17,6 +17,7 @@ type LeaveDayRequest struct {
 	ApproverId   *int32 `gorm:"not null;type:bigint;default:null"`
 	User         User   `gorm:"foreignKey:UserId"`
 	Approver     *User  `gorm:"foreignKey:ApproverId"`
+	Message      *Message
 	From         time.Time
 	To           time.Time
 	TimeOff      float64

@@ -3,6 +3,7 @@ package main
 import (
 	"aio-server/controllers"
 	"aio-server/database"
+	"aio-server/models"
 	"aio-server/pkg/auths"
 	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
@@ -68,7 +69,10 @@ func main() {
 		}
 	}
 
-	spew.Dump(result)
+	request := models.LeaveDayRequest{Id: 50}
+	db.Table("leave_day_requests").Preload("messages").Find(&request).First(&request)
+
+	spew.Dump(request)
 
 	r.Run()
 }

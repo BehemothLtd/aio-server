@@ -43,6 +43,10 @@ func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {
 	}
 }
 
+func (lt *LeaveDayRequestType) Messages(ctx context.Context) *MessageType {
+	return &MessageType{Message: lt.LeaveDayRequest.Message}
+}
+
 func (lt *LeaveDayRequestType) From(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&lt.LeaveDayRequest.From)
 }
