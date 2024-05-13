@@ -237,3 +237,9 @@ func (r *IssueRepository) UserAllWeekIssuesState(
 		Scan(&issueDateBaseState).
 		Error
 }
+
+func (r *IssueRepository) UpdateRemoveSprint(
+	issue *models.Issue,
+) error {
+	return r.db.Model(issue).Update("project_sprint_id", nil).Error
+}

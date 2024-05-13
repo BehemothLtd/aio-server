@@ -52,7 +52,11 @@ func (service *ProjectSprintRemoveIssueService) Execute() error {
 	issue := models.Issue{Id: issueId, ProjectId: projectId, ProjectSprintId: &sprintId}
 	issueRepo := repository.NewIssueRepository(service.Ctx, service.Db)
 	if err := issueRepo.Find(&issue); err != nil {
-		return exceptions.NewBadRequestError("Invalid Sprint")
+		return exceptions.NewBadRequestError("Invalid Issue")
+	}
+
+	if err := issueRepo.UpdateRemoveSprint(&issue); err != nil {
+		return exceptions.NewBadRequestError(err.Error())
 	}
 
 	return nil
