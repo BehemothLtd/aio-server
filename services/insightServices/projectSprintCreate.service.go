@@ -1,8 +1,10 @@
 package insightServices
 
 import (
+	"aio-server/exceptions"
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"aio-server/validators"
 
@@ -17,12 +19,29 @@ type ProjectSprintCreateService struct {
 	ProjectSprint *models.ProjectSprint
 }
 
-func (pscs *ProjectSprintCreateService) Execute() error {
+func (service *ProjectSprintCreateService) Execute() error {
+	if service.Args.ProjectId == "" {
+		return exceptions.NewBadRequestError("Invalid Project")
+	}
+
+	projectId, err := helpers.GqlIdToInt32(service.Args.ProjectId)
+	if err != nil || projectId == 0 {
+		return exceptions.NewBadRequestError("Invalid Id")
+	}
+
+	project := models.Project{Id: projectId}
+	projectRepo := repository.NewProjectRepository(service.Ctx, service.Db)
+	if err := projectRepo.Find(&project); err != nil {
+		return exceptions.NewBadRequestError("Invalid Project")
+	}
+
+	service.ProjectSprint.ProjectId = project.Id
 
 	form := validators.NewProjectSprintFormValidator(
-		&pscs.Args.Input,
-		repository.NewProjectSprintRepository(pscs.Ctx, pscs.Db),
-		pscs.ProjectSprint,
+		&service.Args.Input,
+		repository.NewProjectSprintRepository(service.Ctx, service.Db),
+		service.ProjectSprint,
+		project,
 	)
 
 	if err := form.Save(); err != nil {

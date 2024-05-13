@@ -76,7 +76,7 @@ type Mutation {
   UserToggleActive(id: ID!): UserActiveState
   UserUpdate(id: ID!, input: AdminUserInput!): UserType
 
-  ProjectSprintCreate(input: ProjectSprintFormInput!): ProjectSprintModification!
+  ProjectSprintCreate(projectId: ID!, input: ProjectSprintFormInput!): ProjectSprintModification!
   ProjectSprintUpdate(id: ID!, input: ProjectSprintFormInput!): ProjectSprintModification!
   ProjectSprintDestroy (id: ID!): String
 

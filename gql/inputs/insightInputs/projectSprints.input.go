@@ -7,7 +7,8 @@ type ProjectSprintInput struct {
 }
 
 type ProjectSprintCreateInput struct {
-	Input ProjectSprintFormInput
+	ProjectId graphql.ID
+	Input     ProjectSprintFormInput
 }
 
 type ProjectSprintUpdateInput struct {
@@ -17,6 +18,5 @@ type ProjectSprintUpdateInput struct {
 
 type ProjectSprintFormInput struct {
 	Title     *string
-	ProjectId *int32
 	StartDate *string
 }

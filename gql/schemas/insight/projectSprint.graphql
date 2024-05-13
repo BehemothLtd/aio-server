@@ -17,6 +17,5 @@ type ProjectSprintModification {
 
 input ProjectSprintFormInput {
   title: String
-  projectId: Int
   startDate: String
 }

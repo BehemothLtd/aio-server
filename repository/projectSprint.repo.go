@@ -76,7 +76,7 @@ func (psr *ProjectSprintRepository) FindCollapsedSprints(projectSprint *models.P
 }
 
 func (cr *ProjectSprintRepository) Create(projectSprint *models.ProjectSprint) error {
-	return cr.db.Model(&projectSprint).Create(&projectSprint).First(&projectSprint).Error
+	return cr.db.Model(&projectSprint).Preload("Project").Create(&projectSprint).First(&projectSprint).Error
 }
 
 func (psr *ProjectSprintRepository) Update(projectSprint *models.ProjectSprint, updateProjectSprint models.ProjectSprint) error {

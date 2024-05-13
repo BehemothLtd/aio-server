@@ -5,7 +5,6 @@ import (
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/repository"
-	"aio-server/validators"
 
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
@@ -25,15 +24,15 @@ func (psus *ProjectSprintUpdateService) Execute() error {
 		return exceptions.NewRecordNotFoundError()
 	}
 
-	form := validators.NewProjectSprintFormValidator(
-		&psus.Args.Input,
-		repo,
-		psus.ProjectSprint,
-	)
+	// form := validators.NewProjectSprintFormValidator(
+	// 	&psus.Args.Input,
+	// 	repo,
+	// 	psus.ProjectSprint,
+	// )
 
-	if err := form.Save(); err != nil {
-		return err
-	}
+	// if err := form.Save(); err != nil {
+	// 	return err
+	// }
 
 	return nil
 }

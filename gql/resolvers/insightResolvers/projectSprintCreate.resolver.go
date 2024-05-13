@@ -14,6 +14,7 @@ func (r *Resolver) ProjectSprintCreate(ctx context.Context, args insightInputs.P
 	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjects.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
+
 	projectSprint := models.ProjectSprint{}
 	services := insightServices.ProjectSprintCreateService{
 		Ctx:           &ctx,
