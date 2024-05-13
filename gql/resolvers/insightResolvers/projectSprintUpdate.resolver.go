@@ -8,12 +8,13 @@ import (
 	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
 	"aio-server/pkg/helpers"
+	"aio-server/repository"
 	"aio-server/services/insightServices"
 	"context"
 )
 
 func (r *Resolver) ProjectSprintUpdate(ctx context.Context, args insightInputs.ProjectSprintUpdateInput) (*insightTypes.ProjectSprintType, error) {
-	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjects.String(), enums.PermissionActionTypeWrite.String()); err != nil {
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectSprints.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
 
@@ -28,6 +29,11 @@ func (r *Resolver) ProjectSprintUpdate(ctx context.Context, args insightInputs.P
 	}
 
 	projectSprint := models.ProjectSprint{Id: projectSprintId}
+	repo := repository.NewProjectSprintRepository(&ctx, r.Db)
+
+	if err := repo.Find(&projectSprint); err != nil {
+		return nil, exceptions.NewRecordNotFoundError()
+	}
 
 	service := insightServices.ProjectSprintUpdateService{
 		Ctx:           &ctx,

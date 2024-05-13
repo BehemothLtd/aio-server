@@ -18,6 +18,7 @@ type ProjectSprintUpdateInput struct {
 }
 
 type ProjectSprintFormInput struct {
-	Title     *string
-	StartDate *string
+	Title       *string
+	StartDate   *string
+	LockVersion *int32
 }

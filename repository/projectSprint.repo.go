@@ -4,6 +4,7 @@ import (
 	"aio-server/exceptions"
 	"aio-server/models"
 	"aio-server/pkg/constants"
+	"aio-server/pkg/helpers"
 	"context"
 	"fmt"
 
@@ -79,10 +80,14 @@ func (cr *ProjectSprintRepository) Create(projectSprint *models.ProjectSprint) e
 	return cr.db.Model(&projectSprint).Preload("Project").Create(&projectSprint).First(&projectSprint).Error
 }
 
-func (psr *ProjectSprintRepository) Update(projectSprint *models.ProjectSprint, updateProjectSprint models.ProjectSprint) error {
-	if err := psr.db.Model(&projectSprint).Session(&gorm.Session{FullSaveAssociations: true}).Updates(&updateProjectSprint).Error; err != nil {
+func (psr *ProjectSprintRepository) Update(projectSprint *models.ProjectSprint, updates map[string]interface{}) error {
+	if err := psr.db.Model(&projectSprint).Select(append(helpers.GetKeys(updates), "LockVersion")).Updates(updates).Error; err != nil {
 		return err
 	}
 
-	return psr.db.Model(&projectSprint).First(&projectSprint).Error
+	return psr.db.Model(&models.ProjectSprint{}).
+		Where("id = ?", projectSprint.Id).
+		Preload("Project").
+		First(&projectSprint).
+		Error
 }

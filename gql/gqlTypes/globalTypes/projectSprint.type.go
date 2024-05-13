@@ -59,5 +59,9 @@ func (pst *ProjectSprintType) LockVersion(context.Context) int32 {
 }
 
 func (pst *ProjectSprintType) Active(context.Context) bool {
-	return pst.ProjectSprint.Id == *pst.ProjectSprint.Project.CurrentSprintId
+	if pst.ProjectSprint.Project.CurrentSprintId != nil {
+		return pst.ProjectSprint.Id == *pst.ProjectSprint.Project.CurrentSprintId
+	}
+
+	return false
 }

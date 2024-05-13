@@ -14,16 +14,17 @@ import (
 type ProjectSprintForm struct {
 	Form
 	insightInputs.ProjectSprintFormInput
-	ProjectSprint       *models.ProjectSprint
-	Project             models.Project
-	UpdateProjectSprint models.ProjectSprint
-	Repo                *repository.ProjectSprintRepository
+	ProjectSprint *models.ProjectSprint
+	Project       models.Project
+	updates       map[string]interface{}
+	Repo          *repository.ProjectSprintRepository
 }
 
 func NewProjectSprintFormValidator(
 	input *insightInputs.ProjectSprintFormInput,
 	repo *repository.ProjectSprintRepository,
 	projectSprint *models.ProjectSprint,
+
 	project models.Project,
 ) ProjectSprintForm {
 	form := ProjectSprintForm{
@@ -31,7 +32,7 @@ func NewProjectSprintFormValidator(
 		ProjectSprintFormInput: *input,
 		ProjectSprint:          projectSprint,
 		Project:                project,
-		UpdateProjectSprint:    models.ProjectSprint{},
+		updates:                map[string]interface{}{},
 		Repo:                   repo,
 	}
 
@@ -44,13 +45,13 @@ func (form *ProjectSprintForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "title",
+				Code: "Title",
 			},
 			Value: helpers.GetStringOrDefault(form.Title),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "startDate",
+				Code: "StartDate",
 			},
 			Value: helpers.GetStringOrDefault(form.StartDate),
 		},
@@ -70,7 +71,7 @@ func (form *ProjectSprintForm) Save() error {
 		}
 	} else {
 
-		if err := form.Repo.Update(form.ProjectSprint, form.UpdateProjectSprint); err != nil {
+		if err := form.Repo.Update(form.ProjectSprint, form.updates); err != nil {
 			return exceptions.NewUnprocessableContentError("", exceptions.ResourceModificationError{
 				"base": {err.Error()},
 			})
@@ -92,8 +93,10 @@ func (form *ProjectSprintForm) validate() error {
 }
 
 func (form *ProjectSprintForm) validateTitle() *ProjectSprintForm {
+	code := "Title"
+
 	if form.Title != nil {
-		title := form.FindAttrByCode("title")
+		title := form.FindAttrByCode(code)
 		title.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 		if title.IsClean() {
@@ -109,7 +112,7 @@ func (form *ProjectSprintForm) validateTitle() *ProjectSprintForm {
 				if form.ProjectSprint.Id == 0 {
 					form.ProjectSprint.Title = *form.Title
 				} else {
-					form.UpdateProjectSprint.Title = *form.Title
+					form.updates[code] = *form.Title
 				}
 			}
 		}
@@ -119,7 +122,7 @@ func (form *ProjectSprintForm) validateTitle() *ProjectSprintForm {
 }
 
 func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
-	startDate := form.FindAttrByCode("startDate")
+	startDate := form.FindAttrByCode("StartDate")
 	startDate.ValidateRequired()
 	startDate.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
 
@@ -138,8 +141,8 @@ func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 			startDate.AddError("is duplicate with another sprints")
 		} else {
 			if form.ProjectSprint.Id != 0 {
-				form.UpdateProjectSprint.StartDate = *startDate.Time()
-				form.UpdateProjectSprint.EndDate = &endDate
+				form.updates["StartDate"] = *startDate.Time()
+				form.updates["EndDate"] = &endDate
 			} else {
 				form.ProjectSprint.StartDate = *startDate.Time()
 				form.ProjectSprint.EndDate = &endDate

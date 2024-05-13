@@ -18,4 +18,5 @@ type ProjectSprintModification {
 input ProjectSprintFormInput {
   title: String
   startDate: String
+  lockVersion: Int
 }

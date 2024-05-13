@@ -11,7 +11,7 @@ import (
 )
 
 func (r *Resolver) ProjectSprintCreate(ctx context.Context, args insightInputs.ProjectSprintCreateInput) (*insightTypes.ProjectSprintType, error) {
-	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjects.String(), enums.PermissionActionTypeWrite.String()); err != nil {
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectSprints.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
 
