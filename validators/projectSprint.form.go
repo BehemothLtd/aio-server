@@ -149,7 +149,7 @@ func (form *ProjectSprintForm) validateStartDate() *ProjectSprintForm {
 			}
 
 			if form.ProjectSprint.Title == "" || strings.TrimSpace(form.ProjectSprint.Title) == "" {
-				form.ProjectSprint.Title = fmt.Sprintf("Sprint: %s ~ %s", startDate.Time().Format(constants.DDMMYYYY_DateSplashFormat), endDate.Format(constants.DDMMYYYY_DateSplashFormat))
+				form.ProjectSprint.Title = fmt.Sprintf("Sprint: %s ~ %s", startDate.Time().Format(constants.YYYYMMDD_DateSplashFormat), endDate.Format(constants.YYYYMMDD_DateSplashFormat))
 			}
 		}
 	}

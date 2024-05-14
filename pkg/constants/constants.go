@@ -24,6 +24,7 @@ const (
 	HUMAN_DDMMYYYY_DateFormat = "%d-%m-%y"
 
 	DDMMYYYY_DateSplashFormat = "02/01/2006"
+	YYYYMMDD_DateSplashFormat = "2006/01/02"
 
 	YYYYMMDD_DateFormat       = "2006-01-02" // "Month-Date-Year"
 	HUMAN_YYYYMMDD_DateFormat = "%y-%m-%d"
