@@ -123,8 +123,7 @@ func (r *IssueRepository) userIdIn(userIdIn *[]int32) func(db *gorm.DB) *gorm.DB
 				} else {
 					return db.
 						Joins("LEFT JOIN issue_assignees on issues.id = issue_assignees.issue_id").
-						Where("issue_assignees.user_id IN (?)", userIds).
-						Or("NOT EXISTS (SELECT 1 FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)").
+						Where("issue_assignees.user_id IN (?) OR NOT EXISTS (SELECT 1 FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)", userIds).
 						Group("issues.id")
 				}
 			} else {
