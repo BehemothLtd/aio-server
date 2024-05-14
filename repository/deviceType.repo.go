@@ -58,3 +58,7 @@ func (r *DeviceTypeRepository) Update(deviceType *models.DeviceType) error {
 func (r *DeviceTypeRepository) Destroy(deviceType *models.DeviceType) error {
 	return r.db.Table("device_types").Delete(&deviceType).Error
 }
+
+func (r *DeviceTypeRepository) All(deviceType *[]*models.DeviceType) error {
+	return r.db.Table("device_types").Order("id DESC").Find(&deviceType).Error
+}

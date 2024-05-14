@@ -18,6 +18,7 @@ func availableKeys() []string {
 		"user",
 		"project",
 		"client",
+		"deviceType",
 	}
 }
 
@@ -55,6 +56,10 @@ func (fsos *FetchSelectOptionsService) Execute() error {
 					if err := fsos.handleClientOptions(); err != nil {
 						return nil
 					}
+				case "deviceType":
+					if err := fsos.handleDeviceTypeOptions(); err != nil {
+						return nil
+					}
 				}
 			} else {
 				return fmt.Errorf("invalid key %s", key)
@@ -80,6 +85,24 @@ func (fsos *FetchSelectOptionsService) handleIssueStatusOptions() error {
 				Value: issueStatus.Id,
 			},
 			Color: issueStatus.Color,
+		})
+	}
+
+	return nil
+}
+
+func (fsos *FetchSelectOptionsService) handleDeviceTypeOptions() error {
+	deviceTypes := []*models.DeviceType{}
+	repo := repository.NewDeviceTypeRepository(nil, fsos.Db)
+
+	if err := repo.All(&deviceTypes); err != nil {
+		return err
+	}
+
+	for _, deviceType := range deviceTypes {
+		fsos.Result.DeviceTypeOptions = append(fsos.Result.DeviceTypeOptions, insightTypes.DeviceTypeSelectOption{
+			Label: deviceType.Name,
+			Value: deviceType.Id,
 		})
 	}
 
