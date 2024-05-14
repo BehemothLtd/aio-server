@@ -19,7 +19,7 @@ type ProjectIssuesFrontQueryInput struct {
 	ProjectSprintIdEq *string
 	DeadLineAtGteq    *string
 	DeadLineAtLteq    *string
-	UserIdIn          *[]*int32
+	UserIdIn          *[]int32
 }
 
 type ProjectIssuesQueryInput struct {
@@ -30,7 +30,7 @@ type ProjectIssuesQueryInput struct {
 	ProjectSprintIdEq *string
 	DeadLineAtGteq    *time.Time
 	DeadLineAtLteq    *time.Time
-	UserIdIn          *[]*int32
+	UserIdIn          *[]int32
 }
 
 type ProjectIssuesInput struct {
@@ -79,7 +79,7 @@ func (input *ProjectIssuesInput) ToPaginationDataAndQuery() (ProjectIssuesQueryI
 			}
 		}
 
-		if input.Query.UserIdIn != nil {
+		if input.Query.UserIdIn != nil && len(*input.Query.UserIdIn) > 0 {
 			query.UserIdIn = input.Query.UserIdIn
 		}
 	}

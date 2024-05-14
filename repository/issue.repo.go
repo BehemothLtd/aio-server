@@ -100,21 +100,39 @@ func (r *IssueRepository) projectSprintIdEq(projectSprintIdEq *string) func(db *
 	}
 }
 
-func (r *IssueRepository) userIdIn(userIdIn *[]*int32) func(db *gorm.DB) *gorm.DB {
+func (r *IssueRepository) userIdIn(userIdIn *[]int32) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if userIdIn == nil {
-			return db.Where("NOT EXISTS (SELECT id FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)")
-		} else if len(*userIdIn) > 0 {
-			var userIds []int32
-			for _, id := range *userIdIn {
-				userIds = append(userIds, *id)
-			}
-			return db.
-				Joins("LEFT JOIN issue_assignees on issues.id = issue_assignees.issue_id").
-				Where("issue_assignees.user_id IN (?)", userIds).
-				Group("issues.id")
-		} else {
 			return db
+		} else {
+			var userIds []int32
+			includeUnassigned := false
+
+			for _, id := range *userIdIn {
+				if id == 0 {
+					includeUnassigned = true
+				} else {
+					userIds = append(userIds, id)
+				}
+			}
+
+			if includeUnassigned {
+				if len(userIds) == 0 {
+					return db.Where("NOT EXISTS (SELECT 1 FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)")
+
+				} else {
+					return db.
+						Joins("LEFT JOIN issue_assignees on issues.id = issue_assignees.issue_id").
+						Where("issue_assignees.user_id IN (?)", userIds).
+						Or("NOT EXISTS (SELECT 1 FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)").
+						Group("issues.id")
+				}
+			} else {
+				return db.
+					Joins("LEFT JOIN issue_assignees ON issues.id = issue_assignees.issue_id").
+					Where("issue_assignees.user_id IN (?)", userIds).
+					Group("issues.id")
+			}
 		}
 	}
 }
