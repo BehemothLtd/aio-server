@@ -3,24 +3,11 @@ package insightInputs
 import (
 	"aio-server/gql/inputs/globalInputs"
 	"aio-server/models"
-	"aio-server/pkg/constants"
-	"aio-server/pkg/helpers"
+	"fmt"
 	"strings"
-	"time"
 
 	"github.com/graph-gophers/graphql-go"
 )
-
-type ProjectIssuesFrontQueryInput struct {
-	TitleCont         *string
-	CodeCont          *string
-	IssueTypeEq       *string
-	ProjectIdEq       *int32
-	ProjectSprintIdEq *string
-	DeadLineAtGteq    *string
-	DeadLineAtLteq    *string
-	UserIdIn          *[]*int32
-}
 
 type ProjectIssuesQueryInput struct {
 	TitleCont         *string
@@ -28,15 +15,12 @@ type ProjectIssuesQueryInput struct {
 	IssueTypeEq       *string
 	ProjectIdEq       *int32
 	ProjectSprintIdEq *string
-	DeadLineAtGteq    *time.Time
-	DeadLineAtLteq    *time.Time
-	UserIdIn          *[]*int32
 }
 
 type ProjectIssuesInput struct {
 	Id    graphql.ID
 	Input *globalInputs.PagyInput
-	Query *ProjectIssuesFrontQueryInput
+	Query *ProjectIssuesQueryInput
 }
 
 func (input *ProjectIssuesInput) ToPaginationDataAndQuery() (ProjectIssuesQueryInput, models.PaginationData) {
@@ -61,27 +45,7 @@ func (input *ProjectIssuesInput) ToPaginationDataAndQuery() (ProjectIssuesQueryI
 			query.ProjectSprintIdEq = input.Query.ProjectSprintIdEq
 		}
 
-		if input.Query.DeadLineAtGteq != nil && strings.TrimSpace(*input.Query.DeadLineAtGteq) != "" {
-			if timeValue, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *input.Query.DeadLineAtGteq, time.Local); err != nil {
-				query.DeadLineAtGteq = nil
-			} else {
-				beginOfDay := helpers.BeginningOfDay(&timeValue)
-				query.DeadLineAtGteq = &beginOfDay
-			}
-		}
-
-		if input.Query.DeadLineAtLteq != nil && strings.TrimSpace(*input.Query.DeadLineAtLteq) != "" {
-			if timeValue, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *input.Query.DeadLineAtLteq, time.Local); err != nil {
-				query.DeadLineAtLteq = nil
-			} else {
-				endOfDay := helpers.EndOfDay(&timeValue)
-				query.DeadLineAtLteq = &endOfDay
-			}
-		}
-
-		if input.Query.UserIdIn != nil {
-			query.UserIdIn = input.Query.UserIdIn
-		}
+		fmt.Printf("QUERY %+v", query)
 	}
 
 	return query, paginationData
