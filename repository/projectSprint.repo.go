@@ -57,7 +57,24 @@ func (psr *ProjectSprintRepository) FindCollapsedSprints(projectSprint *models.P
 	startDate := projectSprint.StartDate.Format(constants.YYYYMMDD_DateFormat)
 	endDate := projectSprint.EndDate.Format(constants.YYYYMMDD_DateFormat)
 
-	query := psr.db.Where("project_id = ? AND ((start_date <= ? AND end_date >= ?) OR (start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?))", projectSprint.ProjectId, startDate, startDate, endDate, endDate, startDate, endDate)
+	query := psr.db.
+		Where(
+			`
+			project_id = ? AND 
+			(
+				(start_date < ? AND end_date > ?) OR 
+				(start_date < ? AND end_date > ?) OR 
+				(start_date > ? AND end_date < ?)
+			)
+			`,
+			projectSprint.ProjectId,
+			startDate,
+			startDate,
+			endDate,
+			endDate,
+			startDate,
+			endDate,
+		)
 
 	if projectSprint.Id == 0 {
 		return query.First(&models.ProjectSprint{}).Error

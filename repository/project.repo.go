@@ -199,3 +199,25 @@ func (r *ProjectRepository) Delete(project *models.Project) error {
 func (r *ProjectRepository) ActiveSprint(project *models.Project, projectSprint models.ProjectSprint) error {
 	return r.db.Model(&project).Update("current_sprint_id", projectSprint.Id).Error
 }
+
+func (r *ProjectRepository) ChangeActiveSprint(project *models.Project, sprint *models.ProjectSprint, moveToSprint models.ProjectSprint) error {
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&project).Update("current_sprint_id", moveToSprint.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Model(&models.Issue{}).
+			Where("project_id = ? AND project_sprint_id = ?", project.Id, sprint.Id).
+			Update("project_sprint_id", moveToSprint.Id).Error; err != nil {
+			return err
+		}
+
+		if err := tx.Delete(&sprint).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	return err
+}
