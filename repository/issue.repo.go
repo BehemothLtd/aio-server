@@ -39,6 +39,9 @@ func (r *IssueRepository) List(
 			r.codeLike(query.CodeCont),
 			r.issueTypeEq(query.IssueTypeEq),
 			r.projectSprintIdEq(query.ProjectSprintIdEq),
+			r.userIdIn(query.UserIdIn),
+			r.deadLineAtGteq(query.DeadLineAtGteq),
+			r.deadLineAtLteq(query.DeadLineAtLteq),
 		), paginateData),
 	).Order("id desc").Find(&issues).Error
 }
@@ -93,6 +96,63 @@ func (r *IssueRepository) projectSprintIdEq(projectSprintIdEq *string) func(db *
 			return db
 		} else {
 			return db.Where(gorm.Expr(`issues.project_sprint_id = ?`, projectSprintIdEq))
+		}
+	}
+}
+
+func (r *IssueRepository) userIdIn(userIdIn *[]int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if userIdIn == nil {
+			return db
+		} else {
+			var userIds []int32
+			includeUnassigned := false
+
+			for _, id := range *userIdIn {
+				if id == 0 {
+					includeUnassigned = true
+				} else {
+					userIds = append(userIds, id)
+				}
+			}
+
+			if includeUnassigned {
+				if len(userIds) == 0 {
+					return db.Where("NOT EXISTS (SELECT 1 FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)")
+
+				} else {
+					return db.
+						Joins("LEFT JOIN issue_assignees on issues.id = issue_assignees.issue_id").
+						Where("issue_assignees.user_id IN (?)", userIds).
+						Or("NOT EXISTS (SELECT 1 FROM issue_assignees WHERE issue_assignees.issue_id = issues.id)").
+						Group("issues.id")
+				}
+			} else {
+				return db.
+					Joins("LEFT JOIN issue_assignees ON issues.id = issue_assignees.issue_id").
+					Where("issue_assignees.user_id IN (?)", userIds).
+					Group("issues.id")
+			}
+		}
+	}
+}
+
+func (r *IssueRepository) deadLineAtGteq(DeadLineAtGteq *time.Time) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if DeadLineAtGteq == nil {
+			return db
+		} else {
+			return db.Where("deadline >= ?", DeadLineAtGteq)
+		}
+	}
+}
+
+func (r *IssueRepository) deadLineAtLteq(DeadLineAtLteq *time.Time) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if DeadLineAtLteq == nil {
+			return db
+		} else {
+			return db.Where("deadline <= ?", DeadLineAtLteq)
 		}
 	}
 }
