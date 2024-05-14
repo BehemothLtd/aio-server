@@ -195,3 +195,7 @@ func (r *ProjectRepository) Delete(project *models.Project) error {
 
 	return err
 }
+
+func (r *ProjectRepository) ActiveSprint(project *models.Project, projectSprint models.ProjectSprint) error {
+	return r.db.Model(&project).Update("current_sprint_id", projectSprint.Id).Error
+}

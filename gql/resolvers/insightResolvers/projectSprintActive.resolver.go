@@ -7,16 +7,15 @@ import (
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
 	"context"
-	"fmt"
 
-	"github.com/graph-gophers/graphql-go"
+	graphql "github.com/graph-gophers/graphql-go"
 )
 
-func (r *Resolver) ProjectSprintDestroy(ctx context.Context, args struct {
+func (r *Resolver) ProjectSprintActive(ctx context.Context, args struct {
 	ProjectId graphql.ID
 	Id        graphql.ID
 }) (*string, error) {
-	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectSprints.String(), enums.PermissionActionTypeDelete.String()); err != nil {
+	if _, err := r.Authorize(ctx, enums.PermissionTargetTypeProjectSprints.String(), enums.PermissionActionTypeWrite.String()); err != nil {
 		return nil, err
 	}
 
@@ -41,16 +40,16 @@ func (r *Resolver) ProjectSprintDestroy(ctx context.Context, args struct {
 		ProjectId: projectId,
 	}
 
-	repo := repository.NewProjectSprintRepository(&ctx, r.Db.Preload("Project").Preload("Issues"))
+	repo := repository.NewProjectSprintRepository(&ctx, r.Db)
 	if err = repo.Find(&projectSprint); err != nil {
 		return nil, exceptions.NewRecordNotFoundError()
 	}
 
-	if err := repo.Destroy(&projectSprint); err != nil {
-		return nil, exceptions.NewBadRequestError(fmt.Sprintf("Can not delete this project sprint %s", err.Error()))
-	} else {
-		message := "Deleted"
-
-		return &message, nil
+	if err := projectRepo.ActiveSprint(&project, projectSprint); err != nil {
+		return nil, exceptions.NewUnprocessableContentError(err.Error(), nil)
 	}
+
+	message := "Active Sprint Successfully"
+
+	return &message, nil
 }
