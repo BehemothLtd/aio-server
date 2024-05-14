@@ -69,10 +69,10 @@ input ProjectIssuesQuery {
   titleCont: String
   codeCont: String
   issueTypeEq: String
-  DeadLineAtGteq: String
-  DeadLineAtLteq: String
+  deadLineAtGteq: String
+  deadLineAtLteq: String
   # this is special case, '' to remove the condition on projectSprintId, null for NULL SQL search, 'id' for exact projectSprintId search
   projectSprintIdEq: String
   # this is special case, [] to remove the condition on UserIdCont, null for NULL SQL search, list of 'id' for exact UserIdCont search
-  UserIdIn: [Int]
+  userIdIn: [Int]
 }
