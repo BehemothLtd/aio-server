@@ -11,6 +11,7 @@ type ProjectSprint struct {
 	Title       string
 	ProjectId   int32
 	Project     Project
+	Issues      []Issue
 	StartDate   time.Time
 	EndDate     *time.Time
 	Archived    bool

@@ -39,22 +39,13 @@ func (r *ProjectSprintRepository) FindAllByProject(projectId int32, sprints *[]m
 }
 
 func (psr *ProjectSprintRepository) Destroy(projectSprint *models.ProjectSprint) error {
-	project := models.Project{Id: projectSprint.ProjectId}
-	repo := NewProjectRepository(psr.ctx, psr.db)
-	err := repo.Find(&project)
-
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return exceptions.NewRecordNotFoundError()
-		}
-		return err
-	}
-
-	if projectSprint.Id == *project.CurrentSprintId {
+	if projectSprint.Id == *projectSprint.Project.CurrentSprintId {
 		return exceptions.NewBadRequestError("Delete project sprint is not allowed")
 	}
 
-	//To do Destroy Issue
+	if len(projectSprint.Issues) > 0 {
+		return exceptions.NewBadRequestError("Cant delete this project sprints before moving all issues of this sprint out")
+	}
 
 	if err := psr.db.Delete(&projectSprint).Error; err != nil {
 		return exceptions.NewBadRequestError(fmt.Sprintf("Cant delete this project sprint %s", err.Error()))
