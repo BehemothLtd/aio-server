@@ -24,10 +24,6 @@ func (mt *MessageType) ParentId(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(mt.Message.ParentId)
 }
 
-func (mt *MessageType) LeaveDayRequestId(ctx context.Context) *graphql.ID {
-	return mt.ParentId(ctx)
-}
-
 func (mt *MessageType) Content(ctx context.Context) *string {
 	return mt.Message.Content
 }
