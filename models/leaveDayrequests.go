@@ -12,12 +12,12 @@ import (
 )
 
 type LeaveDayRequest struct {
-	Id           int32  `gorm:"not null;autoIncrement"`
-	UserId       int32  `gorm:"not null;type:bigint;default:null"`
-	ApproverId   *int32 `gorm:"not null;type:bigint;default:null"`
-	User         User   `gorm:"foreignKey:UserId"`
-	Approver     *User  `gorm:"foreignKey:ApproverId"`
-	Message      *Message
+	Id           int32    `gorm:"not null;autoIncrement"`
+	UserId       int32    `gorm:"not null;type:bigint;default:null"`
+	ApproverId   *int32   `gorm:"not null;type:bigint;default:null"`
+	User         User     `gorm:"foreignKey:UserId"`
+	Approver     *User    `gorm:"foreignKey:ApproverId"`
+	Message      *Message `gorm:"foreignKey:ParentId;references:Id"`
 	From         time.Time
 	To           time.Time
 	TimeOff      float64

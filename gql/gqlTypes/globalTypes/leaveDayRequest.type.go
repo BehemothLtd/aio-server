@@ -43,8 +43,12 @@ func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {
 	}
 }
 
-func (lt *LeaveDayRequestType) Messages(ctx context.Context) *MessageType {
-	return &MessageType{Message: lt.LeaveDayRequest.Message}
+func (lt *LeaveDayRequestType) Message(ctx context.Context) *MessageType {
+	if lt.LeaveDayRequest.Message != nil {
+		return &MessageType{Message: lt.LeaveDayRequest.Message}
+	} else {
+		return nil
+	}
 }
 
 func (lt *LeaveDayRequestType) From(ctx context.Context) *graphql.Time {

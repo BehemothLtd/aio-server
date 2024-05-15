@@ -1,0 +1,9 @@
+type Message {
+  id: ID
+  parentId: ID
+  leaveDayRequestId: ID
+  content: String
+  timestamp: String
+  createdAt: Time
+  updatedAt: Time
+}

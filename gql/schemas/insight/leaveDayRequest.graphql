@@ -4,6 +4,7 @@ type LeaveDayRequest {
   approverId: ID
   User: User
   Approver: User
+  message: Message
   from: Time
   to: Time
   timeOff: Float
