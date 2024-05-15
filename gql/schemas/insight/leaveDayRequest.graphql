@@ -5,6 +5,7 @@ type LeaveDayRequest {
   User: User
   Approver: User
   message: Message
+  mentions: [String]
   from: Time
   to: Time
   timeOff: Float

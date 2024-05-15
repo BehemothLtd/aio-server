@@ -6,6 +6,7 @@ import (
 	"aio-server/pkg/utilities"
 	"fmt"
 	"os"
+	"regexp"
 	"time"
 
 	"gorm.io/gorm"
@@ -85,4 +86,34 @@ func MentionText(mentions *[]*string) string {
 	}
 
 	return mentionText
+}
+
+func (request *LeaveDayRequest) GetMentionedIds() *[]*string {
+	message := request.Message
+
+	if message == nil {
+		return nil
+	}
+
+	messageContent := message.Content
+	pattern := `<@([a-zA-Z0-9]+)>`
+
+	// Compile the regular expression pattern
+	re := regexp.MustCompile(pattern)
+
+	// Find all matches in the input string
+	matches := re.FindAllStringSubmatch(*messageContent, -1)
+
+	var result []*string
+	if len(matches) > 0 {
+		// In current slack message format,
+		// the first valid slack id (index 0) is that of the requester.
+		// So, we ignore it and get mentioned slack ids from the matches's index 1
+		matches = matches[1:]
+		for _, match := range matches {
+			result = append(result, &match[1])
+		}
+	}
+
+	return &result
 }

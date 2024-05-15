@@ -51,6 +51,10 @@ func (lt *LeaveDayRequestType) Message(ctx context.Context) *MessageType {
 	}
 }
 
+func (lt *LeaveDayRequestType) Mentions(ctx context.Context) *[]*string {
+	return lt.LeaveDayRequest.GetMentionedIds()
+}
+
 func (lt *LeaveDayRequestType) From(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&lt.LeaveDayRequest.From)
 }
