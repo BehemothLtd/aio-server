@@ -46,6 +46,38 @@ func (r *IssueRepository) List(
 	).Order("id desc").Find(&issues).Error
 }
 
+func (r *IssueRepository) ListByUser(
+	issues *[]*models.Issue,
+	query insightInputs.IssuesQueryInput,
+	paginateData *models.PaginationData,
+	user models.User,
+) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	return dbTables.Scopes(
+		helpers.Paginate(
+			dbTables.Scopes(
+				r.titleLike(query.TitleCont),
+				r.issueTypeEq(query.IssueTypeEq),
+				r.codeLike(query.CodeCont),
+				r.OfUser(user.Id),
+				r.projectIdEq(query.ProjectIdEq),
+				r.deadLineAtGteq(query.DeadLineAtGteq),
+				r.deadLineAtLteq(query.DeadLineAtLteq),
+			), paginateData,
+		),
+	).Order("id desc").Find(&issues).Error
+}
+
+func (r *IssueRepository) OfUser(userId int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		return db.
+			Joins("LEFT JOIN issue_assignees ON issues.id = issue_assignees.issue_id").
+			Where("issue_assignees.user_id = ?", userId).
+			Group("issues.id")
+	}
+}
+
 func (r *IssueRepository) projectIdEq(projectId *int32) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		if projectId == nil {
