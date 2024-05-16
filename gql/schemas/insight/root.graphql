@@ -11,6 +11,7 @@ type Query {
   SelfProfile(): SelfProfile!
   SelfPermission(): [Permission]!
   SelfProjectExperiences(input: PagyInput, query: ProjectExperiencesQuery): SelfProjectExperiencesCollection!
+  SelfIssues(input: PagyInput, query: IssuesQuery): IssueCollection!
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
