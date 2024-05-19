@@ -20,8 +20,8 @@ func (mt *MessageType) ID(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(mt.Message.Id)
 }
 
-func (mt *MessageType) ParentId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(mt.Message.ParentId)
+func (mt *MessageType) LeaveDayRequestId(ctx context.Context) *graphql.ID {
+	return helpers.GqlIDP(mt.Message.LeaveDayRequestId)
 }
 
 func (mt *MessageType) Content(ctx context.Context) *string {
