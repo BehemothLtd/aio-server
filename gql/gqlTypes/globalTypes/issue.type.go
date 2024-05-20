@@ -2,6 +2,7 @@ package globalTypes
 
 import (
 	"aio-server/models"
+	"aio-server/pkg/constants"
 	"aio-server/pkg/helpers"
 	"context"
 
@@ -74,12 +75,24 @@ func (it *IssueType) UpdatedAt(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&it.Issue.UpdatedAt)
 }
 
-func (it *IssueType) Deadline(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&it.Issue.Deadline)
+func (it *IssueType) Deadline(ctx context.Context) *string {
+	if it.Issue.Deadline != nil {
+		time := it.Issue.Deadline.Format(constants.DDMMYYYY_DateSplashFormat)
+
+		return &time
+	}
+
+	return nil
 }
 
-func (it *IssueType) StartedAt(ctx context.Context) *graphql.Time {
-	return helpers.GqlTimePointer(&it.Issue.StartDate)
+func (it *IssueType) StartDate(ctx context.Context) *string {
+	if it.Issue.StartDate != nil {
+		time := it.Issue.StartDate.Format(constants.DDMMYYYY_DateSplashFormat)
+
+		return &time
+	}
+
+	return nil
 }
 
 func (it *IssueType) Children(ctx context.Context) *[]*IssueType {

@@ -23,8 +23,8 @@ type Issue struct {
 	Position        int32
 	ProjectSprintId *int32
 	ProjectSprint   *ProjectSprint
-	StartDate       time.Time
-	Deadline        time.Time
+	StartDate       *time.Time
+	Deadline        *time.Time
 	Archived        bool
 	CreatorId       int32
 	Creator         User `gorm:"foreignkey:CreatorId"`

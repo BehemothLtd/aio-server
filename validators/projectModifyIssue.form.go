@@ -235,11 +235,11 @@ func (form *ProjectModifyIssueForm) validateDeadlineAndStartDate() *ProjectModif
 	}
 
 	if deadlineField.IsClean() {
-		form.Issue.Deadline = deadline
+		form.Issue.Deadline = &deadline
 	}
 
 	if startDateField.IsClean() {
-		form.Issue.StartDate = startDate
+		form.Issue.StartDate = &startDate
 	}
 
 	return form

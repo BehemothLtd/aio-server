@@ -13,8 +13,8 @@ type Issue {
 
   createdAt: Time
   updatedAt: Time
-  deadline: Time
-  startedAt: Time
+  deadline: String
+  startDate: String
 
   children: [Issue!]
   parentId: ID
