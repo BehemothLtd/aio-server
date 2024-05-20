@@ -7,6 +7,8 @@ type SelectOptionsType struct {
 	ProjectOptions         []CommonSelectOption
 	ClientOptions          []CommonSelectOption
 	DeviceTypeOptions      []DeviceTypeSelectOption
+	IssueTypeOptions       []StringStringSelectOption
+	IssuePriorityOptions   []StringStringSelectOption
 }
 
 type IssueStatusSelectOption struct {
@@ -17,6 +19,11 @@ type IssueStatusSelectOption struct {
 type CommonSelectOption struct {
 	Label string
 	Value int32
+}
+
+type StringStringSelectOption struct {
+	Label string
+	Value string
 }
 
 type DeviceTypeSelectOption struct {

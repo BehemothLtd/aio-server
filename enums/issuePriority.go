@@ -11,3 +11,11 @@ highest = 5
 )
 */
 type IssuePriority string
+
+var SqlIntIssuePriorityValue = map[IssuePriority]int64{
+	IssuePriorityLowest:  1,
+	IssuePriorityLow:     2,
+	IssuePriorityNormal:  3,
+	IssuePriorityHigh:    4,
+	IssuePriorityHighest: 5,
+}

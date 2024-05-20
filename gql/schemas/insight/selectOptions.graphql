@@ -13,12 +13,22 @@ type CommonSelectOption {
   value: Int!
 }
 
+type StringStringSelectOption {
+  label: String!
+  value: String!
+}
+
 type DevelopmentRoleSelectOption {
   label: String!
   value: Int!
 }
 
 type DeviceTypeSelectOption {
+  label: String!
+  value: Int!
+}
+
+type IssueTypeSelectOption {
   label: String!
   value: Int!
 }
@@ -30,4 +40,6 @@ type SelectOptions {
   ProjectOptions: [CommonSelectOption!]!
   ClientOptions: [CommonSelectOption!]!
   DeviceTypeOptions: [DeviceTypeSelectOption!]!
+  IssueTypeOptions: [StringStringSelectOption!]!
+  IssuePriorityOptions: [StringStringSelectOption!]!
 }

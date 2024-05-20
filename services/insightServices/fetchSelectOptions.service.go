@@ -1,6 +1,7 @@
 package insightServices
 
 import (
+	"aio-server/enums"
 	"aio-server/gql/gqlTypes/insightTypes"
 	"aio-server/models"
 	"aio-server/pkg/systems"
@@ -19,6 +20,8 @@ func availableKeys() []string {
 		"project",
 		"client",
 		"deviceType",
+		"issueType",
+		"issuePriority",
 	}
 }
 
@@ -29,38 +32,47 @@ type FetchSelectOptionsService struct {
 	Result insightTypes.SelectOptionsType
 }
 
-func (fsos *FetchSelectOptionsService) Execute() error {
+func (service *FetchSelectOptionsService) Execute() error {
 	var availableKeys = availableKeys()
 
-	if fsos.Keys != nil {
-		for _, key := range *fsos.Keys {
+	if service.Keys != nil {
+		for _, key := range *service.Keys {
 			if slices.Contains(availableKeys, key) {
 				switch key {
 				case "issueStatus":
-					if err := fsos.handleIssueStatusOptions(); err != nil {
+					if err := service.handleIssueStatusOptions(); err != nil {
 						return nil
 					}
 				case "developmentRole":
-					if err := fsos.handleDevelopmentRoleOptions(); err != nil {
+					if err := service.handleDevelopmentRoleOptions(); err != nil {
 						return nil
 					}
 				case "user":
-					if err := fsos.handleUserOptions(); err != nil {
+					if err := service.handleUserOptions(); err != nil {
 						return nil
 					}
 				case "project":
-					if err := fsos.handleProjectOptions(); err != nil {
+					if err := service.handleProjectOptions(); err != nil {
 						return nil
 					}
 				case "client":
-					if err := fsos.handleClientOptions(); err != nil {
+					if err := service.handleClientOptions(); err != nil {
 						return nil
 					}
 				case "deviceType":
-					if err := fsos.handleDeviceTypeOptions(); err != nil {
+					if err := service.handleDeviceTypeOptions(); err != nil {
+						return nil
+					}
+				case "issueType":
+					if err := service.handleIssueTypeOptions(); err != nil {
+						return nil
+					}
+				case "issuePriority":
+					if err := service.handleIssuePriorityOptions(); err != nil {
 						return nil
 					}
 				}
+
 			} else {
 				return fmt.Errorf("invalid key %s", key)
 			}
@@ -70,16 +82,16 @@ func (fsos *FetchSelectOptionsService) Execute() error {
 	return nil
 }
 
-func (fsos *FetchSelectOptionsService) handleIssueStatusOptions() error {
+func (service *FetchSelectOptionsService) handleIssueStatusOptions() error {
 	issueStatuses := []*models.IssueStatus{}
-	repo := repository.NewIssueStatusRepository(nil, fsos.Db)
+	repo := repository.NewIssueStatusRepository(nil, service.Db)
 
 	if err := repo.All(&issueStatuses); err != nil {
 		return err
 	}
 
 	for _, issueStatus := range issueStatuses {
-		fsos.Result.IssueStatusOptions = append(fsos.Result.IssueStatusOptions, insightTypes.IssueStatusSelectOption{
+		service.Result.IssueStatusOptions = append(service.Result.IssueStatusOptions, insightTypes.IssueStatusSelectOption{
 			CommonSelectOption: insightTypes.CommonSelectOption{
 				Label: issueStatus.Title,
 				Value: issueStatus.Id,
@@ -91,16 +103,16 @@ func (fsos *FetchSelectOptionsService) handleIssueStatusOptions() error {
 	return nil
 }
 
-func (fsos *FetchSelectOptionsService) handleDeviceTypeOptions() error {
+func (service *FetchSelectOptionsService) handleDeviceTypeOptions() error {
 	deviceTypes := []*models.DeviceType{}
-	repo := repository.NewDeviceTypeRepository(nil, fsos.Db)
+	repo := repository.NewDeviceTypeRepository(nil, service.Db)
 
 	if err := repo.All(&deviceTypes); err != nil {
 		return err
 	}
 
 	for _, deviceType := range deviceTypes {
-		fsos.Result.DeviceTypeOptions = append(fsos.Result.DeviceTypeOptions, insightTypes.DeviceTypeSelectOption{
+		service.Result.DeviceTypeOptions = append(service.Result.DeviceTypeOptions, insightTypes.DeviceTypeSelectOption{
 			Label: deviceType.Name,
 			Value: deviceType.Id,
 		})
@@ -109,11 +121,11 @@ func (fsos *FetchSelectOptionsService) handleDeviceTypeOptions() error {
 	return nil
 }
 
-func (fsos *FetchSelectOptionsService) handleDevelopmentRoleOptions() error {
+func (service *FetchSelectOptionsService) handleDevelopmentRoleOptions() error {
 	developmentRoles := systems.GetDevelopmentRoles()
 
 	for i := range developmentRoles {
-		fsos.Result.DevelopmentRoleOptions = append(fsos.Result.DevelopmentRoleOptions, insightTypes.CommonSelectOption{
+		service.Result.DevelopmentRoleOptions = append(service.Result.DevelopmentRoleOptions, insightTypes.CommonSelectOption{
 			Label: developmentRoles[i].Title,
 			Value: developmentRoles[i].Id,
 		})
@@ -122,16 +134,16 @@ func (fsos *FetchSelectOptionsService) handleDevelopmentRoleOptions() error {
 	return nil
 }
 
-func (fsos *FetchSelectOptionsService) handleUserOptions() error {
+func (service *FetchSelectOptionsService) handleUserOptions() error {
 	users := []*models.User{}
-	repo := repository.NewUserRepository(nil, fsos.Db)
+	repo := repository.NewUserRepository(nil, service.Db)
 
 	if err := repo.All(&users); err != nil {
 		return err
 	}
 
 	for _, user := range users {
-		fsos.Result.UserOptions = append(fsos.Result.UserOptions, insightTypes.CommonSelectOption{
+		service.Result.UserOptions = append(service.Result.UserOptions, insightTypes.CommonSelectOption{
 			Label: user.Name,
 			Value: user.Id,
 		})
@@ -140,16 +152,16 @@ func (fsos *FetchSelectOptionsService) handleUserOptions() error {
 	return nil
 }
 
-func (fsos *FetchSelectOptionsService) handleProjectOptions() error {
+func (service *FetchSelectOptionsService) handleProjectOptions() error {
 	projects := []*models.Project{}
-	repo := repository.NewProjectRepository(nil, fsos.Db)
+	repo := repository.NewProjectRepository(nil, service.Db)
 
 	if err := repo.All(&projects); err != nil {
 		return err
 	}
 
 	for _, prj := range projects {
-		fsos.Result.ProjectOptions = append(fsos.Result.ProjectOptions, insightTypes.CommonSelectOption{
+		service.Result.ProjectOptions = append(service.Result.ProjectOptions, insightTypes.CommonSelectOption{
 			Label: prj.Name,
 			Value: prj.Id,
 		})
@@ -158,18 +170,40 @@ func (fsos *FetchSelectOptionsService) handleProjectOptions() error {
 	return nil
 }
 
-func (fsos *FetchSelectOptionsService) handleClientOptions() error {
+func (service *FetchSelectOptionsService) handleClientOptions() error {
 	clients := []*models.Client{}
-	repo := repository.NewClientRepository(nil, fsos.Db)
+	repo := repository.NewClientRepository(nil, service.Db)
 
 	if err := repo.All(&clients); err != nil {
 		return err
 	}
 
 	for _, client := range clients {
-		fsos.Result.ClientOptions = append(fsos.Result.ClientOptions, insightTypes.CommonSelectOption{
+		service.Result.ClientOptions = append(service.Result.ClientOptions, insightTypes.CommonSelectOption{
 			Label: client.Name,
 			Value: client.Id,
+		})
+	}
+
+	return nil
+}
+
+func (service *FetchSelectOptionsService) handleIssueTypeOptions() error {
+	for issueType := range enums.SqlIntIssueTypeValue {
+		service.Result.IssueTypeOptions = append(service.Result.IssueTypeOptions, insightTypes.StringStringSelectOption{
+			Label: issueType.String(),
+			Value: issueType.String(),
+		})
+	}
+
+	return nil
+}
+
+func (service *FetchSelectOptionsService) handleIssuePriorityOptions() error {
+	for issuePriority := range enums.SqlIntIssuePriorityValue {
+		service.Result.IssuePriorityOptions = append(service.Result.IssuePriorityOptions, insightTypes.StringStringSelectOption{
+			Label: issuePriority.String(),
+			Value: issuePriority.String(),
 		})
 	}
 
