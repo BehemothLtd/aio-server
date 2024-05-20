@@ -47,9 +47,9 @@ func HandleSlackSendLeaveDayRequestTask(ctx context.Context, t *asynq.Task) erro
 
 	// Create request message
 	requestMessage := models.Message{
-		ParentId:  request.Id,
-		Content:   &message,
-		Timestamp: &slackMessage.Ts,
+		LeaveDayRequestId: request.Id,
+		Content:           &message,
+		Timestamp:         &slackMessage.Ts,
 	}
 	messageRepo := repository.NewMessageRepository(&ctx, db)
 	messageRepo.Create(&requestMessage)

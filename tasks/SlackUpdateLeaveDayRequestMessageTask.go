@@ -34,11 +34,13 @@ func HandleSlackUpdateLeaveDayRequestMessageTask(ctx context.Context, t *asynq.T
 
 	// Get message content
 	request := p.Request
-	db.Model(&request).First(&request)
-	messageText := request.GetMessage(db, nil)
+	db.Model(&request).Preload("Message").First(&request)
 
 	// Get request message
-	message := models.Message{ParentId: request.Id}
+	message := models.Message{LeaveDayRequestId: request.Id}
+	mentiondSlackIds := request.GetMentionedIds()
+	messageText := request.GetMessage(db, mentiondSlackIds)
+
 	messageRepo := repository.NewMessageRepository(&ctx, db)
 	err := messageRepo.Find(&message)
 

@@ -43,6 +43,18 @@ func (lt *LeaveDayRequestType) Approver(ctx context.Context) *UserType {
 	}
 }
 
+func (lt *LeaveDayRequestType) Message(ctx context.Context) *MessageType {
+	if lt.LeaveDayRequest.Message != nil {
+		return &MessageType{Message: lt.LeaveDayRequest.Message}
+	} else {
+		return nil
+	}
+}
+
+func (lt *LeaveDayRequestType) Mentions(ctx context.Context) *[]*string {
+	return lt.LeaveDayRequest.GetMentionedIds()
+}
+
 func (lt *LeaveDayRequestType) From(ctx context.Context) *graphql.Time {
 	return helpers.GqlTimePointer(&lt.LeaveDayRequest.From)
 }

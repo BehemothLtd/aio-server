@@ -5,7 +5,7 @@ SET time_zone = '+07:00';
 
 CREATE TABLE IF NOT EXISTS `messages` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `parent_id` bigint NOT NULL,
+  `leave_day_request_id` bigint NOT NULL,
   `content` text COLLATE utf8mb4_unicode_ci,
   `timestamp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime(6) NOT NULL,
