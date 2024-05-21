@@ -1,7 +1,7 @@
 type IssueAssignee {
   id: ID
-  userId: ID
-  developmentRoleId: ID
+  userId: Int!
+  developmentRoleId: Int!
 }
 
 input IssueAssigneeInput {

@@ -16,10 +16,10 @@ func (iat *IssueAssigneeType) ID(ctx context.Context) *graphql.ID {
 	return helpers.GqlIDP(iat.IssueAssignee.Id)
 }
 
-func (iat *IssueAssigneeType) UserId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(iat.IssueAssignee.UserId)
+func (iat *IssueAssigneeType) UserId(ctx context.Context) int32 {
+	return iat.IssueAssignee.UserId
 }
 
-func (iat *IssueAssigneeType) DevelopmentRoleId(ctx context.Context) *graphql.ID {
-	return helpers.GqlIDP(iat.IssueAssignee.DevelopmentRoleId)
+func (iat *IssueAssigneeType) DevelopmentRoleId(ctx context.Context) int32 {
+	return iat.IssueAssignee.DevelopmentRoleId
 }
