@@ -211,9 +211,8 @@ func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
 
 	if userIdField.IsClean() && developmentIdField.IsClean() {
 		presentedProjectAssignee := models.ProjectAssignee{
-			ProjectId:         form.Project.Id,
-			UserId:            *form.UserId,
-			DevelopmentRoleId: *form.DevelopmentRoleId,
+			ProjectId: form.Project.Id,
+			UserId:    *form.UserId,
 		}
 
 		if err := form.Repo.Find(&presentedProjectAssignee); err == nil {
@@ -221,7 +220,7 @@ func (form *ProjectAssigneeForm) validateDuplicate() *ProjectAssigneeForm {
 				return form
 			}
 
-			userIdField.AddError("already has this role")
+			userIdField.AddError("already presented")
 		}
 	}
 

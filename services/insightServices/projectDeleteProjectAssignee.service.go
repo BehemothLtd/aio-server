@@ -53,12 +53,6 @@ func (pdpas *ProjectDeleteProjectAssigneeService) Execute() error {
 		return exceptions.NewBadRequestError("Invalid Project Assignee")
 	}
 
-	issueAssigneeRepo := repository.NewIssueAssigneeRepository(pdpas.Ctx, pdpas.Db)
-
-	if countIssueAssignee := issueAssigneeRepo.CountByProjectAssignee(*pdpas.ProjectAssignee); countIssueAssignee > 0 {
-		return exceptions.NewBadRequestError("This member cant be delete because some issues in this project might has assignment on him")
-	}
-
 	if err := repo.Delete(pdpas.ProjectAssignee); err != nil {
 		return err
 	}
