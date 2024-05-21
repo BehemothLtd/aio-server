@@ -48,4 +48,5 @@ type SelectOptions {
   IssuePriorityOptions: [StringStringSelectOption!]!
   ProjectIssueOptions: [CommonSelectOption!]!
   ProjectIssueStatusOptions: [CommonSelectOption!]!
+  ProjectAssigneeOptions: [CommonSelectOption!]!
 }

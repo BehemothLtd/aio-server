@@ -11,6 +11,7 @@ type SelectOptionsType struct {
 	IssuePriorityOptions      []StringStringSelectOption
 	ProjectIssueOptions       []CommonSelectOption
 	ProjectIssueStatusOptions []CommonSelectOption
+	ProjectAssigneeOptions    []CommonSelectOption
 }
 
 type IssueStatusSelectOption struct {

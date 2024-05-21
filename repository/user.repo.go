@@ -223,3 +223,10 @@ func (r *UserRepository) UpdateUser(user *models.User, attributes map[string]int
 		Preload("ProjectAssignees.Project").
 		First(&user).Error
 }
+
+func (r *UserRepository) FetchAllByProject(projectId int32, users *[]*models.User) error {
+	return r.db.Model(&models.User{}).
+		Select("DISTINCT users.id, users.name").
+		Joins("LEFT JOIN project_assignees ON users.id = project_assignees.user_id").
+		Where("project_assignees.project_id = ?", projectId).Scan(&users).Error
+}
