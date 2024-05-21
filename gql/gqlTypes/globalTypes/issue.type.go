@@ -42,8 +42,8 @@ func (it *IssueType) Archiveable(ctx context.Context) *bool {
 	return nil
 }
 
-func (it *IssueType) IssueStatusId(ctx context.Context) *graphql.ID {
-	return nil
+func (it *IssueType) IssueStatusId(ctx context.Context) int32 {
+	return it.Issue.IssueStatusId
 }
 
 func (it *IssueType) IssueType(ctx context.Context) *string {

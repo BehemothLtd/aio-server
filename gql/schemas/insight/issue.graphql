@@ -5,7 +5,7 @@ type Issue {
   description: String
   archived: Boolean
   archiveable: Boolean
-  issueStatusId: ID
+  issueStatusId: Int!
   issueType: String
   priority: String
   status: String
