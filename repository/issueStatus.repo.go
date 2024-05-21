@@ -99,3 +99,10 @@ func (r *IssueStatusRepository) FetchIdsOnProject(projectId int32, ids *[]int32)
 		Joins("LEFT JOIN projects ON projects.id = project_issue_statuses.project_id").
 		Where("projects.id = ?", projectId).Scan(&ids).Error
 }
+
+func (r *IssueStatusRepository) FetchAllOnProject(projectId int32, issueStatuses *[]*models.IssueStatus) error {
+	return r.db.Model(&models.IssueStatus{}).
+		Select("issue_statuses.id, issue_statuses.title").
+		Joins("RIGHT JOIN project_issue_statuses ON project_issue_statuses.issue_status_id = issue_statuses.id").
+		Where("project_issue_statuses.project_id = ?", projectId).Scan(&issueStatuses).Error
+}

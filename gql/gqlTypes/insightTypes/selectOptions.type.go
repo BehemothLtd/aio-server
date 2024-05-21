@@ -1,15 +1,16 @@
 package insightTypes
 
 type SelectOptionsType struct {
-	IssueStatusOptions     []IssueStatusSelectOption
-	DevelopmentRoleOptions []CommonSelectOption
-	UserOptions            []CommonSelectOption
-	ProjectOptions         []CommonSelectOption
-	ClientOptions          []CommonSelectOption
-	DeviceTypeOptions      []DeviceTypeSelectOption
-	IssueTypeOptions       []StringStringSelectOption
-	IssuePriorityOptions   []StringStringSelectOption
-	ProjectIssueOptions    []CommonSelectOption
+	IssueStatusOptions        []IssueStatusSelectOption
+	DevelopmentRoleOptions    []CommonSelectOption
+	UserOptions               []CommonSelectOption
+	ProjectOptions            []CommonSelectOption
+	ClientOptions             []CommonSelectOption
+	DeviceTypeOptions         []DeviceTypeSelectOption
+	IssueTypeOptions          []StringStringSelectOption
+	IssuePriorityOptions      []StringStringSelectOption
+	ProjectIssueOptions       []CommonSelectOption
+	ProjectIssueStatusOptions []CommonSelectOption
 }
 
 type IssueStatusSelectOption struct {

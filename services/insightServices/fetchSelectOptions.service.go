@@ -28,6 +28,7 @@ func availableKeys() []string {
 		"issueType",
 		"issuePriority",
 		"projectIssue",
+		"projectIssueStatus",
 	}
 }
 
@@ -80,6 +81,10 @@ func (service *FetchSelectOptionsService) Execute() error {
 					}
 				case "projectIssue":
 					if err := service.handleProjectIssueOptions(); err != nil {
+						return err
+					}
+				case "projectIssueStatus":
+					if err := service.handleProjectIssueStatusOptions(); err != nil {
 						return err
 					}
 				}
@@ -241,6 +246,38 @@ func (service *FetchSelectOptionsService) handleProjectIssueOptions() error {
 
 		for _, issue := range issues {
 			service.Result.ProjectIssueOptions = append(service.Result.ProjectIssueOptions, insightTypes.CommonSelectOption{
+				Label: issue.Title,
+				Value: issue.Id,
+			})
+		}
+
+		return nil
+	}
+
+	return errors.New("projectId is required for projectIssueOptions")
+}
+
+func (service *FetchSelectOptionsService) handleProjectIssueStatusOptions() error {
+	if service.Params != nil && service.Params.ProjectId != nil && *service.Params.ProjectId != "" {
+		projectId, err := helpers.GqlIdToInt32(*service.Params.ProjectId)
+		if err != nil || projectId == 0 {
+			return exceptions.NewBadRequestError("Invalid Id")
+		}
+
+		project := models.Project{Id: projectId}
+		projectRepo := repository.NewProjectRepository(nil, database.Db)
+		if err := projectRepo.Find(&project); err != nil {
+			return exceptions.NewBadRequestError("Invalid projectId Provided")
+		}
+
+		issueStatuses := []*models.IssueStatus{}
+		repo := repository.NewIssueStatusRepository(nil, database.Db)
+		if err := repo.FetchAllOnProject(projectId, &issueStatuses); err != nil {
+			return exceptions.NewBadRequestError(err.Error())
+		}
+
+		for _, issue := range issueStatuses {
+			service.Result.ProjectIssueStatusOptions = append(service.Result.ProjectIssueStatusOptions, insightTypes.CommonSelectOption{
 				Label: issue.Title,
 				Value: issue.Id,
 			})
