@@ -2,6 +2,10 @@ input SelectOptionsInput {
   keys: [String!]
 }
 
+input SelectOptionsParams {
+  projectId: ID
+}
+
 type IssueStatusSelectOption {
   label: String!
   value: Int!
@@ -42,4 +46,5 @@ type SelectOptions {
   DeviceTypeOptions: [DeviceTypeSelectOption!]!
   IssueTypeOptions: [StringStringSelectOption!]!
   IssuePriorityOptions: [StringStringSelectOption!]!
+  ProjectIssueOptions: [CommonSelectOption!]!
 }

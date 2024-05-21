@@ -19,8 +19,9 @@ func (r *Resolver) SelectOptions(ctx context.Context, args insightInputs.SelectO
 	}
 
 	service := insightServices.FetchSelectOptionsService{
-		Db:   database.Db,
-		Keys: args.Input.Keys,
+		Db:     database.Db,
+		Keys:   args.Input.Keys,
+		Params: args.Params,
 	}
 
 	if err := service.Execute(); err != nil {

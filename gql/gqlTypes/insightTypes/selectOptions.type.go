@@ -9,6 +9,7 @@ type SelectOptionsType struct {
 	DeviceTypeOptions      []DeviceTypeSelectOption
 	IssueTypeOptions       []StringStringSelectOption
 	IssuePriorityOptions   []StringStringSelectOption
+	ProjectIssueOptions    []CommonSelectOption
 }
 
 type IssueStatusSelectOption struct {

@@ -17,7 +17,7 @@ type Issue {
   startDate: String
 
   children: [Issue!]
-  parentId: ID
+  parentId: Int
   parent: Issue
 
   projectId: ID

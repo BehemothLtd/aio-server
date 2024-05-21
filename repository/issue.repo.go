@@ -46,6 +46,10 @@ func (r *IssueRepository) List(
 	).Order("id desc").Find(&issues).Error
 }
 
+func (r *IssueRepository) AllByProjectId(issues *[]*models.Issue, projectId int32) error {
+	return r.db.Model(&models.Issue{}).Scopes(r.projectIdEq(&projectId)).Order("id DESC").Find(&issues).Error
+}
+
 func (r *IssueRepository) ListByUser(
 	issues *[]*models.Issue,
 	query insightInputs.IssuesQueryInput,

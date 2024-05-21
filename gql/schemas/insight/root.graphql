@@ -59,7 +59,7 @@ type Query {
   Devices(input: PagyInput, query: DevicesQuery): DeviceCollection
   Device(id: ID!): Device!
 
-  SelectOptions(input: SelectOptionsInput!): SelectOptions
+  SelectOptions(input: SelectOptionsInput!, params: SelectOptionsParams): SelectOptions
 
   ProjectExperience(id: ID!): ProjectExperience!
 }

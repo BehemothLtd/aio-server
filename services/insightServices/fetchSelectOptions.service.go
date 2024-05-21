@@ -1,11 +1,16 @@
 package insightServices
 
 import (
+	"aio-server/database"
 	"aio-server/enums"
+	"aio-server/exceptions"
 	"aio-server/gql/gqlTypes/insightTypes"
+	"aio-server/gql/inputs/insightInputs"
 	"aio-server/models"
+	"aio-server/pkg/helpers"
 	"aio-server/pkg/systems"
 	"aio-server/repository"
+	"errors"
 	"fmt"
 	"slices"
 
@@ -22,12 +27,14 @@ func availableKeys() []string {
 		"deviceType",
 		"issueType",
 		"issuePriority",
+		"projectIssue",
 	}
 }
 
 type FetchSelectOptionsService struct {
-	Db   *gorm.DB
-	Keys *[]string
+	Db     *gorm.DB
+	Keys   *[]string
+	Params *insightInputs.SelectOptionsParamsType
 
 	Result insightTypes.SelectOptionsType
 }
@@ -41,38 +48,41 @@ func (service *FetchSelectOptionsService) Execute() error {
 				switch key {
 				case "issueStatus":
 					if err := service.handleIssueStatusOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "developmentRole":
 					if err := service.handleDevelopmentRoleOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "user":
 					if err := service.handleUserOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "project":
 					if err := service.handleProjectOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "client":
 					if err := service.handleClientOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "deviceType":
 					if err := service.handleDeviceTypeOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "issueType":
 					if err := service.handleIssueTypeOptions(); err != nil {
-						return nil
+						return err
 					}
 				case "issuePriority":
 					if err := service.handleIssuePriorityOptions(); err != nil {
-						return nil
+						return err
+					}
+				case "projectIssue":
+					if err := service.handleProjectIssueOptions(); err != nil {
+						return err
 					}
 				}
-
 			} else {
 				return fmt.Errorf("invalid key %s", key)
 			}
@@ -208,4 +218,36 @@ func (service *FetchSelectOptionsService) handleIssuePriorityOptions() error {
 	}
 
 	return nil
+}
+
+func (service *FetchSelectOptionsService) handleProjectIssueOptions() error {
+	if service.Params != nil && service.Params.ProjectId != nil && *service.Params.ProjectId != "" {
+		projectId, err := helpers.GqlIdToInt32(*service.Params.ProjectId)
+		if err != nil || projectId == 0 {
+			return exceptions.NewBadRequestError("Invalid Id")
+		}
+
+		project := models.Project{Id: projectId}
+		projectRepo := repository.NewProjectRepository(nil, database.Db)
+		if err := projectRepo.Find(&project); err != nil {
+			return exceptions.NewBadRequestError("Invalid projectId Provided")
+		}
+
+		issues := []*models.Issue{}
+		repo := repository.NewIssueRepository(nil, database.Db)
+		if err := repo.AllByProjectId(&issues, projectId); err != nil {
+			return exceptions.NewBadRequestError(err.Error())
+		}
+
+		for _, issue := range issues {
+			service.Result.ProjectIssueOptions = append(service.Result.ProjectIssueOptions, insightTypes.CommonSelectOption{
+				Label: issue.Title,
+				Value: issue.Id,
+			})
+		}
+
+		return nil
+	}
+
+	return errors.New("projectId is required for projectIssueOptions")
 }

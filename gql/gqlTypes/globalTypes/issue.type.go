@@ -107,12 +107,8 @@ func (it *IssueType) Children(ctx context.Context) *[]*IssueType {
 	return &children
 }
 
-func (it *IssueType) ParentId(ctx context.Context) *graphql.ID {
-	if it.Issue.ParentId != nil {
-		return helpers.GqlIDP(*it.Issue.ParentId)
-	}
-
-	return nil
+func (it *IssueType) ParentId(ctx context.Context) *int32 {
+	return it.Issue.ParentId
 }
 
 func (it *IssueType) Parent(ctx context.Context) *IssueType {
