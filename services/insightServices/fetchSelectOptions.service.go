@@ -291,7 +291,7 @@ func (service *FetchSelectOptionsService) handleProjectIssueStatusOptions() erro
 		return nil
 	}
 
-	return errors.New("projectId is required for projectIssueOptions")
+	return errors.New("projectId is required for projectIssueStatusOptions")
 }
 
 func (service *FetchSelectOptionsService) handleProjectAssigneeOptions() error {
@@ -323,5 +323,5 @@ func (service *FetchSelectOptionsService) handleProjectAssigneeOptions() error {
 		return nil
 	}
 
-	return errors.New("projectId is required for projectIssueOptions")
+	return errors.New("projectId is required for projectAssigneeOptions")
 }
