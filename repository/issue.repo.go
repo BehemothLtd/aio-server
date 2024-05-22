@@ -218,28 +218,34 @@ func (r *IssueRepository) Create(issue *models.Issue) error {
 		Create(&issue).First(&issue).Error
 }
 
-func (r *IssueRepository) Update(issue *models.Issue) error {
-	originalIssue := models.Issue{Id: issue.Id}
-	r.db.Model(&originalIssue).First(&originalIssue)
-
-	r.db.Transaction(func(tx *gorm.DB) error {
-		if err := r.db.Model(&originalIssue).Unscoped().Association("IssueAssignees").Unscoped().Clear(); err != nil {
+func (r *IssueRepository) Update(issue *models.Issue, updates map[string]interface{}) error {
+	err := r.db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&models.Issue{Id: issue.Id}).Unscoped().Association("IssueAssignees").Unscoped().Clear(); err != nil {
 			return err
 		}
 
-		if err := r.db.Model(&originalIssue).Association("IssueAssignees").Append(issue.IssueAssignees); err != nil {
+		if err := tx.Model(&models.Issue{Id: issue.Id}).Association("IssueAssignees").Append(issue.IssueAssignees); err != nil {
 			return err
 		}
 
-		return r.db.Model(&originalIssue).
-			Preload("Creator").Preload("Project").
-			Preload("ProjectSprint").
-			Preload("Children").Preload("Parent").
-			Preload("IssueAssignees").
-			Save(&issue).First(&issue).Error
+		if err := tx.Model(&issue).Select(append(helpers.GetKeys(updates), "LockVersion")).Updates(updates).Error; err != nil {
+			return err
+		}
+
+		return nil
 	})
 
-	return nil
+	if err != nil {
+		return err
+	}
+
+	return r.db.Model(&models.Issue{}).
+		Where("id = ?", issue.Id).
+		Preload("Creator").Preload("Project").
+		Preload("ProjectSprint").
+		Preload("Children").Preload("Parent").
+		Preload("IssueAssignees").
+		First(&issue).Error
 }
 
 func (r *IssueRepository) CountByProjectAndIssueStatus(projectId int32, issueStatusId int32, count *int32) error {

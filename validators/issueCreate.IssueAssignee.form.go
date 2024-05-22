@@ -40,13 +40,13 @@ func (form *IssueCreateIssueAssigneeForm) assignAttributes() {
 	form.AddAttributes(
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "userId",
+				Code: "UserId",
 			},
 			Value: helpers.GetInt32OrDefault(form.UserId),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "developmentRoleId",
+				Code: "DevelopmentRoleId",
 			},
 			Value: helpers.GetInt32OrDefault(form.DevelopmentRoleId),
 		},
@@ -67,7 +67,7 @@ func (form *IssueCreateIssueAssigneeForm) Validate() exceptions.ResourceModifica
 }
 
 func (form *IssueCreateIssueAssigneeForm) validateUserId() *IssueCreateIssueAssigneeForm {
-	field := form.FindAttrByCode("userId")
+	field := form.FindAttrByCode("UserId")
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -78,7 +78,7 @@ func (form *IssueCreateIssueAssigneeForm) validateUserId() *IssueCreateIssueAssi
 }
 
 func (form *IssueCreateIssueAssigneeForm) validateDevelopmentRoleId() *IssueCreateIssueAssigneeForm {
-	field := form.FindAttrByCode("developmentRoleId")
+	field := form.FindAttrByCode("DevelopmentRoleId")
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -89,13 +89,13 @@ func (form *IssueCreateIssueAssigneeForm) validateDevelopmentRoleId() *IssueCrea
 }
 
 func (form *IssueCreateIssueAssigneeForm) validateValidUserAndDevelopmentRole() *IssueCreateIssueAssigneeForm {
-	userIdField := form.FindAttrByCode("userId")
-	developmentRoleIdField := form.FindAttrByCode("developmentRoleId")
+	userIdField := form.FindAttrByCode("UserId")
+	developmentRoleIdField := form.FindAttrByCode("DevelopmentRoleId")
 
 	if userIdField.IsClean() && developmentRoleIdField.IsClean() {
 		projectAssigneeRepo := repository.NewProjectAssigneeRepository(nil, database.Db)
 
-		projectAssignee := models.ProjectAssignee{ProjectId: form.Project.Id, UserId: *form.UserId, DevelopmentRoleId: *form.DevelopmentRoleId}
+		projectAssignee := models.ProjectAssignee{ProjectId: form.Project.Id, UserId: *form.UserId}
 
 		if err := projectAssigneeRepo.Find(&projectAssignee); err != nil {
 			userIdField.AddError("is invalid")

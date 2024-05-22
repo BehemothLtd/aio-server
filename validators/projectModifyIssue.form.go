@@ -19,6 +19,7 @@ type ProjectModifyIssueForm struct {
 	Project models.Project
 	Repo    repository.IssueRepository
 	Issue   *models.Issue
+	updates map[string]interface{}
 }
 
 func NewProjectModifyIssueFormValidator(
@@ -33,6 +34,7 @@ func NewProjectModifyIssueFormValidator(
 		Project:                     project,
 		Repo:                        repo,
 		Issue:                       issue,
+		updates:                     map[string]interface{}{},
 	}
 	form.assignAttributes()
 
@@ -49,7 +51,7 @@ func (form *ProjectModifyIssueForm) Save() error {
 			return err
 		}
 	} else {
-		if err := form.Repo.Update(form.Issue); err != nil {
+		if err := form.Repo.Update(form.Issue, form.updates); err != nil {
 			return err
 		}
 	}
@@ -61,67 +63,67 @@ func (form *ProjectModifyIssueForm) assignAttributes() {
 	form.AddAttributes(
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "title",
+				Code: "Title",
 			},
 			Value: helpers.GetStringOrDefault(form.Title),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "description",
+				Code: "Description",
 			},
 			Value: helpers.GetStringOrDefault(form.Description),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "issueType",
+				Code: "IssueType",
 			},
 			Value: helpers.GetStringOrDefault(form.IssueType),
 		},
 		&StringAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "priority",
+				Code: "Priority",
 			},
 			Value: helpers.GetStringOrDefault(form.Priority),
 		},
 		&BoolAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "archived",
+				Code: "Archived",
 			},
 			Value: helpers.GetBoolOrDefault(form.Archived),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "deadline",
+				Code: "Deadline",
 			},
 			Value: helpers.GetStringOrDefault(form.Deadline),
 		},
 		&TimeAttribute{
 			FieldAttribute: FieldAttribute{
-				Code: "startDate",
+				Code: "StartDate",
 			},
 			Value: helpers.GetStringOrDefault(form.StartDate),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "issueStatusId",
+				Code: "IssueStatusId",
 			},
 			Value: helpers.GetInt32OrDefault(form.IssueStatusId),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "parentId",
+				Code: "ParentId",
 			},
 			Value: helpers.GetInt32OrDefault(form.ParentId),
 		},
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
-				Code: "projectSprintId",
+				Code: "ProjectSprintId",
 			},
 			Value: helpers.GetInt32OrDefault(form.ProjectSprintId),
 		},
 		&SliceAttribute[insightInputs.IssueAssigneeInputForIssueCreate]{
 			FieldAttribute: FieldAttribute{
-				Code: "issueAssignees",
+				Code: "IssueAssignees",
 			},
 			Value: form.IssueAssignees,
 		},
@@ -149,7 +151,8 @@ func (form *ProjectModifyIssueForm) validate() error {
 }
 
 func (form *ProjectModifyIssueForm) validateTitle() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("title")
+	code := "Title"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	field.ValidateMin(interface{}(int64(5)))
@@ -157,26 +160,30 @@ func (form *ProjectModifyIssueForm) validateTitle() *ProjectModifyIssueForm {
 
 	if field.IsClean() {
 		form.Issue.Title = *form.Title
+		form.updates[code] = *form.Title
 	}
 
 	return form
 }
 
 func (form *ProjectModifyIssueForm) validateDescription() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("description")
+	code := "Description"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	field.ValidateMax(interface{}(int64(constants.MaxLongTextLength)))
 
 	if field.IsClean() {
 		form.Issue.Description = *form.Description
+		form.updates[code] = *form.Description
 	}
 
 	return form
 }
 
 func (form *ProjectModifyIssueForm) validateIssueType() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("issueType")
+	code := "IssueType"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -184,6 +191,7 @@ func (form *ProjectModifyIssueForm) validateIssueType() *ProjectModifyIssueForm 
 			field.AddError("is invalid type")
 		} else {
 			form.Issue.IssueType = issueTypeEnum
+			form.updates[code] = issueTypeEnum
 		}
 	}
 
@@ -191,7 +199,8 @@ func (form *ProjectModifyIssueForm) validateIssueType() *ProjectModifyIssueForm 
 }
 
 func (form *ProjectModifyIssueForm) validatePriority() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("priority")
+	code := "Priority"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -199,6 +208,7 @@ func (form *ProjectModifyIssueForm) validatePriority() *ProjectModifyIssueForm {
 			field.AddError("is invalid priority")
 		} else {
 			form.Issue.Priority = priority
+			form.updates[code] = priority
 		}
 	}
 
@@ -206,21 +216,23 @@ func (form *ProjectModifyIssueForm) validatePriority() *ProjectModifyIssueForm {
 }
 
 func (form *ProjectModifyIssueForm) validateArchived() *ProjectModifyIssueForm {
-	form.Issue.Archived = helpers.GetBoolOrDefault(form.Archived)
+	archived := helpers.GetBoolOrDefault(form.Archived)
+	form.Issue.Archived = archived
+	form.updates["Archived"] = archived
 
 	return form
 }
 
 func (form *ProjectModifyIssueForm) validateDeadlineAndStartDate() *ProjectModifyIssueForm {
-	deadlineField := form.FindAttrByCode("deadline")
-	startDateField := form.FindAttrByCode("startDate")
+	deadlineField := form.FindAttrByCode("Deadline")
+	startDateField := form.FindAttrByCode("StartDate")
 
 	if form.Deadline != nil && strings.TrimSpace(*form.Deadline) != "" {
-		deadlineField.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
+		deadlineField.ValidateFormat(constants.DDMMYYYY_DateSplashFormat, constants.HUMAN_DDMMYYYY_DateSplashFormat)
 	}
 
 	if form.StartDate != nil && strings.TrimSpace(*form.StartDate) != "" {
-		startDateField.ValidateFormat(constants.DDMMYYYY_DateFormat, constants.HUMAN_DDMMYYYY_DateFormat)
+		startDateField.ValidateFormat(constants.DDMMYYYY_DateSplashFormat, constants.HUMAN_DDMMYYYY_DateSplashFormat)
 	}
 
 	if !deadlineField.IsClean() || !startDateField.IsClean() {
@@ -236,17 +248,20 @@ func (form *ProjectModifyIssueForm) validateDeadlineAndStartDate() *ProjectModif
 
 	if deadlineField.IsClean() {
 		form.Issue.Deadline = &deadline
+		form.updates["Deadline"] = &deadline
 	}
 
 	if startDateField.IsClean() {
 		form.Issue.StartDate = &startDate
+		form.updates["StartDate"] = &startDate
 	}
 
 	return form
 }
 
 func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("issueStatusId")
+	code := "IssueStatusId"
+	field := form.FindAttrByCode(code)
 	field.ValidateRequired()
 
 	if field.IsClean() {
@@ -254,6 +269,7 @@ func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueF
 			field.AddError("is invalid status")
 		} else {
 			form.Issue.IssueStatusId = *form.IssueStatusId
+			form.updates[code] = *form.IssueStatusId
 		}
 	}
 
@@ -261,13 +277,15 @@ func (form *ProjectModifyIssueForm) validateIssueStatusId() *ProjectModifyIssueF
 }
 
 func (form *ProjectModifyIssueForm) validateParentId() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("parentId")
+	code := "ParentId"
+	field := form.FindAttrByCode(code)
 
 	if form.ParentId != nil {
 		if foundIdx := slices.IndexFunc(form.Project.Issues, func(issue models.Issue) bool { return issue.Id == *form.ParentId }); foundIdx == -1 {
 			field.AddError("is invalid Parent Issue")
 		} else {
 			form.Issue.ParentId = form.ParentId
+			form.updates[code] = form.ParentId
 		}
 	}
 
@@ -275,13 +293,15 @@ func (form *ProjectModifyIssueForm) validateParentId() *ProjectModifyIssueForm {
 }
 
 func (form *ProjectModifyIssueForm) validateProjectSprintId() *ProjectModifyIssueForm {
-	field := form.FindAttrByCode("projectSprintId")
+	code := "ProjectSprintId"
+	field := form.FindAttrByCode(code)
 
 	if form.ProjectSprintId != nil {
 		if foundIdx := slices.IndexFunc(form.Project.ProjectSprints, func(ps models.ProjectSprint) bool { return ps.Id == *form.ProjectSprintId }); foundIdx == -1 {
 			field.AddError("is invalid Sprint")
 		} else {
 			form.Issue.ProjectSprintId = form.ProjectSprintId
+			form.updates[code] = form.ProjectSprintId
 		}
 	}
 
@@ -289,7 +309,7 @@ func (form *ProjectModifyIssueForm) validateProjectSprintId() *ProjectModifyIssu
 }
 
 func (form *ProjectModifyIssueForm) validateIssueAssignees() *ProjectModifyIssueForm {
-	fieldKey := "issueAssignees"
+	fieldKey := "IssueAssignees"
 	field := form.FindAttrByCode(fieldKey)
 
 	if form.IssueAssignees != nil && len(*form.IssueAssignees) > 0 {
@@ -305,7 +325,7 @@ func (form *ProjectModifyIssueForm) validateIssueAssignees() *ProjectModifyIssue
 			if foundIdx := slices.IndexFunc(issueAssignees, func(ia *models.IssueAssignee) bool {
 				return (userId != nil && ia.UserId == *userId && developementRoleId != nil && ia.DevelopmentRoleId == *developementRoleId)
 			}); foundIdx != -1 {
-				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "userId"), []interface{}{"is already has same role"})
+				form.AddErrorDirectlyToField(form.NestedFieldKey(fieldKey, i, "UserId"), []interface{}{"is already has same role"})
 			} else {
 				issueAssignee := models.IssueAssignee{}
 
