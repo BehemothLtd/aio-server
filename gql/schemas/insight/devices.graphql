@@ -4,6 +4,7 @@ type Device {
   name: String
   seller: String
   state: String
+  userId: ID
   deviceTypeId: ID
   deviceType: DeviceType
   description: String

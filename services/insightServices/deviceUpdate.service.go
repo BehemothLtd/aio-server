@@ -19,7 +19,7 @@ type DeviceUpdateService struct {
 }
 
 func (dus *DeviceUpdateService) Execute() error {
-	repo := repository.NewDeviceRepository(dus.Ctx, dus.Db)
+	repo := repository.NewDeviceRepository(dus.Ctx, dus.Db.Preload("DeviceType"))
 
 	if err := repo.Find(dus.Device); err != nil {
 		return exceptions.NewRecordNotFoundError()
