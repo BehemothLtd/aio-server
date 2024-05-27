@@ -6,6 +6,7 @@ import (
 	"aio-server/pkg/auths"
 	"aio-server/pkg/initializers"
 	"aio-server/pkg/logger"
+	"aio-server/pkg/mailer"
 	"aio-server/tasks"
 	"os"
 
@@ -22,6 +23,9 @@ func main() {
 
 	// Load Asynq
 	tasks.InitAsyncClient()
+
+	// Load Mailer
+	mailer.InitDialer()
 
 	// DEMO:
 	// task, err := tasks.NewDemoTask(int32(1))
@@ -43,6 +47,13 @@ func main() {
 
 	r.POST("/uploads", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), controllers.UploadHandler)
 	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
+
+	// DEMO SEND EMAIL:
+	// registerEmailData := mailer.RegisterEmailData{
+	// 	Name:    "bachdx",
+	// 	Message: "Test message in HTML template",
+	// }
+	// go registerEmailData.Send("bachdx@behemoth.vn", "Test send Email in Go with HTML template")
 
 	r.Run()
 }
