@@ -49,11 +49,11 @@ func main() {
 	r.POST("/slack/interactives", auths.GinContextToContextMiddleware(), controllers.Interactives)
 
 	// DEMO SEND EMAIL:
-	// registerEmailData := mailer.RegisterEmailData{
-	// 	Name:    "bachdx",
-	// 	Message: "Test message in HTML template",
-	// }
-	// go registerEmailData.Send("bachdx@behemoth.vn", "Test send Email in Go with HTML template")
+	registerEmailData := mailer.RegisterEmailData{
+		Name:    "bachdx",
+		Message: "Test message in HTML template",
+	}
+	go registerEmailData.Send("bachdx@behemoth.vn", "Test send Email in Go with HTML template")
 
 	r.Run()
 }
