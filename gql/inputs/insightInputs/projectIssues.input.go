@@ -17,6 +17,9 @@ type ProjectIssuesFrontQueryInput struct {
 	IssueTypeEq       *string
 	ProjectIdEq       *int32
 	ProjectSprintIdEq *string
+	ArchivedEq        *bool
+	PriorityEq        *string
+	IssueStatusIdEq   *int32
 	DeadLineAtGteq    *string
 	DeadLineAtLteq    *string
 	UserIdIn          *[]int32
@@ -26,6 +29,9 @@ type ProjectIssuesQueryInput struct {
 	TitleCont         *string
 	CodeCont          *string
 	IssueTypeEq       *string
+	ArchivedEq        *bool
+	PriorityEq        *string
+	IssueStatusIdEq   *int32
 	ProjectIdEq       *int32
 	ProjectSprintIdEq *string
 	DeadLineAtGteq    *time.Time
@@ -55,6 +61,18 @@ func (input *ProjectIssuesInput) ToPaginationDataAndQuery() (ProjectIssuesQueryI
 
 		if input.Query.IssueTypeEq != nil && strings.TrimSpace(*input.Query.IssueTypeEq) != "" {
 			query.IssueTypeEq = input.Query.IssueTypeEq
+		}
+
+		if input.Query.PriorityEq != nil && strings.TrimSpace(*input.Query.PriorityEq) != "" {
+			query.PriorityEq = input.Query.PriorityEq
+		}
+
+		if input.Query.ArchivedEq != nil {
+			query.ArchivedEq = input.Query.ArchivedEq
+		}
+
+		if input.Query.IssueStatusIdEq != nil {
+			query.IssueStatusIdEq = input.Query.IssueStatusIdEq
 		}
 
 		if input.Query.ProjectSprintIdEq != nil {
