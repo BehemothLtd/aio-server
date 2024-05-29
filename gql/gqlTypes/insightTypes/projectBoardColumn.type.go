@@ -20,7 +20,12 @@ type ProjectBoardType struct {
 func (board ProjectBoardType) Columns() []ProjectBoardColumnType {
 	result := []ProjectBoardColumnType{}
 
-	board.IssueRepo = *repository.NewIssueRepository(nil, database.Db)
+	board.IssueRepo = *repository.NewIssueRepository(
+		nil,
+		database.Db.Preload("IssueAssignees.User.Avatar.AttachmentBlob").
+			Preload("Creator.Avatar.AttachmentBlob").
+			Preload("IssueStatus"),
+	)
 	board.IssueRepo.FetchProjectBoardIssues(board.Project, &board.Issues)
 
 	for _, projectIssueStatus := range board.Project.ProjectIssueStatuses {
