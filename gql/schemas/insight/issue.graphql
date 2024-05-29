@@ -68,6 +68,9 @@ type IssueCollection {
 input ProjectIssuesQuery {
   titleCont: String
   codeCont: String
+  archivedEq: Boolean
+  priorityEq: String
+  issueStatusIdEq: String
   issueTypeEq: String
   deadLineAtGteq: String
   deadLineAtLteq: String

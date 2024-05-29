@@ -37,6 +37,9 @@ func (r *IssueRepository) List(
 			r.projectIdEq(query.ProjectIdEq),
 			r.titleLike(query.TitleCont),
 			r.codeLike(query.CodeCont),
+			r.archivedEq(query.ArchivedEq),
+			r.priorityEq(query.PriorityEq),
+			r.issueStatusIdEq(query.IssueStatusIdEq),
 			r.issueTypeEq(query.IssueTypeEq),
 			r.projectSprintIdEq(query.ProjectSprintIdEq),
 			r.userIdIn(query.UserIdIn),
@@ -88,6 +91,38 @@ func (r *IssueRepository) projectIdEq(projectId *int32) func(db *gorm.DB) *gorm.
 			return db
 		} else {
 			return db.Where("project_id = ?", projectId)
+		}
+	}
+}
+
+func (r *IssueRepository) issueStatusIdEq(issueStatusId *int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if issueStatusId == nil {
+			return db
+		} else {
+			return db.Where("issues.issue_status_id = ?", issueStatusId)
+		}
+	}
+}
+
+func (r *IssueRepository) archivedEq(archived *bool) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if archived == nil {
+			return db
+		} else {
+			return db.Where("issues.archived = ?", archived)
+		}
+	}
+}
+
+func (r *IssueRepository) priorityEq(priorityEq *string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if priorityEq == nil {
+			return db
+		} else {
+			priorityEqInInt, _ := enums.ParseIssuePriority(*priorityEq)
+
+			return db.Where("issues.priority = ?", priorityEqInInt)
 		}
 	}
 }
