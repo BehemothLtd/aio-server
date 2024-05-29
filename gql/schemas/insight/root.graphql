@@ -29,6 +29,8 @@ type Query {
   ProjectSprint(id: ID!): ProjectSprint!
   ProjectSprints(id: ID!): [ProjectSprint]
 
+  ProjectBoard(id: ID!): [ProjectBoardColumn!]!
+
   IssueStatus(id: ID!): IssueStatus
   IssueStatuses(input: PagyInput, query: IssueStatusesQuery): IssueStatusCollection!
   IssueStatusesAll(): [IssueStatus]

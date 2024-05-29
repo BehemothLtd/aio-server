@@ -344,3 +344,18 @@ func (r *IssueRepository) UpdateSprint(
 ) error {
 	return r.db.Model(issue).Update("project_sprint_id", sprintId).Error
 }
+
+func (r IssueRepository) FetchProjectBoardIssues(project models.Project, issues *[]*models.Issue) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	// TODO: add page query
+	scopes := dbTables.Scopes(
+		r.projectIdEq(&project.Id),
+	)
+
+	if project.ProjectType == enums.ProjectTypeScrum {
+		scopes = scopes.Where("project_sprint_id = ?", project.CurrentSprintId)
+	}
+
+	return scopes.Order("position asc").Find(&issues).Error
+}

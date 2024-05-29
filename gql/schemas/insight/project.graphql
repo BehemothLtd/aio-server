@@ -76,3 +76,9 @@ type ProjectImagesUploaded {
   logo: Attachment
   files: [Attachment]
 }
+
+type ProjectBoardColumn {
+  id: ID
+  issueStatus: IssueStatus
+  issues: [Issue]
+}
