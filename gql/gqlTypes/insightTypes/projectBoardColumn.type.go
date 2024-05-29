@@ -6,7 +6,6 @@ import (
 	"aio-server/models"
 	"aio-server/pkg/helpers"
 	"aio-server/repository"
-	"fmt"
 
 	"github.com/graph-gophers/graphql-go"
 )
@@ -20,9 +19,6 @@ type ProjectBoardType struct {
 
 func (board ProjectBoardType) Columns() []ProjectBoardColumnType {
 	result := []ProjectBoardColumnType{}
-
-	fmt.Printf("BOARD ISSUE STATUSES : %+v", board.Project.ProjectIssueStatuses)
-	fmt.Printf("Project: %+v", board.Project)
 
 	board.IssueRepo = *repository.NewIssueRepository(nil, database.Db)
 	board.IssueRepo.FetchProjectBoardIssues(board.Project, &board.Issues)
