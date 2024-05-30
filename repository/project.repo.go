@@ -163,6 +163,14 @@ func (r *ProjectRepository) All(projects *[]*models.Project) error {
 	return r.db.Table("projects").Order("id ASC").Find(&projects).Error
 }
 
+func (r *ProjectRepository) ListProjectByUser(projects *[]*models.Project, userId int32) error {
+	return r.db.Table("projects").Joins("LEFT JOIN project_assignees ON projects.id = project_assignees.project_id").
+		Where("project_assignees.user_id = ?", userId).
+		Group("projects.id").
+		Find(&projects).
+		Error
+}
+
 func (r *ProjectRepository) Delete(project *models.Project) error {
 	err := r.db.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Delete(&models.ProjectAssignee{}, "project_id = ?", project.Id).Error; err != nil {

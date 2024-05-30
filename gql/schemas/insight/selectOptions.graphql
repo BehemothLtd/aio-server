@@ -49,4 +49,6 @@ type SelectOptions {
   ProjectIssueOptions: [CommonSelectOption!]!
   ProjectIssueStatusOptions: [CommonSelectOption!]!
   ProjectAssigneeOptions: [CommonSelectOption!]!
+  CurrentUserProjectOptions: [CommonSelectOption!]!
+  CurrentUserProjectIssueOptions: [CommonSelectOption!]!
 }

@@ -76,6 +76,19 @@ func (r *IssueRepository) ListByUser(
 	).Order("id desc").Find(&issues).Error
 }
 
+func (r *IssueRepository) ListByUserAndProject(
+	issues *[]*models.Issue,
+	userId int32,
+	projectId int32,
+) error {
+	dbTables := r.db.Model(&models.Issue{})
+
+	return dbTables.Scopes(
+		r.OfUser(userId),
+		r.projectIdEq(&projectId),
+	).Order("id desc").Find(&issues).Error
+}
+
 func (r *IssueRepository) OfUser(userId int32) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.
