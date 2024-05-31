@@ -12,7 +12,7 @@ import (
 )
 
 func (r *Resolver) SelectOptions(ctx context.Context, args insightInputs.SelectOptionsInput) (*insightTypes.SelectOptionsType, error) {
-	_, err := auths.AuthUserFromCtx(ctx)
+	user, err := auths.AuthUserFromCtx(ctx)
 
 	if err != nil {
 		return nil, exceptions.NewUnauthorizedError("")
@@ -22,6 +22,7 @@ func (r *Resolver) SelectOptions(ctx context.Context, args insightInputs.SelectO
 		Db:     database.Db,
 		Keys:   args.Input.Keys,
 		Params: args.Params,
+		User:   &user,
 	}
 
 	if err := service.Execute(); err != nil {

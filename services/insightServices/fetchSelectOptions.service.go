@@ -30,6 +30,8 @@ func availableKeys() []string {
 		"projectIssue",
 		"projectIssueStatus",
 		"projectAssignee",
+		"currentUserProjects",
+		"currentUserProjectIssues",
 	}
 }
 
@@ -37,6 +39,7 @@ type FetchSelectOptionsService struct {
 	Db     *gorm.DB
 	Keys   *[]string
 	Params *insightInputs.SelectOptionsParamsType
+	User   *models.User
 
 	Result insightTypes.SelectOptionsType
 }
@@ -92,7 +95,16 @@ func (service *FetchSelectOptionsService) Execute() error {
 					if err := service.handleProjectAssigneeOptions(); err != nil {
 						return err
 					}
+				case "currentUserProjects":
+					if err := service.handleCurrentUserProjectOptions(); err != nil {
+						return err
+					}
+				case "currentUserProjectIssues":
+					if err := service.handleCurrentUserProjectIssueOptions(); err != nil {
+						return err
+					}
 				}
+
 			} else {
 				return fmt.Errorf("invalid key %s", key)
 			}
@@ -324,4 +336,54 @@ func (service *FetchSelectOptionsService) handleProjectAssigneeOptions() error {
 	}
 
 	return errors.New("projectId is required for projectAssigneeOptions")
+}
+
+func (service *FetchSelectOptionsService) handleCurrentUserProjectOptions() error {
+	projects := []*models.Project{}
+	repo := repository.NewProjectRepository(nil, service.Db)
+
+	if err := repo.ListProjectByUser(&projects, service.User.Id); err != nil {
+		return err
+	}
+
+	for _, prj := range projects {
+		service.Result.CurrentUserProjectOptions = append(service.Result.CurrentUserProjectOptions, insightTypes.CommonSelectOption{
+			Label: prj.Name,
+			Value: prj.Id,
+		})
+	}
+
+	return nil
+}
+
+func (service *FetchSelectOptionsService) handleCurrentUserProjectIssueOptions() error {
+	if service.Params != nil && service.Params.ProjectId != nil && *service.Params.ProjectId != "" {
+		projectId, err := helpers.GqlIdToInt32(*service.Params.ProjectId)
+		if err != nil || projectId == 0 {
+			return exceptions.NewBadRequestError("Invalid Id")
+		}
+
+		project := models.Project{Id: projectId}
+		projectRepo := repository.NewProjectRepository(nil, database.Db)
+		if err := projectRepo.Find(&project); err != nil {
+			return exceptions.NewBadRequestError("Invalid projectId Provided")
+		}
+
+		issues := []*models.Issue{}
+		repo := repository.NewIssueRepository(nil, database.Db)
+		if err := repo.ListByUserAndProject(&issues, service.User.Id, projectId); err != nil {
+			return exceptions.NewBadRequestError(err.Error())
+		}
+
+		for _, issue := range issues {
+			service.Result.CurrentUserProjectIssueOptions = append(service.Result.CurrentUserProjectIssueOptions, insightTypes.CommonSelectOption{
+				Label: issue.Title,
+				Value: issue.Id,
+			})
+		}
+
+		return nil
+	}
+
+	return errors.New("projectId is required for currentUserProjectIssuesOptions")
 }
