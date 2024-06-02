@@ -16,21 +16,42 @@ func (r *Resolver) DeviceCreate(ctx context.Context, args insightInputs.DeviceCr
 	}
 
 	device := models.Device{}
+	deviceUsingHistory := models.DevicesUsingHistory{}
 
-	service := insightServices.DeviceCreateService{
+	deviceCreateService := insightServices.DeviceCreateService{
 		Ctx:    &ctx,
 		Db:     r.Db,
 		Args:   args,
 		Device: &device,
 	}
 
-	if err := service.Execute(); err != nil {
-		return nil, err
-	} else {
-		return &insightTypes.DeviceModifiedType{
-			Device: &globalTypes.DeviceType{
-				Device: &device,
-			},
-		}, nil
+	deviceUsingHistoryInput := insightInputs.DeviceUsingHistoryCreateInput{
+		Input: insightInputs.DeviceUsingHistoryCreateFormInput{
+			UserId:   args.Input.UserId,
+			DeviceId: &device.Id,
+			State:    args.Input.State,
+		},
 	}
+
+	deviceUsingHistoryCreateService := insightServices.DeviceUsingHistoryCreateService{
+		Ctx:                &ctx,
+		Db:                 r.Db,
+		Args:               deviceUsingHistoryInput,
+		DeviceUsingHistory: &deviceUsingHistory,
+	}
+
+	if err := deviceCreateService.Execute(); err != nil {
+		return nil, err
+	}
+
+	if err := deviceUsingHistoryCreateService.Execute(); err != nil {
+		return nil, err
+	}
+
+	return &insightTypes.DeviceModifiedType{
+		Device: &globalTypes.DeviceType{
+			Device: &device,
+		},
+	}, nil
+
 }
