@@ -41,6 +41,5 @@ func HandleSlackSyncUserIdTask(ctx context.Context, t *asynq.Task) error {
 		if err == gorm.ErrRecordNotFound {
 			return exceptions.NewRecordNotFoundError()
 		}
-
 	}
 }
