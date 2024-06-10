@@ -16,7 +16,7 @@ func (r *Resolver) DeviceCreate(ctx context.Context, args insightInputs.DeviceCr
 	}
 
 	device := models.Device{}
-	deviceUsingHistory := models.DevicesUsingHistory{}
+	devicesUsingHistory := models.DevicesUsingHistory{}
 
 	deviceCreateService := insightServices.DeviceCreateService{
 		Ctx:    &ctx,
@@ -25,26 +25,26 @@ func (r *Resolver) DeviceCreate(ctx context.Context, args insightInputs.DeviceCr
 		Device: &device,
 	}
 
-	deviceUsingHistoryInput := insightInputs.DeviceUsingHistoryCreateInput{
-		Input: insightInputs.DeviceUsingHistoryCreateFormInput{
+	devicesUsingHistoryInput := insightInputs.DevicesUsingHistoryCreateInput{
+		Input: insightInputs.DevicesUsingHistoryCreateFormInput{
 			UserId:   args.Input.UserId,
 			DeviceId: &device.Id,
 			State:    args.Input.State,
 		},
 	}
 
-	deviceUsingHistoryCreateService := insightServices.DeviceUsingHistoryCreateService{
-		Ctx:                &ctx,
-		Db:                 r.Db,
-		Args:               deviceUsingHistoryInput,
-		DeviceUsingHistory: &deviceUsingHistory,
+	devicesUsingHistoryCreateService := insightServices.DevicesUsingHistoryCreateService{
+		Ctx:                 &ctx,
+		Db:                  r.Db,
+		Args:                devicesUsingHistoryInput,
+		DevicesUsingHistory: &devicesUsingHistory,
 	}
 
 	if err := deviceCreateService.Execute(); err != nil {
 		return nil, err
 	}
 
-	if err := deviceUsingHistoryCreateService.Execute(); err != nil {
+	if err := devicesUsingHistoryCreateService.Execute(); err != nil {
 		return nil, err
 	}
 

@@ -1,0 +1,7 @@
+type DevicesUsingHistory {
+  id: ID
+  state: String
+  user: User
+  createdAt: Time
+  updatedAt: Time
+}

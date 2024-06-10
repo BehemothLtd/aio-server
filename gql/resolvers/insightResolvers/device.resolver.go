@@ -29,7 +29,7 @@ func (r *Resolver) Device(ctx context.Context, args insightInputs.DeviceInput) (
 	}
 
 	device := models.Device{Id: deviceId}
-	repo := repository.NewDeviceRepository(&ctx, r.Db.Preload("DeviceType"))
+	repo := repository.NewDeviceRepository(&ctx, r.Db.Preload("DeviceType").Preload("DevicesUsingHistories"))
 	err = repo.Find(&device)
 
 	if err != nil {

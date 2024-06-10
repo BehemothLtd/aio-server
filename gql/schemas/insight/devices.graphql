@@ -7,6 +7,7 @@ type Device {
   userId: ID
   deviceTypeId: ID
   deviceType: DeviceType
+  devicesUsingHistories: [DevicesUsingHistory!]
   description: String
 }
 
