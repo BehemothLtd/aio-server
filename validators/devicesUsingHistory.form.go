@@ -10,23 +10,23 @@ import (
 	"aio-server/repository"
 )
 
-type DeviceUsingHistoryForm struct {
+type DevicesUsingHistoryForm struct {
 	Form
-	insightInputs.DeviceUsingHistoryCreateFormInput
-	DeviceUsingHistory *models.DevicesUsingHistory
-	Repo               *repository.DeviceUsingHistoryRepository
+	insightInputs.DevicesUsingHistoryCreateFormInput
+	DevicesUsingHistory *models.DevicesUsingHistory
+	Repo                *repository.DevicesUsingHistoryRepository
 }
 
-func NewDeviceUsingHistoryFormValidator(
-	input *insightInputs.DeviceUsingHistoryCreateFormInput,
-	repo *repository.DeviceUsingHistoryRepository,
-	deviceUsingHistory *models.DevicesUsingHistory,
-) DeviceUsingHistoryForm {
-	form := DeviceUsingHistoryForm{
-		Form:                              Form{},
-		DeviceUsingHistoryCreateFormInput: *input,
-		DeviceUsingHistory:                deviceUsingHistory,
-		Repo:                              repo,
+func NewDevicesUsingHistoryFormValidator(
+	input *insightInputs.DevicesUsingHistoryCreateFormInput,
+	repo *repository.DevicesUsingHistoryRepository,
+	devicesUsingHistory *models.DevicesUsingHistory,
+) DevicesUsingHistoryForm {
+	form := DevicesUsingHistoryForm{
+		Form:                               Form{},
+		DevicesUsingHistoryCreateFormInput: *input,
+		DevicesUsingHistory:                devicesUsingHistory,
+		Repo:                               repo,
 	}
 
 	form.assignAttributes()
@@ -34,7 +34,7 @@ func NewDeviceUsingHistoryFormValidator(
 	return form
 }
 
-func (form *DeviceUsingHistoryForm) assignAttributes() {
+func (form *DevicesUsingHistoryForm) assignAttributes() {
 	form.AddAttributes(
 		&IntAttribute[int32]{
 			FieldAttribute: FieldAttribute{
@@ -57,7 +57,7 @@ func (form *DeviceUsingHistoryForm) assignAttributes() {
 	)
 }
 
-func (form *DeviceUsingHistoryForm) validateUserId() *DeviceUsingHistoryForm {
+func (form *DevicesUsingHistoryForm) validateUserId() *DevicesUsingHistoryForm {
 	userIdField := form.FindAttrByCode("userId")
 
 	if form.UserId != nil {
@@ -68,14 +68,14 @@ func (form *DeviceUsingHistoryForm) validateUserId() *DeviceUsingHistoryForm {
 				userIdField.AddError("is invalid")
 			}
 
-			form.DeviceUsingHistory.UserId = *form.UserId
+			form.DevicesUsingHistory.UserId = *form.UserId
 		}
 	}
 
 	return form
 }
 
-func (form *DeviceUsingHistoryForm) validateDeviceId() *DeviceUsingHistoryForm {
+func (form *DevicesUsingHistoryForm) validateDeviceId() *DevicesUsingHistoryForm {
 	deviceIdField := form.FindAttrByCode("deviceId")
 
 	if form.DeviceId != nil {
@@ -86,14 +86,14 @@ func (form *DeviceUsingHistoryForm) validateDeviceId() *DeviceUsingHistoryForm {
 				deviceIdField.AddError("is invalid")
 			}
 
-			form.DeviceUsingHistory.DeviceId = *form.DeviceId
+			form.DevicesUsingHistory.DeviceId = *form.DeviceId
 		}
 	}
 
 	return form
 }
 
-func (form *DeviceUsingHistoryForm) validateState() *DeviceUsingHistoryForm {
+func (form *DevicesUsingHistoryForm) validateState() *DevicesUsingHistoryForm {
 	stateField := form.FindAttrByCode("state")
 	userIdField := form.FindAttrByCode("userId")
 
@@ -107,7 +107,7 @@ func (form *DeviceUsingHistoryForm) validateState() *DeviceUsingHistoryForm {
 		}
 
 		if stateField.IsClean() {
-			form.DeviceUsingHistory.State = fieldValue
+			form.DevicesUsingHistory.State = fieldValue
 		}
 
 		if fieldValue == enums.DeviceStateTypeFixing || fieldValue == enums.DeviceStateTypeUsing {
@@ -122,7 +122,7 @@ func (form *DeviceUsingHistoryForm) validateState() *DeviceUsingHistoryForm {
 	return form
 }
 
-func (form *DeviceUsingHistoryForm) validate() error {
+func (form *DevicesUsingHistoryForm) validate() error {
 	form.validateUserId().
 		validateDeviceId().
 		validateState().
@@ -135,10 +135,10 @@ func (form *DeviceUsingHistoryForm) validate() error {
 	return nil
 }
 
-func (form *DeviceUsingHistoryForm) Save() error {
+func (form *DevicesUsingHistoryForm) Save() error {
 	if err := form.validate(); err != nil {
 		return err
 	}
 
-	return form.Repo.Create(form.DeviceUsingHistory)
+	return form.Repo.Create(form.DevicesUsingHistory)
 }
