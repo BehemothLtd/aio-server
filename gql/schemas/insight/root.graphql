@@ -99,6 +99,8 @@ type Mutation {
 
   ProjectUploadImages(id: ID!, input: ProjectUploadImagesInput!): ProjectWithImages!
 
+  ProjectBoardChangePosition(id: ID!, projectId: ID!, newIndex: ID!, newStatusId: ID!): String
+
   ProjectCreateProjectAssignee(id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
   ProjectUpdateProjectAssignee(projectId: ID!, id: ID!, input: ProjectModifyProjectAssigneeInput!): ProjectAssigneeModification!
   ProjectDeleteProjectAssignee(projectId: ID!, id: ID!): String
