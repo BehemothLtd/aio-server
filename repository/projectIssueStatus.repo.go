@@ -63,23 +63,3 @@ func (r *ProjectIssueStatusRepository) Create(projectId int32, issueStatusId int
 
 	return r.db.Create(&models.ProjectIssueStatus{ProjectId: projectId, IssueStatusId: issueStatusId, Position: maxPosition + 1}).Error
 }
-
-type PositionStats struct {
-	MinPosition int
-	MaxPosition int
-	Count       int
-}
-
-func (r *ProjectIssueStatusRepository) FindMinAndMaxPositionWithCount(projectIssueStatus *models.ProjectIssueStatus) (*PositionStats, error) {
-	var stats PositionStats
-
-	if err := r.db.Model(&models.ProjectIssueStatus{}).
-		Select("MIN(position) AS min_position, MAX(position) AS max_position, COUNT(*) AS count").
-		Where(projectIssueStatus).
-		Scan(&stats).
-		Error; err != nil {
-		return nil, err
-	}
-
-	return &stats, nil
-}

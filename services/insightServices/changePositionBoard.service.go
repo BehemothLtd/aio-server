@@ -6,7 +6,6 @@ import (
 	"aio-server/models"
 	"aio-server/repository"
 
-	"github.com/davecgh/go-spew/spew"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
 )
@@ -42,12 +41,54 @@ func (cpbs *ChangePositionBoardService) Execute() error {
 	if issueStatus == nil {
 		return exceptions.NewBadRequestError("Invalid New Issue Status")
 	}
-	projectIssueStatusRepo := repository.NewProjectIssueStatusRepository(cpbs.Ctx, cpbs.Db)
-	positionStats, err := projectIssueStatusRepo.FindMinAndMaxPositionWithCount(issueStatus)
+	minPosition, maxPosition, count, err := issueRepo.FindMinAndMaxPositionWithCount(issueStatus)
 	if err != nil {
 		return exceptions.NewBadRequestError(err.Error())
 	}
-	spew.Dump(positionStats)
+
+	newPosition := cpbs.calculateIssuesPosition(*minPosition, *maxPosition, *count, int(arg.NewIndex))
+
+	listAffectedIssues, err := issueRepo.FindIssueOfProjectByStatusAndPosition(issueStatus, newPosition)
+	if err != nil {
+		return exceptions.NewBadRequestError(err.Error())
+	}
+
+	issue.Position = int32(newPosition)
+	issue.IssueStatusId = issueStatus.IssueStatusId
 
 	return nil
+}
+
+func (cpbs *ChangePositionBoardService) calculateIssuesPosition(minPosition int, maxPosition int, count int, newIndex int) int {
+	var position int
+	switch count {
+	// Case: Project Issue Status has no issue
+	case 0:
+		position = minPosition
+	// Case: When move issue to bottom
+	case newIndex:
+		position = maxPosition + 1
+	default:
+		position = newIndex
+	}
+	return position
+}
+
+func (cpbs *ChangePositionBoardService) changeIssuesPosition(issue models.Issue, updateIssue models.Issue, listAffectedIssues []models.Issue) error {
+	if err := cpbs.Db.Transaction(func(tx *gorm.DB) error {
+		for _, issue := range listAffectedIssues {
+			issue.Position += 1
+			if err := tx.Save(&issue).Error; err != nil {
+				return err
+			}
+		}
+
+		if err := tx.Model(&issue).Updates(&updateIssue).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}); err != nil {
+		return err
+	}
 }
