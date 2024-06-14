@@ -64,6 +64,8 @@ type Query {
   SelectOptions(input: SelectOptionsInput!, params: SelectOptionsParams): SelectOptions
 
   ProjectExperience(id: ID!): ProjectExperience!
+
+  DevicesUsingHistories(input: PagyInput, query: DevicesUsingHistoryQuery): DevicesUsingHistoryCollection
 }
 
 type Mutation {

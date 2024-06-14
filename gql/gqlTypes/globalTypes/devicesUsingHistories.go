@@ -6,9 +6,13 @@ import (
 	"context"
 
 	graphql "github.com/graph-gophers/graphql-go"
+	"gorm.io/gorm"
 )
 
 type DevicesUsingHistoryType struct {
+	Ctx *context.Context
+	Db  *gorm.DB
+
 	DevicesUsingHistory *models.DevicesUsingHistory
 }
 
