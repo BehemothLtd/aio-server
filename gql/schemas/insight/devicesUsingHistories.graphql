@@ -5,3 +5,12 @@ type DevicesUsingHistory {
   createdAt: Time
   updatedAt: Time
 }
+
+input DevicesUsingHistoryQuery {
+  deviceIdIn: [Int!]
+}
+
+type DevicesUsingHistoryCollection {
+  collection: [DevicesUsingHistory!]
+  metadata: Metadata
+}

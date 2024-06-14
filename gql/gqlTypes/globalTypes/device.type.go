@@ -78,18 +78,6 @@ func (dt *DeviceType) DeviceType(ctx context.Context) *DeviceTypeType {
 	}
 }
 
-func (dt *DeviceType) DevicesUsingHistories(ctx context.Context) *[]*DevicesUsingHistoryType {
-	result := make([]*DevicesUsingHistoryType, len(dt.Device.DevicesUsingHistories))
-
-	for i, devicesUsingHistory := range dt.Device.DevicesUsingHistories {
-		result[i] = &DevicesUsingHistoryType{
-			DevicesUsingHistory: devicesUsingHistory,
-		}
-	}
-
-	return &result
-}
-
 func (dt *DeviceType) LockVersion(context.Context) *int32 {
 	return &dt.Device.LockVersion
 }

@@ -135,3 +135,13 @@ func (r *Resolver) ProjectExperiencesSliceToTypes(projectExperiences []*models.P
 
 	return &resolvers
 }
+
+func (r *Resolver) DevicesUsingHistorySlideToTypes(devicesUsingHistories []*models.DevicesUsingHistory) *[]*globalTypes.DevicesUsingHistoryType {
+	resolvers := make([]*globalTypes.DevicesUsingHistoryType, len(devicesUsingHistories))
+
+	for i, duh := range devicesUsingHistories {
+		resolvers[i] = &globalTypes.DevicesUsingHistoryType{DevicesUsingHistory: duh}
+	}
+
+	return &resolvers
+}
