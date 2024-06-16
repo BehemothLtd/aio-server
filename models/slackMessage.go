@@ -44,20 +44,6 @@ type ActionDetail struct {
 	Value       string `json:"value"`
 }
 
-type SlackInteractivePayload struct {
-	Type            string         `json:"type"`
-	CallbackId      string         `json:"callback_id"`
-	OriginalMessage MessageContent `json:"original_message"`
-	Action          []ActionDetail `json:"actions"`
-	User            SlackUser      `json:"user"`
-	Channel         SlackChannel   `json:"channel"`
-}
-
-type SlackUser struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-}
-
 type SlackChannel struct {
 	Id string `json:"id"`
 }
