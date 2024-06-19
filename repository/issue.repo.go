@@ -406,3 +406,11 @@ func (r *IssueRepository) FindIssueOfProjectByStatusAndPosition(projectIssueStat
 
 	return issues, nil
 }
+
+func (r *IssueRepository) UpdatePosition(
+	issue *models.Issue,
+	position int32,
+	issueStatusId int32,
+) error {
+	return r.db.Model(issue).Updates(map[string]interface{}{"position": position, "issue_status_id": issueStatusId}).Error
+}

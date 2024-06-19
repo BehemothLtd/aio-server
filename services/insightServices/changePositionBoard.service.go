@@ -53,8 +53,9 @@ func (cpbs *ChangePositionBoardService) Execute() error {
 		return exceptions.NewBadRequestError(err.Error())
 	}
 
-	issue.Position = int32(newPosition)
-	issue.IssueStatusId = issueStatus.IssueStatusId
+	if err := cpbs.changeIssuesPosition(issue, int32(newPosition), arg.NewStatusId, listAffectedIssues); err != nil {
+		return exceptions.NewBadRequestError(err.Error())
+	}
 
 	return nil
 }
@@ -74,16 +75,16 @@ func (cpbs *ChangePositionBoardService) calculateIssuesPosition(minPosition int,
 	return position
 }
 
-func (cpbs *ChangePositionBoardService) changeIssuesPosition(issue models.Issue, updateIssue models.Issue, listAffectedIssues []models.Issue) error {
+func (cpbs *ChangePositionBoardService) changeIssuesPosition(issue models.Issue, newPosition int32, newIssueStatusID int32, listAffectedIssues []models.Issue) error {
+	issueRepo := repository.NewIssueRepository(cpbs.Ctx, cpbs.Db)
 	if err := cpbs.Db.Transaction(func(tx *gorm.DB) error {
 		for _, issue := range listAffectedIssues {
-			issue.Position += 1
-			if err := tx.Save(&issue).Error; err != nil {
+			if err := issueRepo.UpdatePosition(&issue, issue.Position+1, newIssueStatusID); err != nil {
 				return err
 			}
 		}
 
-		if err := tx.Model(&issue).Updates(&updateIssue).Error; err != nil {
+		if err := issueRepo.UpdatePosition(&issue, newPosition, newIssueStatusID); err != nil {
 			return err
 		}
 
@@ -91,4 +92,6 @@ func (cpbs *ChangePositionBoardService) changeIssuesPosition(issue models.Issue,
 	}); err != nil {
 		return err
 	}
+
+	return nil
 }
