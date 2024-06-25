@@ -42,6 +42,12 @@ func main() {
 	r.Use(initializers.CorsConfig())
 	r.Use(logger.Logger(logrus.New()), gin.Recovery())
 
+	r.GET("/healthz", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "OK",
+		})
+	})
+
 	r.POST("/snippetGql", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), initializers.SnippetGqlHandler(db))
 	r.POST("/insightGql", auths.JwtTokenCheck, auths.GinContextToContextMiddleware(), initializers.InsightGqlHandler(db))
 
@@ -55,5 +61,5 @@ func main() {
 	// }
 	// go registerEmailData.Send("bachdx@behemoth.vn", "Test send Email in Go with HTML template")
 
-	r.Run()
+	r.Run() // listen and serve on 0.0.0.0:8080
 }
