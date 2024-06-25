@@ -112,7 +112,15 @@ func (form *IssueStatusForm) validateTitle() *IssueStatusForm {
 	titleField.ValidateMax(interface{}(int64(constants.MaxStringLength)))
 
 	if titleField.IsClean() {
-		form.IssueStatus.Title = *form.Title
+		issueStatus := models.IssueStatus{Title: *form.Title}
+		if err := form.Repo.Find(&issueStatus); err == nil {
+			if issueStatus.Id != form.IssueStatus.Id {
+				titleField.AddError("is already exists. Please use another name")
+			}
+		}
+		if titleField.IsClean() {
+			form.IssueStatus.Title = *form.Title
+		}
 	}
 
 	return form
