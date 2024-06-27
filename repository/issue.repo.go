@@ -372,3 +372,45 @@ func (r IssueRepository) FetchProjectBoardIssues(project models.Project, issues 
 
 	return scopes.Order("position asc").Find(&issues).Error
 }
+
+func (r *IssueRepository) FindMinAndMaxPositionWithCount(projectIssueStatus *models.ProjectIssueStatus) (*int, *int, *int, error) {
+	var result struct {
+		MinPosition int
+		MaxPosition int
+		Count       int
+	}
+
+	if err := r.db.Model(&models.Issue{}).
+		Select("MIN(position) AS min_position, MAX(position) AS max_position, COUNT(*) AS count").
+		Where("issue_status_id = ?", projectIssueStatus.IssueStatusId).
+		Where("project_id = ?", projectIssueStatus.ProjectId).
+		Scan(&result).
+		Error; err != nil {
+		return nil, nil, nil, err
+	}
+
+	return &result.MinPosition, &result.MaxPosition, &result.Count, nil
+}
+
+func (r *IssueRepository) FindIssueOfProjectByStatusAndPosition(projectIssueStatus *models.ProjectIssueStatus, position int) ([]models.Issue, error) {
+	var issues []models.Issue
+
+	if err := r.db.Model(&models.Issue{}).
+		Where("issue_status_id = ?", projectIssueStatus.IssueStatusId).
+		Where("project_id = ?", projectIssueStatus.ProjectId).
+		Where("position >= ?", position).
+		Find(&issues).
+		Error; err != nil {
+		return nil, err
+	}
+
+	return issues, nil
+}
+
+func (r *IssueRepository) UpdatePosition(
+	issue *models.Issue,
+	position int32,
+	issueStatusId int32,
+) error {
+	return r.db.Model(issue).Updates(map[string]interface{}{"position": position, "issue_status_id": issueStatusId}).Error
+}
