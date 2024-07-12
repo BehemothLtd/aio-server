@@ -25,6 +25,8 @@ func (r *Resolver) DeviceUpdate(ctx context.Context, args insightInputs.DeviceUp
 	}
 
 	device := models.Device{Id: deviceId}
+	devicesUsingHistory := models.DevicesUsingHistory{}
+
 	service := insightServices.DeviceUpdateService{
 		Ctx:    &ctx,
 		Db:     r.Db,
@@ -32,9 +34,28 @@ func (r *Resolver) DeviceUpdate(ctx context.Context, args insightInputs.DeviceUp
 		Device: &device,
 	}
 
+	devicesUsingHistoryInput := insightInputs.DevicesUsingHistoryCreateInput{
+		Input: insightInputs.DevicesUsingHistoryCreateFormInput{
+			UserId:   args.Input.UserId,
+			DeviceId: &device.Id,
+			State:    args.Input.State,
+		},
+	}
+
+	devicesUsingHistoryCreateService := insightServices.DevicesUsingHistoryCreateService{
+		Ctx:                 &ctx,
+		Db:                  r.Db,
+		Args:                devicesUsingHistoryInput,
+		DevicesUsingHistory: &devicesUsingHistory,
+	}
+
 	if err := service.Execute(); err != nil {
 		return nil, err
 	} else {
+
+		if err := devicesUsingHistoryCreateService.Execute(); err != nil {
+			return nil, err
+		}
 		return &insightTypes.DeviceModifiedType{
 			Device: &globalTypes.DeviceType{
 				Device: &device,
