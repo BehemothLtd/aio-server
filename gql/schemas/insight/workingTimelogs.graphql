@@ -35,3 +35,17 @@ input WorkingTimelogInput {
   loggedAt: String
   minutes: Int
 }
+
+input SelfWorkingTimelogHistoryInput {
+  loggedAtBetween: [String]
+}
+
+type SelfWorkingTimelogHistory {
+  id: ID
+  issueName: String
+  issueDescription: String
+  issueId: ID
+  projectId: ID
+  minutes: Int
+  loggedAt: String!
+}

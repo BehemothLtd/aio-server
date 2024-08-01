@@ -61,3 +61,20 @@ type SelfWorkingTimelogFormInput struct {
 	LoggedAt    *string
 	Minutes     *int32
 }
+
+type SelfWorkingTimelogHistoryInput struct {
+	Query *SelfWorkingTimelogQueryInput
+}
+
+type SelfWorkingTimelogQueryInput struct {
+	LoggedAtBetween *[]*string
+}
+
+func (wti *SelfWorkingTimelogHistoryInput) ToQuery() SelfWorkingTimelogQueryInput {
+	query := SelfWorkingTimelogQueryInput{}
+
+	if wti.Query != nil && wti.Query.LoggedAtBetween != nil {
+		query.LoggedAtBetween = wti.Query.LoggedAtBetween
+	}
+	return query
+}

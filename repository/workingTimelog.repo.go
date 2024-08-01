@@ -43,7 +43,7 @@ func (wtr *WorkingTimelogRepository) List(workingTimeLogs *[]*models.WorkingTime
 			wtr.IssueCodeEq(query.IssueCodeEq),
 			wtr.IssueTitleLike(query.IssueTitleCont),
 		), paginateData),
-	).Order("id desc").Find(&workingTimeLogs).Error
+	).Order("logged_at desc").Order("user_id desc").Find(&workingTimeLogs).Error
 }
 
 func (wtr *WorkingTimelogRepository) FindByAttr(workingTimeLog *models.WorkingTimelog) error {
@@ -79,6 +79,27 @@ func (wtr *WorkingTimelogRepository) GetWorkingTimelogsByLoggedAt(workingTimeLog
 	return dbTables.Where("logged_at = ? AND id != ?", dateOfLogging, id).Find(&workingTimeLogs).Error
 }
 
+func (wtr *WorkingTimelogRepository) SelfWorkingTimelogHistory(
+	workingTimelogHistory *[]*models.WorkingTimelogHistory,
+	userId int32,
+	query insightInputs.SelfWorkingTimelogQueryInput) error {
+	return wtr.db.Model(&models.WorkingTimelog{}).Select(
+		`working_timelogs.id as id,
+		projects.id as project_id,
+		issues.title as issue_name,
+		issues.description as issue_description,
+		working_timelogs.logged_at,
+		working_timelogs.issue_id,
+		working_timelogs.minutes`).
+		Joins("INNER JOIN issues on working_timelogs.issue_id = issues.id").
+		Joins("INNER JOIN projects on projects.id = working_timelogs.project_id").
+		Scopes(
+			wtr.UserIdEq(&userId),
+			wtr.LoggedAtBetween(query.LoggedAtBetween),
+		).
+		Scan(&workingTimelogHistory).Error
+}
+
 // RANSACK
 func (r *Repository) DescriptionLike(descriptionLike *string) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
@@ -107,6 +128,51 @@ func (r *Repository) IssueCodeEq(IssueCodeEq *string) func(db *gorm.DB) *gorm.DB
 			return db
 		} else {
 			return db.Where(gorm.Expr("issues.code = ?", IssueCodeEq))
+		}
+	}
+}
+
+func (r *Repository) UserIdEq(userIdEq *int32) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if userIdEq == nil {
+			return db
+		} else {
+			return db.Where(gorm.Expr(`working_timelogs.user_id = ?`, userIdEq))
+		}
+	}
+}
+
+func (r *Repository) LoggedAtBetween(loggedAtBetween *[]*string) func(db *gorm.DB) *gorm.DB {
+	return func(db *gorm.DB) *gorm.DB {
+		if loggedAtBetween == nil || len(*loggedAtBetween) == 0 {
+			return db
+		} else {
+			if len(*loggedAtBetween) == 2 {
+				dateRange := *loggedAtBetween
+				startDateStr := dateRange[0]
+				endDateStr := dateRange[1]
+				query := db
+
+				if startDateStr != nil && *startDateStr != "" {
+					startDateTime, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *startDateStr, time.Local)
+					if err != nil {
+						return db
+					}
+
+					query = query.Where(gorm.Expr(`working_timelogs.logged_at >= ?`, startDateTime))
+				}
+				if endDateStr != nil && *endDateStr != "" {
+					endDateTime, err := time.ParseInLocation(constants.YYYYMMDD_DateFormat, *endDateStr, time.Local)
+					if err != nil {
+						return db
+					}
+
+					query = query.Where(gorm.Expr(`working_timelogs.logged_at <= ?`, endDateTime))
+				}
+				return query
+			}
+
+			return db
 		}
 	}
 }

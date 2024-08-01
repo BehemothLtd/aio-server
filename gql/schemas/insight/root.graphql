@@ -12,6 +12,7 @@ type Query {
   SelfPermission(): [Permission]!
   SelfProjectExperiences(input: PagyInput, query: ProjectExperiencesQuery): SelfProjectExperiencesCollection!
   SelfIssues(input: PagyInput, query: IssuesQuery): IssueCollection!
+  SelfWorkingTimeLogHistory(query: SelfWorkingTimelogHistoryInput): [SelfWorkingTimelogHistory]
 
   UserGroups(input: PagyInput, query: UserGroupsQuery): UserGroupCollection!
   UserGroup(id: ID!): UserGroup!
