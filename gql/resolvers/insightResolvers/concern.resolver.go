@@ -145,3 +145,13 @@ func (r *Resolver) DevicesUsingHistorySlideToTypes(devicesUsingHistories []*mode
 
 	return &resolvers
 }
+
+func (r *Resolver) SelfWorkingTimelogHistorySlideToTypes(selfWorkingTimelogHistory []*models.WorkingTimelogHistory) *[]*globalTypes.WorkingTimelogHistoryType {
+	resolvers := make([]*globalTypes.WorkingTimelogHistoryType, len(selfWorkingTimelogHistory))
+
+	for i, wt := range selfWorkingTimelogHistory {
+		resolvers[i] = &globalTypes.WorkingTimelogHistoryType{WorkingTimelogHistory: wt}
+	}
+
+	return &resolvers
+}
