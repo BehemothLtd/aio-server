@@ -11,6 +11,7 @@ const (
 	SlackSendLeaveDayRequestMessageTask   = "slackSendLeaveDayRequest"
 	SlackUpdateLeaveDayRequestStateTask   = "slackUpdteLeaveDayRequestState"
 	SlackUpdateLeaveDayRequestMessageTask = "slackUpdateLeaveDayRequestMessage"
+	SlackSyncUserIdTask                   = "slackSyncUserId"
 )
 
 var AsynqClient *asynq.Client

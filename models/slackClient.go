@@ -243,3 +243,38 @@ func (client *SlackClient) UpdateMessage(channel string, timestamp string, text 
 
 	return &message, nil
 }
+
+func (client *SlackClient) FindByEmail(email string) (*SlackUserReponse, error) {
+	payload := map[string]string{
+		"email": email,
+	}
+
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	request, err := client.Request(constants.Post, "users.lookupByEmail", payloadBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := client.Client.Do(request)
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	userResponse := SlackUserReponse{}
+	err = json.Unmarshal(body, &userResponse)
+	if err != nil {
+		return nil, err
+	}
+
+	return &userResponse, nil
+}
