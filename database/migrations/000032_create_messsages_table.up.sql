@@ -11,5 +11,5 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `index_on_parent` (`parent_id`)
+  KEY `index_on_leave_day_request_id` (`leave_day_request_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
