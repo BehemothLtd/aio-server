@@ -126,6 +126,7 @@ type Mutation {
   ClientDelete(id: ID!): String
 
   SelfWorkingTimelogCreateOrUpdate(input: WorkingTimelogInput, issueId: Int): WorkingTimelogModification
+  SelfWorkingTimelogDestroy(id: ID!): String
 
   AttendanceCreate(input: AttendanceInput!): AttendanceModification!
   AttendanceUpdate(id: ID!, input: AttendanceInput!): AttendanceModification!
