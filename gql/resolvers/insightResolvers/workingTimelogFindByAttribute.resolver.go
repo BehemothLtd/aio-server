@@ -15,7 +15,7 @@ import (
 )
 
 func (r *Resolver) WorkingTimelogByAttributes(ctx context.Context, args insightInputs.WorkingTimeLogInputByAttr) (*insightTypes.WorkingtimelogByAttributeType, error) {
-	_, err := auths.AuthInsightUserFromCtx(ctx)
+	user, err := auths.AuthInsightUserFromCtx(ctx)
 
 	if err != nil {
 		return nil, exceptions.NewUnauthorizedError("")
@@ -29,7 +29,7 @@ func (r *Resolver) WorkingTimelogByAttributes(ctx context.Context, args insightI
 		return nil, exceptions.NewBadRequestError("Invalid input")
 	}
 
-	workingTimelog := models.WorkingTimelog{ProjectId: projectId, IssueId: issueId, LoggedAt: loggedAt}
+	workingTimelog := models.WorkingTimelog{ProjectId: projectId, IssueId: issueId, LoggedAt: loggedAt, UserId: user.Id}
 	repo := repository.NewWorkingTimelogRepository(&ctx, r.Db.Preload("User").Preload("Project").Preload("Issue"))
 	findErr := repo.FindByAttr(&workingTimelog)
 	var dataExist = findErr == nil

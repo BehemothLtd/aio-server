@@ -176,3 +176,7 @@ func (r *Repository) LoggedAtBetween(loggedAtBetween *[]*string) func(db *gorm.D
 		}
 	}
 }
+
+func (r *WorkingTimelogRepository) Destroy(workingTimeLog *models.WorkingTimelog) error {
+	return r.db.Table("working_timelogs").Delete(&workingTimeLog).Error
+}
