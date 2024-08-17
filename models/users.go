@@ -121,3 +121,7 @@ func (u *User) Inactiveable() bool {
 
 	return result
 }
+
+func (u *User) SyncSlackId() {
+
+}
